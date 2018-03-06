@@ -70,14 +70,14 @@ layerManager.add()
 ```
 
 
-### Available options
+** Available options **
 
 | Attribute name | Values              | Default |
 | -------------- |:-------------------:| -------:|
 | mapLibrary     | Leaflet, GoogleMaps | Leaflet |
 
 
-### Layer options
+** Layer options **
 
 | Attribute name | Default |
 | -------------- | -------:|
@@ -87,7 +87,7 @@ layerManager.add()
 | interactivity  | null    |
 
 
-### Available methods
+** Available methods **
 
 | Method name      | Description                               | Example    |
 | ---------------- | :----------------------------------------:| ---------: |
