@@ -1,0 +1,16 @@
+# Mac OS
+.DS_Store
+
+# Text editors
+*.sublime*
+.sublime*
+.idea*
+
+# Vendors
+/node_modules
+
+# Logs
+*.log*
+
+# Compiled assets
+/dist
