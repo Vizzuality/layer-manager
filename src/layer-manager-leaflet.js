@@ -1,37 +1,9 @@
-import wriSerializer from 'wri-json-api-serializer';
 import LayerManager from './layer-manager';
 import leafletLayers from './layers/layers-leaflet';
 
 class LayerManagerLeaflet extends LayerManager {
-  /**
-   * Add layer
-   * @param {Array} layerSpec
-   */
-  add(layerSpec, layerOptions = { opacity: 1, visibility: true, zIndex: 0 }) {
-    let { opacity, visibility, zIndex } = layerOptions;
-    const newLayers = wriSerializer(layerSpec);
-
-    if (this.layers.length === 0) {
-      // Adding all layers to this.layers
-      this.layers = newLayers.map((l) => {
-        zIndex += 1;
-        return {...l, opacity, visibility, zIndex };
-      });
-    } else {
-      // If layers already exists it checks ID before adding
-      newLayers.forEach((l) => {
-        const layerWasAdded = this.layers.find((n) => {
-          return n.id === l.id;
-        });
-
-        if (!layerWasAdded) this.layers.push(newLayer);
-      });
-    }
-
-    console.log(this.layers);
-  }
-
   addLayers() {
+    console.log(this.layers);
     // const method = {
     //   // legacy/deprecated
     //   // leaflet: getLeafletLayer,

@@ -4,7 +4,7 @@
     "node": true,
     "es6": true
   },
-  "global": {
+  "globals": {
     "google": true,
     "L": true
   },

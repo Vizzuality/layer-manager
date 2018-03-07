@@ -6,7 +6,9 @@
   "scripts": {
     "serve": "http-server . -p 8000 -a 0.0.0.0",
     "prepublishOnly": "npm run build",
+    "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "watchify src/index.js -o dist/bundle.js -t babelify -s layerManager",
     "build": "babel src --out-dir dist && browserify src/index.js -o dist/bundle.js -t babelify -s layerManager"
   },
   "repository": {
@@ -25,6 +27,7 @@
     "browserify": "^16.1.0",
     "eslint": "^4.9.0",
     "eslint-config-vizzuality": "^1.0.14",
+    "eslint-plugin-babel": "^4.1.2",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^7.4.0",
