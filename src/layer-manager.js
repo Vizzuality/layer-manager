@@ -35,6 +35,21 @@ class LayerManager {
     }
 
     if (this.layers.length > 0) this.addLayers();
+
+    // Reseting current layer
+    this.currentLayer = null;
+
+    return this;
+  }
+
+  /**
+   * Finding a layer from added layers before
+   * @param  {String} layerId
+   */
+  find(layerId) {
+    const layer = this.layers.find(l => l.id === layerId);
+    this.currentLayer = layer;
+    return this;
   }
 }
 
