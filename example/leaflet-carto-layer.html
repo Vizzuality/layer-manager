@@ -32,13 +32,8 @@
           .then(response => response.json())
           .then((layerSpec) => {
             const lm = new layerManager.LayerManagerLeaflet(mymap);
-
             // Adding layers
             lm.add(layerSpec);
-
-            // Find a specific layer
-            const layer = lm.find('0ac7bf69-388a-48b0-a869-c3240031c4bf');
-            console.log(layer);
           });
       }
 

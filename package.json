@@ -7,7 +7,7 @@
     "serve": "http-server . -p 8000 -a 0.0.0.0",
     "prepublishOnly": "npm run build",
     "lint": "eslint .",
-    "test": "mocha --require babel-core/register --recursive ./test",
+    "test": "mocha --require babel-core/register --require ./test/setup --recursive ./test/specs",
     "watch": "watchify src/index.js -o dist/bundle.js -t babelify -s layerManager",
     "build": "babel src --out-dir dist && browserify src/index.js -o dist/bundle.js -t babelify -s layerManager"
   },
@@ -33,6 +33,7 @@
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^7.4.0",
     "http-server": "^0.11.1",
+    "jsdom": "^11.6.2",
     "mocha": "^5.0.4",
     "watchify": "^3.10.0"
   },

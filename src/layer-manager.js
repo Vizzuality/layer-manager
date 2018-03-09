@@ -36,9 +36,6 @@ class LayerManager {
 
     if (this.layers.length > 0) this.addLayers();
 
-    // Reseting current layer
-    this.currentLayer = null;
-
     return this;
   }
 
@@ -48,8 +45,7 @@ class LayerManager {
    */
   find(layerId) {
     const layer = this.layers.find(l => l.id === layerId);
-    this.currentLayer = layer;
-    return this;
+    return layer;
   }
 }
 

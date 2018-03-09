@@ -3,7 +3,6 @@ import leafletLayers from './layers/layers-leaflet';
 
 class LayerManagerLeaflet extends LayerManager {
   addLayers() {
-    console.log(this.layers);
     // const method = {
     //   // legacy/deprecated
     //   // leaflet: getLeafletLayer,
