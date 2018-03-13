@@ -69,6 +69,10 @@ layerManager.add()
 
 ```
 
+### Adding a custom provider
+
+TODO
+
 
 ### Available options
 

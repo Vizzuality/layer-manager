@@ -24,10 +24,27 @@ describe('LayerManager for Leaflet', () => {
   });
 
   describe('# Adding and finding', () => {
+    it('should throw an error adding null or undefined layerSpec', () => {
+      // expect(lm.add()).to.throw();
+      lm.add();
+      expect(lm.layers).to.be.an('array');
+      expect(lm.layers.length).to.be.equal(0);
+    });
+
     it('should be added 10 layers', () => {
       lm.add(layerSpec);
       expect(lm.layers).to.be.an('array');
       expect(lm.layers.length).to.be.equal(10);
+    });
+
+    it('should return 20 layers when adding more layers', () => {
+      lm.add(moreLayerSpec);
+      expect(lm.layers.length).to.be.equal(20);
+    });
+
+    it('should not add existing layers added before', () => {
+      lm.add(moreLayerSpec);
+      expect(lm.layers.length).to.be.equal(20);
     });
 
     it('should get one specific layer by id', () => {
@@ -39,11 +56,6 @@ describe('LayerManager for Leaflet', () => {
     it('should return undefined when id doesn`t exist', () => {
       const layer = lm.find('29ce6221-9450-4b60-a9c2');
       expect(layer).to.be.undefined;
-    });
-
-    it('should return 15 layers when adding more layers', () => {
-      lm.add(moreLayerSpec);
-      expect(lm.layers.length).to.be.equal(15);
     });
   });
 });
