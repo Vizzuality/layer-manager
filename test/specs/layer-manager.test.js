@@ -24,8 +24,7 @@ describe('LayerManager for Leaflet', () => {
   });
 
   describe('# Adding and finding', () => {
-    it('should throw an error adding null or undefined layerSpec', () => {
-      // expect(lm.add()).to.throw();
+    it('should not to add layers with null or undefined layerSpec', () => {
       lm.add();
       expect(lm.layers).to.be.an('array');
       expect(lm.layers.length).to.be.equal(0);
@@ -56,6 +55,15 @@ describe('LayerManager for Leaflet', () => {
     it('should return undefined when id doesn`t exist', () => {
       const layer = lm.find('29ce6221-9450-4b60-a9c2');
       expect(layer).to.be.undefined;
+    });
+  });
+
+  describe('# Set opacity', () => {
+    it('layer should set opacity', () => {
+      const layer = lm.find('29ce6221-9450-4b60-a9c2-aea581d31a08');
+      layer.setOpacity(0.5);
+      console.log(layer.opacity);
+      expect(layer.opacity).to.be.equal(0.5);
     });
   });
 });

@@ -18,7 +18,10 @@ const cartoService = layerSpec => {
     },
     body: bodyStringified
   })
-    .then(response => response.json());
+    .then(response => {
+      if (!response.ok) throw new Error(response.statusText);
+      return response.json();
+    });
 };
 
 export default cartoService;

@@ -1,4 +1,5 @@
 import wriSerializer from 'wri-json-api-serializer';
+import LayerModel from './layer-model';
 
 class LayerManager {
   constructor(mapInstance) {
@@ -16,13 +17,13 @@ class LayerManager {
    * @param {Object} layerOptions
    */
   add(layerSpec, layerOptions = { opacity: 1, visibility: true, zIndex: 0 }) {
-    if (!layerSpec) {
-      console.error('layerSpec is required');
+    if (typeof layerSpec === 'undefined') {
+      console.log('layerSpec is required');
       return this;
     }
 
     if (typeof layerSpec !== 'object' && typeof layerSpec !== 'string') {
-      console.errror('layerSpec should be an object or string');
+      console.log('layerSpec should be an object or string');
       return this;
     }
 
@@ -34,17 +35,20 @@ class LayerManager {
       // Adding all layers to this.layers
       this.layers = newLayers.map((l) => {
         zIndex += 1;
-        return { ...l, opacity, visibility, zIndex };
+        return new LayerModel({ ...l, opacity, visibility, zIndex });
       });
     } else {
       // If layers already exists it checks ID before adding
       newLayers.forEach((n) => {
         const layerWasAdded = this.layers.find(l => l.id === n.id);
-        if (!layerWasAdded) this.layers.push(n);
+        if (!layerWasAdded) {
+          const layerModel = new LayerModel({ ...n, opacity, visibility, zIndex });
+          this.layers.push(layerModel);
+        }
       });
     }
 
-    if (this.layers.length > 0) this.addLayers();
+    // if (this.layers.length > 0) this.addLayers();
 
     return this;
   }
