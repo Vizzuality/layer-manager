@@ -6,7 +6,7 @@ class LayerManagerLeaflet extends LayerManager {
   addLayers() {
     this.layers.forEach((l) => {
       const method = getLayerByProvider(l.provider);
-      if (method) return method.call(this, l);
+      if (method) return method.call(this, l).then((layer) => l.set('layer', layer));
     });
   }
 
