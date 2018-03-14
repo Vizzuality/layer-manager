@@ -9,7 +9,7 @@ const CartoLayer = (layerSpec) => {
         const tileUrl = `${response.cdn_url.templates.https.url}/${layerConfig.account}/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.png`;
         const layer = new google.maps.ImageMapType({
           name: layerSpec.slug,
-          getTileUrl: function(coord, zoom) {
+          getTileUrl(coord, zoom) {
             const url = tileUrl
               .replace('{x}', coord.x)
               .replace('{y}', coord.y)

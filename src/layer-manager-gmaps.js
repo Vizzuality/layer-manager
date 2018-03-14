@@ -10,7 +10,7 @@ class LayerManagerGmaps extends LayerManager {
 
       // carto
       cartodb: gmapsLayers.cartoLayer,
-      carto: gmapsLayers.cartoLayer,
+      carto: gmapsLayers.cartoLayer
 
       // wms
       // wmsservice: getLeafletLayer,

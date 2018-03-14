@@ -1,10 +1,13 @@
+/* eslint no-unused-expressions: 0 */
+
 import { expect } from 'chai';
 import { LayerManagerLeaflet } from '../../src/index';
 import layerSpec from '../mocks/layer';
 import moreLayerSpec from '../mocks/more-layers';
 
 describe('LayerManager for Leaflet', () => {
-  let map, lm;
+  let map;
+  let lm;
 
   // Preparing Leaflet and creating map
   before((done) => {
@@ -62,8 +65,12 @@ describe('LayerManager for Leaflet', () => {
     it('layer should set opacity', () => {
       const layer = lm.find('29ce6221-9450-4b60-a9c2-aea581d31a08');
       layer.setOpacity(0.5);
-      console.log(layer.opacity);
       expect(layer.opacity).to.be.equal(0.5);
+      expect(layer.get('opacity')).to.be.equal(0.5);
+    });
+
+    it('layer should set opacity using inline format', () => {
+      expect(lm.find('29ce6221-9450-4b60-a9c2-aea581d31a08').setOpacity(0.2).get('opacity')).to.be.equal(0.2);
     });
   });
 });

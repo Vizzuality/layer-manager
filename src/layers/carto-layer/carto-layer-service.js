@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch';
 
-const cartoService = layerSpec => {
+const cartoService = (layerSpec) => {
   const { layerConfig, layerIndex, visibility, opacity } = layerSpec;
 
   // Transforming layerSpec
@@ -13,12 +13,10 @@ const cartoService = layerSpec => {
 
   return fetch(url, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: bodyStringified
   })
-    .then(response => {
+    .then((response) => {
       if (!response.ok) throw new Error(response.statusText);
       return response.json();
     });
