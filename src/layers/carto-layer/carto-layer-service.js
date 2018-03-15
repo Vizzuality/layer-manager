@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-fetch';
 
 const cartoService = (layerSpec) => {
-  const { layerConfig, layerIndex, visibility, opacity } = layerSpec;
+  const { layerConfig } = layerSpec;
 
   // Transforming layerSpec
   const bodyStringified = JSON.stringify(layerConfig.body || {})

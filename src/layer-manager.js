@@ -18,12 +18,12 @@ class LayerManager {
    */
   add(layerSpec, layerOptions = { opacity: 1, visibility: true, zIndex: 0 }) {
     if (typeof layerSpec === 'undefined') {
-      console.log('layerSpec is required');
+      console.error('layerSpec is required');
       return this;
     }
 
     if (typeof layerSpec !== 'object' && typeof layerSpec !== 'string') {
-      console.log('layerSpec should be an object or string');
+      console.error('layerSpec should be an object or string');
       return this;
     }
 
@@ -48,9 +48,8 @@ class LayerManager {
       });
     }
 
-    // if (this.layers.length > 0) this.addLayers();
-
-    return this;
+    // Returnning a promise
+    return this.addLayers();
   }
 
   /**
@@ -60,6 +59,18 @@ class LayerManager {
   find(layerId) {
     const layer = this.layers.find(l => l.id === layerId);
     return layer;
+  }
+
+  /**
+   * Remove a layer giving a Layer ID
+   * @param  {String} layerId
+   */
+  remove(layerId) {
+    this.layers.forEach((l, index) => {
+      if (l.id === layerId) {
+        this.layers.slice(index, 1);
+      }
+    });
   }
 }
 

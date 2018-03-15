@@ -1,48 +1,37 @@
 import LayerManager from './layer-manager';
-import gmapsLayers from './layers/layers-gmaps';
+import { getLayerByProvider } from './layers/layers-gmaps';
 
 class LayerManagerGmaps extends LayerManager {
-  createLayer() {
-    const method = {
-      // legacy/deprecated
-      // leaflet: getLeafletLayer,
-      // arcgis: getEsriLayer,
+  addLayers() {
+    if (this.layers.length > 0) {
+      const promises = this.layers.map((l) => {
+        const method = getLayerByProvider(l.provider);
+        if (!method) {
+          return new Promise((resolve, reject) =>
+            reject(new Error(`${l.provider} provider is not yet supported.`)));
+        }
+        return method.call(this, l).then(layer => l.set('mapLayer', layer));
+      });
+      return Promise.all(promises);
+    }
 
-      // carto
-      cartodb: gmapsLayers.cartoLayer,
-      carto: gmapsLayers.cartoLayer
-
-      // wms
-      // wmsservice: getLeafletLayer,
-      // wms: getLeafletLayer,
-
-      // arcgis
-      // featureservice: getEsriLayer,
-      // mapservice: getEsriLayer,
-      // tileservice: getEsriLayer,
-      // esrifeatureservice: getEsriLayer,
-      // esrimapservice: getEsriLayer,
-      // esritileservice: getEsriLayer,
-
-      // GEE
-      // gee: getGeeLayer,
-
-      // NexGDDP
-      // nexgddp: getNexGDDPLayer
-    }[layerSpec.provider];
-
-    if (method) return method.call(this, this.layerSpec);
-
-    return new Promise((resolve, reject) => reject(`${layerSpec.provider} provider is not yet supported.`));
+    // By default it will return a empty layers
+    return new Promise(resolve => resolve(this.layers));
   }
 
   setZIndex(zIndex) {
+    // TODO
+    return this;
   }
 
   setOpacity(opacity) {
+    // TODO
+    return this;
   }
 
   setVisibility(visibility) {
+    // TODO
+    return this;
   }
 }
 

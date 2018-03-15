@@ -1,7 +1,7 @@
 import cartoService from './carto-layer-service';
 
 const CartoLayer = (layerSpec) => {
-  const { layerConfig, zIndex, visibility, opacity } = layerSpec;
+  const { layerConfig } = layerSpec;
 
   return new Promise((resolve, reject) => {
     cartoService(layerSpec)

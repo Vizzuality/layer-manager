@@ -1,3 +1,5 @@
+/* eslint no-param-reassign: 0 */
+
 const validator = {
   set(target, key, value) {
     if (key === 'opacity') {
@@ -61,11 +63,12 @@ class LayerModel {
   }
 
   get(key) {
-    if (this.layer.hasOwnProperty(key)) return this.layer[key];
+    return this.layer[key];
   }
 
   set(key, value) {
-    if (this.layer.hasOwnProperty(key) && this.layer[key] !== value) {
+    if (Object.prototype.hasOwnProperty.call(this.layer, key) &&
+      this.layer[key] !== value) {
       this.layer[key] = value;
       this.trigger(`change:${key}`);
       this.trigger('change');
@@ -100,18 +103,18 @@ class LayerModel {
     });
   }
 
-  off(type) {
-    if (this.events.hasOwnProperty(type)) {
-      this.events[type].forEach(e => {
-        e.action(e);
+  off(type, fn) {
+    if (Object.prototype.hasOwnProperty.call(this.events, type)) {
+      this.events[type].forEach((e, index) => {
+        if (e.action === fn) this.events[type].slice(index, 1);
       });
     }
   }
 
-  trigger(type, fn) {
-    if (this.events.hasOwnProperty(type)) {
-      this.events[type].forEach((e, index) => {
-        if (e.action === fn) this.events[type].slice(index, 1);
+  trigger(type) {
+    if (Object.prototype.hasOwnProperty.call(this.events, type)) {
+      this.events[type].forEach((e) => {
+        e.action(e);
       });
     }
   }
