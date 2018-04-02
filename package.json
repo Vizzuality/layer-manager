@@ -38,8 +38,8 @@
     "watchify": "^3.10.0"
   },
   "dependencies": {
+    "bluebird": "^3.5.1",
     "es6-promise": "^4.2.4",
-    "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.5",
     "query-string": "^5.1.0",
     "wri-json-api-serializer": "^1.0.1"

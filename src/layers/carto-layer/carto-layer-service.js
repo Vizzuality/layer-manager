@@ -1,6 +1,9 @@
-import fetch from 'isomorphic-fetch';
+import Promise from 'bluebird';
+import { post } from '../../helpers';
 
-const cartoService = (layerSpec) => {
+let postRequest;
+
+const cartoLayerService = (layerSpec) => {
   const { layerConfig } = layerSpec;
 
   // Transforming layerSpec
@@ -11,15 +14,15 @@ const cartoService = (layerSpec) => {
     .replace(/"raster-band"/g, '"raster_band"');
   const url = `https://${layerConfig.account}.carto.com/api/v1/map`;
 
-  return fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: bodyStringified
-  })
-    .then((response) => {
-      if (!response.ok) throw new Error(response.statusText);
-      return response.json();
+  if (postRequest && postRequest instanceof Promise) postRequest.cancel();
+
+  postRequest = post(url, JSON.parse(bodyStringified))
+    .then((res) => {
+      if (res.status > 400) throw new Error(res);
+      return JSON.parse(res.response);
     });
+
+  return postRequest;
 };
 
-export default cartoService;
+export default cartoLayerService;

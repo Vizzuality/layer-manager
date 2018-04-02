@@ -18,3 +18,4 @@ const { window } = new JSDOM(`<html>
 
 global.window = window;
 global.document = window.document;
+global.XMLHttpRequest = window.XMLHttpRequest;
