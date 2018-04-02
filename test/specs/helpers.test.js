@@ -22,6 +22,6 @@ describe('# Cancellable request', () => {
         done();
       });
 
-    setTimeout(() => request.cancel(), 100);
+    setTimeout(() => request.cancel(), 30);
   });
 });

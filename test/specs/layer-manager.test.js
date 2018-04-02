@@ -2,7 +2,7 @@
 
 import { expect } from 'chai';
 import { LayerManagerLeaflet } from '../../src/index';
-import layerSpec from '../mocks/layer';
+import layerSpec from '../mocks/layers';
 import moreLayerSpec from '../mocks/more-layers';
 
 describe('LayerManager for Leaflet', () => {
