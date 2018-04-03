@@ -2,9 +2,10 @@ import wriSerializer from 'wri-json-api-serializer';
 import LayerModel from './layer-model';
 
 class LayerManager {
-  constructor(mapInstance) {
+  constructor(mapInstance, options = {}) {
     this.mapInstance = mapInstance;
     this.layers = [];
+    this.options = options;
   }
 
   get map() {
@@ -29,7 +30,7 @@ class LayerManager {
 
     const { opacity, visibility } = layerOptions;
     let { zIndex } = layerOptions;
-    const newLayers = wriSerializer(layerSpec);
+    const newLayers = this.options.serialize ? wriSerializer(layerSpec) : layerSpec;
 
     if (this.layers.length === 0) {
       // Adding all layers to this.layers
@@ -39,17 +40,18 @@ class LayerManager {
       });
     } else {
       // If layers already exists it checks ID before adding
-      newLayers.forEach((n) => {
-        const layerWasAdded = this.layers.find(l => l.id === n.id);
-        if (!layerWasAdded) {
-          const layerModel = new LayerModel({ ...n, opacity, visibility, zIndex });
-          this.layers.push(layerModel);
+      newLayers.forEach((newLayerModel) => {
+        const existedLayerModel = this.layers.find(l => l.id === newLayerModel.id);
+        if (!existedLayerModel) {
+          this.layers.push(new LayerModel({ ...newLayerModel, opacity, visibility, zIndex }));
+        } else {
+          existedLayerModel.update({ ...newLayerModel, opacity, visibility, zIndex });
         }
       });
     }
 
     // Returnning a promise
-    return this.addLayers();
+    return this.renderLayers();
   }
 
   /**
@@ -65,13 +67,13 @@ class LayerManager {
    * Remove a layer giving a Layer ID
    * @param  {String} layerId
    */
-  remove(layerId) {
-    this.layers.forEach((l, index) => {
-      if (l.id === layerId) {
-        this.layers.slice(index, 1);
-      }
-    });
-  }
+  // remove(layerId) {
+  //   this.layers.forEach((layerModel, index) => {
+  //     if (layerModel.id === layerId) {
+  //       this.layers.slice(index, 1);
+  //     }
+  //   });
+  // }
 }
 
 export default LayerManager;

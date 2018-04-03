@@ -1,28 +1,29 @@
 import Promise from 'bluebird';
-import { post } from '../../helpers';
-
-let postRequest;
+import { get } from '../../helpers';
 
 const cartoLayerService = (layerModel) => {
   const layerConfig = layerModel.get('layerConfig');
+  let request = layerModel.get('layerRequest');
 
-  // Transforming layerSpec
-  const bodyStringified = JSON.stringify(layerConfig.body || {})
-    .replace(/"cartocss-version":/g, '"cartocss_version":')
-    .replace(/"geom-column"/g, '"geom_column"')
-    .replace(/"geom-type"/g, '"geom_type"')
-    .replace(/"raster-band"/g, '"raster_band"');
-  const url = `https://${layerConfig.account}.carto.com/api/v1/map`;
+  const layerTpl = {
+    version: '1.3.0',
+    stat_tag: 'API',
+    layers: layerConfig.body.layers
+  };
+  const params = `?stat_tag=API&config=${encodeURIComponent(JSON.stringify(layerTpl))}`;
+  const url = `https://${layerConfig.account}.carto.com/api/v1/map${params}`;
 
-  if (postRequest && postRequest instanceof Promise) postRequest.cancel();
+  if (request && request instanceof Promise) request.cancel();
 
-  postRequest = post(url, JSON.parse(bodyStringified))
+  request = get(url)
     .then((res) => {
       if (res.status > 400) throw new Error(res);
       return JSON.parse(res.response);
     });
 
-  return postRequest;
+  layerModel.setLayerRequest(request);
+
+  return request;
 };
 
 export default cartoLayerService;

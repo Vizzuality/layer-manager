@@ -7,7 +7,7 @@ const CartoLayer = (layerModel) => {
     cartoService(layerModel)
       .then((response) => {
         const tileUrl = `${response.cdn_url.templates.https.url}/${layerConfig.account}/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.png`;
-        const layer = L.tileLayer(tileUrl, layerConfig.body);
+        const layer = L.tileLayer(tileUrl);
 
         resolve(layer);
       })

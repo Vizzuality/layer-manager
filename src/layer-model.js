@@ -84,6 +84,12 @@ class LayerModel {
 
   setMapLayer(layer) {
     this.layer.mapLayer = layer;
+    return this;
+  }
+
+  setLayerRequest(request) {
+    this.layer.layerRequest = request;
+    return this;
   }
 
   setOpacity(opacity) {
@@ -92,13 +98,20 @@ class LayerModel {
   }
 
   setZIndex(zIndex) {
-    this.layer.zIndex = zIndex;
+    this.set('zIndex', zIndex);
     return this;
   }
 
   setVisibility(visibility) {
-    this.layer.visibility = visibility;
+    this.set('visibility', visibility);
     return this;
+  }
+
+  update(layerSpec) {
+    const { opacity, visibility, zIndex } = layerSpec;
+    if (typeof opacity !== 'undefined') this.setOpacity(opacity);
+    if (typeof visibility !== 'undefined') this.setVisibility(visibility);
+    if (typeof zIndex !== 'undefined') this.setZIndex(zIndex);
   }
 
   // Event
