@@ -3,8 +3,8 @@ import { post } from '../../helpers';
 
 let postRequest;
 
-const cartoLayerService = (layerSpec) => {
-  const { layerConfig } = layerSpec;
+const cartoLayerService = (layerModel) => {
+  const layerConfig = layerModel.get('layerConfig');
 
   // Transforming layerSpec
   const bodyStringified = JSON.stringify(layerConfig.body || {})

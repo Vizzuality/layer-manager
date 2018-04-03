@@ -1,16 +1,13 @@
 import cartoService from './carto-layer-service';
 
-const CartoLayer = (layerSpec) => {
-  const { layerConfig } = layerSpec;
+const CartoLayer = (layerModel) => {
+  const layerConfig = layerModel.get('layerConfig');
 
   return new Promise((resolve, reject) => {
-    cartoService(layerSpec)
+    cartoService(layerModel)
       .then((response) => {
         const tileUrl = `${response.cdn_url.templates.https.url}/${layerConfig.account}/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.png`;
-        const layer = L.tileLayer(tileUrl, {
-          minZoom: 1,
-          maxZoom: 20
-        });
+        const layer = L.tileLayer(tileUrl, layerConfig.body);
 
         resolve(layer);
       })

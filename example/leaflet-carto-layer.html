@@ -28,12 +28,15 @@
           attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(mymap);
 
-        fetch('https://api.resourcewatch.org/v1/layer?application=rw&page[size]=10')
+        fetch('https://api.resourcewatch.org/v1/layer?application=rw&page[size]=2&page[number]=2&status=saved')
           .then(response => response.json())
           .then((layerSpec) => {
-            const lm = new layerManager.LayerManagerLeaflet(mymap);
+            const { LayerManagerLeaflet } = layerManager;
+            const lm = new LayerManagerLeaflet(mymap);
             // Adding layers
             lm.add(layerSpec);
+
+            window.lm = lm;
           });
       }
 

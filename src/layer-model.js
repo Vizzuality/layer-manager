@@ -62,13 +62,19 @@ class LayerModel {
     return this.layer.zIndex;
   }
 
+  get mapLayer() {
+    return this.layer.mapLayer;
+  }
+
   get(key) {
     return this.layer[key];
   }
 
   set(key, value) {
-    if (Object.prototype.hasOwnProperty.call(this.layer, key) &&
-      this.layer[key] !== value) {
+    if (
+      Object.prototype.hasOwnProperty.call(this.layer, key) &&
+      this.layer[key] !== value
+    ) {
       this.layer[key] = value;
       this.trigger(`change:${key}`);
       this.trigger('change');
@@ -76,8 +82,12 @@ class LayerModel {
     return this;
   }
 
+  setMapLayer(layer) {
+    this.layer.mapLayer = layer;
+  }
+
   setOpacity(opacity) {
-    this.layer.opacity = opacity;
+    this.set('opacity', opacity);
     return this;
   }
 
@@ -113,9 +123,7 @@ class LayerModel {
 
   trigger(type) {
     if (Object.prototype.hasOwnProperty.call(this.events, type)) {
-      this.events[type].forEach((e) => {
-        e.action(e);
-      });
+      this.events[type].forEach(e => e.action(e));
     }
   }
 }

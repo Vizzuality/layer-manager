@@ -5,13 +5,18 @@ import LayerModel from './layer-model';
 class LayerManagerLeaflet extends LayerManager {
   addLayers() {
     if (this.layers.length > 0) {
-      const promises = this.layers.map((l) => {
-        const method = getLayerByProvider(l.provider);
+      const promises = this.layers.map((layerModel) => {
+        const provider = layerModel.get('provider');
+        const method = getLayerByProvider(provider);
         if (!method) {
           return new Promise((resolve, reject) =>
-            reject(new Error(`${l.provider} provider is not yet supported.`)));
+            reject(new Error(`${provider} provider is not yet supported.`)));
         }
-        return method.call(this, l).then(layer => l.set('mapLayer', layer));
+        return method.call(this, layerModel).then((layer) => {
+          layerModel.setMapLayer(layer);
+          // layerModel.on('change:opacity', () => console.log(layerModel.opacity) || this.setOpacity(layerModel.id, layerModel.opacity));
+          this.mapInstance.addLayer(layerModel.mapLayer);
+        });
       });
       return Promise.all(promises);
     }
@@ -21,37 +26,59 @@ class LayerManagerLeaflet extends LayerManager {
   }
 
   /**
-   * A namespace to set opacity on selected layer previously with find method
-   * @param {String} opacity
+   * Remove a layer giving a Layer ID
+   * @param  {String} layerId
    */
-  setOpacity(opacity) {
-    const layerModel = this;
-    if (layerModel instanceof LayerModel && layerModel.get('mapLayer')) {
-      layerModel.get('mapLayer').setOpacity(opacity);
-    }
+  remove(layerId) {
+    this.layers.forEach((layerModel, index) => {
+      if (layerModel.id === layerId) {
+        this.mapInstance.removeLayer(layerModel.mapLayer);
+        this.layers.slice(index, 1);
+      }
+    });
+  }
+
+  /**
+   * A namespace to set opacity on selected layer previously with find method
+   * @param {String} layerId
+   * @param {Number} opacity
+   */
+  setOpacity(layerId, opacity) {
+    this.layers.forEach((layerModel) => {
+      if (layerModel.id === layerId && layerModel.opacity !== opacity) {
+        layerModel.setOpacity(opacity);
+        layerModel.mapLayer.setOpacity(opacity);
+      }
+    });
     return this;
   }
 
   /**
    * A namespace to hide or show a selected layer previously with find method
-   * @param {String} visibility
+   * @param {String} layerId
+   * @param {Boolean} visibility
    */
-  setVisibility(visibility) {
-    const layerModel = this;
-    if (layerModel instanceof LayerModel && layerModel.get('mapLayer')) {
-      layerModel.get('mapLayer').setOpacity(visibility ? 1 : 0);
-    }
+  setVisibility(layerId, visibility) {
+    this.layers.forEach((layerModel) => {
+      if (layerModel.id === layerId) {
+        layerModel.mapLayer.setOpacity(visibility ? 1 : 0);
+      }
+    });
+    return this;
   }
 
   /**
    * A namespace to set z-index on selected layer previously with find method
-   * @param {String} zIndex
+   * @param {String} layerId
+   * @param {Number} zIndex
    */
-  setZIndex(zIndex) {
-    const layerModel = this;
-    if (layerModel instanceof LayerModel && layerModel.get('mapLayer')) {
-      layerModel.get('mapLayer').setZIndex(zIndex);
-    }
+  setZIndex(layerId, zIndex) {
+    this.layers.forEach((layerModel) => {
+      if (layerModel.id === layerId) {
+        layerModel.mapLayer.setZIndex(zIndex);
+      }
+    });
+    return this;
   }
 }
 
