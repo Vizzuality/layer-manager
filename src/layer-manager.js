@@ -72,12 +72,6 @@ class LayerManager {
       }
     });
   }
-
-  /**
-   * It cancells fetch request.
-   */
-  abort() {
-  }
 }
 
 export default LayerManager;

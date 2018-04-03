@@ -1,6 +1,5 @@
 import LayerManager from './layer-manager';
 import { getLayerByProvider } from './layers/layers-leaflet';
-import LayerModel from './layer-model';
 
 class LayerManagerLeaflet extends LayerManager {
   addLayers() {
@@ -14,7 +13,6 @@ class LayerManagerLeaflet extends LayerManager {
         }
         return method.call(this, layerModel).then((layer) => {
           layerModel.setMapLayer(layer);
-          // layerModel.on('change:opacity', () => console.log(layerModel.opacity) || this.setOpacity(layerModel.id, layerModel.opacity));
           this.mapInstance.addLayer(layerModel.mapLayer);
         });
       });
