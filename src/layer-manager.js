@@ -1,11 +1,13 @@
 import wriSerializer from 'wri-json-api-serializer';
 import LayerModel from './layer-model';
 
+const defaultOptions = { serialize: true };
+
 class LayerManager {
   constructor(mapInstance, options = {}) {
     this.mapInstance = mapInstance;
     this.layers = [];
-    this.options = options;
+    this.options = Object.assign({}, options, defaultOptions);
   }
 
   get map() {

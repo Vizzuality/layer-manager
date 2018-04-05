@@ -28,13 +28,25 @@
           attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(mymap);
 
-        fetch('https://api.resourcewatch.org/v1/layer?application=rw&page[size]=2&page[number]=2&status=saved')
+        fetch('https://api.resourcewatch.org/v1/dataset?application=rw&env=production,preproduction&includes=layer&page[size]=2&published=true&status=saved&provider=featureservice')
           .then(response => response.json())
-          .then((layerSpec) => {
+          .then((datasetSpec) => {
+            // Extracting layers from datasets
+            const layerSpec = [];
+            for (let i = 0; i < datasetSpec.data.length; i++) {
+              const layers = datasetSpec.data[i].attributes.layer;
+              for (let j = 0; j < layers.length; j++) {
+                const element = layers[j];
+                layerSpec.push(element);
+              }
+            }
+
+            // Initializing layer manager
             const { LayerManagerLeaflet } = layerManager;
             const lm = new LayerManagerLeaflet(mymap);
+
             // Adding layers
-            lm.add(layerSpec);
+            lm.add({ data: layerSpec });
 
             window.lm = lm;
           });
