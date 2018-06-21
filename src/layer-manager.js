@@ -32,7 +32,12 @@ class LayerManager {
 
     const { opacity, visibility } = layerOptions;
     let { zIndex } = layerOptions;
-    const newLayers = this.options.serialize ? wriSerializer(layerSpec) : layerSpec;
+    let newLayers = this.options.serialize ? wriSerializer(layerSpec) : layerSpec;
+
+    // Converting to array when layerSpec is an object
+    if (!Array.isArray(newLayers)) {
+      newLayers = [newLayers];
+    }
 
     if (this.layers.length === 0) {
       // Adding all layers to this.layers
