@@ -7,7 +7,7 @@ class LayerManager {
   constructor(mapInstance, options = {}) {
     this.mapInstance = mapInstance;
     this.layers = [];
-    this.options = Object.assign({}, options, defaultOptions);
+    this.options = Object.assign({}, defaultOptions, options);
   }
 
   get map() {
