@@ -2,7 +2,7 @@ import LayerManager from './layer-manager';
 import { getLayerByProvider } from './layers/layers-gmaps';
 
 class LayerManagerGmaps extends LayerManager {
-  addLayers() {
+  renderLayers() {
     if (this.layers.length > 0) {
       const promises = this.layers.map((l) => {
         const method = getLayerByProvider(l.provider);
