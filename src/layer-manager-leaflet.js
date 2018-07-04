@@ -58,12 +58,18 @@ class LayerManagerLeaflet extends LayerManager {
    * @param  {String} layerId
    */
   remove(layerId) {
+    const layers = this.layers.slice(0);
     this.layers.forEach((layerModel, index) => {
-      if (layerModel.id === layerId) {
+      if (layerId) {
+        if (layerModel.id === layerId) {
+          this.mapInstance.removeLayer(layerModel.mapLayer);
+          layers.splice(index, 1);
+        }
+      } else {
         this.mapInstance.removeLayer(layerModel.mapLayer);
-        this.layers.slice(index, 1);
       }
     });
+    this.layers = layerId ? layers : [];
   }
 
   /**
@@ -72,6 +78,7 @@ class LayerManagerLeaflet extends LayerManager {
    * @param {Number} opacity
    */
   setOpacity(layerId, opacity) {
+    debugger;
     this.layers.forEach((layerModel) => {
       if (layerModel.id === layerId && layerModel.opacity !== opacity) {
         layerModel.setOpacity(opacity);

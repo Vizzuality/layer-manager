@@ -13,7 +13,8 @@ const method = {
   tileservice: esriLayer,
   esrifeatureservice: esriLayer,
   esrimapservice: esriLayer,
-  esritileservice: esriLayer
+  esritileservice: esriLayer,
+  gee: esriLayer
 };
 
 export default { cartoLayer, esriLayer };
