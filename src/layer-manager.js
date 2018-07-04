@@ -48,11 +48,11 @@ class LayerManager {
     } else {
       // If layers already exists it checks ID before adding
       newLayers.forEach((newLayerModel) => {
-        const existedLayerModel = this.layers.find(l => l.id === newLayerModel.id);
-        if (!existedLayerModel) {
+        const existingLayerModel = this.layers.find(l => l.id === newLayerModel.id);
+        if (!existingLayerModel) {
           this.layers.push(new LayerModel({ ...newLayerModel, opacity, visibility, zIndex }));
         } else {
-          existedLayerModel.update({ ...newLayerModel, opacity, visibility, zIndex });
+          existingLayerModel.update({ ...newLayerModel, opacity, visibility, zIndex });
         }
       });
     }
@@ -74,13 +74,13 @@ class LayerManager {
    * Remove a layer giving a Layer ID
    * @param  {String} layerId
    */
-  // remove(layerId) {
-  //   this.layers.forEach((layerModel, index) => {
-  //     if (layerModel.id === layerId) {
-  //       this.layers.slice(index, 1);
-  //     }
-  //   });
-  // }
+  remove(layerId) {
+    this.layers.forEach((layerModel, index) => {
+      if (layerModel.id === layerId) {
+        this.layers.splice(index, 1);
+      }
+    });
+  }
 }
 
 export default LayerManager;

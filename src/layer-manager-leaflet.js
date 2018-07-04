@@ -59,6 +59,7 @@ class LayerManagerLeaflet extends LayerManager {
    */
   remove(layerId) {
     const layers = this.layers.slice(0);
+
     this.layers.forEach((layerModel, index) => {
       if (layerId) {
         if (layerModel.id === layerId) {
@@ -69,6 +70,7 @@ class LayerManagerLeaflet extends LayerManager {
         this.mapInstance.removeLayer(layerModel.mapLayer);
       }
     });
+
     this.layers = layerId ? layers : [];
   }
 
