@@ -78,7 +78,6 @@ class LayerManagerLeaflet extends LayerManager {
    * @param {Number} opacity
    */
   setOpacity(layerId, opacity) {
-    debugger;
     this.layers.forEach((layerModel) => {
       if (layerModel.id === layerId && layerModel.opacity !== opacity) {
         layerModel.setOpacity(opacity);
