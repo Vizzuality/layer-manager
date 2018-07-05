@@ -37,19 +37,15 @@ layerManager.remove();
 layerManager.remove(['layerID']); 
 
 // Setting opacity to specific layer
-layerManager.find('layerID').setOpacity(0.5);
+layerManager.setOpacity('layerID', 0.5);
 
 // Subscribing to interactivity (Draft)
-layerManager.on('mouseover');
-layerManager.find('layerID').setInteractivity({
+layerManager.setInteractivity('layerID', {
 	click: (layerSpec, data) => {}
-});
-layerManager.add(layerSpec).setInteractivity({
-	mouseover: (layerSpec, data) => {}
 });
 
 // Disabling events
-layerManager.find('layerID').setInteractivity(null);
+layerManager.setInteractivity('layerId', null);
 
 ```
 

@@ -1,4 +1,3 @@
-import wriSerializer from 'wri-json-api-serializer';
 import LayerModel from './layer-model';
 
 const defaultOptions = { serialize: true };
@@ -12,94 +11,6 @@ class LayerManager {
   }
 
   /**
-   * Add layers
-   * @param {Array} layerSpec
-   * @param {Object} layerOptions
-   */
-  add(layerSpec, layerOptions = { opacity: 1, visibility: true, zIndex: 0 }) {
-    if (typeof layerSpec === 'undefined') {
-      console.error('layerSpec is required');
-      return this;
-    }
-
-    if (typeof layerSpec !== 'object' && typeof layerSpec !== 'string') {
-      console.error('layerSpec should be an object or string');
-      return this;
-    }
-
-    const { opacity, visibility } = layerOptions;
-    let { zIndex } = layerOptions;
-    let newLayers = this.options.serialize ? wriSerializer(layerSpec) : layerSpec;
-
-    // Converting to array when layerSpec is an object
-    if (!Array.isArray(newLayers)) {
-      newLayers = [newLayers];
-    }
-
-    if (this.layers.length === 0) {
-      // Adding all layers to this.layers
-      this.layers = newLayers.map((l) => {
-        zIndex += 1;
-        return new LayerModel({ ...l, opacity, visibility, zIndex });
-      });
-    } else {
-      // If layers already exists it checks ID before adding
-      newLayers.forEach((newLayerModel) => {
-        const existingLayerModel = this.layers.find(l => l.id === newLayerModel.id);
-        if (!existingLayerModel) {
-          this.layers.push(new LayerModel({ ...newLayerModel, opacity, visibility, zIndex }));
-        } else {
-          existingLayerModel.update({ ...newLayerModel, opacity, visibility, zIndex });
-        }
-      });
-    }
-
-    // Returnning a promise
-    return this.renderLayers();
-  }
-
-  /**
-   * Update all layers if layer model has been changed
-   */
-  update() {
-    this.layers.forEach((layerModel) => {
-      this.updateOneLayer(layerModel);
-    });
-  }
-
-  /**
-   * Updating a specific layer
-   * @param  {Object} layerModel
-   */
-  updateOneLayer(layerModel) {
-    const { opacity, visibility, zIndex } = layerModel;
-    if (typeof opacity !== 'undefined') this.plugin.setOpacity(layerModel, opacity);
-    if (typeof visibility !== 'undefined') this.plugin.setOpacity(layerModel, !visibility ? 0 : opacity);
-    if (typeof zIndex !== 'undefined') this.plugin.setZIndex(layerModel, zIndex);
-  }
-
-  /**
-   * Remove a layer giving a Layer ID
-   * @param  {String} layerId
-   */
-  remove(layerId) {
-    const layers = this.layers.slice(0);
-
-    this.layers.forEach((layerModel, index) => {
-      if (layerId) {
-        if (layerModel.id === layerId) {
-          this.plugin.remove(layerModel);
-          layers.splice(index, 1);
-        }
-      } else {
-        this.plugin.remove(layerModel);
-      }
-    });
-
-    this.layers = layerId ? layers : [];
-  }
-
-  /**
    * Render layers
    */
   renderLayers() {
@@ -108,7 +19,7 @@ class LayerManager {
         const provider = layerModel.get('provider');
 
         if (layerModel.mapLayer) {
-          this.updateOneLayer(layerModel);
+          this.update(layerModel);
           return new Promise(resolve => resolve(this.layers));
         }
 
@@ -121,8 +32,8 @@ class LayerManager {
 
         return method.call(this, layerModel).then((layer) => {
           layerModel.setMapLayer(layer);
+          this.update(layerModel);
           this.plugin.add(layerModel);
-          this.updateOneLayer(layerModel);
         });
       });
       return Promise.all(promises);
@@ -132,15 +43,82 @@ class LayerManager {
     return new Promise(resolve => resolve(this.layers));
   }
 
+
+  /**
+   * Add layers
+   * @param {Array} layers
+   * @param {Object} layerOptions
+   */
+  add(layers, layerOptions = { opacity: 1, visibility: true, zIndex: 0 }) {
+    if (typeof layers === 'undefined') {
+      console.error('layers is required');
+      return this;
+    }
+
+    if (!Array.isArray(layers)) {
+      console.error('layers should be an array');
+      return this;
+    }
+
+    const { opacity, visibility, zIndex } = layerOptions;
+
+    layers.forEach((layer) => {
+      const layerModel = this.layers.find(l => l.id === layer.id);
+      if (layerModel) {
+        layerModel.update({ ...layer, opacity, visibility, zIndex });
+      } else {
+        this.layers.push(new LayerModel({ ...layer, opacity, visibility, zIndex }));
+      }
+    });
+
+    // Returnning a promise
+    return this.renderLayers();
+  }
+
+  /**
+   * Updating a specific layer
+   * @param  {Object} layerModel
+   */
+  update(layerModel) {
+    const { opacity, visibility, zIndex } = layerModel;
+    if (typeof opacity !== 'undefined') this.plugin.setOpacity(layerModel, opacity);
+    if (typeof visibility !== 'undefined') this.plugin.setOpacity(layerModel, !visibility ? 0 : opacity);
+    if (typeof zIndex !== 'undefined') this.plugin.setZIndex(layerModel, zIndex);
+  }
+
+  /**
+   * Remove a layer giving a Layer ID
+   * @param {Array} layerIds
+   */
+  remove(layerIds) {
+    const layers = this.layers.slice(0);
+
+    this.layers.forEach((layerModel, index) => {
+      if (layerIds) {
+        if (layerIds.includes(layerModel.id)) {
+          this.plugin.remove(layerModel);
+          layers.splice(index, 1);
+        }
+      } else {
+        this.plugin.remove(layerModel);
+      }
+    });
+
+    this.layers = layerIds ? layers : [];
+  }
+
   /**
    * A namespace to set opacity on selected layer previously with find method
-   * @param {String} layerId
+   * @param {Array} layerIds
    * @param {Number} opacity
    */
-  setOpacity(layerId, opacity) {
-    const layerModel = this.layers.find(l => l.id === layerId);
-    if (layerModel) {
-      this.plugin.setOpacity(layerModel, opacity);
+  setOpacity(layerIds, opacity) {
+    const layerModels = this.layers.filter(l => layerIds.includes(l.id));
+
+    if (layerModels.length) {
+      layerModels.forEach((lm) => {
+        this.plugin.setOpacity(lm, opacity);
+      });
     } else {
       console.error('Can\'t find the layer');
     }
@@ -148,13 +126,16 @@ class LayerManager {
 
   /**
    * A namespace to hide or show a selected layer previously with find method
-   * @param {String} layerId
+   * @param {Array} layerIds
    * @param {Boolean} visibility
    */
-  setVisibility(layerId, visibility) {
-    const layerModel = this.layers.find(l => l.id === layerId);
-    if (layerModel) {
-      this.plugin.setVisibility(layerModel, visibility);
+  setVisibility(layerIds, visibility) {
+    const layerModels = this.layers.filter(l => layerIds.includes(l.id));
+
+    if (layerModels.length) {
+      layerModels.forEach((lm) => {
+        this.plugin.setVisibility(lm, visibility);
+      });
     } else {
       console.error('Can\'t find the layer');
     }
@@ -162,13 +143,16 @@ class LayerManager {
 
   /**
    * A namespace to set z-index on selected layer previously with find method
-   * @param {String} layerId
+   * @param {Array} layerIds
    * @param {Number} zIndex
    */
-  setZIndex(layerId, zIndex) {
-    const layerModel = this.layers.find(l => l.id === layerId);
-    if (layerModel) {
-      this.plugin.setZIndex(layerModel, zIndex);
+  setZIndex(layerIds, zIndex) {
+    const layerModels = this.layers.filter(l => layerIds.includes(l.id));
+
+    if (layerModels.length) {
+      layerModels.forEach((lm) => {
+        this.plugin.setZIndex(lm, zIndex);
+      });
     } else {
       console.error('Can\'t find the layer');
     }
