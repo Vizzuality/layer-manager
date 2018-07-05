@@ -57,21 +57,8 @@ class LayerManagerLeaflet extends LayerManager {
    * Remove a layer giving a Layer ID
    * @param  {String} layerId
    */
-  remove(layerId) {
-    const layers = this.layers.slice(0);
-
-    this.layers.forEach((layerModel, index) => {
-      if (layerId) {
-        if (layerModel.id === layerId) {
-          this.mapInstance.removeLayer(layerModel.mapLayer);
-          layers.splice(index, 1);
-        }
-      } else {
-        this.mapInstance.removeLayer(layerModel.mapLayer);
-      }
-    });
-
-    this.layers = layerId ? layers : [];
+  remove(layerModel) {
+    this.mapInstance.removeLayer(layerModel.mapLayer);
   }
 
   /**

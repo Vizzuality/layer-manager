@@ -4,14 +4,11 @@ import LayerModel from './layer-model';
 const defaultOptions = { serialize: true };
 
 class LayerManager {
-  constructor(mapInstance, options = {}) {
-    this.mapInstance = mapInstance;
+  constructor(map, Plugin, options = {}) {
+    this.map = map;
+    this.plugin = new Plugin(this.map);
     this.layers = [];
     this.options = Object.assign({}, defaultOptions, options);
-  }
-
-  get map() {
-    return this.mapInstance;
   }
 
   /**
@@ -71,15 +68,77 @@ class LayerManager {
   }
 
   /**
+   * Update all layers if layer model has been changed
+   */
+  update() {
+    this.layers.forEach((layerModel) => {
+      this.updateOneLayer(layerModel);
+    });
+  }
+
+  /**
+   * Updating a specific layer
+   * @param  {Object} layerModel
+   */
+  updateOneLayer(layerModel) {
+    const { opacity, visibility, zIndex } = layerModel;
+    if (typeof opacity !== 'undefined') this.plugin.setOpacity(layerModel, opacity);
+    if (typeof visibility !== 'undefined') this.plugin.setOpacity(layerModel, !visibility ? 0 : opacity);
+    if (typeof zIndex !== 'undefined') this.plugin.setZIndex(layerModel, zIndex);
+  }
+
+  /**
    * Remove a layer giving a Layer ID
    * @param  {String} layerId
    */
   remove(layerId) {
+    const layers = this.layers.slice(0);
+
     this.layers.forEach((layerModel, index) => {
-      if (layerModel.id === layerId) {
-        this.layers.splice(index, 1);
+      if (layerId) {
+        if (layerModel.id === layerId) {
+          this.plugin.removeLayer(layerModel);
+          layers.splice(index, 1);
+        }
+      } else {
+        this.plugin.removeLayer(layerModel);
       }
     });
+
+    this.layers = layerId ? layers : [];
+  }
+
+  /**
+   * Render layers
+   */
+  renderLayers() {
+    if (this.layers.length > 0) {
+      const promises = this.layers.map((layerModel) => {
+        const provider = layerModel.get('provider');
+
+        if (layerModel.mapLayer) {
+          this.updateOneLayer(layerModel);
+          return new Promise(resolve => resolve(this.layers));
+        }
+
+        const method = this.plugin.getLayerByProvider(provider);
+
+        if (!method) {
+          return new Promise((resolve, reject) =>
+            reject(new Error(`${provider} provider is not yet supported.`)));
+        }
+
+        return method.call(this, layerModel).then((layer) => {
+          layerModel.setMapLayer(layer);
+          this.plugin.add(layerModel);
+          this.updateOneLayer(layerModel);
+        });
+      });
+      return Promise.all(promises);
+    }
+
+    // By default it will return a empty layers
+    return new Promise(resolve => resolve(this.layers));
   }
 }
 
