@@ -1,12 +1,25 @@
-import { getLayerByProvider as getLayer } from '../layers/layers-leaflet';
+import cartoLayer from '../layers/carto-layer/carto-layer-leaflet';
+import esriLayer from '../layers/esri-layer/esri-layer-leaflet';
 
 class PluginLeaflet {
   constructor(map) {
     this.map = map;
   }
 
-  getLayerByProvider(provider) {
-    return getLayer(provider);
+  method = {
+    // CARTO
+    cartodb: cartoLayer,
+    carto: cartoLayer,
+
+    // ESRI
+    arcgis: esriLayer,
+    featureservice: esriLayer,
+    mapservice: esriLayer,
+    tileservice: esriLayer,
+    esrifeatureservice: esriLayer,
+    esrimapservice: esriLayer,
+    esritileservice: esriLayer,
+    gee: esriLayer
   }
 
   /**
@@ -26,7 +39,15 @@ class PluginLeaflet {
   }
 
   /**
-   * A namespace to set opacity on selected layer previously with find method
+   * Get provider method
+   * @param {String} provider
+   */
+  getLayerByProvider(provider) {
+    return this.method[provider];
+  }
+
+  /**
+   * A namespace to set opacity
    * @param {Object} layerModel
    * @param {Number} opacity
    */
@@ -35,7 +56,7 @@ class PluginLeaflet {
   }
 
   /**
-   * A namespace to hide or show a selected layer previously with find method
+   * A namespace to hide or show a selected layer
    * @param {Object} layerModel
    * @param {Boolean} visibility
    */
@@ -44,7 +65,7 @@ class PluginLeaflet {
   }
 
   /**
-   * A namespace to set z-index on selected layer previously with find method
+   * A namespace to set z-index
    * @param {Object} layerModel
    * @param {Number} zIndex
    */

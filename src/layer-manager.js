@@ -59,15 +59,6 @@ class LayerManager {
   }
 
   /**
-   * Finding a layer from added layers before
-   * @param  {String} layerId
-   */
-  find(layerId) {
-    const layer = this.layers.find(l => l.id === layerId);
-    return layer;
-  }
-
-  /**
    * Update all layers if layer model has been changed
    */
   update() {
@@ -97,11 +88,11 @@ class LayerManager {
     this.layers.forEach((layerModel, index) => {
       if (layerId) {
         if (layerModel.id === layerId) {
-          this.plugin.removeLayer(layerModel);
+          this.plugin.remove(layerModel);
           layers.splice(index, 1);
         }
       } else {
-        this.plugin.removeLayer(layerModel);
+        this.plugin.remove(layerModel);
       }
     });
 
@@ -139,6 +130,48 @@ class LayerManager {
 
     // By default it will return a empty layers
     return new Promise(resolve => resolve(this.layers));
+  }
+
+  /**
+   * A namespace to set opacity on selected layer previously with find method
+   * @param {String} layerId
+   * @param {Number} opacity
+   */
+  setOpacity(layerId, opacity) {
+    const layerModel = this.layers.find(l => l.id === layerId);
+    if (layerModel) {
+      this.plugin.setOpacity(layerModel, opacity);
+    } else {
+      console.error('Can\'t find the layer');
+    }
+  }
+
+  /**
+   * A namespace to hide or show a selected layer previously with find method
+   * @param {String} layerId
+   * @param {Boolean} visibility
+   */
+  setVisibility(layerId, visibility) {
+    const layerModel = this.layers.find(l => l.id === layerId);
+    if (layerModel) {
+      this.plugin.setVisibility(layerModel, visibility);
+    } else {
+      console.error('Can\'t find the layer');
+    }
+  }
+
+  /**
+   * A namespace to set z-index on selected layer previously with find method
+   * @param {String} layerId
+   * @param {Number} zIndex
+   */
+  setZIndex(layerId, zIndex) {
+    const layerModel = this.layers.find(l => l.id === layerId);
+    if (layerModel) {
+      this.plugin.setZIndex(layerModel, zIndex);
+    } else {
+      console.error('Can\'t find the layer');
+    }
   }
 }
 
