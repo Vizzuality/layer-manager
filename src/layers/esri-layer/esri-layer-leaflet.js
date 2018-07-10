@@ -26,7 +26,12 @@ const esriLayer = (layerModel) => {
     layer.on('requesterror', err => console.error(err));
 
     // adding setZIndex method to layer instance
-    if (!layer.setZIndex) layer.setZIndex = () => {};
+    if (!layer.setZIndex) {
+      layer.setZIndex = (zIndex) => {
+      // I didn't manage to change the zIndex in Esri layers.
+      // It doesn't have a proper solution rather than panes, which won't work with our current aproach...
+      };
+    }
 
     return resolve(layer);
   });

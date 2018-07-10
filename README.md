@@ -15,12 +15,13 @@ or using git:
 ## How to use
 
 ```js
+// Import LayersManager and the corresponding Plugin depending on the 
+// map provider that you are using
+import LayerManager, { PluginLeaflet } from 'layer-manager';
 
 const map = L.map('map_canvas').setView([40, -3], 5);
 
-const layerManager = new LayerManager(map, {
-	mapLibrary: 'Leaflet'
-});
+const layerManager = new LayerManager(map, PluginLeaflet, {});
 
 // Adding all layers to map
 layerManager.add(layerSpec, {
@@ -37,19 +38,15 @@ layerManager.remove();
 layerManager.remove(['layerID']); 
 
 // Setting opacity to specific layer
-layerManager.find('layerID').setOpacity(0.5);
+layerManager.setOpacity('layerID', 0.5);
 
 // Subscribing to interactivity (Draft)
-layerManager.on('mouseover');
-layerManager.find('layerID').setInteractivity({
+layerManager.setInteractivity('layerID', {
 	click: (layerSpec, data) => {}
-});
-layerManager.add(layerSpec).setInteractivity({
-	mouseover: (layerSpec, data) => {}
 });
 
 // Disabling events
-layerManager.find('layerID').setInteractivity(null);
+layerManager.setInteractivity('layerId', null);
 
 ```
 

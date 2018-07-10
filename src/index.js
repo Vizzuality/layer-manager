@@ -1,7 +1,6 @@
-import LayerManagerLeaflet from './layer-manager-leaflet';
-import LayerManagerGmaps from './layer-manager-gmaps';
-
 import LayerManager from './layer-manager';
 
+import PluginLeaflet from './plugins/plugin-leaflet';
+
 export default LayerManager;
-export { LayerManagerLeaflet, LayerManagerGmaps };
+export { PluginLeaflet };
