@@ -1,81 +1,183 @@
-import wriSerializer from 'wri-json-api-serializer';
+import Promise from 'bluebird';
+
 import LayerModel from './layer-model';
 
 const defaultOptions = { serialize: true };
 
 class LayerManager {
-  constructor(mapInstance, options = {}) {
-    this.mapInstance = mapInstance;
+  constructor(map, Plugin, options = {}) {
+    this.map = map;
+    this.plugin = new Plugin(this.map);
     this.layers = [];
-    this.options = Object.assign({}, options, defaultOptions);
-  }
-
-  get map() {
-    return this.mapInstance;
+    this.promises = {};
+    this.options = Object.assign({}, defaultOptions, options);
   }
 
   /**
+   * Render layers
+   */
+  renderLayers() {
+    if (this.layers.length > 0) {
+      this.layers.map((layerModel) => {
+        const provider = layerModel.get('provider');
+
+        // If layer exists let's update it
+        if (layerModel.mapLayer) {
+          this.update(layerModel);
+          this.promises[layerModel.id] = new Promise(resolve => resolve(this.layers));
+          return false;
+        }
+
+        // If promises exists and it's pending let's cancel it
+        if (this.promises[layerModel.id] && this.promises[layerModel.id].isPending()) {
+          this.promises[layerModel.id].cancel();
+        }
+
+        // If there is no method for it let's cancel it
+        const method = this.plugin.getLayerByProvider(provider);
+        if (!method) {
+          this.promises[layerModel.id] = new Promise((resolve, reject) =>
+            reject(new Error(`${provider} provider is not yet supported.`)));
+
+          return false;
+        }
+
+        // If there is method for it let's call it
+        this.promises[layerModel.id] = method.call(this, layerModel)
+          .then((layer) => {
+            layerModel.setMapLayer(layer);
+            this.update(layerModel);
+            this.plugin.add(layerModel);
+          });
+
+        return false;
+      });
+
+      return Promise.all(Object.values(this.promises))
+        .finally(() => {
+          this.promises = {};
+        });
+    }
+
+    // By default it will return a empty layers
+    return new Promise(resolve => resolve(this.layers));
+  }
+
+
+  /**
    * Add layers
-   * @param {Array} layerSpec
+   * @param {Array} layers
    * @param {Object} layerOptions
    */
-  add(layerSpec, layerOptions = { opacity: 1, visibility: true, zIndex: 0 }) {
-    if (typeof layerSpec === 'undefined') {
-      console.error('layerSpec is required');
+  add(layers, layerOptions = { opacity: 1, visibility: true, zIndex: 0 }) {
+    if (typeof layers === 'undefined') {
+      console.error('layers is required');
       return this;
     }
 
-    if (typeof layerSpec !== 'object' && typeof layerSpec !== 'string') {
-      console.error('layerSpec should be an object or string');
+    if (!Array.isArray(layers)) {
+      console.error('layers should be an array');
       return this;
     }
 
-    const { opacity, visibility } = layerOptions;
-    let { zIndex } = layerOptions;
-    const newLayers = this.options.serialize ? wriSerializer(layerSpec) : layerSpec;
+    const { opacity, visibility, zIndex } = layerOptions;
 
-    if (this.layers.length === 0) {
-      // Adding all layers to this.layers
-      this.layers = newLayers.map((l) => {
-        zIndex += 1;
-        return new LayerModel({ ...l, opacity, visibility, zIndex });
-      });
-    } else {
-      // If layers already exists it checks ID before adding
-      newLayers.forEach((newLayerModel) => {
-        const existedLayerModel = this.layers.find(l => l.id === newLayerModel.id);
-        if (!existedLayerModel) {
-          this.layers.push(new LayerModel({ ...newLayerModel, opacity, visibility, zIndex }));
-        } else {
-          existedLayerModel.update({ ...newLayerModel, opacity, visibility, zIndex });
-        }
-      });
-    }
+    layers.forEach((layer) => {
+      const layerModel = this.layers.find(l => l.id === layer.id);
+
+      if (layerModel) {
+        layerModel.update({ ...layer, opacity, visibility, zIndex });
+      } else {
+        this.layers.push(new LayerModel({ ...layer, opacity, visibility, zIndex }));
+      }
+    });
 
     // Returnning a promise
     return this.renderLayers();
   }
 
   /**
-   * Finding a layer from added layers before
-   * @param  {String} layerId
+   * Updating a specific layer
+   * @param  {Object} layerModel
    */
-  find(layerId) {
-    const layer = this.layers.find(l => l.id === layerId);
-    return layer;
+  update(layerModel) {
+    const { opacity, visibility, zIndex } = layerModel;
+    if (typeof opacity !== 'undefined') this.plugin.setOpacity(layerModel, opacity);
+    if (typeof visibility !== 'undefined') this.plugin.setOpacity(layerModel, !visibility ? 0 : opacity);
+    if (typeof zIndex !== 'undefined') this.plugin.setZIndex(layerModel, zIndex);
   }
 
   /**
    * Remove a layer giving a Layer ID
-   * @param  {String} layerId
+   * @param {Array} layerIds
    */
-  // remove(layerId) {
-  //   this.layers.forEach((layerModel, index) => {
-  //     if (layerModel.id === layerId) {
-  //       this.layers.slice(index, 1);
-  //     }
-  //   });
-  // }
+  remove(layerIds) {
+    const layers = this.layers.slice(0);
+
+    this.layers.forEach((layerModel, index) => {
+      if (layerIds) {
+        if (layerIds.includes(layerModel.id)) {
+          this.plugin.remove(layerModel);
+          layers.splice(index, 1);
+        }
+      } else {
+        this.plugin.remove(layerModel);
+      }
+    });
+
+    this.layers = layerIds ? layers : [];
+  }
+
+  /**
+   * A namespace to set opacity on selected layer previously with find method
+   * @param {Array} layerIds
+   * @param {Number} opacity
+   */
+  setOpacity(layerIds, opacity) {
+    const layerModels = this.layers.filter(l => layerIds.includes(l.id));
+
+    if (layerModels.length) {
+      layerModels.forEach((lm) => {
+        this.plugin.setOpacity(lm, opacity);
+      });
+    } else {
+      console.error('Can\'t find the layer');
+    }
+  }
+
+  /**
+   * A namespace to hide or show a selected layer previously with find method
+   * @param {Array} layerIds
+   * @param {Boolean} visibility
+   */
+  setVisibility(layerIds, visibility) {
+    const layerModels = this.layers.filter(l => layerIds.includes(l.id));
+
+    if (layerModels.length) {
+      layerModels.forEach((lm) => {
+        this.plugin.setVisibility(lm, visibility);
+      });
+    } else {
+      console.error('Can\'t find the layer');
+    }
+  }
+
+  /**
+   * A namespace to set z-index on selected layer previously with find method
+   * @param {Array} layerIds
+   * @param {Number} zIndex
+   */
+  setZIndex(layerIds, zIndex) {
+    const layerModels = this.layers.filter(l => layerIds.includes(l.id));
+
+    if (layerModels.length) {
+      layerModels.forEach((lm) => {
+        this.plugin.setZIndex(lm, zIndex);
+      });
+    } else {
+      console.error('Can\'t find the layer');
+    }
+  }
 }
 
 export default LayerManager;

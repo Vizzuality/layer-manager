@@ -1,3 +1,4 @@
+import Promise from 'bluebird';
 import cartoService from './carto-layer-service';
 
 const CartoLayer = (layerSpec) => {

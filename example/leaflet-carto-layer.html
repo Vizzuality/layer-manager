@@ -31,7 +31,7 @@
           attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(mymap);
 
-        fetch('http://api.resourcewatch.org/v1/layer?ids=914882a7-179a-4b78-9814-5f03384ad294,5c8ec7a7-ce63-4841-b011-b0188fe0fc84')
+        fetch('https://api.resourcewatch.org/v1/layer/0ac7bf69-388a-48b0-a869-c3240031c4bf')
           .then(response => response.json())
           .then((layerSpec) => {
             // Extracting layers from datasets
@@ -48,7 +48,6 @@
             const { LayerManagerLeaflet } = layerManager;
             const lm = new LayerManagerLeaflet(mymap);
 
-            console.log(layerSpec);
             // Adding layers
             lm.add(layerSpec);
 
