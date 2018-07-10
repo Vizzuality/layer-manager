@@ -15,12 +15,13 @@ or using git:
 ## How to use
 
 ```js
+// Import LayersManager and the corresponding Plugin depending on the 
+// map provider that you are using
+import LayerManager, { PluginLeaflet } from 'layer-manager';
 
 const map = L.map('map_canvas').setView([40, -3], 5);
 
-const layerManager = new LayerManager(map, {
-	mapLibrary: 'Leaflet'
-});
+const layerManager = new LayerManager(map, PluginLeaflet, {});
 
 // Adding all layers to map
 layerManager.add(layerSpec, {
