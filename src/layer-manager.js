@@ -1,3 +1,5 @@
+import Promise from 'bluebird';
+
 import LayerModel from './layer-model';
 
 const defaultOptions = { serialize: true };
@@ -7,6 +9,7 @@ class LayerManager {
     this.map = map;
     this.plugin = new Plugin(this.map);
     this.layers = [];
+    this.promises = {};
     this.options = Object.assign({}, defaultOptions, options);
   }
 
@@ -15,28 +18,45 @@ class LayerManager {
    */
   renderLayers() {
     if (this.layers.length > 0) {
-      const promises = this.layers.map((layerModel) => {
+      this.layers.map((layerModel) => {
         const provider = layerModel.get('provider');
 
+        // If layer exists let's update it
         if (layerModel.mapLayer) {
           this.update(layerModel);
-          return new Promise(resolve => resolve(this.layers));
+          this.promises[layerModel.id] = new Promise(resolve => resolve(this.layers));
+          return false;
         }
 
+        // If promises exists and it's pending let's cancel it
+        if (this.promises[layerModel.id] && this.promises[layerModel.id].isPending()) {
+          this.promises[layerModel.id].cancel();
+        }
+
+        // If there is no method for it let's cancel it
         const method = this.plugin.getLayerByProvider(provider);
-
         if (!method) {
-          return new Promise((resolve, reject) =>
+          this.promises[layerModel.id] = new Promise((resolve, reject) =>
             reject(new Error(`${provider} provider is not yet supported.`)));
+
+          return false;
         }
 
-        return method.call(this, layerModel).then((layer) => {
-          layerModel.setMapLayer(layer);
-          this.update(layerModel);
-          this.plugin.add(layerModel);
-        });
+        // If there is method for it let's call it
+        this.promises[layerModel.id] = method.call(this, layerModel)
+          .then((layer) => {
+            layerModel.setMapLayer(layer);
+            this.update(layerModel);
+            this.plugin.add(layerModel);
+          });
+
+        return false;
       });
-      return Promise.all(promises);
+
+      return Promise.all(Object.values(this.promises))
+        .finally(() => {
+          this.promises = {};
+        });
     }
 
     // By default it will return a empty layers
@@ -64,6 +84,7 @@ class LayerManager {
 
     layers.forEach((layer) => {
       const layerModel = this.layers.find(l => l.id === layer.id);
+
       if (layerModel) {
         layerModel.update({ ...layer, opacity, visibility, zIndex });
       } else {

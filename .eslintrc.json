@@ -11,6 +11,7 @@
   },
   "extends": "vizzuality",
   "rules": {
+    "no-debugger": 0
   },
   "parser": "babel-eslint",
   "plugins": [
