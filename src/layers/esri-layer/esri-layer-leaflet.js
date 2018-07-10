@@ -23,13 +23,22 @@ const esriLayer = (layerModel) => {
 
     const layer = L.esri[layerConfig.type](layerOptions);
 
-    layer.on('requesterror', err => console.error(err));
+    if (layer) {
+      // Little hack to set zIndex at the beginning
+      layer.on('load', () => {
+        layer.setZIndex(layerModel.get('zIndex'));
+      });
 
-    // adding setZIndex method to layer instance
+      layer.on('requesterror', err => console.error(err));
+    } else {
+      return reject();
+    }
+
     if (!layer.setZIndex) {
       layer.setZIndex = (zIndex) => {
-      // I didn't manage to change the zIndex in Esri layers.
-      // It doesn't have a proper solution rather than panes, which won't work with our current aproach...
+        if (layer._currentImage) {
+          layer._currentImage._image.style.zIndex = zIndex;
+        }
       };
     }
 
