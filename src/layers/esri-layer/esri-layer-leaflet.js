@@ -23,10 +23,24 @@ const esriLayer = (layerModel) => {
 
     const layer = L.esri[layerConfig.type](layerOptions);
 
-    layer.on('requesterror', err => console.error(err));
+    if (layer) {
+      // Little hack to set zIndex at the beginning
+      layer.on('load', () => {
+        layer.setZIndex(layerModel.get('zIndex'));
+      });
 
-    // adding setZIndex method to layer instance
-    if (!layer.setZIndex) layer.setZIndex = () => {};
+      layer.on('requesterror', err => console.error(err));
+    } else {
+      return reject();
+    }
+
+    if (!layer.setZIndex) {
+      layer.setZIndex = (zIndex) => {
+        if (layer._currentImage) {
+          layer._currentImage._image.style.zIndex = zIndex;
+        }
+      };
+    }
 
     return resolve(layer);
   });

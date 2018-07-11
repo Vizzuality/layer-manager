@@ -15,19 +15,21 @@ or using git:
 ## How to use
 
 ```js
+// Import LayersManager and the corresponding Plugin depending on the 
+// map provider that you are using
+import LayerManager, { PluginLeaflet } from 'layer-manager';
 
 const map = L.map('map_canvas').setView([40, -3], 5);
 
-const layerManager = new LayerManager(map, {
-	mapLibrary: 'Leaflet'
-});
+const layerManager = new LayerManager(map, PluginLeaflet, {});
 
 // Adding all layers to map
 layerManager.add(layerSpec, {
 	opacity: 0.5,
 	visibility: true,
 	zIndex: 2,
-	interactivity: { click: (layerSpec, data) => {} }
+	interactivity: [], // It can be any type. It will depend on the layer provider
+	events: { click: (e) => {} } // Only events supported by your map provider
 });
 
 // remove all layers
@@ -37,20 +39,11 @@ layerManager.remove();
 layerManager.remove(['layerID']); 
 
 // Setting opacity to specific layer
-layerManager.find('layerID').setOpacity(0.5);
-
-// Subscribing to interactivity (Draft)
-layerManager.on('mouseover');
-layerManager.find('layerID').setInteractivity({
-	click: (layerSpec, data) => {}
-});
-layerManager.add(layerSpec).setInteractivity({
-	mouseover: (layerSpec, data) => {}
-});
-
-// Disabling events
-layerManager.find('layerID').setInteractivity(null);
-
+layerManager.setOpacity('layerID', 0.5);
+// Setting visibility to specific layer
+layerManager.setVisibility('layerID', false);
+// Setting z-index to specific layer
+layerManager.setZIndex('layerID', 500);
 ```
 
 `layerSpec` is the response of `http://api.resourcewatch.org/v1/layer?application=rw`.
