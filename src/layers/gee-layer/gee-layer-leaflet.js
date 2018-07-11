@@ -1,3 +1,5 @@
+import Promise from 'bluebird';
+
 const GEELayer = (layerModel) => {
   const tileUrl = `https://api.resourcewatch.org/v1/layer/${layerModel.id}/tile/gee/{z}/{x}/{y}`;
   const layer = L.tileLayer(tileUrl, layerModel.get('body'));
