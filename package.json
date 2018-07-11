@@ -1,6 +1,6 @@
 {
   "name": "layer-manager",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A library to get a layer depending on provider and layer spec",
   "main": "dist/bundle.js",
   "scripts": {
