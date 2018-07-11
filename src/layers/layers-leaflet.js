@@ -1,5 +1,6 @@
 import cartoLayer from './carto-layer/carto-layer-leaflet';
 import esriLayer from './esri-layer/esri-layer-leaflet';
+import geeLayer from './gee-layer/gee-layer-leaflet';
 
 const method = {
   // carto
@@ -13,7 +14,9 @@ const method = {
   tileservice: esriLayer,
   esrifeatureservice: esriLayer,
   esrimapservice: esriLayer,
-  esritileservice: esriLayer
+  esritileservice: esriLayer,
+
+  gee: geeLayer
 };
 
 export default { cartoLayer, esriLayer };
