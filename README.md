@@ -13,15 +13,6 @@ or using git:
 `npm install vizzuality/layer-manager`
 
 ## How to use
-### Leaflet dependencies
-```html
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
-<script src="https://unpkg.com/esri-leaflet/dist/esri-leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-utfgrid/L.UTFGrid-min.js"></script>
-
-```
-
 
 ```js
 // Import LayersManager and the corresponding Plugin depending on the 
@@ -68,6 +59,15 @@ layerManager.add()
 		spinner.stop();
 		console.log('layer added');
 	});
+
+```
+
+### Leaflet dependencies
+```html
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
+<script src="https://unpkg.com/esri-leaflet/dist/esri-leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-utfgrid/L.UTFGrid-min.js"></script>
 
 ```
 
