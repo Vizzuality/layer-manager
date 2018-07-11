@@ -1,5 +1,9 @@
 import cartoLayer from '../layers/carto-layer/carto-layer-leaflet';
 import esriLayer from '../layers/esri-layer/esri-layer-leaflet';
+import geeLayer from '../layers/gee-layer/gee-layer-leaflet';
+import locaLayer from '../layers/loca-layer/loca-layer-leaflet';
+import nexgddpLayer from '../layers/nexgddp-layer/nexgddp-layer-leaflet';
+import leafletLayer from '../layers/leaflet-layer/leaflet-layer-leaflet';
 
 class PluginLeaflet {
   constructor(map) {
@@ -19,7 +23,14 @@ class PluginLeaflet {
     esrifeatureservice: esriLayer,
     esrimapservice: esriLayer,
     esritileservice: esriLayer,
-    gee: esriLayer
+
+    // GEE && LOCA && NEXGDDP
+    gee: geeLayer,
+    loca: locaLayer,
+    nexgddp: nexgddpLayer,
+
+    // LEAFLET
+    leaflet: leafletLayer
   }
 
   /**
@@ -27,7 +38,9 @@ class PluginLeaflet {
    * @param {Object} layerModel
    */
   add(layerModel) {
-    this.map.addLayer(layerModel.mapLayer);
+    const { mapLayer } = layerModel;
+
+    this.map.addLayer(mapLayer);
   }
 
   /**
@@ -35,7 +48,9 @@ class PluginLeaflet {
    * @param {Object} layerModel
    */
   remove(layerModel) {
-    this.map.removeLayer(layerModel.mapLayer);
+    const { mapLayer } = layerModel;
+
+    this.map.removeLayer(mapLayer);
   }
 
   /**
@@ -47,12 +62,25 @@ class PluginLeaflet {
   }
 
   /**
+   * A namespace to set z-index
+   * @param {Object} layerModel
+   * @param {Number} zIndex
+   */
+  setZIndex(layerModel, zIndex) {
+    const { mapLayer } = layerModel;
+
+    mapLayer.setZIndex(zIndex);
+  }
+
+  /**
    * A namespace to set opacity
    * @param {Object} layerModel
    * @param {Number} opacity
    */
   setOpacity(layerModel, opacity) {
-    layerModel.mapLayer.setOpacity(opacity);
+    const { mapLayer } = layerModel;
+
+    mapLayer.setOpacity(opacity);
   }
 
   /**
@@ -61,16 +89,26 @@ class PluginLeaflet {
    * @param {Boolean} visibility
    */
   setVisibility(layerModel, visibility) {
-    layerModel.mapLayer.setOpacity(!visibility ? 0 : layerModel.opacity);
+    const { opacity } = layerModel;
+
+    this.setOpacity(layerModel, !visibility ? 0 : opacity);
   }
 
-  /**
-   * A namespace to set z-index
-   * @param {Object} layerModel
-   * @param {Number} zIndex
-   */
-  setZIndex(layerModel, zIndex) {
-    layerModel.mapLayer.setZIndex(zIndex);
+
+  setEvents(layerModel) {
+    const { mapLayer, events } = layerModel;
+
+    Object.keys(events).forEach((k) => {
+      if (mapLayer.group) {
+        mapLayer.eachLayer((l) => {
+          l.off(k);
+          l.on(k, events[k]);
+        });
+      } else {
+        mapLayer.off(k);
+        mapLayer.on(k, events[k]);
+      }
+    });
   }
 }
 
