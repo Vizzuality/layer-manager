@@ -2,7 +2,7 @@ import Promise from 'bluebird';
 
 import LayerModel from './layer-model';
 
-const defaultOptions = { serialize: true };
+const defaultOptions = {};
 
 class LayerManager {
   constructor(map, Plugin, options = {}) {
@@ -46,8 +46,10 @@ class LayerManager {
         this.promises[layerModel.id] = method.call(this, layerModel)
           .then((layer) => {
             layerModel.setMapLayer(layer);
-            this.update(layerModel);
             this.plugin.add(layerModel);
+            this.update(layerModel);
+
+            this.setEvents(layerModel);
           });
 
         return false;
@@ -69,7 +71,7 @@ class LayerManager {
    * @param {Array} layers
    * @param {Object} layerOptions
    */
-  add(layers, layerOptions = { opacity: 1, visibility: true, zIndex: 0 }) {
+  add(layers, layerOptions = { opacity: 1, visibility: true, zIndex: 0, interactivity: null }) {
     if (typeof layers === 'undefined') {
       console.error('layers is required');
       return this;
@@ -80,15 +82,31 @@ class LayerManager {
       return this;
     }
 
-    const { opacity, visibility, zIndex } = layerOptions;
+    const { opacity, visibility, zIndex, interactivity, events } = layerOptions;
 
     layers.forEach((layer) => {
       const layerModel = this.layers.find(l => l.id === layer.id);
 
       if (layerModel) {
-        layerModel.update({ ...layer, opacity, visibility, zIndex });
+        layerModel.update({
+          ...layer,
+          opacity,
+          visibility,
+          zIndex,
+          interactivity,
+          events
+        });
       } else {
-        this.layers.push(new LayerModel({ ...layer, opacity, visibility, zIndex }));
+        this.layers.push(
+          new LayerModel({
+            ...layer,
+            opacity,
+            visibility,
+            zIndex,
+            interactivity,
+            events
+          })
+        );
       }
     });
 
@@ -105,6 +123,7 @@ class LayerManager {
     if (typeof opacity !== 'undefined') this.plugin.setOpacity(layerModel, opacity);
     if (typeof visibility !== 'undefined') this.plugin.setOpacity(layerModel, !visibility ? 0 : opacity);
     if (typeof zIndex !== 'undefined') this.plugin.setZIndex(layerModel, zIndex);
+    if (typeof events !== 'undefined') this.plugin.setEvents(layerModel);
   }
 
   /**
@@ -129,7 +148,7 @@ class LayerManager {
   }
 
   /**
-   * A namespace to set opacity on selected layer previously with find method
+   * A namespace to set opacity on selected layer
    * @param {Array} layerIds
    * @param {Number} opacity
    */
@@ -146,7 +165,7 @@ class LayerManager {
   }
 
   /**
-   * A namespace to hide or show a selected layer previously with find method
+   * A namespace to hide or show a selected layer
    * @param {Array} layerIds
    * @param {Boolean} visibility
    */
@@ -163,7 +182,7 @@ class LayerManager {
   }
 
   /**
-   * A namespace to set z-index on selected layer previously with find method
+   * A namespace to set z-index on selected layer
    * @param {Array} layerIds
    * @param {Number} zIndex
    */
@@ -176,6 +195,19 @@ class LayerManager {
       });
     } else {
       console.error('Can\'t find the layer');
+    }
+  }
+
+  /**
+   * A namespace to set events on selected layer
+   * @param  {Object} layerModel
+   */
+  setEvents(layerModel) {
+    const { events } = layerModel;
+
+    if (events) {
+      // Let's leave the managment of event to the plugin
+      this.plugin.setEvents(layerModel);
     }
   }
 }

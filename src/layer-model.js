@@ -38,7 +38,6 @@ const validator = {
 
 class LayerModel {
   constructor(layerSpec) {
-    this.events = {};
     this.layer = new Proxy(Object.assign({}, layerSpec), validator);
   }
 
@@ -66,6 +65,14 @@ class LayerModel {
     return this.layer.mapLayer;
   }
 
+  get mapInteractiveLayer() {
+    return this.layer.interactiveMapLayer;
+  }
+
+  get events() {
+    return this.layer.events;
+  }
+
   get(key) {
     return this.layer[key];
   }
@@ -76,14 +83,17 @@ class LayerModel {
       this.layer[key] !== value
     ) {
       this.layer[key] = value;
-      this.trigger(`change:${key}`);
-      this.trigger('change');
     }
     return this;
   }
 
   setMapLayer(layer) {
     this.layer.mapLayer = layer;
+    return this;
+  }
+
+  setInteractiveMapLayer(layer) {
+    this.layer.interactiveMapLayer = layer;
     return this;
   }
 
@@ -107,37 +117,16 @@ class LayerModel {
     return this;
   }
 
+  setInteractivity(interactivity) {
+    this.set('interactivity', interactivity);
+    return this;
+  }
+
   update(layerSpec) {
     const { opacity, visibility, zIndex } = layerSpec;
     if (typeof opacity !== 'undefined') this.setOpacity(opacity);
     if (typeof visibility !== 'undefined') this.setVisibility(visibility);
     if (typeof zIndex !== 'undefined') this.setZIndex(zIndex);
-  }
-
-  // Event
-  on(type, attr, fn) {
-    let action = fn;
-    if (!action && attr && typeof attr === 'function') action = attr;
-    if (!this.events[type]) this.events[type] = [];
-    this.events[type].push({
-      action,
-      type,
-      target: this.layer
-    });
-  }
-
-  off(type, fn) {
-    if (Object.prototype.hasOwnProperty.call(this.events, type)) {
-      this.events[type].forEach((e, index) => {
-        if (e.action === fn) this.events[type].slice(index, 1);
-      });
-    }
-  }
-
-  trigger(type) {
-    if (Object.prototype.hasOwnProperty.call(this.events, type)) {
-      this.events[type].forEach(e => e.action(e));
-    }
   }
 }
 
