@@ -1,5 +1,6 @@
 import cartoLayer from '../layers/carto-layer/carto-layer-leaflet';
 import esriLayer from '../layers/esri-layer/esri-layer-leaflet';
+import geeLayer from '../layers/gee-layer/gee-layer-leaflet';
 
 class PluginLeaflet {
   constructor(map) {
@@ -19,7 +20,9 @@ class PluginLeaflet {
     esrifeatureservice: esriLayer,
     esrimapservice: esriLayer,
     esritileservice: esriLayer,
-    gee: esriLayer
+
+    // GEE
+    gee: geeLayer
   }
 
   /**
