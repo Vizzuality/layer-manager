@@ -2,7 +2,7 @@ import Promise from 'bluebird';
 
 import LayerModel from './layer-model';
 
-const defaultOptions = { serialize: true };
+const defaultOptions = {};
 
 class LayerManager {
   constructor(map, Plugin, options = {}) {
@@ -88,10 +88,24 @@ class LayerManager {
       const layerModel = this.layers.find(l => l.id === layer.id);
 
       if (layerModel) {
-        layerModel.update({ ...layer, opacity, visibility, zIndex });
+        layerModel.update({
+          ...layer,
+          opacity,
+          visibility,
+          zIndex,
+          interactivity,
+          events
+        });
       } else {
         this.layers.push(
-          new LayerModel({ ...layer, opacity, visibility, zIndex, interactivity, events })
+          new LayerModel({
+            ...layer,
+            opacity,
+            visibility,
+            zIndex,
+            interactivity,
+            events
+          })
         );
       }
     });
@@ -109,6 +123,7 @@ class LayerManager {
     if (typeof opacity !== 'undefined') this.plugin.setOpacity(layerModel, opacity);
     if (typeof visibility !== 'undefined') this.plugin.setOpacity(layerModel, !visibility ? 0 : opacity);
     if (typeof zIndex !== 'undefined') this.plugin.setZIndex(layerModel, zIndex);
+    if (typeof events !== 'undefined') this.plugin.setEvents(layerModel);
   }
 
   /**
@@ -191,6 +206,7 @@ class LayerManager {
     const { events } = layerModel;
 
     if (events) {
+      // Let's leave the managment of event to the plugin
       this.plugin.setEvents(layerModel);
     }
   }

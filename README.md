@@ -28,7 +28,8 @@ layerManager.add(layerSpec, {
 	opacity: 0.5,
 	visibility: true,
 	zIndex: 2,
-	interactivity: { click: (layerSpec, data) => {} }
+	interactivity: [], // It can be any type. It will depend on the layer provider
+	events: { click: (e) => {} } // Only events supported by your map provider
 });
 
 // remove all layers
@@ -39,15 +40,10 @@ layerManager.remove(['layerID']);
 
 // Setting opacity to specific layer
 layerManager.setOpacity('layerID', 0.5);
-
-// Subscribing to interactivity (Draft)
-layerManager.setInteractivity('layerID', {
-	click: (layerSpec, data) => {}
-});
-
-// Disabling events
-layerManager.setInteractivity('layerId', null);
-
+// Setting visibility to specific layer
+layerManager.setVisibility('layerID', false);
+// Setting z-index to specific layer
+layerManager.setZIndex('layerID', 500);
 ```
 
 `layerSpec` is the response of `http://api.resourcewatch.org/v1/layer?application=rw`.
