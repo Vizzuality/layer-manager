@@ -82,29 +82,19 @@ class LayerManager {
       return this;
     }
 
-    const { opacity, visibility, zIndex, interactivity, events } = layerOptions;
-
     layers.forEach((layer) => {
       const layerModel = this.layers.find(l => l.id === layer.id);
 
       if (layerModel) {
         layerModel.update({
           ...layer,
-          opacity,
-          visibility,
-          zIndex,
-          interactivity,
-          events
+          ...layerOptions
         });
       } else {
         this.layers.push(
           new LayerModel({
             ...layer,
-            opacity,
-            visibility,
-            zIndex,
-            interactivity,
-            events
+            ...layerOptions
           })
         );
       }
