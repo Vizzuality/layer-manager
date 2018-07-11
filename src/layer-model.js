@@ -65,8 +65,8 @@ class LayerModel {
     return this.layer.mapLayer;
   }
 
-  get mapInteractiveLayer() {
-    return this.layer.interactiveMapLayer;
+  get layerConfig() {
+    return this.layer.layerConfig;
   }
 
   get events() {

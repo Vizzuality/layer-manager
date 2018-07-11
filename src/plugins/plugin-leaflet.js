@@ -1,6 +1,9 @@
 import cartoLayer from '../layers/carto-layer/carto-layer-leaflet';
 import esriLayer from '../layers/esri-layer/esri-layer-leaflet';
 import geeLayer from '../layers/gee-layer/gee-layer-leaflet';
+import locaLayer from '../layers/loca-layer/loca-layer-leaflet';
+import nexgddpLayer from '../layers/nexgddp-layer/nexgddp-layer-leaflet';
+import leafletLayer from '../layers/leaflet-layer/leaflet-layer-leaflet';
 
 class PluginLeaflet {
   constructor(map) {
@@ -21,8 +24,13 @@ class PluginLeaflet {
     esrimapservice: esriLayer,
     esritileservice: esriLayer,
 
-    // GEE
-    gee: geeLayer
+    // GEE && LOCA && NEXGDDP
+    gee: geeLayer,
+    loca: locaLayer,
+    nexgddp: nexgddpLayer,
+
+    // LEAFLET
+    leaflet: leafletLayer
   }
 
   /**
