@@ -2,14 +2,14 @@
   "name": "layer-manager",
   "version": "0.1.4",
   "description": "A library to get a layer depending on provider and layer spec",
-  "main": "dist/bundle.js",
+  "main": "dist/index.js",
   "scripts": {
     "serve": "http-server . -p 8000 -a 0.0.0.0",
     "prepublishOnly": "npm run build",
     "lint": "eslint .",
     "test": "mocha --require babel-core/register --require ./test/setup --recursive ./test/specs",
-    "watch": "watchify src/index.js -o dist/bundle.js -t babelify -s layerManager --verbose",
-    "build": "babel src --out-dir dist && browserify src/index.js -o dist/bundle.js -t babelify -s layerManager"
+    "watch": "npm run build -- --watch",
+    "build": "babel src --out-dir dist"
   },
   "repository": {
     "type": "git",
@@ -48,5 +48,8 @@
   },
   "engines": {
     "node": "8.11.x"
+  },
+  "optionalDependencies": {
+    "react": ">=15.0.0"
   }
 }

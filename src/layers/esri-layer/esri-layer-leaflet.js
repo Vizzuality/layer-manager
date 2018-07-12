@@ -4,7 +4,7 @@ const esriLayer = (layerModel) => {
   if (!L.esri) throw new Error('To support this layer you should add esri library for Leaflet.');
 
   // Preparing layerConfig
-  const layerConfig = layerModel.get('layerConfig');
+  const { layerConfig } = layerModel;
   const bodyStringified = JSON.stringify(layerConfig.body || {})
     .replace(/"mosaic-rule":/g, '"mosaicRule":')
     .replace(/"mosaic_rule":/g, '"mosaicRule":')
@@ -26,7 +26,7 @@ const esriLayer = (layerModel) => {
     if (layer) {
       // Little hack to set zIndex at the beginning
       layer.on('load', () => {
-        layer.setZIndex(layerModel.get('zIndex'));
+        layer.setZIndex(layerModel.zIndex);
       });
 
       layer.on('requesterror', err => console.error(err));

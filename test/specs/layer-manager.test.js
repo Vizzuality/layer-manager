@@ -66,11 +66,11 @@ describe('LayerManager for Leaflet', () => {
       const layer = lm.find('29ce6221-9450-4b60-a9c2-aea581d31a08');
       layer.setOpacity(0.5);
       expect(layer.opacity).to.be.equal(0.5);
-      expect(layer.get('opacity')).to.be.equal(0.5);
+      expect(layer.opacity).to.be.equal(0.5);
     });
 
     it('layer should set opacity using inline format', () => {
-      expect(lm.find('29ce6221-9450-4b60-a9c2-aea581d31a08').setOpacity(0.2).get('opacity')).to.be.equal(0.2);
+      expect(lm.find('29ce6221-9450-4b60-a9c2-aea581d31a08').setOpacity(0.2).opacity).to.be.equal(0.2);
     });
   });
 });

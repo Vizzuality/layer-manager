@@ -1,13 +1,30 @@
 import Promise from 'bluebird';
 
+import CanvasLayer from '../canvas-layer/canvas-layer-leaflet';
+
 const GEELayer = (layerModel) => {
-  const { id, body } = layerModel;
+  const { id, layerConfig, decode } = layerModel;
   const tileUrl = `https://api.resourcewatch.org/v1/layer/${id}/tile/gee/{z}/{x}/{y}`;
+  let layer;
 
-  const layer = L.tileLayer(tileUrl, body);
+  switch (layerConfig.type) {
+    case 'tileLayer':
+      if (decode) {
+        layer = new CanvasLayer({ ...layerModel, ...layerConfig.body });
+      } else {
+        layer = L.tileLayer(tileUrl, layerConfig.body);
+      }
+      break;
+    default:
+      break;
+  }
 
-  return new Promise((resolve) => {
-    resolve(layer);
+  return new Promise((resolve, reject) => {
+    if (layer) {
+      resolve(layer);
+    } else {
+      reject(new Error('"type" specified in layer spec doesn`t exist'));
+    }
   });
 };
 

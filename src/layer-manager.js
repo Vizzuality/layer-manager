@@ -19,7 +19,7 @@ class LayerManager {
   renderLayers() {
     if (this.layers.length > 0) {
       this.layers.map((layerModel) => {
-        const provider = layerModel.get('provider');
+        const { provider } = layerModel;
 
         // If layer exists let's update it
         if (layerModel.mapLayer) {
