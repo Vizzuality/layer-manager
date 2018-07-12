@@ -23,4 +23,23 @@ export const post = (url, params) => new Promise((resolve, reject, onCancel) => 
   onCancel(() => xhr.abort());
 });
 
-export default { get, post };
+export const replace = (str, data) => {
+  if (typeof str === 'string' && (data instanceof Array)) {
+    return str.replace(/({\d})/g, i => data[i.replace(/{/, '').replace(/}/, '')]);
+  } else if (typeof str === 'string' && (data instanceof Object)) {
+    for (const key in data) {
+      return str.replace(/({([^}]+)})/g, (i) => {
+        const key = i.replace(/{/, '').replace(/}/, '');
+        if (!data[key]) {
+          return i;
+        }
+
+        return data[key];
+      });
+    }
+  } else {
+    return false;
+  }
+};
+
+export default { get, post, replace };

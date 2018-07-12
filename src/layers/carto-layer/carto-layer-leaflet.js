@@ -2,8 +2,7 @@ import Promise from 'bluebird';
 import cartoService from './carto-layer-service';
 
 const CartoLayer = (layerModel) => {
-  const layerConfig = layerModel.get('layerConfig');
-  const interactivity = layerModel.get('interactivity');
+  const { layerConfig, interactivity } = layerModel;
 
   return new Promise((resolve, reject) => {
     cartoService(layerModel)

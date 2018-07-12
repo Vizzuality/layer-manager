@@ -29,7 +29,14 @@ layerManager.add(layerSpec, {
 	visibility: true,
 	zIndex: 2,
 	interactivity: [], // It can be any type. It will depend on the layer provider
-	events: { click: (e) => {} } // Only events supported by your map provider
+	events: { click: (e) => {} }, // Only events supported by your map provider
+
+	// Some layers need to be decoded
+	decode: true,
+	decodeFunction: (data, w, h, z) => {
+		// ...stuff
+	}
+
 });
 
 // remove all layers
