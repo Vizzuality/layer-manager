@@ -2,9 +2,8 @@ import Promise from 'bluebird';
 import { get } from '../../helpers';
 
 const cartoLayerService = (layerModel) => {
-  const layerConfig = layerModel.get('layerConfig');
-  const interactivity = layerModel.get('interactivity');
-  let request = layerModel.get('layerRequest');
+  const { layerConfig, interactivity } = layerModel;
+  let { layerRequest } = layerModel;
 
   const layerTpl = {
     version: '1.3.0',
@@ -26,17 +25,17 @@ const cartoLayerService = (layerModel) => {
   const params = `?stat_tag=API&config=${encodeURIComponent(JSON.stringify(layerTpl))}`;
   const url = `https://${layerConfig.account}.carto.com/api/v1/map${params}`;
 
-  if (request && request instanceof Promise) request.cancel();
+  if (layerRequest && layerRequest instanceof Promise) layerRequest.cancel();
 
-  request = get(url)
+  layerRequest = get(url)
     .then((res) => {
       if (res.status > 400) throw new Error(res);
       return JSON.parse(res.response);
     });
 
-  layerModel.setLayerRequest(request);
+  layerModel.setLayerRequest(layerRequest);
 
-  return request;
+  return layerRequest;
 };
 
 export default cartoLayerService;

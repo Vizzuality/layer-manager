@@ -38,67 +38,32 @@ const validator = {
 
 class LayerModel {
   constructor(layerSpec) {
-    this.layer = new Proxy(Object.assign({}, layerSpec), validator);
-  }
-
-  get id() {
-    return this.layer.id;
-  }
-
-  get dataset() {
-    return this.layer.dataset;
-  }
-
-  get opacity() {
-    return this.layer.opacity;
-  }
-
-  get visibility() {
-    return this.layer.visibility;
-  }
-
-  get zIndex() {
-    return this.layer.zIndex;
-  }
-
-  get mapLayer() {
-    return this.layer.mapLayer;
-  }
-
-  get layerConfig() {
-    return this.layer.layerConfig;
-  }
-
-  get events() {
-    return this.layer.events;
+    Object.keys(layerSpec).forEach((k) => {
+      this.set(k, layerSpec[k]);
+    });
   }
 
   get(key) {
-    return this.layer[key];
+    return this[key];
   }
 
   set(key, value) {
-    if (
-      Object.prototype.hasOwnProperty.call(this.layer, key) &&
-      this.layer[key] !== value
-    ) {
-      this.layer[key] = value;
-    }
+    this[key] = value;
     return this;
   }
 
   setMapLayer(layer) {
-    this.layer.mapLayer = layer;
+    this.mapLayer = layer;
     return this;
   }
 
   setInteractiveMapLayer(layer) {
-    this.layer.interactiveMapLayer = layer;
+    this.interactiveMapLayer = layer;
     return this;
   }
 
   setLayerRequest(request) {
-    this.layer.layerRequest = request;
+    this.layerRequest = request;
     return this;
   }
 
