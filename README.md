@@ -93,3 +93,27 @@ TODO
 | setZIndex        | It sets the layer position. Number        | 1          |
 | setInteractivity | It sets the layer position. Number        | 1          |
 | goToBounds       | It sets the layer position. Number        | 1          |
+
+
+## Components
+
+### React
+
+There is a single React component that can be used to help with rendering layers via the layer manager. It can be imported and used as follows:
+
+```js
+
+import { LayerManager, Layer } from 'layer-manager/src/react';
+import { PluginLeaflet } from 'layer-manager';
+
+// map is a reference to whichever map API you are using
+// For leaflet this would be
+this.map = L.map('c-map', mapOptions);
+
+<LayerManager map={this.map} plugin={PluginLeaflet}>
+	{activeLayers && activeLayers.map(l =>
+	<Layer key={l.id} {...l} />
+	)}
+</LayerManager>
+
+```
