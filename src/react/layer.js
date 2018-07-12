@@ -1,7 +1,7 @@
-import { PureComponent } from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 
-class Layer extends PureComponent {
+class Layer extends Component {
   componentDidMount() {
     const { layerManager, ...options } = this.props;
     layerManager.add([options], options);

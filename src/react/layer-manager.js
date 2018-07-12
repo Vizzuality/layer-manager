@@ -1,9 +1,9 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import Manager from '../layer-manager';
 
-class LayerManager extends PureComponent {
+class LayerManager extends Component {
   componentDidMount() {
     const { map, plugin, options } = this.props;
     this.layerManager = new Manager(map, plugin, options);
