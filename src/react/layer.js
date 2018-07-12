@@ -1,5 +1,4 @@
 import { Component } from 'react';
-import PropTypes from 'prop-types';
 
 class Layer extends Component {
   componentDidMount() {
@@ -21,10 +20,5 @@ class Layer extends Component {
     return null;
   }
 }
-
-Layer.propTypes = {
-  layerManager: PropTypes.object.isRequired,
-  id: PropTypes.string.isRequired
-};
 
 export default Layer;

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 import Manager from '../layer-manager';
 
@@ -20,12 +19,5 @@ class LayerManager extends Component {
     );
   }
 }
-
-LayerManager.propTypes = {
-  map: PropTypes.object.isRequired,
-  plugin: PropTypes.object.isRequired,
-  options: PropTypes.object.isRequired,
-  children: PropTypes.node.isRequired
-};
 
 export default LayerManager;
