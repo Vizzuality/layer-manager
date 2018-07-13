@@ -87,11 +87,17 @@ class LayerModel {
     return this;
   }
 
+  setDecode(decode) {
+    this.set('decode', decode);
+    return this;
+  }
+
   update(layerSpec) {
-    const { opacity, visibility, zIndex } = layerSpec;
+    const { opacity, visibility, zIndex, decode } = layerSpec;
     if (typeof opacity !== 'undefined') this.setOpacity(opacity);
     if (typeof visibility !== 'undefined') this.setVisibility(visibility);
     if (typeof zIndex !== 'undefined') this.setZIndex(zIndex);
+    if (typeof decode !== 'undefined') this.setDecode(decode);
   }
 }
 
