@@ -1,7 +1,7 @@
 import { replace } from '../../helpers';
 
 const CanvasLayer = L.GridLayer.extend({
-  tiles: [],
+  tiles: {},
 
   createTile({ x, y, z }, done) {
     const tileId = replace('{x}_{y}_{z}', { x, y, z });
@@ -15,6 +15,8 @@ const CanvasLayer = L.GridLayer.extend({
     }
 
     // create a <canvas> element for drawing
+    this.done = done;
+
     const tile = L.DomUtil.create('canvas', 'leaflet-tile');
     const ctx = tile.getContext('2d');
     const size = this.getTileSize();
@@ -26,8 +28,8 @@ const CanvasLayer = L.GridLayer.extend({
     // getTile
     this.getTile({ x, y, z })
       .then((image) => {
-        this.cacheTile({ image, tileId });
-        this.drawCanvas({ ctx, tile, image, z, x, y, done });
+        this.cacheTile({ tileId, tile, ctx, image, ...{ x, y, z } });
+        this.drawCanvas(tileId);
 
         // return the tile so it can be rendered on screen
         done(null, tile);
@@ -69,6 +71,8 @@ const CanvasLayer = L.GridLayer.extend({
         const src = URL.createObjectURL(response);
         const image = new Image();
 
+        image.src = src;
+
         image.onload = () => {
           image.crossOrigin = '';
           resolve(image);
@@ -78,8 +82,6 @@ const CanvasLayer = L.GridLayer.extend({
         image.onerror = () => {
           reject(new Error('Can\'t load image'));
         };
-
-        image.src = src;
       });
 
       xhr.addEventListener('error', reject);
@@ -90,11 +92,19 @@ const CanvasLayer = L.GridLayer.extend({
     });
   },
 
-  cacheTile({ image, tileId }) {
-    this.tiles[tileId] = image;
+  cacheTile(tile) {
+    this.tiles[tile.tileId] = {
+      ...this.tiles[tile.tileId],
+      ...tile
+    };
   },
 
-  drawCanvas({ ctx, tile, image, z, x, y }) {
+  drawCanvas(tileId) {
+    if (!this.tiles[tileId]) {
+      return;
+    }
+
+    const { tile, ctx, image, x, y, z } = this.tiles[tileId];
     const { options, decodeFunction } = this.options;
     const zsteps = z - options.dataMaxZoom;
 
@@ -125,8 +135,18 @@ const CanvasLayer = L.GridLayer.extend({
     }
 
     ctx.putImageData(I, 0, 0);
-  }
+  },
 
+  reDraw() {
+    if (this._map) {
+      Object.keys(this._tiles).forEach((k) => {
+        const coords = this._tiles[k].coords;
+        const tileId = replace('{x}_{y}_{z}', coords);
+        this.drawCanvas(tileId);
+      });
+    }
+    return this;
+  }
 });
 
 

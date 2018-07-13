@@ -109,11 +109,12 @@ class LayerManager {
    * @param  {Object} layerModel
    */
   update(layerModel) {
-    const { opacity, visibility, zIndex } = layerModel;
+    const { opacity, visibility, zIndex, mapLayer, decode } = layerModel;
     if (typeof opacity !== 'undefined') this.plugin.setOpacity(layerModel, opacity);
     if (typeof visibility !== 'undefined') this.plugin.setOpacity(layerModel, !visibility ? 0 : opacity);
     if (typeof zIndex !== 'undefined') this.plugin.setZIndex(layerModel, zIndex);
     if (typeof events !== 'undefined') this.plugin.setEvents(layerModel);
+    if (typeof decode !== 'undefined') mapLayer.reDraw();
   }
 
   /**
