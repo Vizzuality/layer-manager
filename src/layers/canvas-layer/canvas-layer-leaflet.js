@@ -3,6 +3,13 @@ import { replace } from '../../helpers';
 const CanvasLayer = L.GridLayer.extend({
   tiles: {},
 
+  setOptions(options) {
+    this.options = {
+      ...this.options,
+      ...options
+    };
+  },
+
   createTile({ x, y, z }, done) {
     const tileId = replace('{x}_{y}_{z}', { x, y, z });
 
@@ -105,7 +112,7 @@ const CanvasLayer = L.GridLayer.extend({
     }
 
     const { tile, ctx, image, x, y, z } = this.tiles[tileId];
-    const { options, decodeFunction } = this.options;
+    const { options, decode, decodeFunction } = this.options;
     const zsteps = z - options.dataMaxZoom;
 
     // this will allow us to sum up the dots when the timeline is running
@@ -131,7 +138,7 @@ const CanvasLayer = L.GridLayer.extend({
     const I = ctx.getImageData(0, 0, tile.width, tile.height);
 
     if (typeof decodeFunction === 'function') {
-      decodeFunction(I.data, tile.width, tile.height, z);
+      decodeFunction(I.data, tile.width, tile.height, z, decode);
     }
 
     ctx.putImageData(I, 0, 0);

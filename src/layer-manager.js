@@ -114,7 +114,10 @@ class LayerManager {
     if (typeof visibility !== 'undefined') this.plugin.setOpacity(layerModel, !visibility ? 0 : opacity);
     if (typeof zIndex !== 'undefined') this.plugin.setZIndex(layerModel, zIndex);
     if (typeof events !== 'undefined') this.plugin.setEvents(layerModel);
-    if (typeof decode !== 'undefined') mapLayer.reDraw();
+    if (typeof decode !== 'undefined') {
+      layerModel.mapLayer.setOptions({ decode });
+      mapLayer.reDraw();
+    }
   }
 
   /**
