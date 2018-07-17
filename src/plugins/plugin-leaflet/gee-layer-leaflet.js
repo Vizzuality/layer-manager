@@ -1,6 +1,7 @@
 import Promise from 'bluebird';
+import CanvasLayer from './canvas-layer-leaflet';
 
-import CanvasLayer from '../canvas-layer/canvas-layer-leaflet';
+const { L } = window;
 
 const GEELayer = (layerModel) => {
   const { id, layerConfig, decode } = layerModel;

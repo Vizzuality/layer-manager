@@ -1,5 +1,5 @@
 import Promise from 'bluebird';
-import cartoService from './carto-layer-service';
+import cartoService from '../../services/carto-layer-service';
 
 const CartoLayer = (layerSpec) => {
   const { layerConfig } = layerSpec;

@@ -1,5 +1,7 @@
 import Promise from 'bluebird';
 
+const { L } = window;
+
 const NEXGDDPLayer = (layerModel) => {
   const { id, layerConfig } = layerModel;
   const year = (layerConfig.period || {}).value || '1971';

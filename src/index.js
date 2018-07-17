@@ -1,6 +1,4 @@
-import LayerManager from './layer-manager';
+export { default } from './layer-manager';
 
-import PluginLeaflet from './plugins/plugin-leaflet';
-
-export default LayerManager;
-export { PluginLeaflet };
+export { default as PluginLeaflet } from './plugins/plugin-leaflet/plugin-leaflet';
+export { default as PluginCesium } from './plugins/plugin-cesium/plugin-cesium';
