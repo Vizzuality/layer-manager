@@ -9,13 +9,13 @@ Using npm:
 `npm install layer-manager`
 
 or using git:
- 
+
 `npm install vizzuality/layer-manager`
 
 ## How to use
 
 ```js
-// Import LayersManager and the corresponding Plugin depending on the 
+// Import LayersManager and the corresponding Plugin depending on the
 // map provider that you are using
 import LayerManager, { PluginLeaflet } from 'layer-manager';
 
@@ -43,7 +43,7 @@ layerManager.add(layerSpec, {
 layerManager.remove();
 
 // removing specific layers
-layerManager.remove(['layerID']); 
+layerManager.remove(['layerID']);
 
 // Setting opacity to specific layer
 layerManager.setOpacity('layerID', 0.5);
@@ -60,7 +60,7 @@ Support for promises:
 ```js
 
 spinner.start();
-	
+
 layerManager.add()
 	.then((layer) => {
 		spinner.stop();
@@ -83,32 +83,22 @@ layerManager.add()
 TODO
 
 
-### Available options
-
-| Attribute name | Values              | Default |
-| -------------- |:-------------------:| -------:|
-| mapLibrary     | Leaflet, GoogleMaps | Leaflet |
-
-
-### Layer options
-
-| Attribute name | Default |
-| -------------- | -------:|
-| opacity        | 1       |
-| visibility     | true    |
-| zIndex         | +1      |
-| interactivity  | null    |
-
-
 ### Available methods
 
-| Method name      | Description                               | Example    |
-| ---------------- | :----------------------------------------:| ---------: |
-| setOpacity       | To set opacity. A value beetween 0 and 1. | 0.5        |
-| setVisibility    | It shows or hidden a layer. Boolean.      | true       |
-| setZIndex        | It sets the layer position. Number        | 1          |
-| setInteractivity | It sets the layer position. Number        | 1          |
-| goToBounds       | It sets the layer position. Number        | 1          |
+| Method name      | Description                                                       | Default    |
+| ---------------- | ----------------------------------------------------------------- | ---------- |
+| setOpacity       | To set opacity. A value beetween 0 and 1.                         | 1          |
+| setVisibility    | It shows or hidden a layer. Boolean.                              | true       |
+| setZIndex        | It sets the layer position. Number                                | last index |
+| setEvents        | Object map with { [event type]: [event handler] } key value pairs |            |
+
+
+### Available plugins
+
+| Plugin name      | Supported methods                                       | Supported providers                                                                                                                                                                   |
+| ---------------- | :------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PluginLeaflet    | `setOpacity`, `setVisibility`, `setZIndex`, `setEvents` | `canvas`, `cartodb`, `carto`, `arcgis`, `featureservice`, `mapservice`, `tileservice`, `esrifeatureservice`, `esrimapservice`, `esritileservice`, `gee`, `loca`, `nexgddp`, `leaflet` |
+| PluginCesium     | `setOpacity`, `setVisibility`, `setZIndex`, `setEvents` | `cartodb`, `carto`                                                                                                                                                                    |
 
 
 ## Components
@@ -119,7 +109,7 @@ There is a single React component that can be used to help with rendering layers
 
 ```js
 
-import { LayerManager, Layer } from 'layer-manager/src/react';
+import { LayerManager, Layer } from 'layer-manager/dist/react';
 import { PluginLeaflet } from 'layer-manager';
 
 // map is a reference to whichever map API you are using
@@ -127,9 +117,7 @@ import { PluginLeaflet } from 'layer-manager';
 this.map = L.map('c-map', mapOptions);
 
 <LayerManager map={this.map} plugin={PluginLeaflet}>
-	{activeLayers && activeLayers.map(l =>
-	<Layer key={l.id} {...l} />
-	)}
+	{activeLayers.map(l => <Layer key={l.id} {...l} />)}
 </LayerManager>
 
 ```
