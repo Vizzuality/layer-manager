@@ -1,6 +1,6 @@
 # Layer Manager
 
-A library to add, remove layer in Leaflet and Google maps. Furthermore it provides methods to set opacity, visibility, interaction and more.
+A library to manage the addition, and removal of layers in Leaflet and Cesium maps (Google coming soon). Furthermore it provides methods to set opacity, visibility, events and more.
 
 ## Install
 
@@ -25,18 +25,17 @@ const layerManager = new LayerManager(map, PluginLeaflet, {});
 
 // Adding all layers to map
 layerManager.add(layerSpec, {
-	opacity: 0.5,
-	visibility: true,
-	zIndex: 2,
-	interactivity: [], // It can be any type. It will depend on the layer provider
-	events: { click: (e) => {} }, // Only events supported by your map provider
+  opacity: 0.5,
+  visibility: true,
+  zIndex: 2,
+  interactivity: [], // It can be any type. It will depend on the layer provider
+  events: { click: e => {} }, // Only events supported by your map provider
 
-	// Some layers need to be decoded
-	decode: true,
-	decodeFunction: (data, w, h, z) => {
-		// ...stuff
-	}
-
+  // Some layers need to be decoded
+  decode: true,
+  decodeFunction: (data, w, h, z) => {
+    // ...stuff
+  }
 });
 
 // remove all layers
@@ -51,6 +50,7 @@ layerManager.setOpacity('layerID', 0.5);
 layerManager.setVisibility('layerID', false);
 // Setting z-index to specific layer
 layerManager.setZIndex('layerID', 500);
+
 ```
 
 `layerSpec` is the response of `http://api.resourcewatch.org/v1/layer?application=rw`.
@@ -58,14 +58,12 @@ layerManager.setZIndex('layerID', 500);
 Support for promises:
 
 ```js
-
 spinner.start();
 
-layerManager.add()
-	.then((layer) => {
-		spinner.stop();
-		console.log('layer added');
-	});
+layerManager.add().then(layer => {
+  spinner.stop();
+  console.log('layer added');
+});
 
 ```
 
@@ -108,7 +106,6 @@ TODO
 There is a single React component that can be used to help with rendering layers via the layer manager. It can be imported and used as follows:
 
 ```js
-
 import { LayerManager, Layer } from 'layer-manager/dist/react';
 import { PluginLeaflet } from 'layer-manager';
 
@@ -117,7 +114,7 @@ import { PluginLeaflet } from 'layer-manager';
 this.map = L.map('c-map', mapOptions);
 
 <LayerManager map={this.map} plugin={PluginLeaflet}>
-	{activeLayers.map(l => <Layer key={l.id} {...l} />)}
-</LayerManager>
+  {activeLayers.map(l => <Layer key={l.id} {...l} />)}
+</LayerManager>;
 
 ```
