@@ -3,8 +3,9 @@ import React, { Component } from 'react';
 import Manager from '../layer-manager';
 
 class LayerManager extends Component {
-  componentDidMount() {
-    const { map, plugin, options } = this.props;
+  constructor(props) {
+    super(props);
+    const { map, plugin, options } = props;
     this.layerManager = new Manager(map, plugin, options);
   }
 
