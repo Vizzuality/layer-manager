@@ -1,7 +1,2 @@
-import LayerManager from './layer-manager';
-import Layer from './layer';
-
-export {
-  LayerManager,
-  Layer
-};
+export { default as LayerManager } from './layer-manager';
+export { default as Layer } from './layer';
