@@ -37,9 +37,9 @@ class PluginCesium {
       const steps = nextIndex - currentIndex;
       for (let i = 0; i < Math.abs(steps); i++) {
         if (steps > 0) {
-          this.map.imageryLayers.lower(mapLayer);
-        } else {
           this.map.imageryLayers.raise(mapLayer);
+        } else {
+          this.map.imageryLayers.lower(mapLayer);
         }
       }
     }
