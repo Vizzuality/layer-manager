@@ -2,5 +2,15 @@
   "presets": [
     ["env", { "useBuiltIns": true }],
     "stage-2"
+  ],
+  "plugins": [
+    ["module-resolver",
+      {
+        "alias": {
+          "src": "./src"
+        },
+        "extensions": [".js", ".jsx"]
+      }
+    ]
   ]
 }

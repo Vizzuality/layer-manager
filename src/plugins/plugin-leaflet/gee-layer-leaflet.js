@@ -4,14 +4,14 @@ import CanvasLayer from './canvas-layer-leaflet';
 const { L } = window;
 
 const GEELayer = (layerModel) => {
-  const { id, layerConfig, decode } = layerModel;
+  const { id, layerConfig, decodeParams } = layerModel;
   const tileUrl = `https://api.resourcewatch.org/v1/layer/${id}/tile/gee/{z}/{x}/{y}`;
   let layer;
 
   switch (layerConfig.type) {
     case 'tileLayer':
-      if (decode) {
-        layer = new CanvasLayer({ ...layerModel, ...layerConfig.body });
+      if (decodeParams) {
+        layer = new CanvasLayer({ ...layerModel });
       } else {
         layer = L.tileLayer(tileUrl, layerConfig.body);
       }

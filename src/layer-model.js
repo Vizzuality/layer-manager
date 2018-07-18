@@ -87,17 +87,46 @@ class LayerModel {
     return this;
   }
 
-  setDecode(decode) {
-    this.set('decode', decode);
+  setTileId(tileId) {
+    this.set('tileId', tileId);
+    return this;
+  }
+
+  setTileParams(tileParams) {
+    this.set('tileParams', tileParams);
+    return this;
+  }
+
+  setDecodeParams(decodeParams) {
+    this.set('decodeParams', decodeParams);
+    return this;
+  }
+
+  setDecodeFunction(decodeFunction) {
+    this.set('decodeFunction', decodeFunction);
     return this;
   }
 
   update(layerSpec) {
-    const { opacity, visibility, zIndex, decode } = layerSpec;
+    const {
+      opacity,
+      visibility,
+      zIndex,
+      tileId,
+      tileParams,
+      decodeParams,
+      decodeFunction
+    } = layerSpec;
+
     if (typeof opacity !== 'undefined') this.setOpacity(opacity);
     if (typeof visibility !== 'undefined') this.setVisibility(visibility);
     if (typeof zIndex !== 'undefined') this.setZIndex(zIndex);
-    if (typeof decode !== 'undefined') this.setDecode(decode);
+
+    // Decode layer implementation
+    if (typeof tileId !== 'undefined') this.setTileId(tileId);
+    if (typeof tileParams !== 'undefined') this.setTileParams(tileParams);
+    if (typeof decodeParams !== 'undefined') this.setDecodeParams(decodeParams);
+    if (typeof decodeFunction !== 'undefined') this.setDecodeFunction(decodeFunction);
   }
 }
 

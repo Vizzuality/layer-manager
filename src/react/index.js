@@ -1,2 +1,2 @@
-export { default as LayerManager } from './layer-manager';
-export { default as Layer } from './layer';
+export { default as LayerManager } from 'src/react/layer-manager';
+export { default as Layer } from 'src/react/layer';

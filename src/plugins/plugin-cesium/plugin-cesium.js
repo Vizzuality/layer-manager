@@ -1,4 +1,4 @@
-import buildCartoLayerCesium from './carto-layer-cesium';
+import buildCartoLayer from './carto-layer-cesium';
 
 class PluginCesium {
   static Cesium = window.Cesium;
@@ -7,8 +7,8 @@ class PluginCesium {
     this.map = map;
     this.eventListener = new Cesium.ScreenSpaceEventHandler(map.scene.canvas);
     this.method = {
-      carto: buildCartoLayerCesium(Cesium),
-      cartodb: buildCartoLayerCesium(Cesium)
+      carto: buildCartoLayer(Cesium),
+      cartodb: buildCartoLayer(Cesium)
     };
   }
 
@@ -74,9 +74,9 @@ class PluginCesium {
     const cartesian = this.map.camera.pickEllipsoid(clicked, ellipsoid);
     if (cartesian) {
       const cartographic = ellipsoid.cartesianToCartographic(cartesian);
-      const lat = Cesium.Math.toDegrees(cartographic.longitude);
-      const lng = Cesium.Math.toDegrees(cartographic.latitude);
-      action({ lat, lng }, event);
+      const lat = Cesium.Math.toDegrees(cartographic.latitude);
+      const lng = Cesium.Math.toDegrees(cartographic.longitude);
+      action(event, { lat, lng });
     }
   }
 }

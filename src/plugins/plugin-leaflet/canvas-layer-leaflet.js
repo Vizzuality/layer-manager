@@ -1,4 +1,4 @@
-import { replace } from '../../helpers';
+import { replace } from 'src/helpers';
 
 const { L } = window;
 
@@ -6,7 +6,8 @@ const CanvasLayer = L && L.GridLayer.extend({
   tiles: {},
 
   createTile({ x, y, z }, done) {
-    const tileId = replace('{x}_{y}_{z}', { x, y, z });
+    const { tileId, tileParams } = this.options;
+    const id = replace(tileId, { x, y, z, ...tileParams });
 
     // Delete all tiles from others zooms;
     const tilesKeys = Object.keys(this.tiles);
@@ -30,8 +31,8 @@ const CanvasLayer = L && L.GridLayer.extend({
     // getTile
     this.getTile({ x, y, z })
       .then((image) => {
-        this.cacheTile({ tileId, tile, ctx, image, ...{ x, y, z } });
-        this.drawCanvas(tileId);
+        this.cacheTile({ id, tile, ctx, image, ...{ x, y, z } });
+        this.drawCanvas(id);
 
         // return the tile so it can be rendered on screen
         done(null, tile);
@@ -43,10 +44,11 @@ const CanvasLayer = L && L.GridLayer.extend({
     return tile;
   },
 
-  getTile({ z, x, y }) {
-    const { url, options } = this.options;
-    const zsteps = z - options.dataMaxZoom;
-    const tileId = replace('{x}_{y}_{z}', { x, y, z });
+  getTile({ x, y, z }) {
+    const { tileId, tileParams } = this.options;
+    const { url, dataMaxZoom } = tileParams;
+    const zsteps = z - dataMaxZoom;
+    const id = replace(tileId, { x, y, z, tileParams });
 
     let coords = { x, y, z };
 
@@ -54,16 +56,16 @@ const CanvasLayer = L && L.GridLayer.extend({
       coords = {
         x: Math.floor(x / (2 ** zsteps)),
         y: Math.floor(y / (2 ** zsteps)),
-        z: options.dataMaxZoom
+        z: dataMaxZoom
       };
     }
 
-    const tileUrl = replace(url, { ...coords, thresh: options.threshold });
+    const tileUrl = replace(url, { ...coords, ...tileParams });
 
     return new Promise((resolve, reject) => {
       // Return cached tile if loaded.
-      if (this.tiles[tileId]) {
-        resolve(this.tiles[tileId].image);
+      if (this.tiles[id]) {
+        resolve(this.tiles[id].image);
       }
 
       const xhr = new XMLHttpRequest();
@@ -95,20 +97,27 @@ const CanvasLayer = L && L.GridLayer.extend({
   },
 
   cacheTile(tile) {
-    this.tiles[tile.tileId] = {
-      ...this.tiles[tile.tileId],
+    this.tiles[tile.id] = {
+      ...this.tiles[tile.id],
       ...tile
     };
   },
 
-  drawCanvas(tileId) {
-    if (!this.tiles[tileId]) {
+  drawCanvas(id) {
+    if (!this.tiles[id]) {
       return;
     }
 
-    const { tile, ctx, image, x, y, z } = this.tiles[tileId];
-    const { options, decodeFunction } = this.options;
-    const zsteps = z - options.dataMaxZoom;
+    const { tile, ctx, image, x, y, z } = this.tiles[id];
+
+    if (!tile || !ctx || !image || !x || !y || !z) {
+      delete this.tiles[id];
+      return;
+    }
+
+    const { decodeParams, decodeFunction, tileParams } = this.options;
+    const { dataMaxZoom } = tileParams;
+    const zsteps = z - dataMaxZoom;
 
     // this will allow us to sum up the dots when the timeline is running
     ctx.clearRect(0, 0, tile.width, tile.width);
@@ -133,21 +142,29 @@ const CanvasLayer = L && L.GridLayer.extend({
     const I = ctx.getImageData(0, 0, tile.width, tile.height);
 
     if (typeof decodeFunction === 'function') {
-      decodeFunction(I.data, tile.width, tile.height, z);
+      decodeFunction(I.data, tile.width, tile.height, z, decodeParams);
     }
 
     ctx.putImageData(I, 0, 0);
   },
 
-  reDraw() {
-    if (this._map) {
-      Object.keys(this._tiles).forEach((k) => {
-        const coords = this._tiles[k].coords;
-        const tileId = replace('{x}_{y}_{z}', coords);
-        this.drawCanvas(tileId);
-      });
-    }
-    return this;
+  reDraw(options) {
+    this.options.tileId = options.tileId;
+    this.options.tileParams = options.tileParams;
+    this.options.decodeParams = options.decodeParams;
+
+    const { tileId, tileParams } = options;
+
+    Object.keys(this.tiles).map((k) => {
+      const { x, y, z } = this.tiles[k];
+      const id = replace(tileId, { x, y, z, ...tileParams });
+
+      return this.getTile({ x, y, z })
+        .then((image) => {
+          this.cacheTile({ ...this.tiles[k], id, image, ...{ x, y, z } });
+          this.drawCanvas(id);
+        });
+    });
   }
 });
 

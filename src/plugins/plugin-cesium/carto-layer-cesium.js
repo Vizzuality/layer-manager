@@ -1,4 +1,4 @@
-import cartoService from '../../services/carto-layer-service';
+import cartoService from 'src/services/carto-layer-service';
 
 export default Cesium => layerModel => cartoService(layerModel)
   .then((response) => {

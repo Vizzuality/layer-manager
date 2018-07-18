@@ -25,17 +25,25 @@ const layerManager = new LayerManager(map, PluginLeaflet, {});
 
 // Adding all layers to map
 layerManager.add(layerSpec, {
-  opacity: 0.5,
-  visibility: true,
-  zIndex: 2,
-  interactivity: [], // It can be any type. It will depend on the layer provider
-  events: { click: e => {} }, // Only events supported by your map provider
+	opacity: 0.5,
+	visibility: true,
+	zIndex: 2,
+	interactivity: [], // It can be any type. It will depend on the layer provider
+	events: {
+		click: (e) => {},
+		mouseover: (e) => {}
+	}, // Only events supported by your map provider
 
-  // Some layers need to be decoded
-  decode: true,
-  decodeFunction: (data, w, h, z) => {
-    // ...stuff
-  }
+	// Some layers need to be decoded
+	tileId: '{x}_{y}_{z}_{custom}', // * Mandatory. How do you want to cache the layers? We will use x y z and tileParams to fill it. Put every param name between brackets
+	tileParams: {
+		url: '', // Tile url to be decoded. * Mandatory
+		custom: 56
+	}, // * Mandatory
+	decodeParams: {}, // * Mandatory
+	decodeFunction: (data, w, h, z) => {
+		// ...stuff
+	}
 });
 
 // remove all layers
