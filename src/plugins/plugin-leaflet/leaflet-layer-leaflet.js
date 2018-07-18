@@ -1,26 +1,41 @@
 import Promise from 'bluebird';
 
+import { replace } from 'src/helpers';
+
+import CanvasLayer from './canvas-layer-leaflet';
+
+
 const { L } = window;
 
 const LeafletLayer = (layerModel) => {
-  const { layerConfig } = layerModel;
+  if (!L) throw new Error('Leaflet must be defined.');
+
+  const { layerConfig, params, sqlParams, decodeParams } = layerModel;
   let layer;
 
+  const layerCongigParsed = JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
+
+
   // Transforming data layer
-  if (layerConfig.body.crs && L.CRS[layerConfig.body.crs]) {
-    layerConfig.body.crs = L.CRS[layerConfig.body.crs.replace(':', '')];
-    layerConfig.body.pane = 'tilePane';
+  if (layerCongigParsed.body.crs && L.CRS[layerCongigParsed.body.crs]) {
+    layerCongigParsed.body.crs = L.CRS[layerCongigParsed.body.crs.replace(':', '')];
+    layerCongigParsed.body.pane = 'tilePane';
   }
 
-  switch (layerConfig.type) {
+  switch (layerCongigParsed.type) {
     case 'wms':
-      layer = L.tileLayer.wms(layerConfig.url, layerConfig.body);
+      layer = L.tileLayer.wms(layerCongigParsed.url, layerCongigParsed.body);
       break;
     case 'tileLayer':
-      if (JSON.stringify(layerConfig.body).indexOf('style: "function') >= 0) {
-        layerConfig.body.style = eval(`(${layerConfig.body.style})`);
+      // if (JSON.stringify(layerCongigParsed.body).indexOf('style: "function') >= 0) {
+      //   layerCongigParsed.body.style = eval(`(${layerCongigParsed.body.style})`);
+      // }
+      if (decodeParams) {
+        layer = new CanvasLayer({ ...layerModel });
+      } else {
+        layer = L.tileLayer(layerCongigParsed.url, layerCongigParsed.body);
       }
-      layer = L.tileLayer(layerConfig.url, layerConfig.body);
+
       break;
     default:
       break;

@@ -110,6 +110,25 @@ class PluginLeaflet {
       }
     });
   }
+
+  setParams(layerModel) {
+    const { mapLayer, params, sqlParams } = layerModel;
+
+
+    // mapLayer.setUrl(layerModel);
+  }
+
+  setDecodeParams(layerModel) {
+    const {
+      mapLayer,
+      params,
+      sqlParams,
+      decodeParams,
+      decodeFunction
+    } = layerModel;
+
+    mapLayer.reDraw({ params, sqlParams, decodeParams, decodeFunction });
+  }
 }
 
 export default PluginLeaflet;

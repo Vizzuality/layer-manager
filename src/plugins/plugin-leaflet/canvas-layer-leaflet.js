@@ -6,8 +6,9 @@ const CanvasLayer = L && L.GridLayer.extend({
   tiles: {},
 
   createTile({ x, y, z }, done) {
-    const { tileId, tileParams } = this.options;
-    const id = replace(tileId, { x, y, z, ...tileParams });
+    const { params } = this.options;
+
+    const id = replace(params.url, { x, y, z, ...params });
 
     // Delete all tiles from others zooms;
     const tilesKeys = Object.keys(this.tiles);
@@ -45,10 +46,10 @@ const CanvasLayer = L && L.GridLayer.extend({
   },
 
   getTile({ x, y, z }) {
-    const { tileId, tileParams } = this.options;
-    const { url, dataMaxZoom } = tileParams;
+    const { params, sqlParams } = this.options;
+    const { url, dataMaxZoom } = params;
     const zsteps = z - dataMaxZoom;
-    const id = replace(tileId, { x, y, z, tileParams });
+    const id = replace(params.url, { x, y, z, ...params });
 
     let coords = { x, y, z };
 
@@ -60,7 +61,7 @@ const CanvasLayer = L && L.GridLayer.extend({
       };
     }
 
-    const tileUrl = replace(url, { ...coords, ...tileParams });
+    const tileUrl = replace(url, { ...coords, ...params }, sqlParams);
 
     return new Promise((resolve, reject) => {
       // Return cached tile if loaded.
@@ -115,8 +116,8 @@ const CanvasLayer = L && L.GridLayer.extend({
       return;
     }
 
-    const { decodeParams, decodeFunction, tileParams } = this.options;
-    const { dataMaxZoom } = tileParams;
+    const { params, decodeParams, decodeFunction } = this.options;
+    const { dataMaxZoom } = params;
     const zsteps = z - dataMaxZoom;
 
     // this will allow us to sum up the dots when the timeline is running
@@ -149,15 +150,15 @@ const CanvasLayer = L && L.GridLayer.extend({
   },
 
   reDraw(options) {
-    this.options.tileId = options.tileId;
-    this.options.tileParams = options.tileParams;
+    this.options.params = options.params;
+    this.options.sqlParams = options.sqlParams;
     this.options.decodeParams = options.decodeParams;
 
-    const { tileId, tileParams } = options;
+    const { params, sqlParams } = options;
 
     Object.keys(this.tiles).map((k) => {
       const { x, y, z } = this.tiles[k];
-      const id = replace(tileId, { x, y, z, ...tileParams });
+      const id = replace(params.url, { x, y, z, ...params, sqlParams });
 
       return this.getTile({ x, y, z })
         .then((image) => {

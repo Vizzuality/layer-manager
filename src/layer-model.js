@@ -1,41 +1,4 @@
 /* eslint no-param-reassign: 0 */
-
-const validator = {
-  set(target, key, value) {
-    if (key === 'opacity') {
-      if (typeof value !== 'number' || Number.isNaN(value)) {
-        throw new TypeError('Opacity must be a number');
-      }
-      if (value > 1) {
-        throw new TypeError('Opacity must be a number between 0 and 1');
-      }
-      if (value < 0) {
-        throw new TypeError('Opacity must be a positive number');
-      }
-    }
-
-    if (key === 'visibility') {
-      if (typeof value !== 'boolean') {
-        throw new TypeError('Visibility must be a boolean');
-      }
-    }
-
-    if (key === 'zIndex') {
-      if (typeof value !== 'number' || Number.isNaN(value)) {
-        throw new TypeError('Opacity must be a number');
-      }
-      if (value < 0) {
-        throw new TypeError('Opacity must be a positive number');
-      }
-    }
-
-    // The default behavior to store the value
-    target[key] = value;
-
-    return true;
-  }
-};
-
 class LayerModel {
   constructor(layerSpec) {
     Object.keys(layerSpec).forEach((k) => {
@@ -87,13 +50,13 @@ class LayerModel {
     return this;
   }
 
-  setTileId(tileId) {
-    this.set('tileId', tileId);
+  setParams(params) {
+    this.set('params', params);
     return this;
   }
 
-  setTileParams(tileParams) {
-    this.set('tileParams', tileParams);
+  setSqlParams(sqlParams) {
+    this.set('sqlParams', sqlParams);
     return this;
   }
 
@@ -112,8 +75,8 @@ class LayerModel {
       opacity,
       visibility,
       zIndex,
-      tileId,
-      tileParams,
+      params,
+      sqlParams,
       decodeParams,
       decodeFunction
     } = layerSpec;
@@ -123,8 +86,8 @@ class LayerModel {
     if (typeof zIndex !== 'undefined') this.setZIndex(zIndex);
 
     // Decode layer implementation
-    if (typeof tileId !== 'undefined') this.setTileId(tileId);
-    if (typeof tileParams !== 'undefined') this.setTileParams(tileParams);
+    if (typeof params !== 'undefined') this.setParams(params);
+    if (typeof sqlParams !== 'undefined') this.setSqlParams(sqlParams);
     if (typeof decodeParams !== 'undefined') this.setDecodeParams(decodeParams);
     if (typeof decodeFunction !== 'undefined') this.setDecodeFunction(decodeFunction);
   }
