@@ -1,5 +1,7 @@
 import Promise from 'bluebird';
-import cartoService from './carto-layer-service';
+import cartoService from 'src/services/carto-layer-service';
+
+const { L } = window;
 
 const CartoLayer = (layerModel) => {
   const { layerConfig, interactivity } = layerModel;

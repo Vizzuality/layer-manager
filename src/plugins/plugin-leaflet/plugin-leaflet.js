@@ -1,9 +1,9 @@
-import cartoLayer from '../layers/carto-layer/carto-layer-leaflet';
-import esriLayer from '../layers/esri-layer/esri-layer-leaflet';
-import geeLayer from '../layers/gee-layer/gee-layer-leaflet';
-import locaLayer from '../layers/loca-layer/loca-layer-leaflet';
-import nexgddpLayer from '../layers/nexgddp-layer/nexgddp-layer-leaflet';
-import leafletLayer from '../layers/leaflet-layer/leaflet-layer-leaflet';
+import cartoLayer from './carto-layer-leaflet';
+import esriLayer from './esri-layer-leaflet';
+import geeLayer from './gee-layer-leaflet';
+import locaLayer from './loca-layer-leaflet';
+import nexgddpLayer from './nexgddp-layer-leaflet';
+import leafletLayer from './leaflet-layer-leaflet';
 
 class PluginLeaflet {
   constructor(map) {

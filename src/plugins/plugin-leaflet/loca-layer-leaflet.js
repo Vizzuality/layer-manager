@@ -1,6 +1,8 @@
 import Promise from 'bluebird';
 
-const maxBounds = new L.LatLngBounds(
+const { L } = window;
+
+const maxBounds = L && new L.LatLngBounds(
   new L.LatLng(49.496674527470455, -66.357421875),
   new L.LatLng(24.607069137709683, -131.66015625)
 );

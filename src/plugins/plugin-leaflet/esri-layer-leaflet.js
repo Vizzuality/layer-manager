@@ -1,5 +1,7 @@
 import Promise from 'bluebird';
 
+const { L } = window;
+
 const esriLayer = (layerModel) => {
   if (!L.esri) throw new Error('To support this layer you should add esri library for Leaflet.');
 

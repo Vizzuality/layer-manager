@@ -1,5 +1,7 @@
 import Promise from 'bluebird';
 
+const { L } = window;
+
 const LeafletLayer = (layerModel) => {
   const { layerConfig } = layerModel;
   let layer;

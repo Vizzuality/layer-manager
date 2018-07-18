@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import Manager from '../layer-manager';
+import Manager from 'src/layer-manager';
 
 class LayerManager extends Component {
   constructor(props) {

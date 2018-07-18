@@ -1,7 +1,2 @@
-import LayerManager from './layer-manager';
-import Layer from './layer';
-
-export {
-  LayerManager,
-  Layer
-};
+export { default as LayerManager } from 'src/react/layer-manager';
+export { default as Layer } from 'src/react/layer';

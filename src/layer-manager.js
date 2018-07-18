@@ -1,6 +1,6 @@
 import Promise from 'bluebird';
 
-import LayerModel from './layer-model';
+import LayerModel from 'src/layer-model';
 
 const defaultOptions = {};
 

@@ -1,5 +1,5 @@
 import Promise from 'bluebird';
-import { get } from '../../helpers';
+import { get } from 'src/helpers';
 
 const cartoLayerService = (layerModel) => {
   const { layerConfig, interactivity } = layerModel;

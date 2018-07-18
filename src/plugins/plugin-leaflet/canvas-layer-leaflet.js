@@ -1,6 +1,8 @@
-import { replace } from '../../helpers';
+import { replace } from 'src/helpers';
 
-const CanvasLayer = L.GridLayer.extend({
+const { L } = window;
+
+const CanvasLayer = L && L.GridLayer.extend({
   tiles: {},
 
   createTile({ x, y, z }, done) {
