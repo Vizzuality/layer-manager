@@ -29,7 +29,7 @@ layerManager.add(layerSpec, {
 	visibility: true,
 	zIndex: 2,
 	interactivity: [], // It can be any type. It will depend on the layer provider
-	events: {
+	events: { 
 		click: (e) => {},
 		mouseover: (e) => {}
 	}, // Only events supported by your map provider
