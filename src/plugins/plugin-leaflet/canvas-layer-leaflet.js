@@ -47,7 +47,7 @@ const CanvasLayer = L && L.GridLayer.extend({
 
   getTile({ x, y, z }) {
     const { params, sqlParams } = this.options;
-    const { url, dataMaxZoom } = params;
+    const { url, dataMaxZoom = 20 } = params;
     const zsteps = z - dataMaxZoom;
     const id = replace(params.url, { x, y, z, ...params });
 
@@ -117,7 +117,7 @@ const CanvasLayer = L && L.GridLayer.extend({
     }
 
     const { params, decodeParams, decodeFunction } = this.options;
-    const { dataMaxZoom } = params;
+    const { dataMaxZoom = 20 } = params;
     const zsteps = z - dataMaxZoom;
 
     // this will allow us to sum up the dots when the timeline is running

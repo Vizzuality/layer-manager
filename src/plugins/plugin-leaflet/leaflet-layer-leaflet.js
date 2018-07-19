@@ -24,7 +24,7 @@ const LeafletLayer = (layerModel) => {
 
   switch (layerConfigParsed.type) {
     case 'wms':
-      layer = L.tileLayer.wms(layerConfigParsed.url, layerConfigParsed.body);
+      layer = L.tileLayer.wms(layerConfigParsed.url || layerConfigParsed.body.url, layerConfigParsed.body);
       break;
     case 'tileLayer':
       // if (JSON.stringify(layerConfigParsed.body).indexOf('style: "function') >= 0) {
@@ -33,8 +33,7 @@ const LeafletLayer = (layerModel) => {
       if (decodeParams) {
         layer = new CanvasLayer({ ...layerModel });
       } else {
-        debugger;
-        layer = L.tileLayer(layerConfigParsed.url, layerConfigParsed.body);
+        layer = L.tileLayer(layerConfigParsed.url || layerConfigParsed.body.url, layerConfigParsed.body);
       }
 
       break;
