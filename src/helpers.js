@@ -30,6 +30,7 @@ export const substitution = (string, params = {}) => {
   let str = string;
 
   Object.keys(params).forEach((key) => {
+    str = str.replace(new RegExp(`{{${key}}}`, 'g'), params[key]);
     str = str.replace(new RegExp(`{${key}}`, 'g'), params[key]);
   });
   return str;
@@ -46,7 +47,8 @@ export const concatenation = (string, params = {}) => {
       const value = params[key][k];
 
       if (value) {
-        return (Number.isNaN(value)) ? `${k} = '${value}'` : `${k} = ${value}`;
+        /* eslint-disable-next-line */
+        return (isNaN(value)) ? `${k} = '${value}'` : `${k} = ${value}`;
       }
       return null;
     })).join(' AND ')}`;
@@ -55,6 +57,7 @@ export const concatenation = (string, params = {}) => {
     else if (sql && key.startsWith('and')) sql = `AND ${sql}`;
     else sql = '';
 
+    str = str.replace(new RegExp(`{{${key}}}`, 'g'), sql);
     str = str.replace(new RegExp(`{${key}}`, 'g'), sql);
   });
 

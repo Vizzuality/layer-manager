@@ -1,4 +1,5 @@
 import Promise from 'bluebird';
+import isEqual from 'lodash/isEqual';
 
 import LayerModel from 'src/layer-model';
 
@@ -19,15 +20,19 @@ class LayerManager {
   renderLayers() {
     if (this.layers.length > 0) {
       this.layers.map((layerModel) => {
-        const { provider } = layerModel;
+        const { provider, hasChanged } = layerModel;
 
         // If layer exists let's update it
-        if (layerModel.mapLayer) {
+        if (layerModel.mapLayer && !hasChanged) {
           this.update(layerModel);
 
           this.promises[layerModel.id] = new Promise(resolve => resolve(this.layers));
 
           return false;
+        }
+
+        if (layerModel.mapLayer && hasChanged) {
+          this.update(layerModel);
         }
 
         // If promises exists and it's pending let's cancel it
@@ -47,9 +52,9 @@ class LayerManager {
         // If there is method for it let's call it
         this.promises[layerModel.id] = method.call(this, layerModel)
           .then((layer) => {
-            layerModel.setMapLayer(layer);
+            layerModel.set('mapLayer', layer);
             this.plugin.add(layerModel);
-            this.update(layerModel);
+            layerModel.set('haschanged', false);
 
             this.setEvents(layerModel);
           });
@@ -88,9 +93,17 @@ class LayerManager {
       const layerModel = this.layers.find(l => l.id === layer.id);
 
       if (layerModel) {
+        // I think we need to refactor this...
         layerModel.update({
           ...layer,
-          ...layerOptions
+          ...layerOptions,
+          ...(
+            typeof layer.decodeParams === 'undefined' &&
+            (
+              !isEqual(layer.params, layerModel.params) ||
+              !isEqual(layer.sqlParams, layerModel.sqlParams)
+            )
+          ) && { hasChanged: true }
         });
       } else {
         this.layers.push(
@@ -117,7 +130,8 @@ class LayerManager {
       zIndex,
       params,
       sqlParams,
-      decodeParams
+      decodeParams,
+      hasChanged
     } = layerModel;
 
     if (typeof opacity !== 'undefined') this.plugin.setOpacity(layerModel, opacity);
@@ -127,6 +141,7 @@ class LayerManager {
 
     // Tile layer
     if (
+      hasChanged &&
       (typeof params !== 'undefined' || typeof sqlParams !== 'undefined') &&
       typeof decodeParams === 'undefined'
     ) {

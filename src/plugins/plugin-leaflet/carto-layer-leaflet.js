@@ -25,7 +25,7 @@ const CartoLayer = (layerModel) => {
           const LayerGroup = L.LayerGroup.extend({
             group: true,
             setOpacity: (opacity) => {
-              layerModel.mapLayer.eachLayer((l) => {
+              layerModel.mapLayer.getLayers().forEach((l) => {
                 l.setOpacity(opacity);
               });
             }

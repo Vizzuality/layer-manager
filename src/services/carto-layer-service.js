@@ -35,7 +35,7 @@ const cartoLayerService = (layerModel) => {
       return JSON.parse(res.response);
     });
 
-  layerModel.setLayerRequest(layerRequest);
+  layerModel.set('layerRequest', layerRequest);
 
   return layerRequest;
 };
