@@ -13,27 +13,28 @@ const LeafletLayer = (layerModel) => {
   const { layerConfig, params, sqlParams, decodeParams } = layerModel;
   let layer;
 
-  const layerCongigParsed = JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
+  const layerConfigParsed = JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
 
 
   // Transforming data layer
-  if (layerCongigParsed.body.crs && L.CRS[layerCongigParsed.body.crs]) {
-    layerCongigParsed.body.crs = L.CRS[layerCongigParsed.body.crs.replace(':', '')];
-    layerCongigParsed.body.pane = 'tilePane';
+  if (layerConfigParsed.body.crs && L.CRS[layerConfigParsed.body.crs]) {
+    layerConfigParsed.body.crs = L.CRS[layerConfigParsed.body.crs.replace(':', '')];
+    layerConfigParsed.body.pane = 'tilePane';
   }
 
-  switch (layerCongigParsed.type) {
+  switch (layerConfigParsed.type) {
     case 'wms':
-      layer = L.tileLayer.wms(layerCongigParsed.url, layerCongigParsed.body);
+      layer = L.tileLayer.wms(layerConfigParsed.url, layerConfigParsed.body);
       break;
     case 'tileLayer':
-      // if (JSON.stringify(layerCongigParsed.body).indexOf('style: "function') >= 0) {
-      //   layerCongigParsed.body.style = eval(`(${layerCongigParsed.body.style})`);
+      // if (JSON.stringify(layerConfigParsed.body).indexOf('style: "function') >= 0) {
+      //   layerConfigParsed.body.style = eval(`(${layerConfigParsed.body.style})`);
       // }
       if (decodeParams) {
         layer = new CanvasLayer({ ...layerModel });
       } else {
-        layer = L.tileLayer(layerCongigParsed.url, layerCongigParsed.body);
+        debugger;
+        layer = L.tileLayer(layerConfigParsed.url, layerConfigParsed.body);
       }
 
       break;
