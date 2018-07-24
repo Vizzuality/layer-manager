@@ -1,20 +1,24 @@
 import Promise from 'bluebird';
+import { replace } from 'src/helpers';
 
 const { L } = window;
 
 const esriLayer = (layerModel) => {
+  if (!L) throw new Error('Leaflet must be defined.');
   if (!L.esri) throw new Error('To support this layer you should add esri library for Leaflet.');
 
   // Preparing layerConfig
-  const { layerConfig } = layerModel;
-  const bodyStringified = JSON.stringify(layerConfig.body || {})
+  const { layerConfig, params, sqlParams } = layerModel;
+  const layerCongigParsed = JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
+
+  const bodyStringified = JSON.stringify(layerCongigParsed.body || {})
     .replace(/"mosaic-rule":/g, '"mosaicRule":')
     .replace(/"mosaic_rule":/g, '"mosaicRule":')
     .replace(/"use-cors":/g, '"useCors":')
     .replace(/"use_cors":/g, '"useCors":');
 
   return new Promise((resolve, reject) => {
-    if (!L.esri[layerConfig.type]) return reject(new Error('"type" specified in layer spec doesn`t exist'));
+    if (!L.esri[layerCongigParsed.type]) return reject(new Error('"type" specified in layer spec doesn`t exist'));
 
     const layerOptions = JSON.parse(bodyStringified);
     layerOptions.pane = 'tilePane';
@@ -23,7 +27,7 @@ const esriLayer = (layerModel) => {
       layerOptions.style = eval(`(${layerOptions.style})`); // eslint-disable-line
     }
 
-    const layer = L.esri[layerConfig.type](layerOptions);
+    const layer = L.esri[layerCongigParsed.type](layerOptions);
 
     if (layer) {
       // Little hack to set zIndex at the beginning

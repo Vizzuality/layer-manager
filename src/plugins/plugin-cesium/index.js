@@ -1,14 +1,16 @@
-import buildCartoLayer from './carto-layer-cesium';
+import cartoLayer from './carto-layer-cesium';
 
 class PluginCesium {
   static Cesium = window.Cesium;
+
   constructor(map) {
     const { Cesium } = PluginCesium;
     this.map = map;
     this.eventListener = new Cesium.ScreenSpaceEventHandler(map.scene.canvas);
+
     this.method = {
-      carto: buildCartoLayer(Cesium),
-      cartodb: buildCartoLayer(Cesium)
+      carto: cartoLayer(Cesium),
+      cartodb: cartoLayer(Cesium)
     };
   }
 

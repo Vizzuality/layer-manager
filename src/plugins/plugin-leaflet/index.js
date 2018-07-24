@@ -48,7 +48,19 @@ class PluginLeaflet {
    * @param {Object} layerModel
    */
   remove(layerModel) {
-    const { mapLayer } = layerModel;
+    const { mapLayer, events } = layerModel;
+    // debugger;
+    if (events) {
+      Object.keys(events).forEach((k) => {
+        if (mapLayer.group) {
+          mapLayer.eachLayer((l) => {
+            l.off(k);
+          });
+        } else {
+          mapLayer.off(k);
+        }
+      });
+    }
 
     this.map.removeLayer(mapLayer);
   }
@@ -109,6 +121,22 @@ class PluginLeaflet {
         mapLayer.on(k, events[k]);
       }
     });
+  }
+
+  setParams(layerModel) {
+    this.remove(layerModel);
+  }
+
+  setDecodeParams(layerModel) {
+    const {
+      mapLayer,
+      params,
+      sqlParams,
+      decodeParams,
+      decodeFunction
+    } = layerModel;
+
+    mapLayer.reDraw({ params, sqlParams, decodeParams, decodeFunction });
   }
 }
 

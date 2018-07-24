@@ -1,4 +1,5 @@
 import Promise from 'bluebird';
+import isEqual from 'lodash/isEqual';
 
 import LayerModel from 'src/layer-model';
 
@@ -19,13 +20,19 @@ class LayerManager {
   renderLayers() {
     if (this.layers.length > 0) {
       this.layers.map((layerModel) => {
-        const { provider } = layerModel;
+        const { provider, hasChanged } = layerModel;
 
         // If layer exists let's update it
-        if (layerModel.mapLayer) {
+        if (layerModel.mapLayer && !hasChanged) {
           this.update(layerModel);
+
           this.promises[layerModel.id] = new Promise(resolve => resolve(this.layers));
+
           return false;
+        }
+
+        if (layerModel.mapLayer && hasChanged) {
+          this.update(layerModel);
         }
 
         // If promises exists and it's pending let's cancel it
@@ -45,9 +52,9 @@ class LayerManager {
         // If there is method for it let's call it
         this.promises[layerModel.id] = method.call(this, layerModel)
           .then((layer) => {
-            layerModel.setMapLayer(layer);
+            layerModel.set('mapLayer', layer);
             this.plugin.add(layerModel);
-            this.update(layerModel);
+            layerModel.set('haschanged', false);
 
             this.setEvents(layerModel);
           });
@@ -86,9 +93,17 @@ class LayerManager {
       const layerModel = this.layers.find(l => l.id === layer.id);
 
       if (layerModel) {
+        // I think we need to refactor this...
         layerModel.update({
           ...layer,
-          ...layerOptions
+          ...layerOptions,
+          ...(
+            typeof layer.decodeParams === 'undefined' &&
+            (
+              !isEqual(layer.params, layerModel.params) ||
+              !isEqual(layer.sqlParams, layerModel.sqlParams)
+            )
+          ) && { hasChanged: true }
         });
       } else {
         this.layers.push(
@@ -109,19 +124,33 @@ class LayerManager {
    * @param  {Object} layerModel
    */
   update(layerModel) {
-    const { opacity, visibility, zIndex, mapLayer, tileId, tileParams, decodeParams, decodeFunction } = layerModel;
+    const {
+      opacity,
+      visibility,
+      zIndex,
+      params,
+      sqlParams,
+      decodeParams,
+      hasChanged
+    } = layerModel;
+
     if (typeof opacity !== 'undefined') this.plugin.setOpacity(layerModel, opacity);
     if (typeof visibility !== 'undefined') this.plugin.setOpacity(layerModel, !visibility ? 0 : opacity);
     if (typeof zIndex !== 'undefined') this.plugin.setZIndex(layerModel, zIndex);
     if (typeof events !== 'undefined') this.plugin.setEvents(layerModel);
 
-    // Canvas layer
+    // Tile layer
     if (
-      typeof tileId !== 'undefined' &&
-      typeof tileParams !== 'undefined' &&
-      typeof decodeParams !== 'undefined'
+      hasChanged &&
+      (typeof params !== 'undefined' || typeof sqlParams !== 'undefined') &&
+      typeof decodeParams === 'undefined'
     ) {
-      mapLayer.reDraw({ tileId, tileParams, decodeParams, decodeFunction });
+      this.plugin.setParams(layerModel);
+    }
+
+    // Canvas layer
+    if (typeof decodeParams !== 'undefined') {
+      this.plugin.setDecodeParams(layerModel);
     }
   }
 

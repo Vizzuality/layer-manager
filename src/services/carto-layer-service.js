@@ -1,14 +1,16 @@
 import Promise from 'bluebird';
-import { get } from 'src/helpers';
+import { get, replace } from 'src/helpers';
 
 const cartoLayerService = (layerModel) => {
-  const { layerConfig, interactivity } = layerModel;
+  const { layerConfig, params, sqlParams, interactivity } = layerModel;
   let { layerRequest } = layerModel;
+
+  const layerCongigParsed = JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
 
   const layerTpl = {
     version: '1.3.0',
     stat_tag: 'API',
-    layers: layerConfig.body.layers.map((l) => {
+    layers: layerCongigParsed.body.layers.map((l) => {
       if (!!interactivity && interactivity.length) {
         return {
           ...l,
@@ -22,8 +24,8 @@ const cartoLayerService = (layerModel) => {
     })
   };
 
-  const params = `?stat_tag=API&config=${encodeURIComponent(JSON.stringify(layerTpl))}`;
-  const url = `https://${layerConfig.account}.carto.com/api/v1/map${params}`;
+  const apiParams = `?stat_tag=API&config=${encodeURIComponent(JSON.stringify(layerTpl))}`;
+  const url = `https://${layerCongigParsed.account}.carto.com/api/v1/map${apiParams}`;
 
   if (layerRequest && layerRequest instanceof Promise) layerRequest.cancel();
 
@@ -33,7 +35,7 @@ const cartoLayerService = (layerModel) => {
       return JSON.parse(res.response);
     });
 
-  layerModel.setLayerRequest(layerRequest);
+  layerModel.set('layerRequest', layerRequest);
 
   return layerRequest;
 };
