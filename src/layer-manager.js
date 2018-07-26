@@ -160,10 +160,12 @@ class LayerManager {
    */
   remove(layerIds) {
     const layers = this.layers.slice(0);
+    
+    const ids = Array.isArray(layerIds) ? layerIds : [layerIds];
 
     this.layers.forEach((layerModel, index) => {
-      if (layerIds) {
-        if (layerIds.includes(layerModel.id)) {
+      if (ids) {
+        if (ids.includes(layerModel.id)) {
           this.plugin.remove(layerModel);
           layers.splice(index, 1);
         }
@@ -172,7 +174,7 @@ class LayerManager {
       }
     });
 
-    this.layers = layerIds ? layers : [];
+    this.layers = ids ? layers : [];
   }
 
   /**
