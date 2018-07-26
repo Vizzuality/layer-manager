@@ -1,4 +1,7 @@
-import cartoService from './carto-layer-service';
+import Promise from 'bluebird';
+import cartoService from 'src/services/carto-layer-service';
+
+const { google } = window;
 
 const CartoLayer = (layerSpec) => {
   const { layerConfig } = layerSpec;
