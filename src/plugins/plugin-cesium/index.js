@@ -45,16 +45,19 @@ class PluginCesium {
         }
       }
     }
+    return this;
   }
 
   setOpacity(layerModel, opacity) {
     const { mapLayer } = layerModel;
     mapLayer.alpha = opacity;
+    return this;
   }
 
   setVisibility(layerModel, visibility) {
     const { mapLayer } = layerModel;
     mapLayer.show = visibility;
+    return this;
   }
 
   setEvents(layerModel) {
@@ -66,6 +69,7 @@ class PluginCesium {
       }
       this.eventListener.setInputAction(this.getCoordinatesFromEvent(action), type);
     });
+    return this;
   }
 
   getCoordinatesFromEvent = action => (event) => {

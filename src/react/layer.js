@@ -1,27 +1,36 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 
 class Layer extends Component {
-  static propTypes = { onLayerLoading: PropTypes.func }
+  static propTypes = {
+    id: PropTypes.string,
+    layerManager: PropTypes.object,
+    onLayerLoading: PropTypes.func
+  }
 
-  static defaultProps = { onLayerLoading: () => {} }
+  static defaultProps = {
+    id: '',
+    layerManager: {},
+    onLayerLoading: () => {}
+  }
 
   componentDidMount() {
-    const { layerManager, ...options } = this.props;
+    const { layerManager, onLayerLoading, ...options } = this.props;
 
-    this.props.onLayerLoading(true);
+    onLayerLoading(true);
 
     layerManager.add([options], options)
-      .finally(() => { this.props.onLayerLoading(false); });
+      .finally(() => { onLayerLoading(false); });
   }
 
   componentDidUpdate() {
-    const { layerManager, ...options } = this.props;
+    const { layerManager, onLayerLoading, ...options } = this.props;
 
-    this.props.onLayerLoading(true);
+    onLayerLoading(true);
 
     layerManager.add([options], options)
-      .finally(() => { this.props.onLayerLoading(false); });
+      .finally(() => { onLayerLoading(false); });
   }
 
   componentWillUnmount() {

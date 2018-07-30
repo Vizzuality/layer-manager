@@ -82,6 +82,8 @@ class PluginLeaflet {
     const { mapLayer } = layerModel;
 
     mapLayer.setZIndex(zIndex);
+
+    return this;
   }
 
   /**
@@ -93,6 +95,8 @@ class PluginLeaflet {
     const { mapLayer } = layerModel;
 
     mapLayer.setOpacity(opacity);
+
+    return this;
   }
 
   /**
@@ -121,6 +125,8 @@ class PluginLeaflet {
         mapLayer.on(k, events[k]);
       }
     });
+
+    return this;
   }
 
   setParams(layerModel) {
@@ -137,6 +143,8 @@ class PluginLeaflet {
     } = layerModel;
 
     mapLayer.reDraw({ params, sqlParams, decodeParams, decodeFunction });
+
+    return this;
   }
 }
 

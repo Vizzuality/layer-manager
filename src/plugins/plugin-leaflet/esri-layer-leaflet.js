@@ -1,5 +1,7 @@
+/* eslint-disable no-underscore-dangle */
 import Promise from 'bluebird';
 import { replace } from 'src/helpers';
+import LeafletLayer from './leaflet-layer-leaflet';
 
 const { L } = window;
 
@@ -9,16 +11,19 @@ const esriLayer = (layerModel) => {
 
   // Preparing layerConfig
   const { layerConfig, params, sqlParams } = layerModel;
-  const layerCongigParsed = JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
+  const layerConfigParsed = JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
 
-  const bodyStringified = JSON.stringify(layerCongigParsed.body || {})
+  const bodyStringified = JSON.stringify(layerConfigParsed.body || {})
     .replace(/"mosaic-rule":/g, '"mosaicRule":')
     .replace(/"mosaic_rule":/g, '"mosaicRule":')
     .replace(/"use-cors":/g, '"useCors":')
     .replace(/"use_cors":/g, '"useCors":');
 
+  // If type is a method of leaflet, returns LeafletLayer
+  if (L[layerConfigParsed.type]) return new LeafletLayer({ ...layerModel });
+
   return new Promise((resolve, reject) => {
-    if (!L.esri[layerCongigParsed.type]) return reject(new Error('"type" specified in layer spec doesn`t exist'));
+    if (!L.esri[layerConfigParsed.type]) return reject(new Error('"type" specified in layer spec doesn`t exist'));
 
     const layerOptions = JSON.parse(bodyStringified);
     layerOptions.pane = 'tilePane';
@@ -27,7 +32,7 @@ const esriLayer = (layerModel) => {
       layerOptions.style = eval(`(${layerOptions.style})`); // eslint-disable-line
     }
 
-    const layer = L.esri[layerCongigParsed.type](layerOptions);
+    const layer = L.esri[layerConfigParsed.type](layerOptions);
 
     if (layer) {
       // Little hack to set zIndex at the beginning
