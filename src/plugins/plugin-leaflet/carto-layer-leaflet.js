@@ -3,7 +3,7 @@ import cartoService from 'src/services/carto-layer-service';
 
 import { replace } from 'src/helpers';
 
-const { L } = window;
+const { L } = (typeof window !== 'undefined') ? window : {};
 
 const CartoLayer = (layerModel) => {
   if (!L) throw new Error('Leaflet must be defined.');
