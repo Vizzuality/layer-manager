@@ -11,7 +11,7 @@
   },
   "rules": {
     "no-debugger": 1,
-    "no-eval": [2, { "allowIndirect": true }],
+    "no-eval": [1, { "allowIndirect": true }],
     "import/no-extraneous-dependencies": 0
   },
   "parser": "babel-eslint",

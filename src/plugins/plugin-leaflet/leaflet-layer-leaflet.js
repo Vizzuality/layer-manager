@@ -34,7 +34,7 @@ const LeafletLayer = layerModel => {
       if (
         JSON.stringify(layerConfigParsed.body).indexOf('style: "function') >= 0
       ) {
-        layerConfigParsed.body.style = (window || global).eval(
+        layerConfigParsed.body.style = eval(
           `(${layerConfigParsed.body.style})`
         );
       }
