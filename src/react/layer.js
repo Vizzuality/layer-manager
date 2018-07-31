@@ -4,14 +4,12 @@ import LayerManager from 'src/layer-manager';
 
 class Layer extends Component {
   static propTypes = {
-    id: PropTypes.string,
-    layerManager: PropTypes.instanceOf(LayerManager),
+    id: PropTypes.string.isRequired,
+    layerManager: PropTypes.instanceOf(LayerManager).isRequired,
     onLayerLoading: PropTypes.func
   };
 
   static defaultProps = {
-    id: '',
-    layerManager: {},
     onLayerLoading: () => {
     }
   };

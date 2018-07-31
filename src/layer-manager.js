@@ -3,15 +3,12 @@ import isEqual from 'lodash/isEqual';
 
 import LayerModel from './layer-model';
 
-const defaultOptions = {};
-
 class LayerManager {
-  constructor(map, Plugin, options = {}) {
+  constructor(map, Plugin) {
     this.map = map;
     this.plugin = new Plugin(this.map);
     this.layers = [];
     this.promises = {};
-    this.options = Object.assign({}, defaultOptions, options);
   }
 
   /**
@@ -61,7 +58,7 @@ class LayerManager {
           .call(this, layerModel)
           .then(layer => {
             layerModel.set('mapLayer', layer);
-            
+
             this.plugin.add(layerModel);
             this.plugin.setZIndex(layerModel, layerModel.zIndex);
             this.plugin.setOpacity(layerModel, layerModel.opacity);
