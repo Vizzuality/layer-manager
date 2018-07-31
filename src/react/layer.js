@@ -1,10 +1,11 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
+import LayerManager from 'src/layer-manager';
 
 class Layer extends Component {
   static propTypes = {
     id: PropTypes.string,
-    layerManager: PropTypes.object,
+    layerManager: PropTypes.instanceOf(LayerManager),
     onLayerLoading: PropTypes.func
   };
 

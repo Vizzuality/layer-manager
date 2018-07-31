@@ -1,14 +1,15 @@
 import { Component, Children, cloneElement } from 'react';
 import PropTypes from 'prop-types';
-
 import Manager from 'src/layer-manager';
+
+const { L } = (typeof window !== 'undefined') ? window : {};
 
 class LayerManager extends Component {
   static propTypes = {
-    map: PropTypes.object,
+    map: PropTypes.instanceOf(L.Map),
     plugin: PropTypes.func,
-    options: PropTypes.object,
-    children: PropTypes.array
+    options: PropTypes.shape,
+    children: PropTypes.arrayOf(PropTypes.node)
   };
 
   static defaultProps = { map: {}, plugin: {}, options: {}, children: {} };
