@@ -32,10 +32,10 @@ const CartoLayer = layerModel => {
             }
           });
 
-          resolve(new LayerGroup([ layer, interactiveLayer ]));
+          return resolve(new LayerGroup([ layer, interactiveLayer ]));
         }
 
-        resolve(layer);
+        return resolve(layer);
       })
       .catch(err => reject(err));
   });

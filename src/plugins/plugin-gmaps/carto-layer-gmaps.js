@@ -1,17 +1,23 @@
 import Promise from 'bluebird';
 import { fetchTile } from 'services/carto-service';
+import { replace } from 'lib/query';
 
-const { google } = window;
+const { google } = (typeof window !== 'undefined') ? window : {};
 
-const CartoLayer = layerSpec => {
-  const { layerConfig } = layerSpec;
+const CartoLayer = layerModel => {
+  if (!google) throw new Error('Google maps must be defined.');
+
+  const { layerConfig, params, sqlParams } = layerModel;
+  const layerConfigParsed = JSON.parse(
+    replace(JSON.stringify(layerConfig), params, sqlParams)
+  );
 
   return new Promise((resolve, reject) => {
-    fetchTile(layerSpec)
+    fetchTile(layerModel)
       .then(response => {
-        const tileUrl = `${response.cdn_url.templates.https.url}/${layerConfig.account}/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.png`;
+        const tileUrl = `${response.cdn_url.templates.https.url}/${layerConfigParsed.account}/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.png`;
         const layer = new google.maps.ImageMapType({
-          name: layerSpec.slug,
+          name: layerConfigParsed.slug,
           getTileUrl(coord, zoom) {
             const url = tileUrl
               .replace('{x}', coord.x)
@@ -24,7 +30,7 @@ const CartoLayer = layerSpec => {
           maxZoom: 20
         });
 
-        resolve(layer);
+        return resolve(layer);
       })
       .catch(err => reject(err));
   });

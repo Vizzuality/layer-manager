@@ -5,7 +5,7 @@ import LeafletLayer from './leaflet-layer-leaflet';
 
 const { L } = (typeof window !== 'undefined') ? window : {};
 
-const esriLayer = layerModel => {
+const EsriLayer = layerModel => {
   if (!L) throw new Error('Leaflet must be defined.');
   if (!L.esri)
     throw new Error(
@@ -65,4 +65,4 @@ const esriLayer = layerModel => {
   });
 };
 
-export default esriLayer;
+export default EsriLayer;
