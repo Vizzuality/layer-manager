@@ -1,8 +1,15 @@
 /* eslint no-param-reassign: 0 */
 class LayerModel {
+  DEFAULTS = {
+    opacity: 1,
+    visibility: true
+  }
+
   constructor(layerSpec) {
-    Object.keys(layerSpec).forEach((k) => {
-      this.set(k, layerSpec[k]);
+    const model = { ...this.DEFAULTS, ...layerSpec };
+
+    Object.keys(model).forEach((k) => {
+      this.set(k, model[k]);
     });
   }
 
@@ -16,8 +23,10 @@ class LayerModel {
   }
 
   update(layerSpec) {
-    Object.keys(layerSpec).forEach((k) => {
-      this.set(k, layerSpec[k]);
+    const model = { ...this.DEFAULTS, ...layerSpec };
+
+    Object.keys(model).forEach((k) => {
+      this.set(k, model[k]);
     });
   }
 }

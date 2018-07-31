@@ -53,7 +53,12 @@ class LayerManager {
         this.promises[layerModel.id] = method.call(this, layerModel)
           .then((layer) => {
             layerModel.set('mapLayer', layer);
+            
             this.plugin.add(layerModel);
+            this.plugin.setZIndex(layerModel, layerModel.zIndex);
+            this.plugin.setOpacity(layerModel, layerModel.opacity);
+            this.plugin.setVisibility(layerModel, layerModel.visibility);
+
             layerModel.set('haschanged', false);
 
             this.setEvents(layerModel);
@@ -160,10 +165,12 @@ class LayerManager {
    */
   remove(layerIds) {
     const layers = this.layers.slice(0);
+    
+    const ids = Array.isArray(layerIds) ? layerIds : [layerIds];
 
     this.layers.forEach((layerModel, index) => {
-      if (layerIds) {
-        if (layerIds.includes(layerModel.id)) {
+      if (ids) {
+        if (ids.includes(layerModel.id)) {
           this.plugin.remove(layerModel);
           layers.splice(index, 1);
         }
@@ -172,7 +179,7 @@ class LayerManager {
       }
     });
 
-    this.layers = layerIds ? layers : [];
+    this.layers = ids ? layers : [];
   }
 
   /**
