@@ -49,8 +49,8 @@ class PluginLeaflet {
    */
   remove(layerModel) {
     const { mapLayer, events } = layerModel;
-    // debugger;
-    if (events) {
+    
+    if (events && mapLayer) {
       Object.keys(events).forEach((k) => {
         if (mapLayer.group) {
           mapLayer.eachLayer((l) => {
@@ -62,7 +62,9 @@ class PluginLeaflet {
       });
     }
 
-    this.map.removeLayer(mapLayer);
+    if (mapLayer) {
+      this.map.removeLayer(mapLayer);
+    }
   }
 
   /**

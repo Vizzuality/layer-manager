@@ -53,7 +53,12 @@ class LayerManager {
         this.promises[layerModel.id] = method.call(this, layerModel)
           .then((layer) => {
             layerModel.set('mapLayer', layer);
+            
             this.plugin.add(layerModel);
+            this.plugin.setZIndex(layerModel, layerModel.zIndex);
+            this.plugin.setOpacity(layerModel, layerModel.opacity);
+            this.plugin.setVisibility(layerModel, layerModel.visibility);
+
             layerModel.set('haschanged', false);
 
             this.setEvents(layerModel);
