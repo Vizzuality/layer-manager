@@ -1,6 +1,6 @@
 import Promise from 'bluebird';
 
-const { L } = window;
+const { L } = (typeof window !== 'undefined') ? window : {};
 
 const NEXGDDPLayer = layerModel => {
   const { id, layerConfig } = layerModel;

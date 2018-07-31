@@ -2,7 +2,7 @@ import Promise from 'bluebird';
 import { fetchTile } from 'services/carto-service';
 import { replace } from 'lib/query';
 
-const { L } = window;
+const { L } = (typeof window !== 'undefined') ? window : {};
 
 const CartoLayer = layerModel => {
   if (!L) throw new Error('Leaflet must be defined.');

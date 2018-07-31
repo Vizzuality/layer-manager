@@ -2,7 +2,7 @@ import Promise from 'bluebird';
 import { replace } from 'src/lib/query';
 import LeafletLayer from './leaflet-layer-leaflet';
 
-const { L } = window;
+const { L } = (typeof window !== 'undefined') ? window : {};
 
 const esriLayer = layerModel => {
   if (!L) throw new Error('Leaflet must be defined.');

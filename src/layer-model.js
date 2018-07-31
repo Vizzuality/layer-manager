@@ -1,7 +1,14 @@
 class LayerModel {
+  static defaults = {
+    opacity: 1,
+    visibility: true
+  }
+
   constructor(layerSpec) {
-    Object.keys(layerSpec).forEach(k => {
-      this.set(k, layerSpec[k]);
+    const model = { ...LayerModel.defaults, ...layerSpec };
+
+    Object.keys(model).forEach((k) => {
+      this.set(k, model[k]);
     });
   }
 
@@ -15,8 +22,10 @@ class LayerModel {
   }
 
   update(layerSpec) {
-    Object.keys(layerSpec).forEach(k => {
-      this.set(k, layerSpec[k]);
+    const model = { ...LayerModel.defaults, ...layerSpec };
+
+    Object.keys(model).forEach((k) => {
+      this.set(k, model[k]);
     });
   }
 }

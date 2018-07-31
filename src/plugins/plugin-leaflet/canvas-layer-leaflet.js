@@ -1,6 +1,6 @@
 import { replace } from 'src/lib/query';
 
-const { L } = window;
+const { L } = (typeof window !== 'undefined') ? window : {};
 
 const CanvasLayer = L && L.GridLayer.extend({
     tiles: {},
