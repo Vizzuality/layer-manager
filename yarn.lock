@@ -1660,9 +1660,9 @@ eslint-config-prettier@2.9.0:
   dependencies:
     get-stdin "^5.0.1"
 
-eslint-config-vizzuality@^1.1.6:
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/eslint-config-vizzuality/-/eslint-config-vizzuality-1.1.6.tgz#8e9bf1cdb24dcc9b1559809d6c6245ab43a48a98"
+eslint-config-vizzuality@^1.1.7:
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/eslint-config-vizzuality/-/eslint-config-vizzuality-1.1.7.tgz#859e698f6b2bfcea7e831986776dc6f5892399bb"
 
 eslint-import-resolver-babel-module@^4.0.0:
   version "4.0.0"

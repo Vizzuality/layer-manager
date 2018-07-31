@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 
@@ -7,21 +6,23 @@ class Layer extends Component {
     id: PropTypes.string,
     layerManager: PropTypes.object,
     onLayerLoading: PropTypes.func
-  }
+  };
 
   static defaultProps = {
     id: '',
     layerManager: {},
-    onLayerLoading: () => {}
-  }
+    onLayerLoading: () => {
+    }
+  };
 
   componentDidMount() {
     const { layerManager, onLayerLoading, ...options } = this.props;
 
     onLayerLoading(true);
 
-    layerManager.add([options], options)
-      .finally(() => { onLayerLoading(false); });
+    layerManager.add([ options ], options).finally(() => {
+      onLayerLoading(false);
+    });
   }
 
   componentDidUpdate() {
@@ -29,8 +30,9 @@ class Layer extends Component {
 
     onLayerLoading(true);
 
-    layerManager.add([options], options)
-      .finally(() => { onLayerLoading(false); });
+    layerManager.add([ options ], options).finally(() => {
+      onLayerLoading(false);
+    });
   }
 
   componentWillUnmount() {

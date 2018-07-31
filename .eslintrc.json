@@ -10,7 +10,9 @@
     "L": true
   },
   "rules": {
-    "no-debugger": 1
+    "no-debugger": 1,
+    "no-eval": [2, { "allowIndirect": true }],
+    "import/no-extraneous-dependencies": 0
   },
   "parser": "babel-eslint",
   "plugins": [

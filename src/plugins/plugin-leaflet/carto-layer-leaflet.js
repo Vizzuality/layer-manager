@@ -1,19 +1,20 @@
 import Promise from 'bluebird';
-import cartoService from 'src/services/carto-layer-service';
-
-import { replace } from 'src/helpers';
+import { fetchTile } from 'services/carto-service';
+import { replace } from 'lib/query';
 
 const { L } = window;
 
-const CartoLayer = (layerModel) => {
+const CartoLayer = layerModel => {
   if (!L) throw new Error('Leaflet must be defined.');
 
   const { layerConfig, params, sqlParams, interactivity } = layerModel;
-  const layerConfigParsed = JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
+  const layerConfigParsed = JSON.parse(
+    replace(JSON.stringify(layerConfig), params, sqlParams)
+  );
 
   return new Promise((resolve, reject) => {
-    cartoService(layerModel)
-      .then((response) => {
+    fetchTile(layerModel)
+      .then(response => {
         const tileUrl = `${response.cdn_url.templates.https.url}/${layerConfigParsed.account}/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.png`;
         const layer = L.tileLayer(tileUrl);
 
@@ -24,17 +25,14 @@ const CartoLayer = (layerModel) => {
 
           const LayerGroup = L.LayerGroup.extend({
             group: true,
-            setOpacity: (opacity) => {
-              layerModel.mapLayer.getLayers().forEach((l) => {
+            setOpacity: opacity => {
+              layerModel.mapLayer.getLayers().forEach(l => {
                 l.setOpacity(opacity);
               });
             }
           });
 
-          resolve(new LayerGroup([
-            layer,
-            interactiveLayer
-          ]));
+          resolve(new LayerGroup([ layer, interactiveLayer ]));
         }
 
         resolve(layer);

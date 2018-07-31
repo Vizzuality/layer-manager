@@ -1,7 +1,6 @@
-/* eslint no-param-reassign: 0 */
 class LayerModel {
   constructor(layerSpec) {
-    Object.keys(layerSpec).forEach((k) => {
+    Object.keys(layerSpec).forEach(k => {
       this.set(k, layerSpec[k]);
     });
   }
@@ -16,7 +15,7 @@ class LayerModel {
   }
 
   update(layerSpec) {
-    Object.keys(layerSpec).forEach((k) => {
+    Object.keys(layerSpec).forEach(k => {
       this.set(k, layerSpec[k]);
     });
   }

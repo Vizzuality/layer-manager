@@ -9,7 +9,8 @@
     "lint": "eslint ./src",
     "test": "mocha --require babel-core/register --require ./test/setup --recursive ./test/specs",
     "watch": "npm run build -- --watch",
-    "build": "babel src --out-dir dist"
+    "build": "babel src --out-dir dist",
+    "prettier": "prettier --single-quote --write \"src/**/*.js\""
   },
   "repository": {
     "type": "git",
@@ -30,7 +31,7 @@
     "eslint": "4.19.1",
     "eslint-config-airbnb": "17.0.0",
     "eslint-config-prettier": "2.9.0",
-    "eslint-config-vizzuality": "^1.1.6",
+    "eslint-config-vizzuality": "^1.1.7",
     "eslint-import-resolver-babel-module": "^4.0.0",
     "eslint-plugin-babel": "^4.1.2",
     "eslint-plugin-import": "2.13.0",

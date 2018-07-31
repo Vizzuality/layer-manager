@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { Component, Children, cloneElement } from 'react';
 import PropTypes from 'prop-types';
 
@@ -10,14 +9,9 @@ class LayerManager extends Component {
     plugin: PropTypes.func,
     options: PropTypes.object,
     children: PropTypes.array
-  }
+  };
 
-  static defaultProps = {
-    map: {},
-    plugin: {},
-    options: {},
-    children: {}
-  }
+  static defaultProps = { map: {}, plugin: {}, options: {}, children: {} };
 
   constructor(props) {
     super(props);
@@ -29,10 +23,12 @@ class LayerManager extends Component {
     const { children } = this.props;
     return Children.map(
       children,
-      (child, i) => (child && cloneElement(child, {
-        layerManager: this.layerManager,
-        zIndex: 1000 - i
-      }))
+      (child, i) =>
+        child &&
+          cloneElement(child, {
+            layerManager: this.layerManager,
+            zIndex: 1000 - i
+          })
     );
   }
 }
