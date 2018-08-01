@@ -1,6 +1,6 @@
 import Promise from 'bluebird';
 
-const { L } = (typeof window !== 'undefined') ? window : {};
+const { L } = typeof window !== 'undefined' ? window : {};
 
 const maxBounds = L &&
   new L.LatLngBounds(

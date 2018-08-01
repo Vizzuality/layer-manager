@@ -2,7 +2,7 @@ import Promise from 'bluebird';
 import { replace } from 'lib/query';
 import CanvasLayer from './canvas-layer-leaflet';
 
-const { L } = (typeof window !== 'undefined') ? window : {};
+const { L } = typeof window !== 'undefined' ? window : {};
 
 const LeafletLayer = layerModel => {
   if (!L) throw new Error('Leaflet must be defined.');

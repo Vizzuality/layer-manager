@@ -1,9 +1,11 @@
 import { replace } from 'src/lib/query';
 
-const { L } = (typeof window !== 'undefined') ? window : {};
+const { L } = typeof window !== 'undefined' ? window : {};
 
 const CanvasLayer = L && L.GridLayer.extend({
+
     tiles: {},
+
     createTile({ x, y, z }, done) {
       const { params } = this.options;
 
@@ -44,6 +46,7 @@ const CanvasLayer = L && L.GridLayer.extend({
 
       return tile;
     },
+
     getTile({ x, y, z }) {
       const { params, sqlParams } = this.options;
       const { url, dataMaxZoom = 20 } = params;
@@ -154,6 +157,7 @@ const CanvasLayer = L && L.GridLayer.extend({
 
       ctx.putImageData(I, 0, 0);
     },
+
     reDraw(options) {
       this.options.params = options.params;
       this.options.sqlParams = options.sqlParams;

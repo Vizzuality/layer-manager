@@ -1,7 +1,7 @@
 import cartoLayer from './carto-layer-cesium';
 
 class PluginCesium {
-  static Cesium = (typeof window !== 'undefined') ? window.Cesium : null;
+  static Cesium = typeof window !== 'undefined' ? window.Cesium : null;
 
   constructor(map) {
     const { Cesium } = PluginCesium;

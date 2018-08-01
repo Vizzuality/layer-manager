@@ -48,7 +48,7 @@ class PluginLeaflet {
     const { mapLayer, events } = layerModel;
 
     if (events && mapLayer) {
-      Object.keys(events).forEach((k) => {
+      Object.keys(events).forEach(k => {
         if (mapLayer.group) {
           mapLayer.eachLayer(l => {
             l.off(k);

@@ -2,7 +2,7 @@ import Promise from 'bluebird';
 import { fetchTile } from 'services/carto-service';
 import { replace } from 'lib/query';
 
-const { google } = (typeof window !== 'undefined') ? window : {};
+const { google } = typeof window !== 'undefined' ? window : {};
 
 const CartoLayer = layerModel => {
   if (!google) throw new Error('Google maps must be defined.');

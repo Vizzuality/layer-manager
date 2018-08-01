@@ -5,12 +5,12 @@ import PluginCesium from 'plugins/plugin-cesium';
 import PluginLeaflet from 'plugins/plugin-leaflet';
 import Layer from 'src/react/layer';
 
-const { L } = (typeof window !== 'undefined') ? window : {};
+const { L } = typeof window !== 'undefined' ? window : {};
 
 class LayerManager extends Component {
   static propTypes = {
     map: PropTypes.instanceOf(L.Map).isRequired,
-    plugin: PropTypes.oneOf([PluginCesium, PluginLeaflet]),
+    plugin: PropTypes.oneOf([ PluginCesium, PluginLeaflet ]),
     layersSpec: PropTypes.arrayOf(PropTypes.object),
     onLayerLoading: PropTypes.func,
     children: PropTypes.arrayOf(PropTypes.node)
@@ -20,7 +20,8 @@ class LayerManager extends Component {
     plugin: PluginLeaflet,
     children: [],
     layersSpec: [],
-    onLayerLoading: () => {}
+    onLayerLoading: () => {
+    }
   };
 
   constructor(props) {
@@ -46,16 +47,14 @@ class LayerManager extends Component {
 
     return (
       <Fragment>
-        {
-          layersSpec.map(spec => (
-            <Layer
-              key={spec.id}
-              {...spec}
-              onLayerLoading={onLayerLoading}
-              layerManager={this.layerManager}
-            />
-          ))
-        }
+        {layersSpec.map(spec => (
+          <Layer
+            key={spec.id}
+            {...spec}
+            onLayerLoading={onLayerLoading}
+            layerManager={this.layerManager}
+          />
+        ))}
       </Fragment>
     );
   }

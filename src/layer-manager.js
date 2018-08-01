@@ -15,7 +15,12 @@ class LayerManager {
   renderLayers() {
     if (this.layers.length > 0) {
       this.layers.map(layerModel => {
-        const { provider, hasChanged, changedAttributes, decodeParams } = layerModel;
+        const {
+          provider,
+          hasChanged,
+          changedAttributes,
+          decodeParams
+        } = layerModel;
         const { sqlParams, params } = changedAttributes;
         const haschanged = (sqlParams || params) && !decodeParams;
 
@@ -134,15 +139,21 @@ class LayerManager {
       decodeParams
     } = layerModel.changedAttributes;
 
-    if (typeof opacity !== 'undefined') this.plugin.setOpacity(layerModel, opacity);
+    if (typeof opacity !== 'undefined')
+      this.plugin.setOpacity(layerModel, opacity);
     if (typeof visibility !== 'undefined')
-        this.plugin.setOpacity(layerModel, !visibility ? 0 : layerModel.opacity);
-    if (typeof zIndex !== 'undefined') this.plugin.setZIndex(layerModel, zIndex);
+      this.plugin.setOpacity(layerModel, !visibility ? 0 : layerModel.opacity);
+    if (typeof zIndex !== 'undefined')
+      this.plugin.setZIndex(layerModel, zIndex);
 
     if (params && !layerModel.decodeParams) this.plugin.setParams(layerModel);
-    if (sqlParams && !layerModel.decodeParams) this.plugin.setParams(layerModel);
-    if ((params && layerModel.decodeParams) ||
-      (sqlParams && layerModel.decodeParams) || decodeParams)
+    if (sqlParams && !layerModel.decodeParams)
+      this.plugin.setParams(layerModel);
+    if (
+      params && layerModel.decodeParams ||
+        sqlParams && layerModel.decodeParams ||
+        decodeParams
+    )
       this.plugin.setDecodeParams(layerModel);
   }
 

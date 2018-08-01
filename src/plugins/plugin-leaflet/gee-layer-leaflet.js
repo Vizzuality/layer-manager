@@ -3,7 +3,7 @@ import { replace } from 'src/lib/query';
 
 import CanvasLayer from './canvas-layer-leaflet';
 
-const { L } = (typeof window !== 'undefined') ? window : {};
+const { L } = typeof window !== 'undefined' ? window : {};
 
 const GEELayer = layerModel => {
   if (!L) throw new Error('Leaflet must be defined.');
