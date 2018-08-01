@@ -2,9 +2,8 @@ import isEqual from 'lodash/isEqual';
 import isObject from 'lodash/isObject';
 
 class LayerModel {
-
-  // defaults
   opacity = 1;
+
   visibility = true;
 
   constructor(layerSpec = {}) {
@@ -36,6 +35,7 @@ class LayerModel {
         this.changedAttributes[k] = nextData[k];
         return this.set(k, nextData[k]);
       }
+      return nextData[k];
     });
   }
 }
