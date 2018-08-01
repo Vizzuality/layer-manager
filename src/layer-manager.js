@@ -134,8 +134,6 @@ class LayerManager {
       decodeParams
     } = layerModel.changedAttributes;
 
-    console.log(layerModel.changedAttributes);
-
     if (typeof opacity !== 'undefined') this.plugin.setOpacity(layerModel, opacity);
     if (typeof visibility !== 'undefined')
         this.plugin.setOpacity(layerModel, !visibility ? 0 : layerModel.opacity);
@@ -143,7 +141,9 @@ class LayerManager {
 
     if (params && !layerModel.decodeParams) this.plugin.setParams(layerModel);
     if (sqlParams && !layerModel.decodeParams) this.plugin.setParams(layerModel);
-    if ((params && layerModel.decodeParams) || (sqlParams && layerModel.decodeParams) || decodeParams) console.log('decoding...') || this.plugin.setDecodeParams(layerModel);
+    if ((params && layerModel.decodeParams) ||
+      (sqlParams && layerModel.decodeParams) || decodeParams)
+      this.plugin.setDecodeParams(layerModel);
   }
 
   /**

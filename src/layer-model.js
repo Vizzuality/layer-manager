@@ -1,5 +1,4 @@
 import isEqual from 'lodash/isEqual';
-import isObject from 'lodash/isObject';
 
 class LayerModel {
   opacity = 1;
