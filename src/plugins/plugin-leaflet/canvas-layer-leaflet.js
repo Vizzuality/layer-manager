@@ -99,6 +99,8 @@ const CanvasLayer = L && L.GridLayer.extend({
       this.tiles[tile.id] = { ...this.tiles[tile.id], ...tile };
     },
     drawCanvas(id) {
+      'use asm';
+
       if (!this.tiles[id]) {
         return;
       }

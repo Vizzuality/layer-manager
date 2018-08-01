@@ -1,5 +1,4 @@
 import Promise from 'bluebird';
-import isEqual from 'lodash/isEqual';
 import LayerModel from './layer-model';
 
 class LayerManager {
@@ -16,10 +15,12 @@ class LayerManager {
   renderLayers() {
     if (this.layers.length > 0) {
       this.layers.map(layerModel => {
-        const { provider, hasChanged } = layerModel;
+        const { provider, hasChanged, changedAttributes, decodeParams } = layerModel;
+        const { sqlParams, params } = changedAttributes;
+        const haschanged = (sqlParams || params) && !decodeParams;
 
         // If layer exists let's update it
-        if (layerModel.mapLayer && !hasChanged) {
+        if (layerModel.mapLayer && !haschanged) {
           this.update(layerModel);
 
           this.promises[layerModel.id] = new Promise(
@@ -106,19 +107,12 @@ class LayerManager {
 
     layers.forEach(layer => {
       const layerModel = this.layers.find(l => l.id === layer.id);
+      const nextModel = { ...layer, ...layerOptions };
 
       if (layerModel) {
-        // I think we need to refactor this...
-        layerModel.update({
-          ...layer,
-          ...layerOptions,
-          ...(typeof layer.decodeParams === 'undefined' &&
-            (!isEqual(layer.params, layerModel.params) ||
-              !isEqual(layer.sqlParams, layerModel.sqlParams)) &&
-            { hasChanged: true })
-        });
+        layerModel.update(nextModel);
       } else {
-        this.layers.push(new LayerModel({ ...layer, ...layerOptions }));
+        this.layers.push(new LayerModel(nextModel));
       }
     });
 
@@ -137,17 +131,19 @@ class LayerManager {
       zIndex,
       params,
       sqlParams,
-      decodeParams,
-      hasChanged
+      decodeParams
     } = layerModel.changedAttributes;
+
+    console.log(layerModel.changedAttributes);
 
     if (typeof opacity !== 'undefined') this.plugin.setOpacity(layerModel, opacity);
     if (typeof visibility !== 'undefined')
-        this.plugin.setOpacity(layerModel, !visibility ? 0 : opacity);
+        this.plugin.setOpacity(layerModel, !visibility ? 0 : layerModel.opacity);
     if (typeof zIndex !== 'undefined') this.plugin.setZIndex(layerModel, zIndex);
 
-    if (hasChanged && (params || sqlParams) && !decodeParams) this.plugin.setParams(layerModel);
-    if (decodeParams) this.plugin.setDecodeParams(layerModel);
+    if (params && !layerModel.decodeParams) this.plugin.setParams(layerModel);
+    if (sqlParams && !layerModel.decodeParams) this.plugin.setParams(layerModel);
+    if ((params && layerModel.decodeParams) || (sqlParams && layerModel.decodeParams) || decodeParams) console.log('decoding...') || this.plugin.setDecodeParams(layerModel);
   }
 
   /**
@@ -156,7 +152,6 @@ class LayerManager {
    */
   remove(layerIds) {
     const layers = this.layers.slice(0);
-
     const ids = Array.isArray(layerIds) ? layerIds : [ layerIds ];
 
     this.layers.forEach((layerModel, index) => {

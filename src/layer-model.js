@@ -27,15 +27,10 @@ class LayerModel {
     this.set('changedAttributes', {});
 
     Object.keys(nextData).forEach((k) => {
-      if (isObject(nextData[k]) && !isEqual(prevData[k], nextData[k])) {
+      if (!isEqual(prevData[k], nextData[k])) {
         this.changedAttributes[k] = nextData[k];
-        return this.set(k, nextData[k]);
+        this.set(k, nextData[k]);
       }
-      if (prevData[k] !== nextData[k]) {
-        this.changedAttributes[k] = nextData[k];
-        return this.set(k, nextData[k]);
-      }
-      return nextData[k];
     });
   }
 }
