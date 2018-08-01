@@ -1,6 +1,5 @@
 import Promise from 'bluebird';
 import isEqual from 'lodash/isEqual';
-
 import LayerModel from './layer-model';
 
 class LayerManager {
@@ -140,29 +139,14 @@ class LayerManager {
       sqlParams,
       decodeParams,
       hasChanged
-    } = layerModel;
+    } = layerModel.changedAttributes;
 
-    if (typeof opacity !== 'undefined')
-      this.plugin.setOpacity(layerModel, opacity);
-    if (typeof visibility !== 'undefined')
-      this.plugin.setOpacity(layerModel, !visibility ? 0 : opacity);
-    if (typeof zIndex !== 'undefined')
-      this.plugin.setZIndex(layerModel, zIndex);
-    if (typeof events !== 'undefined') this.plugin.setEvents(layerModel);
+    if (opacity) this.plugin.setOpacity(layerModel, opacity);
+    if (visibility) this.plugin.setOpacity(layerModel, !visibility ? 0 : opacity);
+    if (zIndex) this.plugin.setZIndex(layerModel, zIndex);
 
-    // Tile layer
-    if (
-      hasChanged &&
-        (typeof params !== 'undefined' || typeof sqlParams !== 'undefined') &&
-        typeof decodeParams === 'undefined'
-    ) {
-      this.plugin.setParams(layerModel);
-    }
-
-    // Canvas layer
-    if (typeof decodeParams !== 'undefined') {
-      this.plugin.setDecodeParams(layerModel);
-    }
+    if (hasChanged && (params || sqlParams) && !decodeParams) this.plugin.setParams(layerModel);
+    if (decodeParams) this.plugin.setDecodeParams(layerModel);
   }
 
   /**

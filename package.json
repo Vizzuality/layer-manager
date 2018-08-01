@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "bluebird": "^3.5.1",
+    "immutable": "^3.8.2",
     "lodash": "^4.17.10",
     "wri-json-api-serializer": "^1.0.1"
   },
@@ -57,5 +58,10 @@
   },
   "engines": {
     "node": ">=8.x.x"
+  },
+  "auto-changelog": {
+    "output": "CHANGELOG.md",
+    "template": "keepachangelog",
+    "commitLimit": false
   }
 }

@@ -1,15 +1,14 @@
+import isEqual from 'lodash/isEqual';
+import isObject from 'lodash/isObject';
+
 class LayerModel {
-  static defaults = {
-    opacity: 1,
-    visibility: true
-  }
 
-  constructor(layerSpec) {
-    const model = { ...LayerModel.defaults, ...layerSpec };
+  // defaults
+  opacity = 1;
+  visibility = true;
 
-    Object.keys(model).forEach((k) => {
-      this.set(k, model[k]);
-    });
+  constructor(layerSpec = {}) {
+    Object.assign(this, layerSpec, { changedAttributes: {} });
   }
 
   get(key) {
@@ -22,10 +21,21 @@ class LayerModel {
   }
 
   update(layerSpec) {
-    const model = { ...LayerModel.defaults, ...layerSpec };
+    const prevData = { ...this };
+    const nextData = { ...layerSpec };
 
-    Object.keys(model).forEach((k) => {
-      this.set(k, model[k]);
+    // reseting changedAttributes for every update
+    this.set('changedAttributes', {});
+
+    Object.keys(nextData).forEach((k) => {
+      if (isObject(nextData[k]) && !isEqual(prevData[k], nextData[k])) {
+        this.changedAttributes[k] = nextData[k];
+        return this.set(k, nextData[k]);
+      }
+      if (prevData[k] !== nextData[k]) {
+        this.changedAttributes[k] = nextData[k];
+        return this.set(k, nextData[k]);
+      }
     });
   }
 }
