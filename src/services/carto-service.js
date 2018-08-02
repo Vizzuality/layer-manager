@@ -6,13 +6,13 @@ export const fetchTile = layerModel => {
   const { layerConfig, params, sqlParams, interactivity } = layerModel;
   const { layerRequest } = layerModel;
 
-  const layerCongigParsed = JSON.parse(
+  const layerConfigParsed = JSON.parse(
     replace(JSON.stringify(layerConfig), params, sqlParams)
   );
   const layerTpl = JSON.stringify({
     version: '1.3.0',
     stat_tag: 'API',
-    layers: layerCongigParsed.body.layers.map(l => {
+    layers: layerConfigParsed.body.layers.map(l => {
       if (!!interactivity && interactivity.length) {
         return { ...l, options: { ...l.options, interactivity } };
       }
@@ -20,7 +20,7 @@ export const fetchTile = layerModel => {
     })
   });
   const apiParams = `?stat_tag=API&config=${encodeURIComponent(layerTpl)}`;
-  const url = `https://${layerCongigParsed.account}.carto.com/api/v1/map${apiParams}`;
+  const url = `https://${layerConfigParsed.account}.carto.com/api/v1/map${apiParams}`;
 
   if (layerRequest && layerRequest instanceof Promise) layerRequest.cancel();
 

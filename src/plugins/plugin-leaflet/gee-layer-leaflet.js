@@ -10,20 +10,21 @@ const GEELayer = layerModel => {
 
   const { id, layerConfig, params, sqlParams, decodeParams } = layerModel;
   const tileUrl = `https://api.resourcewatch.org/v1/layer/${id}/tile/gee/{z}/{x}/{y}`;
-  const layerCongigParsed = JSON.parse(
+  const layerConfigParsed = JSON.parse(
     replace(JSON.stringify(layerConfig), params, sqlParams)
   );
   let layer;
 
-  switch (layerCongigParsed.type) {
+  switch (layerConfigParsed.type) {
     case 'tileLayer':
       if (decodeParams) {
         layer = new CanvasLayer({ ...layerModel });
       } else {
-        layer = L.tileLayer(tileUrl, layerCongigParsed.body);
+        layer = L.tileLayer(tileUrl, layerConfigParsed.body);
       }
       break;
     default:
+        layer = L.tileLayer(tileUrl, layerConfigParsed.body);
       break;
   }
 
