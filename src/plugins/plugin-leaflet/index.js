@@ -144,6 +144,12 @@ class PluginLeaflet {
 
     return this;
   }
+
+  setLayerConfig(layerModel, newLayerConfig) {
+    const { zIndex } = layerModel;
+    this.remove(layerModel);
+    this.add(layerModel, { zIndex });
+  }
 }
 
 export default PluginLeaflet;

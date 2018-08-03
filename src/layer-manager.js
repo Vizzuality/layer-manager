@@ -136,7 +136,8 @@ class LayerManager {
       zIndex,
       params,
       sqlParams,
-      decodeParams
+      decodeParams,
+      layerConfig
     } = layerModel.changedAttributes;
 
     if (typeof opacity !== 'undefined')
@@ -145,6 +146,9 @@ class LayerManager {
       this.plugin.setOpacity(layerModel, !visibility ? 0 : layerModel.opacity);
     if (typeof zIndex !== 'undefined')
       this.plugin.setZIndex(layerModel, zIndex);
+    if (typeof layerConfig !== 'undefined') {
+      this.plugin.setLayerConfig(layerModel, layerConfig);
+    }
 
     if (params && !layerModel.decodeParams) this.plugin.setParams(layerModel);
     if (sqlParams && !layerModel.decodeParams)
