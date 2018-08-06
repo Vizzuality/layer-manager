@@ -108,7 +108,6 @@ class LayerManager {
       opacity,
       visibility,
       zIndex,
-      period,
       params,
       sqlParams,
       decodeParams,
@@ -125,11 +124,6 @@ class LayerManager {
       this.plugin.remove(layerModel);
       this.requestLayer(layerModel);
     }
-    if (typeof period !== 'undefined') {
-      this.plugin.remove(layerModel);
-      this.drawLayer(layerModel);
-    }
-
 
     if (params && !layerModel.decodeParams) this.plugin.setParams(layerModel);
     if (sqlParams && !layerModel.decodeParams)
