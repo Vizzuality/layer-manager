@@ -16,7 +16,6 @@ class LayerManager {
     if (this.layers.length > 0) {
       this.layers.map(layerModel => {
         const {
-          provider,
           hasChanged,
           changedAttributes,
           decodeParams
@@ -47,32 +46,7 @@ class LayerManager {
           this.promises[layerModel.id].cancel();
         }
 
-        // If there is no method for it let's cancel it
-        const method = this.plugin.getLayerByProvider(provider);
-        if (!method) {
-          this.promises[layerModel.id] = new Promise(
-            (resolve, reject) =>
-              reject(new Error(`${provider} provider is not yet supported.`))
-          );
-
-          return false;
-        }
-
-        // If there is method for it let's call it
-        this.promises[layerModel.id] = method
-          .call(this, layerModel)
-          .then(layer => {
-            layerModel.set('mapLayer', layer);
-
-            this.plugin.add(layerModel);
-            this.plugin.setZIndex(layerModel, layerModel.zIndex);
-            this.plugin.setOpacity(layerModel, layerModel.opacity);
-            this.plugin.setVisibility(layerModel, layerModel.visibility);
-
-            layerModel.set('haschanged', false);
-
-            this.setEvents(layerModel);
-          });
+        this.requestLayer(layerModel);
 
         return false;
       });
@@ -148,7 +122,7 @@ class LayerManager {
       this.plugin.setZIndex(layerModel, zIndex);
     if (typeof layerConfig !== 'undefined') {
       this.plugin.remove(layerModel);
-      this.drawLayer(layerModel);
+      this.requestLayer(layerModel);
     }
 
     if (params && !layerModel.decodeParams) this.plugin.setParams(layerModel);
@@ -248,7 +222,7 @@ class LayerManager {
     }
   }
 
-  drawLayer(layerModel) {
+  requestLayer(layerModel) {
     const { provider } = layerModel;
     const method = this.plugin.getLayerByProvider(provider);
 
