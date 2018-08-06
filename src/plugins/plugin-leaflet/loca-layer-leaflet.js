@@ -9,7 +9,8 @@ const maxBounds = L &&
   );
 
 const LOCALayer = layerModel => {
-  const { id, layerConfig, period } = layerModel;
+  const { id, layerConfig } = layerModel;
+  const { period } = layerConfig;
   const year = (period || {}).value || '1971';
   const dateString = new Date(year).toISOString();
   const tileUrl = `https://api.resourcewatch.org/v1/layer/${id}/tile/loca/{z}/{x}/{y}?year=${dateString}`;
