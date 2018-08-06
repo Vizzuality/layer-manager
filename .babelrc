@@ -1,11 +1,12 @@
 {
   "presets": [
     "react",
-    ["env", { "useBuiltIns": true }],
+    ["env", { "useBuiltIns": true, "modules": false }],
     "stage-2"
   ],
   "plugins": [
-    ["module-resolver",
+    [
+      "module-resolver",
       {
         "alias": {
           "src": "./src",

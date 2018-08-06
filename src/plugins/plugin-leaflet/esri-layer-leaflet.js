@@ -4,6 +4,7 @@ import { replace } from 'src/lib/query';
 import LeafletLayer from './leaflet-layer-leaflet';
 
 const { L } = typeof window !== 'undefined' ? window : {};
+const eval2 = eval;
 
 const EsriLayer = layerModel => {
   if (!L) throw new Error('Leaflet must be defined.');
@@ -37,7 +38,7 @@ const EsriLayer = layerModel => {
     layerOptions.useCors = true;
     // forcing cors
     if (layerOptions.style && layerOptions.style.indexOf('function') >= 0) {
-      layerOptions.style = eval(`(${layerOptions.style})`);
+      layerOptions.style = eval2(`(${layerOptions.style})`);
     }
 
     const layer = L.esri[layerConfigParsed.type](layerOptions);

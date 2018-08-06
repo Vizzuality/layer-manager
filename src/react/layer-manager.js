@@ -1,7 +1,6 @@
 import React, { Component, Children, cloneElement, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Manager from 'src/layer-manager';
-import PluginCesium from 'plugins/plugin-cesium';
 import PluginLeaflet from 'plugins/plugin-leaflet';
 import Layer from 'src/react/layer';
 
@@ -10,7 +9,7 @@ const { L } = typeof window !== 'undefined' ? window : {};
 class LayerManager extends Component {
   static propTypes = {
     map: PropTypes.instanceOf(L.Map).isRequired,
-    plugin: PropTypes.oneOf([ PluginCesium, PluginLeaflet ]),
+    plugin: PropTypes.func,
     layersSpec: PropTypes.arrayOf(PropTypes.object),
     onLayerLoading: PropTypes.func,
     children: PropTypes.arrayOf(PropTypes.node)

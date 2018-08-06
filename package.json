@@ -8,8 +8,8 @@
     "prepublishOnly": "npm run build",
     "lint": "eslint ./src",
     "test": "mocha --require babel-core/register --require ./test/setup --recursive ./test/specs",
-    "watch": "npm run build -- --watch",
-    "build": "babel src --out-dir dist",
+    "watch": "rollup -c -w",
+    "build": "rollup -c",
     "prettier": "prettier --single-quote --write \"src/**/*.js\""
   },
   "repository": {
@@ -19,15 +19,13 @@
   "author": "Vizzuality",
   "license": "MIT",
   "devDependencies": {
-    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.2",
+    "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-module-resolver": "^3.1.1",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
-    "babelify": "^8.0.0",
-    "browserify": "^16.1.0",
     "chai": "^4.1.2",
     "eslint": "4.19.1",
     "eslint-config-airbnb": "17.0.0",
@@ -45,11 +43,12 @@
     "prettier": "^0.11.0",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
-    "watchify": "^3.10.0"
+    "rollup": "^0.63.5",
+    "rollup-plugin-babel": "^3.0.7",
+    "rollup-plugin-node-resolve": "^3.3.0"
   },
   "dependencies": {
     "bluebird": "^3.5.1",
-    "immutable": "^3.8.2",
     "lodash": "^4.17.10",
     "wri-json-api-serializer": "^1.0.1"
   },

@@ -3,6 +3,7 @@ import { replace } from 'lib/query';
 import CanvasLayer from './canvas-layer-leaflet';
 
 const { L } = typeof window !== 'undefined' ? window : {};
+const eval2 = eval;
 
 const LeafletLayer = layerModel => {
   if (!L) throw new Error('Leaflet must be defined.');
@@ -34,7 +35,7 @@ const LeafletLayer = layerModel => {
       if (
         JSON.stringify(layerConfigParsed.body).indexOf('style: "function') >= 0
       ) {
-        layerConfigParsed.body.style = eval(
+        layerConfigParsed.body.style = eval2(
           `(${layerConfigParsed.body.style})`
         );
       }
