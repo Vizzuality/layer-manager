@@ -39,17 +39,18 @@ class LayerManager extends Component {
           child &&
             cloneElement(child, {
               layerManager: this.layerManager,
-              zIndex: 1000 - i
+              zIndex: child.zIndex || (1000 - i)
             })
       );
     }
 
     return (
       <Fragment>
-        {layersSpec.map(spec => (
+        {layersSpec.map((spec, i) => (
           <Layer
             key={spec.id}
             {...spec}
+            zIndex={spec.zIndex || (1000 - i)}
             onLayerLoading={onLayerLoading}
             layerManager={this.layerManager}
           />
