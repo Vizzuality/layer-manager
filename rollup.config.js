@@ -1,13 +1,11 @@
 import nodeResolvePlugin from 'rollup-plugin-node-resolve';
 import babelPlugin from 'rollup-plugin-babel';
-import commonjsPlugin from 'rollup-plugin-babel';
 
 export default [{
   input: 'src/index.js',
   output: {
     file: 'dist/index.js',
-    format: 'cjs',
-    exports: 'named',
+    format: 'esm',
   },
   external: id => id === 'bluebird' || /lodash/.test(id),
   plugins: [
@@ -21,15 +19,13 @@ export default [{
       jsnext: true,
       main: true,
       browser: true
-    }),
-    commonjsPlugin()
+    })
   ]
 }, {
   input: 'src/react/index.js',
   output: {
     file: 'dist/react/index.js',
-    format: 'cjs',
-    exports: 'named'
+    format: 'esm'
   },
   external: id => id === 'bluebird' ||
     id === 'react' ||
@@ -46,7 +42,6 @@ export default [{
       jsnext: true,
       main: true,
       browser: true
-    }),
-    commonjsPlugin()
+    })
   ]
 }];

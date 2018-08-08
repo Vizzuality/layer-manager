@@ -1,6 +1,6 @@
 {
   "name": "layer-manager",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "A library to get a layer depending on provider and layer spec",
   "main": "dist/index.js",
   "scripts": {
@@ -45,7 +45,6 @@
     "react": "^16.4.1",
     "rollup": "^0.63.5",
     "rollup-plugin-babel": "^3.0.7",
-    "rollup-plugin-commonjs": "^9.1.4",
     "rollup-plugin-node-resolve": "^3.3.0"
   },
   "dependencies": {
