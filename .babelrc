@@ -1,13 +1,18 @@
 {
   "presets": [
-    ["env", { "useBuiltIns": true }],
+    "react",
+    ["env", { "modules": false }],
     "stage-2"
   ],
   "plugins": [
-    ["module-resolver",
+    [
+      "module-resolver",
       {
         "alias": {
-          "src": "./src"
+          "src": "./src",
+          "lib": "./src/lib",
+          "services": "./src/services",
+          "plugins": "./src/plugins"
         },
         "extensions": [".js", ".jsx"]
       }

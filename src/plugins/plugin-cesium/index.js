@@ -1,17 +1,14 @@
 import cartoLayer from './carto-layer-cesium';
 
 class PluginCesium {
-  static Cesium = (typeof window !== 'undefined') ? window.Cesium : null;
+  static Cesium = typeof window !== 'undefined' ? window.Cesium : null;
 
   constructor(map) {
     const { Cesium } = PluginCesium;
     this.map = map;
     this.eventListener = new Cesium.ScreenSpaceEventHandler(map.scene.canvas);
 
-    this.method = {
-      carto: cartoLayer(Cesium),
-      cartodb: cartoLayer(Cesium)
-    };
+    this.method = { carto: cartoLayer(Cesium), cartodb: cartoLayer(Cesium) };
   }
 
   add(layerModel) {
@@ -32,8 +29,9 @@ class PluginCesium {
   setZIndex(layerModel, zIndex) {
     const { length } = this.map.imageryLayers;
     const { mapLayer } = layerModel;
-    // eslint-disable-next-line
-    const nextIndex = zIndex < 0 ? 0 : (zIndex >= length ? length - 1 : zIndex); // sorry not sorry
+    const layerIndex = zIndex >= length ? length - 1 : zIndex;
+    const nextIndex = zIndex < 0 ? 0 : layerIndex;
+    // sorry not sorry
     const currentIndex = this.map.imageryLayers.indexOf(mapLayer);
     if (currentIndex !== nextIndex) {
       const steps = nextIndex - currentIndex;
@@ -45,30 +43,37 @@ class PluginCesium {
         }
       }
     }
+    return this;
   }
 
   setOpacity(layerModel, opacity) {
     const { mapLayer } = layerModel;
     mapLayer.alpha = opacity;
+    return this;
   }
 
   setVisibility(layerModel, visibility) {
     const { mapLayer } = layerModel;
     mapLayer.show = visibility;
+    return this;
   }
 
   setEvents(layerModel) {
     const { events } = layerModel;
-    Object.keys(events).forEach((type) => {
+    Object.keys(events).forEach(type => {
       const action = events[type];
       if (this.eventListener.getInputAction(type)) {
         this.eventListener.removeInputAction(type);
       }
-      this.eventListener.setInputAction(this.getCoordinatesFromEvent(action), type);
+      this.eventListener.setInputAction(
+        this.getCoordinatesFromEvent(action),
+        type
+      );
     });
+    return this;
   }
 
-  getCoordinatesFromEvent = action => (event) => {
+  getCoordinatesFromEvent = action => event => {
     const { position } = event;
     const { Cesium } = PluginCesium;
     const clicked = new Cesium.Cartesian2(position.x, position.y);
@@ -80,7 +85,7 @@ class PluginCesium {
       const lng = Cesium.Math.toDegrees(cartographic.longitude);
       action(event, { lat, lng });
     }
-  }
+  };
 }
 
 export default PluginCesium;

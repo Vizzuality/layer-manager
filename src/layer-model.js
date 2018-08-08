@@ -1,16 +1,12 @@
-/* eslint no-param-reassign: 0 */
+import isEqual from 'lodash/isEqual';
+
 class LayerModel {
-  DEFAULTS = {
-    opacity: 1,
-    visibility: true
-  }
+  opacity = 1;
 
-  constructor(layerSpec) {
-    const model = { ...this.DEFAULTS, ...layerSpec };
+  visibility = true;
 
-    Object.keys(model).forEach((k) => {
-      this.set(k, model[k]);
-    });
+  constructor(layerSpec = {}) {
+    Object.assign(this, layerSpec, { changedAttributes: {} });
   }
 
   get(key) {
@@ -23,10 +19,17 @@ class LayerModel {
   }
 
   update(layerSpec) {
-    const model = { ...this.DEFAULTS, ...layerSpec };
+    const prevData = { ...this };
+    const nextData = { ...layerSpec };
 
-    Object.keys(model).forEach((k) => {
-      this.set(k, model[k]);
+    // reseting changedAttributes for every update
+    this.set('changedAttributes', {});
+
+    Object.keys(nextData).forEach(k => {
+      if (!isEqual(prevData[k], nextData[k])) {
+        this.changedAttributes[k] = nextData[k];
+        this.set(k, nextData[k]);
+      }
     });
   }
 }

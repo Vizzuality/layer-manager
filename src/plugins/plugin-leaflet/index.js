@@ -14,7 +14,6 @@ class PluginLeaflet {
     // CARTO
     cartodb: cartoLayer,
     carto: cartoLayer,
-
     // ESRI
     arcgis: esriLayer,
     featureservice: esriLayer,
@@ -23,15 +22,13 @@ class PluginLeaflet {
     esrifeatureservice: esriLayer,
     esrimapservice: esriLayer,
     esritileservice: esriLayer,
-
     // GEE && LOCA && NEXGDDP
     gee: geeLayer,
     loca: locaLayer,
     nexgddp: nexgddpLayer,
-
     // LEAFLET
     leaflet: leafletLayer
-  }
+  };
 
   /**
    * Add a layer
@@ -49,11 +46,11 @@ class PluginLeaflet {
    */
   remove(layerModel) {
     const { mapLayer, events } = layerModel;
-    
+
     if (events && mapLayer) {
-      Object.keys(events).forEach((k) => {
+      Object.keys(events).forEach(k => {
         if (mapLayer.group) {
-          mapLayer.eachLayer((l) => {
+          mapLayer.eachLayer(l => {
             l.off(k);
           });
         } else {
@@ -84,6 +81,8 @@ class PluginLeaflet {
     const { mapLayer } = layerModel;
 
     mapLayer.setZIndex(zIndex);
+
+    return this;
   }
 
   /**
@@ -95,6 +94,8 @@ class PluginLeaflet {
     const { mapLayer } = layerModel;
 
     mapLayer.setOpacity(opacity);
+
+    return this;
   }
 
   /**
@@ -108,13 +109,12 @@ class PluginLeaflet {
     this.setOpacity(layerModel, !visibility ? 0 : opacity);
   }
 
-
   setEvents(layerModel) {
     const { mapLayer, events } = layerModel;
 
-    Object.keys(events).forEach((k) => {
+    Object.keys(events).forEach(k => {
       if (mapLayer.group) {
-        mapLayer.eachLayer((l) => {
+        mapLayer.eachLayer(l => {
           l.off(k);
           l.on(k, events[k]);
         });
@@ -123,6 +123,8 @@ class PluginLeaflet {
         mapLayer.on(k, events[k]);
       }
     });
+
+    return this;
   }
 
   setParams(layerModel) {
@@ -139,6 +141,8 @@ class PluginLeaflet {
     } = layerModel;
 
     mapLayer.reDraw({ params, sqlParams, decodeParams, decodeFunction });
+
+    return this;
   }
 }
 

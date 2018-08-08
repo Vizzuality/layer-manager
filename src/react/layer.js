@@ -1,27 +1,37 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
+import LayerManager from 'src/layer-manager';
 
 class Layer extends Component {
-  static propTypes = { onLayerLoading: PropTypes.func }
+  static propTypes = {
+    id: PropTypes.string.isRequired,
+    layerManager: PropTypes.instanceOf(LayerManager).isRequired,
+    onLayerLoading: PropTypes.func
+  };
 
-  static defaultProps = { onLayerLoading: () => {} }
+  static defaultProps = {
+    onLayerLoading: () => {
+    }
+  };
 
   componentDidMount() {
-    const { layerManager, ...options } = this.props;
+    const { layerManager, onLayerLoading, ...options } = this.props;
 
-    this.props.onLayerLoading(true);
+    onLayerLoading(true);
 
-    layerManager.add([options], options)
-      .finally(() => { this.props.onLayerLoading(false); });
+    layerManager.add([ options ], options).finally(() => {
+      onLayerLoading(false);
+    });
   }
 
   componentDidUpdate() {
-    const { layerManager, ...options } = this.props;
+    const { layerManager, onLayerLoading, ...options } = this.props;
 
-    this.props.onLayerLoading(true);
+    onLayerLoading(true);
 
-    layerManager.add([options], options)
-      .finally(() => { this.props.onLayerLoading(false); });
+    layerManager.add([ options ], options).finally(() => {
+      onLayerLoading(false);
+    });
   }
 
   componentWillUnmount() {

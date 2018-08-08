@@ -1,43 +1,55 @@
 import Promise from 'bluebird';
-
-import { replace } from 'src/helpers';
-
+import { replace } from 'lib/query';
 import CanvasLayer from './canvas-layer-leaflet';
 
+const { L } = typeof window !== 'undefined' ? window : {};
+const eval2 = eval;
 
-const { L } = (typeof window !== 'undefined') ? window : {};
-
-const LeafletLayer = (layerModel) => {
+const LeafletLayer = layerModel => {
   if (!L) throw new Error('Leaflet must be defined.');
 
   const { layerConfig, params, sqlParams, decodeParams } = layerModel;
   let layer;
 
-  const layerConfigParsed = JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
-
+  const layerConfigParsed = JSON.parse(
+    replace(JSON.stringify(layerConfig), params, sqlParams)
+  );
 
   // Transforming data layer
   if (layerConfigParsed.body.crs && L.CRS[layerConfigParsed.body.crs]) {
-    layerConfigParsed.body.crs = L.CRS[layerConfigParsed.body.crs.replace(':', '')];
+    layerConfigParsed.body.crs = L.CRS[layerConfigParsed.body.crs.replace(
+      ':',
+      ''
+    )];
     layerConfigParsed.body.pane = 'tilePane';
   }
 
   switch (layerConfigParsed.type) {
     case 'wms':
-      layer = L.tileLayer.wms(layerConfigParsed.url || layerConfigParsed.body.url, layerConfigParsed.body);
+      layer = L.tileLayer.wms(
+        layerConfigParsed.url || layerConfigParsed.body.url,
+        layerConfigParsed.body
+      );
       break;
     case 'tileLayer':
-      // if (JSON.stringify(layerConfigParsed.body).indexOf('style: "function') >= 0) {
-      //   layerConfigParsed.body.style = eval(`(${layerConfigParsed.body.style})`);
-      // }
+      if (
+        JSON.stringify(layerConfigParsed.body).indexOf('style: "function') >= 0
+      ) {
+        layerConfigParsed.body.style = eval2(
+          `(${layerConfigParsed.body.style})`
+        );
+      }
       if (decodeParams) {
         layer = new CanvasLayer({ ...layerModel });
       } else {
-        layer = L.tileLayer(layerConfigParsed.url || layerConfigParsed.body.url, layerConfigParsed.body);
+        layer = L.tileLayer(
+          layerConfigParsed.url || layerConfigParsed.body.url,
+          layerConfigParsed.body
+        );
       }
-
       break;
     default:
+      layer = L[layerConfigParsed.type](layerConfigParsed.body);
       break;
   }
 
