@@ -39,7 +39,7 @@ class LayerManager extends Component {
           child &&
             cloneElement(child, {
               layerManager: this.layerManager,
-              zIndex: child.zIndex || (1000 - i)
+              zIndex: child.props.zIndex || (1000 - i)
             })
       );
     }
