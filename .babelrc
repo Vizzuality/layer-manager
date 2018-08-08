@@ -1,7 +1,7 @@
 {
   "presets": [
     "react",
-    ["env", { "useBuiltIns": true, "modules": false }],
+    ["env", { "modules": false }],
     "stage-2"
   ],
   "plugins": [
