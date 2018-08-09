@@ -12,15 +12,17 @@ class LayerManager extends Component {
     plugin: PropTypes.func,
     layersSpec: PropTypes.arrayOf(PropTypes.object),
     onLayerLoading: PropTypes.func,
-    children: PropTypes.arrayOf(PropTypes.node)
+    children: PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.node),
+      PropTypes.func
+    ])
   };
 
   static defaultProps = {
     plugin: PluginLeaflet,
     children: [],
     layersSpec: [],
-    onLayerLoading: () => {
-    }
+    onLayerLoading: () => {}
   };
 
   constructor(props) {
@@ -31,6 +33,10 @@ class LayerManager extends Component {
 
   render() {
     const { children, layersSpec, onLayerLoading } = this.props;
+
+    if (children && typeof children === 'function') {
+      return children(this.layerManager);
+    }
 
     if (Children.count(children)) {
       return Children.map(
