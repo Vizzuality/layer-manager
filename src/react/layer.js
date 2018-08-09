@@ -10,8 +10,7 @@ class Layer extends Component {
   };
 
   static defaultProps = {
-    onLayerLoading: () => {
-    }
+    onLayerLoading: () => {}
   };
 
   componentDidMount() {
