@@ -5,7 +5,7 @@ import CanvasLayer from './canvas-layer-leaflet';
 
 const { L } = typeof window !== 'undefined' ? window : {};
 
-const GEELayer = layerModel => {
+const GEELayer = (layerModel) => {
   if (!L) throw new Error('Leaflet must be defined.');
 
   const { id, layerConfig, params, sqlParams, decodeParams } = layerModel;
@@ -24,7 +24,7 @@ const GEELayer = layerModel => {
       }
       break;
     default:
-        layer = L.tileLayer(tileUrl, layerConfigParsed.body);
+      layer = L.tileLayer(tileUrl, layerConfigParsed.body);
       break;
   }
 

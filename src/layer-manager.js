@@ -14,7 +14,7 @@ class LayerManager {
    */
   renderLayers() {
     if (this.layers.length > 0) {
-      this.layers.map(layerModel => {
+      this.layers.map((layerModel) => {
         const {
           hasChanged,
           changedAttributes,
@@ -84,7 +84,7 @@ class LayerManager {
       return this;
     }
 
-    layers.forEach(layer => {
+    layers.forEach((layer) => {
       const layerModel = this.layers.find(l => l.id === layer.id);
       const nextModel = { ...layer, ...layerOptions };
 
@@ -114,26 +114,21 @@ class LayerManager {
       layerConfig
     } = layerModel.changedAttributes;
 
-    if (typeof opacity !== 'undefined')
-      this.plugin.setOpacity(layerModel, opacity);
-    if (typeof visibility !== 'undefined')
-      this.plugin.setOpacity(layerModel, !visibility ? 0 : layerModel.opacity);
-    if (typeof zIndex !== 'undefined')
-      this.plugin.setZIndex(layerModel, zIndex);
+    if (typeof opacity !== 'undefined') { this.plugin.setOpacity(layerModel, opacity); }
+    if (typeof visibility !== 'undefined') { this.plugin.setOpacity(layerModel, !visibility ? 0 : layerModel.opacity); }
+    if (typeof zIndex !== 'undefined') { this.plugin.setZIndex(layerModel, zIndex); }
     if (typeof layerConfig !== 'undefined') {
       this.plugin.remove(layerModel);
       this.requestLayer(layerModel);
     }
 
     if (params && !layerModel.decodeParams) this.plugin.setParams(layerModel);
-    if (sqlParams && !layerModel.decodeParams)
-      this.plugin.setParams(layerModel);
+    if (sqlParams && !layerModel.decodeParams) { this.plugin.setParams(layerModel); }
     if (
-      params && layerModel.decodeParams ||
-        sqlParams && layerModel.decodeParams ||
-        decodeParams
-    )
-      this.plugin.setDecodeParams(layerModel);
+      (params && layerModel.decodeParams) ||
+      (sqlParams && layerModel.decodeParams) ||
+      decodeParams
+    ) { this.plugin.setDecodeParams(layerModel); }
   }
 
   /**
@@ -142,7 +137,7 @@ class LayerManager {
    */
   remove(layerIds) {
     const layers = this.layers.slice(0);
-    const ids = Array.isArray(layerIds) ? layerIds : [ layerIds ];
+    const ids = Array.isArray(layerIds) ? layerIds : [layerIds];
 
     this.layers.forEach((layerModel, index) => {
       if (ids) {
@@ -167,7 +162,7 @@ class LayerManager {
     const layerModels = this.layers.filter(l => layerIds.includes(l.id));
 
     if (layerModels.length) {
-      layerModels.forEach(lm => {
+      layerModels.forEach((lm) => {
         this.plugin.setOpacity(lm, opacity);
       });
     } else {
@@ -184,7 +179,7 @@ class LayerManager {
     const layerModels = this.layers.filter(l => layerIds.includes(l.id));
 
     if (layerModels.length) {
-      layerModels.forEach(lm => {
+      layerModels.forEach((lm) => {
         this.plugin.setVisibility(lm, visibility);
       });
     } else {
@@ -201,7 +196,7 @@ class LayerManager {
     const layerModels = this.layers.filter(l => layerIds.includes(l.id));
 
     if (layerModels.length) {
-      layerModels.forEach(lm => {
+      layerModels.forEach((lm) => {
         this.plugin.setZIndex(lm, zIndex);
       });
     } else {
@@ -238,7 +233,7 @@ class LayerManager {
     // If there is method for it let's call it
     this.promises[layerModel.id] = method
       .call(this, layerModel)
-      .then(layer => {
+      .then((layer) => {
         layerModel.set('mapLayer', layer);
 
         this.plugin.add(layerModel);

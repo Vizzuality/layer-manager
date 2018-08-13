@@ -4,7 +4,7 @@ import { replace } from 'lib/query';
 
 const { L } = typeof window !== 'undefined' ? window : {};
 
-const CartoLayer = layerModel => {
+const CartoLayer = (layerModel) => {
   if (!L) throw new Error('Leaflet must be defined.');
 
   const { layerConfig, params, sqlParams, interactivity } = layerModel;
@@ -14,7 +14,7 @@ const CartoLayer = layerModel => {
 
   return new Promise((resolve, reject) => {
     fetchTile(layerModel)
-      .then(response => {
+      .then((response) => {
         const tileUrl = `${response.cdn_url.templates.https.url}/${layerConfigParsed.account}/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.png`;
         const layer = L.tileLayer(tileUrl);
 
@@ -25,14 +25,14 @@ const CartoLayer = layerModel => {
 
           const LayerGroup = L.LayerGroup.extend({
             group: true,
-            setOpacity: opacity => {
-              layerModel.mapLayer.getLayers().forEach(l => {
+            setOpacity: (opacity) => {
+              layerModel.mapLayer.getLayers().forEach((l) => {
                 l.setOpacity(opacity);
               });
             }
           });
 
-          return resolve(new LayerGroup([ layer, interactiveLayer ]));
+          return resolve(new LayerGroup([layer, interactiveLayer]));
         }
 
         return resolve(layer);

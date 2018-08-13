@@ -2,7 +2,7 @@ import Promise from 'bluebird';
 
 const { L } = typeof window !== 'undefined' ? window : {};
 
-const NEXGDDPLayer = layerModel => {
+const NEXGDDPLayer = (layerModel) => {
   const { id, layerConfig } = layerModel;
   const { period } = layerConfig;
   const year = (period || {}).value || '1971-01-01';
@@ -11,7 +11,7 @@ const NEXGDDPLayer = layerModel => {
 
   const layer = L.tileLayer(tileUrl, layerConfig.body);
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     resolve(layer);
   });
 };
