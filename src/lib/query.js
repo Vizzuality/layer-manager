@@ -30,9 +30,18 @@ export const concatenation = (originalStr, params = {}) => {
       Object.keys(params[key]).map(k => {
         const value = params[key][k];
 
-        if (value) {
-          return Number.isNaN(value) ? `${k} = '${value}'` : `${k} = ${value}`;
+        if (Array.isArray(value) && !!value.length) {
+          // window.isNaN is needed here as Number.isNaN returns
+          // false in the case Number.isNaN('string'). please dont change.
+          const mappedValue = value.map(v => (
+            window.isNaN(v) ? `'${v}'` : v)) // eslint-disable-line
+          return `${k} IN (${mappedValue.join(', ')})`
         }
+
+        if (value) {
+          return window.isNaN(value) ? `${k} = '${value}'` : `${k} = ${value}`; // eslint-disable-line
+        }
+
         return null;
       })
     ).join(' AND ')}`;
