@@ -1,4 +1,6 @@
 import Promise from 'bluebird';
+import isEmpty from 'lodash/isEmpty';
+
 import LayerModel from './layer-model';
 
 class LayerManager {
@@ -16,15 +18,14 @@ class LayerManager {
     if (this.layers.length > 0) {
       this.layers.map((layerModel) => {
         const {
-          hasChanged,
           changedAttributes,
           decodeParams
         } = layerModel;
         const { sqlParams, params } = changedAttributes;
-        const haschanged = (sqlParams || params) && !decodeParams;
+        const hasChanged = (sqlParams || params) && isEmpty(decodeParams);
 
         // If layer exists let's update it
-        if (layerModel.mapLayer && !haschanged) {
+        if (layerModel.mapLayer && !hasChanged) {
           this.update(layerModel);
 
           this.promises[layerModel.id] = new Promise(
@@ -122,13 +123,15 @@ class LayerManager {
       this.requestLayer(layerModel);
     }
 
-    if (params && !layerModel.decodeParams) this.plugin.setParams(layerModel);
-    if (sqlParams && !layerModel.decodeParams) { this.plugin.setParams(layerModel); }
+    if (!isEmpty(params) && isEmpty(layerModel.decodeParams)) this.plugin.setParams(layerModel);
+    if (!isEmpty(sqlParams) && isEmpty(layerModel.decodeParams)) {
+      this.plugin.setParams(layerModel); }
     if (
-      (params && layerModel.decodeParams) ||
-      (sqlParams && layerModel.decodeParams) ||
-      decodeParams
-    ) { this.plugin.setDecodeParams(layerModel); }
+      (!isEmpty(params) && !isEmpty(layerModel.decodeParams)) ||
+      (!isEmpty(sqlParams) && !isEmpty(layerModel.decodeParams)) ||
+      !isEmpty(decodeParams)
+    ) {
+      this.plugin.setDecodeParams(layerModel); }
   }
 
   /**
@@ -240,8 +243,6 @@ class LayerManager {
         this.plugin.setZIndex(layerModel, layerModel.zIndex);
         this.plugin.setOpacity(layerModel, layerModel.opacity);
         this.plugin.setVisibility(layerModel, layerModel.visibility);
-
-        layerModel.set('haschanged', false);
 
         this.setEvents(layerModel);
       });
