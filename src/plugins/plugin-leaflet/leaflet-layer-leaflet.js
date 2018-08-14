@@ -5,7 +5,7 @@ import CanvasLayer from './canvas-layer-leaflet';
 const { L } = typeof window !== 'undefined' ? window : {};
 const eval2 = eval;
 
-const LeafletLayer = layerModel => {
+const LeafletLayer = (layerModel) => {
   if (!L) throw new Error('Leaflet must be defined.');
 
   const { layerConfig, params, sqlParams, decodeParams } = layerModel;

@@ -8,7 +8,7 @@ const maxBounds = L &&
     new L.LatLng(24.607069137709683, -131.66015625)
   );
 
-const LOCALayer = layerModel => {
+const LOCALayer = (layerModel) => {
   const { id, layerConfig } = layerModel;
   const { period } = layerConfig;
   const year = (period || {}).value || '1971';
@@ -21,7 +21,7 @@ const LOCALayer = layerModel => {
     bounds: maxBounds
   });
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     resolve(layer);
   });
 };

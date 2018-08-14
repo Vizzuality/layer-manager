@@ -48,9 +48,9 @@ class PluginLeaflet {
     const { mapLayer, events } = layerModel;
 
     if (events && mapLayer) {
-      Object.keys(events).forEach(k => {
+      Object.keys(events).forEach((k) => {
         if (mapLayer.group) {
-          mapLayer.eachLayer(l => {
+          mapLayer.eachLayer((l) => {
             l.off(k);
           });
         } else {
@@ -112,9 +112,9 @@ class PluginLeaflet {
   setEvents(layerModel) {
     const { mapLayer, events } = layerModel;
 
-    Object.keys(events).forEach(k => {
+    Object.keys(events).forEach((k) => {
       if (mapLayer.group) {
-        mapLayer.eachLayer(l => {
+        mapLayer.eachLayer((l) => {
           l.off(k);
           l.on(k, events[k]);
         });

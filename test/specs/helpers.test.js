@@ -9,7 +9,10 @@ describe('# Cancellable request', () => {
 
     request
       .then((res) => {
-        if (res.status > 400) throw new Error(res);
+        if (res.status > 400) {
+          console.error(res);
+          return false;
+        }
         return JSON.parse(res.response);
       })
       .then((json) => {

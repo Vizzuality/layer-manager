@@ -25,7 +25,10 @@ export const fetchTile = layerModel => {
   if (layerRequest && layerRequest instanceof Promise) layerRequest.cancel();
 
   const newLayerRequest = get(url).then(res => {
-    if (res.status > 400) throw new Error(res);
+    if (res.status > 400) {
+      console.error(res);
+      return false;
+    }
     return JSON.parse(res.response);
   });
 
