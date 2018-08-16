@@ -10,6 +10,8 @@ class PluginLeaflet {
     this.map = map;
   }
 
+  events = {}
+
   method = {
     // CARTO
     cartodb: cartoLayer,
@@ -109,20 +111,37 @@ class PluginLeaflet {
     this.setOpacity(layerModel, !visibility ? 0 : opacity);
   }
 
+  /**
+   * A namespace to set DOM events
+   * @param {Object} layerModel
+  */
   setEvents(layerModel) {
     const { mapLayer, events } = layerModel;
 
-    Object.keys(events).forEach((k) => {
+    // Remove current events
+    Object.keys(this.events).forEach((k) => {
       if (mapLayer.group) {
         mapLayer.eachLayer((l) => {
           l.off(k);
-          l.on(k, events[k]);
         });
       } else {
         mapLayer.off(k);
+      }
+    });
+
+    // Add new events
+    Object.keys(events).forEach((k) => {
+      if (mapLayer.group) {
+        mapLayer.eachLayer((l) => {
+          l.on(k, events[k]);
+        });
+      } else {
         mapLayer.on(k, events[k]);
       }
     });
+
+    // Set this.events equal to current ones
+    this.events = events;
 
     return this;
   }
