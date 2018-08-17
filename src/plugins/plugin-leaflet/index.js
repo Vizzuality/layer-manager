@@ -27,7 +27,8 @@ class PluginLeaflet {
     loca: locaLayer,
     nexgddp: nexgddpLayer,
     // LEAFLET
-    leaflet: leafletLayer
+    leaflet: leafletLayer,
+    wms: leafletLayer
   };
 
   /**
