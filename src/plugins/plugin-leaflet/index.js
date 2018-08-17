@@ -137,6 +137,7 @@ class PluginLeaflet {
         });
       } else {
         mapLayer.on(k, events[k]);
+        console.log(mapLayer);
       }
     });
 
