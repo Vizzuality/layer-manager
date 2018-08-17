@@ -6,12 +6,13 @@ import LeafletLayer from './leaflet-layer-leaflet';
 const { L } = typeof window !== 'undefined' ? window : {};
 const eval2 = eval;
 
-const EsriLayer = layerModel => {
+const EsriLayer = (layerModel) => {
   if (!L) throw new Error('Leaflet must be defined.');
-  if (!L.esri)
+  if (!L.esri) {
     throw new Error(
       'To support this layer you should add esri library for Leaflet.'
     );
+  }
 
   // Preparing layerConfig
   const { layerConfig, params, sqlParams } = layerModel;
@@ -30,8 +31,7 @@ const EsriLayer = layerModel => {
   if (L[layerConfigParsed.type]) return new LeafletLayer({ ...layerModel });
 
   return new Promise((resolve, reject) => {
-    if (!L.esri[layerConfigParsed.type])
-      return reject(new Error('"type" specified in layer spec doesn`t exist'));
+    if (!L.esri[layerConfigParsed.type]) { return reject(new Error('"type" specified in layer spec doesn`t exist')); }
 
     const layerOptions = JSON.parse(bodyStringified);
     layerOptions.pane = 'tilePane';
@@ -55,7 +55,7 @@ const EsriLayer = layerModel => {
     }
 
     if (!layer.setZIndex) {
-      layer.setZIndex = zIndex => {
+      layer.setZIndex = (zIndex) => {
         if (layer._currentImage) {
           layer._currentImage._image.style.zIndex = zIndex;
         }
