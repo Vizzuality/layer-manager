@@ -94,7 +94,13 @@ class PluginLeaflet {
   setOpacity(layerModel, opacity) {
     const { mapLayer } = layerModel;
 
-    mapLayer.setOpacity(opacity);
+    if (typeof mapLayer.setOpacity === 'function') {
+      mapLayer.setOpacity(opacity);
+    }
+
+    if (typeof mapLayer.setStyle === 'function') {
+      mapLayer.setStyle({ opacity });
+    }
 
     return this;
   }
