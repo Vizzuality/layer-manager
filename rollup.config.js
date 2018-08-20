@@ -5,7 +5,7 @@ export default [{
   input: 'src/index.js',
   output: {
     file: 'dist/index.js',
-    format: 'esm',
+    format: 'cjs',
   },
   external: id => id === 'bluebird' || /lodash/.test(id),
   plugins: [
@@ -25,9 +25,10 @@ export default [{
   input: 'src/react/index.js',
   output: {
     file: 'dist/react/index.js',
-    format: 'esm'
+    format: 'cjs'
   },
-  external: id => id === 'bluebird' ||
+  external: id =>
+    id === 'bluebird' ||
     id === 'react' ||
     id === 'prop-types' ||
     /lodash/.test(id),

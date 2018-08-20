@@ -30,7 +30,6 @@ const UTFGridLayer = L && L.GridLayer.extend({
     L.GridLayer.prototype.onAdd.call(this, map);
 
     this.map = map;
-    this._container = this.map._container;
 
     const zoom = Math.round(this.map.getZoom());
 
@@ -46,9 +45,6 @@ const UTFGridLayer = L && L.GridLayer.extend({
     const { map } = this;
     map.off('click', this.click, this);
     map.off('mousemove', this.move, this);
-    if (this.options.pointerCursor) {
-      this._container.style.cursor = '';
-    }
   },
 
   click(e) {
@@ -61,15 +57,9 @@ const UTFGridLayer = L && L.GridLayer.extend({
     if (on.data !== this.mouseOn) {
       if (this.mouseOn) {
         this.fire('mouseout', { latlng: e.latlng, data: this.mouseOn });
-        if (this.options.pointerCursor) {
-          this._container.style.cursor = '';
-        }
       }
       if (on.data) {
         this.fire('mouseover', on);
-        if (this.options.pointerCursor) {
-          this._container.style.cursor = 'pointer';
-        }
       }
 
       this.mouseOn = on.data;

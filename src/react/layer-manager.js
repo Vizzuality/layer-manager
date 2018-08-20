@@ -4,11 +4,9 @@ import Manager from 'src/layer-manager';
 import PluginLeaflet from 'plugins/plugin-leaflet';
 import Layer from 'src/react/layer';
 
-const { L } = typeof window !== 'undefined' ? window : {};
-
 class LayerManager extends Component {
   static propTypes = {
-    map: PropTypes.instanceOf(L.Map).isRequired,
+    map: PropTypes.object.isRequired,
     plugin: PropTypes.func,
     layersSpec: PropTypes.arrayOf(PropTypes.object),
     onLayerLoading: PropTypes.func,
