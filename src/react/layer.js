@@ -6,31 +6,41 @@ class Layer extends Component {
   static propTypes = {
     id: PropTypes.string.isRequired,
     layerManager: PropTypes.instanceOf(LayerManager).isRequired,
-    onLayerLoading: PropTypes.func
+    onLayerLoading: PropTypes.func,
+    onReady: PropTypes.func
   };
 
   static defaultProps = {
-    onLayerLoading: () => {}
+    onLayerLoading: () => {},
+    onReady: () => {}
   };
 
   componentDidMount() {
-    const { layerManager, onLayerLoading, ...options } = this.props;
+    const { layerManager, onLayerLoading, onReady, ...options } = this.props;
 
     onLayerLoading(true);
 
-    layerManager.add([ options ], options).finally(() => {
-      onLayerLoading(false);
-    });
+    layerManager.add([ options ], options)
+      .then((layerModel) => {
+        onReady(layerModel);
+      })
+      .finally(() => {
+        onLayerLoading(false);
+      });
   }
 
   componentDidUpdate() {
-    const { layerManager, onLayerLoading, ...options } = this.props;
+    const { layerManager, onLayerLoading, onReady, ...options } = this.props;
 
     onLayerLoading(true);
 
-    layerManager.add([ options ], options).finally(() => {
-      onLayerLoading(false);
-    });
+    layerManager.add([ options ], options)
+      .then((layerModel) => {
+        onReady(layerModel);
+      })
+      .finally(() => {
+        onLayerLoading(false);
+      });
   }
 
   componentWillUnmount() {
