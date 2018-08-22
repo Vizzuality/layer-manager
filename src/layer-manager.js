@@ -52,9 +52,11 @@ class LayerManager {
         return false;
       });
 
-      return Promise.all(Object.values(this.promises)).finally(() => {
-        this.promises = {};
-      });
+      return Promise.all(Object.values(this.promises))
+        .then(() => this.layers)
+        .finally(() => {
+          this.promises = {};
+        });
     }
 
     // By default it will return a empty layers
