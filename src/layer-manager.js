@@ -112,12 +112,17 @@ class LayerManager {
       params,
       sqlParams,
       decodeParams,
-      layerConfig
+      layerConfig,
+      events
     } = layerModel.changedAttributes;
 
     if (typeof opacity !== 'undefined') { this.plugin.setOpacity(layerModel, opacity); }
     if (typeof visibility !== 'undefined') { this.plugin.setOpacity(layerModel, !visibility ? 0 : layerModel.opacity); }
     if (typeof zIndex !== 'undefined') { this.plugin.setZIndex(layerModel, zIndex); }
+    if (typeof events !== 'undefined') {
+      this.setEvents(layerModel);
+    }
+    
     if (typeof layerConfig !== 'undefined') {
       this.plugin.remove(layerModel);
       this.requestLayer(layerModel);
