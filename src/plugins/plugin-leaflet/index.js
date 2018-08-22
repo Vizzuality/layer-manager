@@ -29,7 +29,8 @@ class PluginLeaflet {
     loca: locaLayer,
     nexgddp: nexgddpLayer,
     // LEAFLET
-    leaflet: leafletLayer
+    leaflet: leafletLayer,
+    wms: leafletLayer
   };
 
   /**
@@ -94,9 +95,13 @@ class PluginLeaflet {
    */
   setOpacity(layerModel, opacity) {
     const { mapLayer } = layerModel;
-    
-    if (mapLayer.setOpacity) {
+
+    if (typeof mapLayer.setOpacity === 'function') {
       mapLayer.setOpacity(opacity);
+    }
+
+    if (typeof mapLayer.setStyle === 'function') {
+      mapLayer.setStyle({ opacity });
     }
 
     return this;
