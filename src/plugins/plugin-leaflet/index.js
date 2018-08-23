@@ -166,7 +166,7 @@ class PluginLeaflet {
       decodeFunction
     } = layerModel;
 
-    mapLayer.reDraw({ params, sqlParams, decodeParams, decodeFunction });
+    mapLayer.reDraw({ decodeParams, decodeFunction, params, sqlParams });
 
     return this;
   }
