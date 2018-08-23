@@ -124,7 +124,7 @@ class LayerManager {
     if (typeof events !== 'undefined') {
       this.setEvents(layerModel);
     }
-    
+
     if (typeof layerConfig !== 'undefined') {
       this.plugin.remove(layerModel);
       this.requestLayer(layerModel);
