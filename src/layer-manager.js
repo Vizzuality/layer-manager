@@ -18,11 +18,10 @@ class LayerManager {
     if (this.layers.length > 0) {
       this.layers.map((layerModel) => {
         const {
-          changedAttributes,
-          decodeParams
+          changedAttributes
         } = layerModel;
         const { sqlParams, params } = changedAttributes;
-        const hasChanged = (sqlParams || params) && isEmpty(decodeParams);
+        const hasChanged = sqlParams || params;
 
         // If layer exists let's update it
         if (layerModel.mapLayer && !hasChanged) {
@@ -124,21 +123,15 @@ class LayerManager {
     if (typeof events !== 'undefined') {
       this.setEvents(layerModel);
     }
-    
+
     if (typeof layerConfig !== 'undefined') {
       this.plugin.remove(layerModel);
       this.requestLayer(layerModel);
     }
 
-    if (!isEmpty(params) && isEmpty(layerModel.decodeParams)) this.plugin.setParams(layerModel);
-    if (!isEmpty(sqlParams) && isEmpty(layerModel.decodeParams)) {
-      this.plugin.setParams(layerModel); }
-    if (
-      (!isEmpty(params) && !isEmpty(layerModel.decodeParams)) ||
-      (!isEmpty(sqlParams) && !isEmpty(layerModel.decodeParams)) ||
-      !isEmpty(decodeParams)
-    ) {
-      this.plugin.setDecodeParams(layerModel); }
+    if (!isEmpty(params)) this.plugin.setParams(layerModel);
+    if (!isEmpty(sqlParams)) this.plugin.setParams(layerModel);
+    if (!isEmpty(decodeParams)) this.plugin.setDecodeParams(layerModel);
   }
 
   /**
