@@ -171,10 +171,7 @@ const CanvasLayer = L && L.GridLayer.extend({
       const { x, y, z } = this.tiles[k];
       const id = replace(params.url, { x, y, z, ...params, sqlParams });
 
-      return this.getTile({ x, y, z }).then((image) => {
-        this.cacheTile({ ...this.tiles[k], id, image, ...{ x, y, z } });
-        this.drawCanvas(id);
-      });
+      return this.drawCanvas(id);
     });
   }
 });

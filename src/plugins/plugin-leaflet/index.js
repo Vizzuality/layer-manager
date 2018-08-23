@@ -144,7 +144,6 @@ class PluginLeaflet {
         });
       } else {
         mapLayer.on(k, events[k]);
-        console.log(mapLayer);
       }
     });
 
@@ -167,7 +166,7 @@ class PluginLeaflet {
       decodeFunction
     } = layerModel;
 
-    mapLayer.reDraw({ params, sqlParams, decodeParams, decodeFunction });
+    mapLayer.reDraw({ decodeParams, decodeFunction, params, sqlParams });
 
     return this;
   }
