@@ -20,8 +20,8 @@ class LayerManager {
         const {
           changedAttributes
         } = layerModel;
-        const { sqlParams, params } = changedAttributes;
-        const hasChanged = sqlParams || params;
+        const { sqlParams, params, layerConfig } = changedAttributes;
+        const hasChanged = sqlParams || params || layerConfig;
 
         // If layer exists let's update it
         if (layerModel.mapLayer && !hasChanged) {
@@ -124,11 +124,7 @@ class LayerManager {
       this.setEvents(layerModel);
     }
 
-    if (typeof layerConfig !== 'undefined') {
-      this.plugin.remove(layerModel);
-      this.requestLayer(layerModel);
-    }
-
+    if (!isEmpty(layerConfig)) this.plugin.setLayerConfig(layerModel);
     if (!isEmpty(params)) this.plugin.setParams(layerModel);
     if (!isEmpty(sqlParams)) this.plugin.setParams(layerModel);
     if (!isEmpty(decodeParams)) this.plugin.setDecodeParams(layerModel);

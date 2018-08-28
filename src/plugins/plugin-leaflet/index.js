@@ -157,6 +157,10 @@ class PluginLeaflet {
     this.remove(layerModel);
   }
 
+  setLayerConfig(layerModel) {
+    this.remove(layerModel);
+  }
+
   setDecodeParams(layerModel) {
     const {
       mapLayer,
