@@ -41,7 +41,8 @@ class LayerManager {
         // If promises exists and it's pending let's cancel it
         if (
           this.promises[layerModel.id] &&
-            this.promises[layerModel.id].isPending()
+          this.promises[layerModel.id].isPending &&
+          this.promises[layerModel.id].isPending()
         ) {
           this.promises[layerModel.id].cancel();
         }
@@ -124,10 +125,10 @@ class LayerManager {
       this.setEvents(layerModel);
     }
 
-    if (!isEmpty(layerConfig)) this.plugin.setLayerConfig(layerModel);
-    if (!isEmpty(params)) this.plugin.setParams(layerModel);
-    if (!isEmpty(sqlParams)) this.plugin.setParams(layerModel);
-    if (!isEmpty(decodeParams)) this.plugin.setDecodeParams(layerModel);
+    if (this.plugin.setLayerConfig && !isEmpty(layerConfig)) this.plugin.setLayerConfig(layerModel);
+    if (this.plugin.setParams && !isEmpty(params)) this.plugin.setParams(layerModel);
+    if (this.plugin.setParams && !isEmpty(sqlParams)) this.plugin.setParams(layerModel);
+    if ( this.plugin.setDecodeParams && !isEmpty(decodeParams)) this.plugin.setDecodeParams(layerModel);
   }
 
   /**
