@@ -1,4 +1,5 @@
 import cartoLayer from './carto-layer-cesium';
+import tileLayer from './tile-layer-cesium';
 
 class PluginCesium {
   static Cesium = typeof window !== 'undefined' ? window.Cesium : null;
@@ -8,7 +9,11 @@ class PluginCesium {
     this.map = map;
     this.eventListener = new Cesium.ScreenSpaceEventHandler(map.scene.canvas);
 
-    this.method = { carto: cartoLayer(Cesium), cartodb: cartoLayer(Cesium) };
+    this.method = {
+      carto: cartoLayer(Cesium),
+      cartodb: cartoLayer(Cesium),
+      cesium: tileLayer(Cesium)
+    };
   }
 
   add(layerModel) {
