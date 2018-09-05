@@ -3,10 +3,24 @@ import isEmpty from 'lodash/isEmpty';
 
 import LayerModel from './layer-model';
 
+function checkPluginProperties(plugin) {
+  if (plugin) {
+    const requiredProperties = [
+      'add', 'remove', 'setVisibility', 'setOpacity', 'setEvents', 'setZIndex',
+      'setLayerConfig', 'setParams', 'setDecodeParams', 'getLayerByProvider'
+    ];
+    // eslint-disable-next-line prefer-arrow-callback
+    requiredProperties.forEach(function showError(property) {
+      if (!plugin[property]) console.error(`The ${property} function is required for layer manager plugins`);
+    })
+  }
+}
+
 class LayerManager {
   constructor(map, Plugin) {
     this.map = map;
     this.plugin = new Plugin(this.map);
+    checkPluginProperties(this.plugin);
     this.layers = [];
     this.promises = {};
   }
@@ -41,7 +55,8 @@ class LayerManager {
         // If promises exists and it's pending let's cancel it
         if (
           this.promises[layerModel.id] &&
-            this.promises[layerModel.id].isPending()
+          this.promises[layerModel.id].isPending &&
+          this.promises[layerModel.id].isPending()
         ) {
           this.promises[layerModel.id].cancel();
         }
