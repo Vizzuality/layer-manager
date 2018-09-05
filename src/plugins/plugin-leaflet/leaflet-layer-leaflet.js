@@ -49,7 +49,7 @@ const LeafletLayer = (layerModel) => {
       }
       break;
     default:
-      layer = L[layerConfigParsed.type](layerConfigParsed.body);
+      layer = L[layerConfigParsed.type](layerConfigParsed.body, layerConfigParsed.options || {});
       break;
   }
 
