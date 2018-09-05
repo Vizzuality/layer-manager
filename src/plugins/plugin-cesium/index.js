@@ -78,6 +78,18 @@ class PluginCesium {
     return this;
   }
 
+  setParams(layerModel) {
+    this.remove(layerModel);
+  }
+
+  setLayerConfig(layerModel) {
+    this.remove(layerModel);
+  }
+
+  setDecodeParams(layerModel) {
+    console.info('Decode params callback',layerModel, this)
+  }
+
   getCoordinatesFromEvent = action => event => {
     const { position } = event;
     const { Cesium } = PluginCesium;

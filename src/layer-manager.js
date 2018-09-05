@@ -3,10 +3,24 @@ import isEmpty from 'lodash/isEmpty';
 
 import LayerModel from './layer-model';
 
+function checkPluginProperties(plugin) {
+  if (plugin) {
+    const requiredProperties = [
+      'add', 'remove', 'setVisibility', 'setOpacity', 'setEvents', 'setZIndex',
+      'setLayerConfig', 'setParams', 'setDecodeParams', 'getLayerByProvider'
+    ];
+    // eslint-disable-next-line prefer-arrow-callback
+    requiredProperties.forEach(function showError(property) {
+      if (!plugin[property]) console.error(`The ${property} function is required for layer manager plugins`);
+    })
+  }
+}
+
 class LayerManager {
   constructor(map, Plugin) {
     this.map = map;
     this.plugin = new Plugin(this.map);
+    checkPluginProperties(this.plugin);
     this.layers = [];
     this.promises = {};
   }
@@ -125,10 +139,10 @@ class LayerManager {
       this.setEvents(layerModel);
     }
 
-    if (this.plugin.setLayerConfig && !isEmpty(layerConfig)) this.plugin.setLayerConfig(layerModel);
-    if (this.plugin.setParams && !isEmpty(params)) this.plugin.setParams(layerModel);
-    if (this.plugin.setParams && !isEmpty(sqlParams)) this.plugin.setParams(layerModel);
-    if ( this.plugin.setDecodeParams && !isEmpty(decodeParams)) this.plugin.setDecodeParams(layerModel);
+    if (!isEmpty(layerConfig)) this.plugin.setLayerConfig(layerModel);
+    if (!isEmpty(params)) this.plugin.setParams(layerModel);
+    if (!isEmpty(sqlParams)) this.plugin.setParams(layerModel);
+    if (!isEmpty(decodeParams)) this.plugin.setDecodeParams(layerModel);
   }
 
   /**
