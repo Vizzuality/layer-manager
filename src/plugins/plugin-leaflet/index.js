@@ -1,9 +1,12 @@
+import debounce from 'lodash/debounce';
+
 import cartoLayer from './carto-layer-leaflet';
 import esriLayer from './esri-layer-leaflet';
 import geeLayer from './gee-layer-leaflet';
 import locaLayer from './loca-layer-leaflet';
 import nexgddpLayer from './nexgddp-layer-leaflet';
 import leafletLayer from './leaflet-layer-leaflet';
+
 
 class PluginLeaflet {
   constructor(map) {
@@ -122,19 +125,21 @@ class PluginLeaflet {
    * A namespace to set DOM events
    * @param {Object} layerModel
   */
-  setEvents(layerModel) {
+  setEvents = debounce(layerModel => {
     const { mapLayer, events } = layerModel;
 
     // Remove current events
-    Object.keys(this.events).forEach((k) => {
-      if (mapLayer.group) {
-        mapLayer.eachLayer((l) => {
-          l.off(k);
-        });
-      } else {
-        mapLayer.off(k);
-      }
-    });
+    if (this.events[layerModel.id]) {
+      Object.keys(this.events[layerModel.id]).forEach((k) => {
+        if (mapLayer.group) {
+          mapLayer.eachLayer((l) => {
+            l.off(k);
+          });
+        } else {
+          mapLayer.off(k);
+        }
+      });
+    }
 
     // Add new events
     Object.keys(events).forEach((k) => {
@@ -146,12 +151,11 @@ class PluginLeaflet {
         mapLayer.on(k, events[k]);
       }
     });
-
     // Set this.events equal to current ones
-    this.events = events;
+    this.events[layerModel.id] = events;
 
     return this;
-  }
+  }, 200, { leading: true })
 
   setParams(layerModel) {
     this.remove(layerModel);
