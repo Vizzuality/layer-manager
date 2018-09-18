@@ -8,7 +8,7 @@ const CartoLayer = (layerModel) => {
   if (!L) throw new Error('Leaflet must be defined.');
 
   const { layerConfig, params, sqlParams, interactivity } = layerModel;
-  const layerConfigParsed = JSON.parse(
+  const layerConfigParsed = (layerConfig.parse === false) ? layerConfig : JSON.parse(
     replace(JSON.stringify(layerConfig), params, sqlParams)
   );
 

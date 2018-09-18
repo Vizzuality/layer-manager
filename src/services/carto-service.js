@@ -6,7 +6,7 @@ export const fetchTile = layerModel => {
   const { layerConfig, params, sqlParams, interactivity } = layerModel;
   const { layerRequest } = layerModel;
 
-  const layerConfigParsed = JSON.parse(
+  const layerConfigParsed = (layerConfig.parse === false) ? layerConfig : JSON.parse(
     replace(JSON.stringify(layerConfig), params, sqlParams)
   );
   const layerTpl = JSON.stringify({
