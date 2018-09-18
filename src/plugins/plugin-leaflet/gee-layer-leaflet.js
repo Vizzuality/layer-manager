@@ -11,7 +11,7 @@ const GEELayer = (layerModel) => {
 
   const { id, layerConfig, interactivity, params, sqlParams, decodeParams } = layerModel;
   const tileUrl = `https://api.resourcewatch.org/v1/layer/${id}/tile/gee/{z}/{x}/{y}`;
-  const layerConfigParsed = JSON.parse(
+  const layerConfigParsed = (layerConfig.parse === false) ? layerConfig : JSON.parse(
     replace(JSON.stringify(layerConfig), params, sqlParams)
   );
   let layer;

@@ -11,7 +11,7 @@ const LeafletLayer = (layerModel) => {
   const { layerConfig, params, sqlParams, decodeParams } = layerModel;
   let layer;
 
-  const layerConfigParsed = JSON.parse(
+  const layerConfigParsed = (layerConfig.parse === false) ? layerConfig : JSON.parse(
     replace(JSON.stringify(layerConfig), params, sqlParams)
   );
 

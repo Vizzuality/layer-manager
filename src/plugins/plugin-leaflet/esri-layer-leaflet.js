@@ -18,7 +18,7 @@ const EsriLayer = (layerModel) => {
 
   // Preparing layerConfig
   const { layerConfig, interactivity, params, sqlParams } = layerModel;
-  const layerConfigParsed = JSON.parse(
+  const layerConfigParsed = (layerConfig.parse === false) ? layerConfig : JSON.parse(
     replace(JSON.stringify(layerConfig), params, sqlParams)
   );
 
