@@ -1,16 +1,16 @@
 {
   "name": "layer-manager",
-  "version": "1.1.5",
+  "version": "1.1.7",
   "description": "A library to get a layer depending on provider and layer spec",
   "main": "dist/index.js",
   "scripts": {
     "serve": "http-server . -p 8000 -a 0.0.0.0",
-    "prepublishOnly": "npm run build",
-    "lint": "eslint ./src",
+    "prepublishOnly": "yarn build",
+    "lint": "yarn eslint ./src",
     "test": "mocha --require babel-core/register --require ./test/setup --recursive ./test/specs",
-    "watch": "rollup -c -w",
-    "build": "rollup -c",
-    "prettier": "prettier --single-quote --write \"src/**/*.js\""
+    "watch": "yarn rollup -c -w",
+    "build": "yarn rollup -c",
+    "prettier": "yarn prettier --single-quote --write \"src/**/*.js\""
   },
   "repository": {
     "type": "git",

@@ -6,6 +6,7 @@ export default [{
   output: {
     file: 'dist/index.js',
     format: 'cjs',
+    exports: 'named'
   },
   external: id => id === 'bluebird' || /lodash/.test(id),
   plugins: [
