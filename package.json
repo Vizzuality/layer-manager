@@ -19,13 +19,16 @@
   "author": "Vizzuality",
   "license": "MIT",
   "devDependencies": {
-    "babel-core": "^6.26.0",
+    "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.2",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-module-resolver": "^3.1.1",
-    "babel-preset-env": "^1.6.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-es2017-object-entries": "^0.0.4",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-2": "^6.24.1",
     "chai": "^4.1.2",
     "eslint": "4.19.1",
     "eslint-config-airbnb": "17.0.0",
@@ -44,11 +47,11 @@
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "rollup": "^0.63.5",
-    "rollup-plugin-babel": "^3.0.7",
+    "rollup-plugin-babel": "3",
     "rollup-plugin-node-resolve": "^3.3.0"
   },
   "dependencies": {
-    "bluebird": "^3.5.1",
+    "bluebird": "^3.5.2",
     "lodash": "^4.17.10",
     "wri-json-api-serializer": "^1.0.1"
   },

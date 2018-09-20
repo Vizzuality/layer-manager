@@ -8,11 +8,10 @@ export default [{
     format: 'cjs',
     exports: 'named'
   },
-  external: id => id === 'bluebird' || /lodash/.test(id),
+  external: id => /(babel-runtime|lodash|bluebird)/.test(id),
   plugins: [
     babelPlugin({
       exclude: 'node_modules/**',
-      plugins: ['external-helpers'],
       runtimeHelpers: true
     }),
     nodeResolvePlugin({
@@ -26,17 +25,13 @@ export default [{
   input: 'src/react/index.js',
   output: {
     file: 'dist/react/index.js',
-    format: 'cjs'
+    format: 'cjs',
+    exports: 'named'
   },
-  external: id =>
-    id === 'bluebird' ||
-    id === 'react' ||
-    id === 'prop-types' ||
-    /lodash/.test(id),
+  external: id => id === 'react' || /(babel-runtime|bluebird|prop-types|lodash)/.test(id),
   plugins: [
     babelPlugin({
       exclude: 'node_modules/**',
-      plugins: ['external-helpers'],
       runtimeHelpers: true
     }),
     nodeResolvePlugin({
