@@ -2,15 +2,15 @@
   "presets": [
     [
       "env", {
-        "modules": false
+        "modules": false,
+        "useBuiltIns": "entry"
       }
     ],
     "react"
   ],
   "plugins": [
-    "transform-runtime",
     "transform-object-rest-spread",
-    "transform-class-properties",
+    ["transform-class-properties", { "spec": true }],
     [
       "module-resolver",
       {

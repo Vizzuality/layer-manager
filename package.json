@@ -1,6 +1,6 @@
 {
   "name": "layer-manager",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "A library to get a layer depending on provider and layer spec",
   "main": "dist/index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "lint": "yarn eslint ./src",
     "test": "mocha --require babel-core/register --require ./test/setup --recursive ./test/specs",
     "watch": "yarn rollup -c -w",
-    "build": "yarn rollup -c",
+    "build": "yarn webpack --colors --progress",
     "prettier": "yarn prettier --single-quote --write \"src/**/*.js\""
   },
   "repository": {
@@ -19,14 +19,12 @@
   "author": "Vizzuality",
   "license": "MIT",
   "devDependencies": {
-    "babel-core": "^6.26.3",
+    "babel-core": "6",
     "babel-eslint": "^8.2.2",
-    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-loader": "7",
     "babel-plugin-module-resolver": "^3.1.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-es2017-object-entries": "^0.0.4",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "chai": "^4.1.2",
@@ -40,21 +38,22 @@
     "eslint-plugin-jsx-a11y": "6.1.1",
     "eslint-plugin-prettier": "2.6.2",
     "eslint-plugin-react": "7.10.0",
-    "http-server": "^0.11.1",
     "jsdom": "^11.6.2",
     "mocha": "^5.0.4",
     "prettier": "^0.11.0",
-    "prop-types": "^15.6.2",
     "react": "^16.4.1",
-    "rollup": "^0.63.5",
+    "rollup": "^0.66.1",
     "rollup-plugin-babel": "3",
     "rollup-plugin-commonjs": "^9.1.8",
-    "rollup-plugin-node-resolve": "^3.3.0"
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "webpack": "^4.19.1",
+    "webpack-cli": "^3.1.0"
   },
   "dependencies": {
-    "babel-runtime": "^6.26.0",
     "bluebird": "^3.5.2",
+    "core-js": "^2.5.7",
     "lodash": "^4.17.10",
+    "prop-types": "^15.6.2",
     "wri-json-api-serializer": "^1.0.1"
   },
   "peerDependencies": {
