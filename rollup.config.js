@@ -1,5 +1,6 @@
 import nodeResolvePlugin from 'rollup-plugin-node-resolve';
 import babelPlugin from 'rollup-plugin-babel';
+import commonjsPlugin from 'rollup-plugin-commonjs';
 
 export default [{
   input: 'src/index.js',
@@ -12,13 +13,19 @@ export default [{
   plugins: [
     babelPlugin({
       exclude: 'node_modules/**',
+      plugins: ['external-helpers'],
+      externalHelpers: true,
       runtimeHelpers: true
     }),
     nodeResolvePlugin({
       modulesOnly: true,
       jsnext: true,
       main: true,
-      browser: true
+      browser: true,
+      preferBuiltins: true
+    }),
+    commonjsPlugin({
+      include: 'node_modules/**'
     })
   ]
 }, {
@@ -32,13 +39,16 @@ export default [{
   plugins: [
     babelPlugin({
       exclude: 'node_modules/**',
+      plugins: ['external-helpers'],
+      externalHelpers: true,
       runtimeHelpers: true
     }),
     nodeResolvePlugin({
       modulesOnly: true,
       jsnext: true,
       main: true,
-      browser: true
+      browser: true,
+      preferBuiltins: true
     })
   ]
 }];

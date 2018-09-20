@@ -48,9 +48,11 @@
     "react": "^16.4.1",
     "rollup": "^0.63.5",
     "rollup-plugin-babel": "3",
+    "rollup-plugin-commonjs": "^9.1.8",
     "rollup-plugin-node-resolve": "^3.3.0"
   },
   "dependencies": {
+    "babel-runtime": "^6.26.0",
     "bluebird": "^3.5.2",
     "lodash": "^4.17.10",
     "wri-json-api-serializer": "^1.0.1"
