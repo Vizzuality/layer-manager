@@ -1,48 +1,76 @@
 import nodeResolvePlugin from 'rollup-plugin-node-resolve';
 import babelPlugin from 'rollup-plugin-babel';
 import commonjsPlugin from 'rollup-plugin-commonjs';
+import { uglify  } from 'rollup-plugin-uglify';
+
+const globals = {
+  'react-dom': 'ReactDOM',
+  react: 'React',
+  bluebird: 'Promise'
+};
+
+const external = Object.keys(globals);
+
+const babelOptions = {
+  exclude: 'node_modules/**',
+  runtimeHelpers: true
+};
+
+const nodeResolveOptions = {
+  module: true,
+  jsnext: true,
+  main: true
+};
+
+// const commonjsOptions = {
+// };
 
 export default [
   {
     input: 'src/index.js',
     output: {
-      file: 'dist/index.js',
-      format: 'cjs',
-      exports: 'named'
+      file: 'lib/index.js',
+      format: 'es',
+      globals
     },
-    external: id => /(lodash|bluebird)/.test(id),
+    external: [...external],
     plugins: [
-      babelPlugin({
-        exclude: 'node_modules/**'
-      }),
-      nodeResolvePlugin({
-        jsnext: true,
-        main: true
-      }),
-      commonjsPlugin({
-        include: 'node_modules/**'
-      })
+      nodeResolvePlugin(nodeResolveOptions),
+      babelPlugin(babelOptions),
+      commonjsPlugin()
     ]
   },
   {
+    input: 'src/index.js',
+    output: {
+      file: 'dist/index.js',
+      format: 'umd',
+      name: 'LayerManager',
+      exports: 'named',
+      globals
+    },
+    external: [...external],
+    plugins: [
+      nodeResolvePlugin(nodeResolveOptions),
+      babelPlugin(babelOptions),
+      commonjsPlugin(),
+      uglify()
+    ]
+  },
+
+  // React components
+  {
     input: 'src/react/index.js',
     output: {
-      file: 'dist/react/index.js',
-      format: 'cjs',
-      exports: 'named'
+      file: 'lib/react/index.js',
+      format: 'es',
+      globals
     },
-    external: id => id === 'react' || /(bluebird|prop-types|lodash)/.test(id),
+    external: [...external],
     plugins: [
-      babelPlugin({
-        exclude: 'node_modules/**'
-      }),
-      nodeResolvePlugin({
-        jsnext: true,
-        main: true
-      }),
-      commonjsPlugin({
-        include: 'node_modules/**'
-      })
+      nodeResolvePlugin(nodeResolveOptions),
+      babelPlugin(babelOptions),
+      commonjsPlugin()
     ]
   }
 ];

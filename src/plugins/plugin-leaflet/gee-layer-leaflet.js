@@ -1,5 +1,5 @@
 import Promise from 'bluebird';
-import { replace } from 'src/lib/query';
+import { replace } from 'lib/query';
 
 import CanvasLayer from './canvas-layer-leaflet';
 import UTFGridLayer from './utf-grid-layer-leaflet';
@@ -43,7 +43,7 @@ const GEELayer = (layerModel) => {
     });
 
     layer = new LayerGroup([layer, interactiveLayer]);
-  }  
+  }
 
   return new Promise((resolve, reject) => {
     if (layer) {

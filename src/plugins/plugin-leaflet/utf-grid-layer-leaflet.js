@@ -6,7 +6,7 @@ const UTFGridLayer = L && L.GridLayer.extend({
   cache: {},
   mouseOn: null,
 
-  createTile({ x, y, z }) {
+  createTile({ z }) {
     // Delete all tiles from others zooms;
     const tilesKeys = Object.keys(this.tiles);
     for (let i = 0; i < tilesKeys.length; i++) {
@@ -24,7 +24,7 @@ const UTFGridLayer = L && L.GridLayer.extend({
 
     return tile;
   },
-  
+
   onAdd(map) {
     // Very important line
     L.GridLayer.prototype.onAdd.call(this, map);

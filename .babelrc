@@ -3,25 +3,37 @@
     [
       "env", {
         "modules": false,
-        "useBuiltIns": "entry"
+        "targets": {
+          "browsers": ["last 2 versions", "safari >= 7","ie >= 10"]
+        },
+        "useBuiltIns": true
       }
     ],
     "react"
   ],
   "plugins": [
+    "transform-runtime",
     "transform-object-rest-spread",
     ["transform-class-properties", { "spec": true }],
     [
       "module-resolver",
       {
+        "root": ".",
         "alias": {
-          "src": "./src",
+          "components": "./src/components",
           "lib": "./src/lib",
-          "services": "./src/services",
-          "plugins": "./src/plugins"
+          "plugins": "./src/plugins",
+          "services": "./src/services"
         },
         "extensions": [".js", ".jsx"]
       }
     ]
-  ]
+  ],
+  "env": {
+    "rollup": {
+      "plugins": [
+        "external-helpers"
+      ]
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import { replace } from 'src/lib/query';
+import { replace } from 'lib/query';
 
 const { L } = typeof window !== 'undefined' ? window : {};
 

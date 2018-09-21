@@ -1,4 +1,3 @@
-import 'core-js/fn/object/entries';
 import Promise from 'bluebird';
 import isEmpty from 'lodash/isEmpty';
 

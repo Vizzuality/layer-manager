@@ -1,3 +1,5 @@
+import 'babel-polyfill';
+
 export { default } from './layer-manager';
 
 // Plugins

@@ -1,8 +1,8 @@
 import React, { Component, Children, cloneElement, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import Manager from 'src/layer-manager';
-import PluginLeaflet from 'plugins/plugin-leaflet';
-import Layer from 'src/react/layer';
+import PluginLeaflet from 'plugins/plugin-leaflet/index';
+import Manager from '../layer-manager';
+import Layer from './layer';
 
 class LayerManager extends Component {
   static propTypes = {
