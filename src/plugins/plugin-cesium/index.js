@@ -91,7 +91,13 @@ class PluginCesium {
   }
 
   getCoordinatesFromEvent = action => event => {
-    const { position } = event;
+    if (!action) return;
+
+    const position = event.position || event.endPosition;
+    if (!position) {
+      action(event);
+    }
+
     const { Cesium } = PluginCesium;
     const clicked = new Cesium.Cartesian2(position.x, position.y);
     const { ellipsoid } = this.map.scene.globe;
@@ -100,7 +106,7 @@ class PluginCesium {
       const cartographic = ellipsoid.cartesianToCartographic(cartesian);
       const lat = Cesium.Math.toDegrees(cartographic.latitude);
       const lng = Cesium.Math.toDegrees(cartographic.longitude);
-      action(event, { lat, lng });
+      action({...event, latLng: { lat, lng }});
     }
   };
 }
