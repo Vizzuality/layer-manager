@@ -1,12 +1,9 @@
 {
   "presets": [
     [
-      "env", {
-        "modules": false,
-        "targets": {
-          "browsers": ["last 2 versions", "safari >= 7","ie >= 10"]
-        },
-        "useBuiltIns": true
+      "env",
+      {
+        "modules": false
       }
     ],
     "react"
@@ -18,12 +15,13 @@
     [
       "module-resolver",
       {
-        "root": ".",
+        "root": "./src",
         "alias": {
           "components": "./src/components",
           "lib": "./src/lib",
           "plugins": "./src/plugins",
-          "services": "./src/services"
+          "services": "./src/services",
+          "utils": "./src/utils"
         },
         "extensions": [".js", ".jsx"]
       }
@@ -31,9 +29,7 @@
   ],
   "env": {
     "rollup": {
-      "plugins": [
-        "external-helpers"
-      ]
+      "plugins": ["external-helpers"]
     }
   }
 }
