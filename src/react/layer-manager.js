@@ -1,26 +1,24 @@
-import React, { Component, Children, cloneElement, Fragment } from 'react';
+import React, { PureComponent, Children, cloneElement, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import PluginLeaflet from 'plugins/plugin-leaflet/index';
 import Manager from '../layer-manager';
 import Layer from './layer';
 
-class LayerManager extends Component {
+class LayerManager extends PureComponent {
   static propTypes = {
-    map: PropTypes.object.isRequired,
-    plugin: PropTypes.func,
+    map: PropTypes.instanceOf(L.Map).isRequired,
+    plugin: PropTypes.func.isRequired,
     layersSpec: PropTypes.arrayOf(PropTypes.object),
     onLayerLoading: PropTypes.func,
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
-      PropTypes.func
-    ])
+      PropTypes.node,
+    ]),
   };
 
   static defaultProps = {
-    plugin: PluginLeaflet,
-    children: [],
-    layersSpec: [],
-    onLayerLoading: () => {}
+    children: null,
+    layersSpec: null,
+    onLayerLoading: () => null,
   };
 
   constructor(props) {
@@ -32,10 +30,6 @@ class LayerManager extends Component {
   render() {
     const { children, layersSpec, onLayerLoading } = this.props;
 
-    if (children && typeof children === 'function') {
-      return children(this.layerManager);
-    }
-
     if (Children.count(children)) {
       return Children.map(
         children,
@@ -43,8 +37,8 @@ class LayerManager extends Component {
           child &&
             cloneElement(child, {
               layerManager: this.layerManager,
-              zIndex: child.props.zIndex || (1000 - i)
-            })
+              zIndex: child.props.zIndex || 1000 - i,
+            }),
       );
     }
 
@@ -54,7 +48,7 @@ class LayerManager extends Component {
           <Layer
             key={spec.id}
             {...spec}
-            zIndex={spec.zIndex || (1000 - i)}
+            zIndex={spec.zIndex || 1000 - i}
             onLayerLoading={onLayerLoading}
             layerManager={this.layerManager}
           />

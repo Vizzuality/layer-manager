@@ -1,10 +1,8 @@
-import "babel-polyfill";
-
-export { default } from "./layer-manager";
+export { default } from './layer-manager';
 
 // Plugins
-export { default as PluginLeaflet } from "plugins/plugin-leaflet";
-export { default as PluginCesium } from "plugins/plugin-cesium";
+export { default as PluginLeaflet } from 'plugins/plugin-leaflet';
+export { default as PluginCesium } from 'plugins/plugin-cesium';
 
 // Utils
-export { replace, substitution, concatenation } from "utils/query";
+export { replace, substitution, concatenation } from 'utils/query';
