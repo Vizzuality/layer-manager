@@ -5,12 +5,13 @@ import Manager from '../layer-manager';
 class Layer extends Component {
   static propTypes = {
     id: PropTypes.string.isRequired,
-    layerManager: PropTypes.instanceOf(Manager).isRequired,
+    layerManager: PropTypes.instanceOf(Manager),
     onLayerLoading: PropTypes.func,
     onReady: PropTypes.func,
   };
 
   static defaultProps = {
+    layerManager: null,
     onLayerLoading: () => {
     },
     onReady: () => {

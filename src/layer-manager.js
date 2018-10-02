@@ -1,6 +1,5 @@
 import Promise from 'bluebird';
 import isEmpty from 'lodash/isEmpty';
-
 import LayerModel from './layer-model';
 
 function checkPluginProperties(plugin) {
@@ -17,8 +16,8 @@ function checkPluginProperties(plugin) {
       'setDecodeParams',
       'getLayerByProvider',
     ];
-    // eslint-disable-next-line prefer-arrow-callback
-    requiredProperties.forEach(function showError(property) {
+
+    requiredProperties.forEach(property => {
       if (!plugin[property])
         console.error(
           `The ${property} function is required for layer manager plugins`,
@@ -123,7 +122,8 @@ class LayerManager {
     });
 
     // Returnning a promise
-    return this.renderLayers();
+    // return this.renderLayers()
+    return new Promise(resolve => resolve(this.layers));
   }
 
   /**

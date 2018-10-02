@@ -5,19 +5,20 @@ import Layer from './layer';
 
 class LayerManager extends PureComponent {
   static propTypes = {
-    map: PropTypes.instanceOf(L.Map).isRequired,
+    map: PropTypes.instanceOf(L.Map),
     plugin: PropTypes.func.isRequired,
     layersSpec: PropTypes.arrayOf(PropTypes.object),
-    onLayerLoading: PropTypes.func,
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node,
     ]),
+    onLayerLoading: PropTypes.func,
   };
 
   static defaultProps = {
-    children: null,
-    layersSpec: null,
+    children: [],
+    layersSpec: [],
+    map: null,
     onLayerLoading: () => null,
   };
 
@@ -27,10 +28,15 @@ class LayerManager extends PureComponent {
     this.layerManager = new Manager(map, plugin);
   }
 
+  componentDidUpdate() {
+    if (this.layerManager.layers && this.layerManager.layers.length)
+      this.layerManager.renderLayers();
+  }
+
   render() {
     const { children, layersSpec, onLayerLoading } = this.props;
 
-    if (Children.count(children)) {
+    if (children && Children.count(children)) {
       return Children.map(
         children,
         (child, i) =>
@@ -42,19 +48,23 @@ class LayerManager extends PureComponent {
       );
     }
 
-    return (
-      <Fragment>
-        {layersSpec.map((spec, i) => (
-          <Layer
-            key={spec.id}
-            {...spec}
-            zIndex={spec.zIndex || 1000 - i}
-            onLayerLoading={onLayerLoading}
-            layerManager={this.layerManager}
-          />
-        ))}
-      </Fragment>
-    );
+    if (layersSpec && layersSpec.length) {
+      return (
+        <Fragment>
+          {layersSpec.map((spec, i) => (
+            <Layer
+              key={spec.id}
+              {...spec}
+              zIndex={spec.zIndex || 1000 - i}
+              onLayerLoading={onLayerLoading}
+              layerManager={this.layerManager}
+            />
+          ))}
+        </Fragment>
+      );
+    }
+
+    return null;
   }
 }
 
