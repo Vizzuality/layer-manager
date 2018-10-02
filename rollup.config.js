@@ -63,7 +63,8 @@ export default [
     input: 'src/react/index.js',
     output: {
       file: 'lib/react/index.js',
-      format: 'es',
+      format: 'cjs',
+      exports: 'named',
       globals
     },
     external: [...external],
