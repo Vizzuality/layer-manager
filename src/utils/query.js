@@ -9,8 +9,9 @@ import compact from 'lodash/compact';
 export const substitution = (originalStr, params = {}) => {
   let str = originalStr;
   Object.keys(params).forEach(key => {
-    str = str.replace(new RegExp(`{{${key}}}`, 'g'), params[key]);
-    str = str.replace(new RegExp(`{${key}}`, 'g'), params[key]);
+    str = str
+      .replace(new RegExp(`{{${key}}}`, 'g'), params[key])
+      .replace(new RegExp(`{${key}}`, 'g'), params[key]);
   });
   return str;
 };
@@ -33,17 +34,19 @@ export const concatenation = (originalStr, params = {}) => {
         if (Array.isArray(value) && !!value.length) {
           // window.isNaN is needed here as Number.isNaN returns
           // false in the case Number.isNaN('string'). please dont change.
-          const mappedValue = value.map(v => (
-            window.isNaN(v) ? `'${v}'` : v)) // eslint-disable-line
-          return `${k} IN (${mappedValue.join(', ')})`
+          const mappedValue = value.map(v => Number.isNaN(v) ? `'${v}'` : v);
+          // eslint-disable-line
+          return `${k} IN (${mappedValue.join(', ')})`;
         }
 
         if (value) {
-          return window.isNaN(value) ? `${k} = '${value}'` : `${k} = ${value}`; // eslint-disable-line
+          return Number.isNaN(value)
+            ? `${k} = '${value}'`
+            : `${k} = ${value}`; // eslint-disable-line
         }
 
         return null;
-      })
+      }),
     ).join(' AND ')}`;
 
     if (sql && key.startsWith('where')) sql = `WHERE ${sql}`;

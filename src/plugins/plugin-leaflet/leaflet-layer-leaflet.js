@@ -1,25 +1,25 @@
 import Promise from 'bluebird';
-import { replace } from 'lib/query';
+import { replace } from 'utils/query';
 import CanvasLayer from './canvas-layer-leaflet';
 
 const { L } = typeof window !== 'undefined' ? window : {};
 const eval2 = eval;
 
-const LeafletLayer = (layerModel) => {
+const LeafletLayer = layerModel => {
   if (!L) throw new Error('Leaflet must be defined.');
 
   const { layerConfig, params, sqlParams, decodeParams } = layerModel;
   let layer;
 
-  const layerConfigParsed = (layerConfig.parse === false) ? layerConfig : JSON.parse(
-    replace(JSON.stringify(layerConfig), params, sqlParams)
-  );
+  const layerConfigParsed = layerConfig.parse === false
+    ? layerConfig
+    : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
 
   // Transforming data layer
   if (layerConfigParsed.body.crs && L.CRS[layerConfigParsed.body.crs]) {
     layerConfigParsed.body.crs = L.CRS[layerConfigParsed.body.crs.replace(
       ':',
-      ''
+      '',
     )];
     layerConfigParsed.body.pane = 'tilePane';
   }
@@ -28,7 +28,7 @@ const LeafletLayer = (layerModel) => {
     case 'wms':
       layer = L.tileLayer.wms(
         layerConfigParsed.url || layerConfigParsed.body.url,
-        layerConfigParsed.body
+        layerConfigParsed.body,
       );
       break;
     case 'tileLayer':
@@ -36,7 +36,7 @@ const LeafletLayer = (layerModel) => {
         JSON.stringify(layerConfigParsed.body).indexOf('style: "function') >= 0
       ) {
         layerConfigParsed.body.style = eval2(
-          `(${layerConfigParsed.body.style})`
+          `(${layerConfigParsed.body.style})`,
         );
       }
       if (decodeParams) {
@@ -44,12 +44,15 @@ const LeafletLayer = (layerModel) => {
       } else {
         layer = L.tileLayer(
           layerConfigParsed.url || layerConfigParsed.body.url,
-          layerConfigParsed.body
+          layerConfigParsed.body,
         );
       }
       break;
     default:
-      layer = L[layerConfigParsed.type](layerConfigParsed.body, layerConfigParsed.options || {});
+      layer = L[layerConfigParsed.type](
+        layerConfigParsed.body,
+        layerConfigParsed.options || {},
+      );
       break;
   }
 

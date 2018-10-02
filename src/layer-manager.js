@@ -1,18 +1,28 @@
 import Promise from 'bluebird';
 import isEmpty from 'lodash/isEmpty';
-
 import LayerModel from './layer-model';
 
 function checkPluginProperties(plugin) {
   if (plugin) {
     const requiredProperties = [
-      'add', 'remove', 'setVisibility', 'setOpacity', 'setEvents', 'setZIndex',
-      'setLayerConfig', 'setParams', 'setDecodeParams', 'getLayerByProvider'
+      'add',
+      'remove',
+      'setVisibility',
+      'setOpacity',
+      'setEvents',
+      'setZIndex',
+      'setLayerConfig',
+      'setParams',
+      'setDecodeParams',
+      'getLayerByProvider',
     ];
-    // eslint-disable-next-line prefer-arrow-callback
-    requiredProperties.forEach(function showError(property) {
-      if (!plugin[property]) console.error(`The ${property} function is required for layer manager plugins`);
-    })
+
+    requiredProperties.forEach(property => {
+      if (!plugin[property])
+        console.error(
+          `The ${property} function is required for layer manager plugins`,
+        );
+    });
   }
 }
 
@@ -30,10 +40,8 @@ class LayerManager {
    */
   renderLayers() {
     if (this.layers.length > 0) {
-      this.layers.map((layerModel) => {
-        const {
-          changedAttributes
-        } = layerModel;
+      this.layers.map(layerModel => {
+        const { changedAttributes } = layerModel;
         const { sqlParams, params, layerConfig } = changedAttributes;
         const hasChanged = sqlParams || params || layerConfig;
 
@@ -42,7 +50,7 @@ class LayerManager {
           this.update(layerModel);
 
           this.promises[layerModel.id] = new Promise(
-            resolve => resolve(this.layers)
+            resolve => resolve(this.layers),
           );
 
           return false;
@@ -55,8 +63,8 @@ class LayerManager {
         // If promises exists and it's pending let's cancel it
         if (
           this.promises[layerModel.id] &&
-          this.promises[layerModel.id].isPending &&
-          this.promises[layerModel.id].isPending()
+            this.promises[layerModel.id].isPending &&
+            this.promises[layerModel.id].isPending()
         ) {
           this.promises[layerModel.id].cancel();
         }
@@ -66,7 +74,8 @@ class LayerManager {
         return false;
       });
 
-      return Promise.all(Object.values(this.promises))
+      return Promise
+        .all(Object.values(this.promises))
         .then(() => this.layers)
         .finally(() => {
           this.promises = {};
@@ -88,8 +97,8 @@ class LayerManager {
       opacity: 1,
       visibility: true,
       zIndex: 0,
-      interactivity: null
-    }
+      interactivity: null,
+    },
   ) {
     if (typeof layers === 'undefined') {
       console.error('layers is required');
@@ -101,7 +110,7 @@ class LayerManager {
       return this;
     }
 
-    layers.forEach((layer) => {
+    layers.forEach(layer => {
       const layerModel = this.layers.find(l => l.id === layer.id);
       const nextModel = { ...layer, ...layerOptions };
 
@@ -112,8 +121,7 @@ class LayerManager {
       }
     });
 
-    // Returnning a promise
-    return this.renderLayers();
+    return new Promise(resolve => resolve(this.layers));
   }
 
   /**
@@ -129,12 +137,18 @@ class LayerManager {
       sqlParams,
       decodeParams,
       layerConfig,
-      events
+      events,
     } = layerModel.changedAttributes;
 
-    if (typeof opacity !== 'undefined') { this.plugin.setOpacity(layerModel, opacity); }
-    if (typeof visibility !== 'undefined') { this.plugin.setOpacity(layerModel, !visibility ? 0 : layerModel.opacity); }
-    if (typeof zIndex !== 'undefined') { this.plugin.setZIndex(layerModel, zIndex); }
+    if (typeof opacity !== 'undefined') {
+      this.plugin.setOpacity(layerModel, opacity);
+    }
+    if (typeof visibility !== 'undefined') {
+      this.plugin.setOpacity(layerModel, !visibility ? 0 : layerModel.opacity);
+    }
+    if (typeof zIndex !== 'undefined') {
+      this.plugin.setZIndex(layerModel, zIndex);
+    }
     if (typeof events !== 'undefined') {
       this.setEvents(layerModel);
     }
@@ -151,7 +165,7 @@ class LayerManager {
    */
   remove(layerIds) {
     const layers = this.layers.slice(0);
-    const ids = Array.isArray(layerIds) ? layerIds : [layerIds];
+    const ids = Array.isArray(layerIds) ? layerIds : [ layerIds ];
 
     this.layers.forEach((layerModel, index) => {
       if (ids) {
@@ -176,7 +190,7 @@ class LayerManager {
     const layerModels = this.layers.filter(l => layerIds.includes(l.id));
 
     if (layerModels.length) {
-      layerModels.forEach((lm) => {
+      layerModels.forEach(lm => {
         this.plugin.setOpacity(lm, opacity);
       });
     } else {
@@ -193,7 +207,7 @@ class LayerManager {
     const layerModels = this.layers.filter(l => layerIds.includes(l.id));
 
     if (layerModels.length) {
-      layerModels.forEach((lm) => {
+      layerModels.forEach(lm => {
         this.plugin.setVisibility(lm, visibility);
       });
     } else {
@@ -210,7 +224,7 @@ class LayerManager {
     const layerModels = this.layers.filter(l => layerIds.includes(l.id));
 
     if (layerModels.length) {
-      layerModels.forEach((lm) => {
+      layerModels.forEach(lm => {
         this.plugin.setZIndex(lm, zIndex);
       });
     } else {
@@ -238,25 +252,23 @@ class LayerManager {
     if (!method) {
       this.promises[layerModel.id] = new Promise(
         (resolve, reject) =>
-          reject(new Error(`${provider} provider is not yet supported.`))
+          reject(new Error(`${provider} provider is not yet supported.`)),
       );
 
       return false;
     }
 
     // If there is method for it let's call it
-    this.promises[layerModel.id] = method
-      .call(this, layerModel)
-      .then((layer) => {
-        layerModel.set('mapLayer', layer);
+    this.promises[layerModel.id] = method.call(this, layerModel).then(layer => {
+      layerModel.set('mapLayer', layer);
 
-        this.plugin.add(layerModel);
-        this.plugin.setZIndex(layerModel, layerModel.zIndex);
-        this.plugin.setOpacity(layerModel, layerModel.opacity);
-        this.plugin.setVisibility(layerModel, layerModel.visibility);
+      this.plugin.add(layerModel);
+      this.plugin.setZIndex(layerModel, layerModel.zIndex);
+      this.plugin.setOpacity(layerModel, layerModel.opacity);
+      this.plugin.setVisibility(layerModel, layerModel.visibility);
 
-        this.setEvents(layerModel);
-      });
+      this.setEvents(layerModel);
+    });
 
     return this;
   }
