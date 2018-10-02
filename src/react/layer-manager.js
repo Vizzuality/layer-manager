@@ -29,12 +29,15 @@ class LayerManager extends PureComponent {
   }
 
   componentDidUpdate() {
-    if (this.layerManager.layers && this.layerManager.layers.length)
-      this.layerManager.renderLayers();
+    const { onLayerLoading } = this.props;
+    if (this.layerManager.layers && this.layerManager.layers.length) {
+      onLayerLoading(true);
+      this.layerManager.renderLayers().then(() => onLayerLoading(false));
+    }
   }
 
   render() {
-    const { children, layersSpec, onLayerLoading } = this.props;
+    const { children, layersSpec } = this.props;
 
     if (children && Children.count(children)) {
       return Children.map(
@@ -56,7 +59,6 @@ class LayerManager extends PureComponent {
               key={spec.id}
               {...spec}
               zIndex={spec.zIndex || 1000 - i}
-              onLayerLoading={onLayerLoading}
               layerManager={this.layerManager}
             />
           ))}

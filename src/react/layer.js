@@ -1,29 +1,21 @@
-import { Component } from 'react';
+import { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Manager from '../layer-manager';
 
-class Layer extends Component {
+class Layer extends PureComponent {
   static propTypes = {
     id: PropTypes.string.isRequired,
     layerManager: PropTypes.instanceOf(Manager),
-    onLayerLoading: PropTypes.func,
-    onReady: PropTypes.func,
   };
 
-  static defaultProps = {
-    layerManager: null,
-    onLayerLoading: () => {
-    },
-    onReady: () => {
-    },
-  };
+  static defaultProps = { layerManager: null };
 
   componentDidMount() {
-    this.requestLayer();
+    this.addSpecToLayerManager();
   }
 
   componentDidUpdate() {
-    this.requestLayer();
+    this.addSpecToLayerManager();
   }
 
   componentWillUnmount() {
@@ -31,19 +23,9 @@ class Layer extends Component {
     layerManager.remove(id);
   }
 
-  requestLayer() {
-    const { layerManager, onLayerLoading, onReady, ...options } = this.props;
-
-    onLayerLoading(true);
-
-    layerManager
-      .add([ options ], options)
-      .then(layerModel => {
-        onReady(layerModel);
-      })
-      .finally(() => {
-        onLayerLoading(false);
-      });
+  addSpecToLayerManager() {
+    const { layerManager, ...layerSpec } = this.props;
+    layerManager.add([ layerSpec ], {});
   }
 
   render() {

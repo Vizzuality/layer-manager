@@ -40,39 +40,36 @@ class LayerManager {
    */
   renderLayers() {
     if (this.layers.length > 0) {
-      this.layers.map(layerModel => {
+      this.layers.forEach(layerModel => {
         const { changedAttributes } = layerModel;
         const { sqlParams, params, layerConfig } = changedAttributes;
-        const hasChanged = sqlParams || params || layerConfig;
+        const hasChanged = Object.keys(changedAttributes).length > 0;
+        const shouldUpdate = sqlParams || params || layerConfig;
 
-        // If layer exists let's update it
-        if (layerModel.mapLayer && !hasChanged) {
-          this.update(layerModel);
+        if (!shouldUpdate) {
+          // If layer exists and didn't change don't do anything
+          if (layerModel.mapLayer && !hasChanged) {
+            return false;
+          }
 
-          this.promises[layerModel.id] = new Promise(
-            resolve => resolve(this.layers),
-          );
-
-          return false;
+          // In case has changed, just update it else if (
+          if (layerModel.mapLayer && hasChanged) {
+            return this.updateLayer(layerModel);
+          }
         }
 
-        if (layerModel.mapLayer && hasChanged) {
-          this.update(layerModel);
+        if (layerModel.mapLayer && shouldUpdate) {
+          this.updateLayer(layerModel);
         }
 
-        // If promises exists and it's pending let's cancel it
-        if (
-          this.promises[layerModel.id] &&
-            this.promises[layerModel.id].isPending &&
-            this.promises[layerModel.id].isPending()
-        ) {
-          this.promises[layerModel.id].cancel();
-        }
+        this.promises[layerModel.id] = this.requestLayer(layerModel);
 
-        this.requestLayer(layerModel);
-
-        return false;
+        // reset changedAttributes
+        return layerModel.set('changedAttributes', {});
       });
+
+      if (Object.keys(this.promises).length === 0)
+        return new Promise(resolve => resolve(this.layers));
 
       return Promise
         .all(Object.values(this.promises))
@@ -111,24 +108,24 @@ class LayerManager {
     }
 
     layers.forEach(layer => {
-      const layerModel = this.layers.find(l => l.id === layer.id);
+      const existingLayer = this.layers.find(l => l.id === layer.id);
       const nextModel = { ...layer, ...layerOptions };
 
-      if (layerModel) {
-        layerModel.update(nextModel);
+      if (existingLayer) {
+        existingLayer.update(nextModel);
       } else {
         this.layers.push(new LayerModel(nextModel));
       }
     });
 
-    return new Promise(resolve => resolve(this.layers));
+    return this.layers;
   }
 
   /**
    * Updating a specific layer
    * @param  {Object} layerModel
    */
-  update(layerModel) {
+  updateLayer(layerModel) {
     const {
       opacity,
       visibility,
@@ -256,6 +253,15 @@ class LayerManager {
       );
 
       return false;
+    }
+
+    // Cancel previous/existing request
+    if (
+      this.promises[layerModel.id] &&
+        this.promises[layerModel.id].isPending &&
+        this.promises[layerModel.id].isPending()
+    ) {
+      this.promises[layerModel.id].cancel();
     }
 
     // If there is method for it let's call it
