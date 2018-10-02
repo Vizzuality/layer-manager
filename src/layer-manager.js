@@ -121,8 +121,6 @@ class LayerManager {
       }
     });
 
-    // Returnning a promise
-    // return this.renderLayers()
     return new Promise(resolve => resolve(this.layers));
   }
 
