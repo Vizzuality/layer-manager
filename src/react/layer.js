@@ -1,50 +1,31 @@
-import { Component } from 'react';
+import { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import Manager from '../layer-manager';
 
-class Layer extends Component {
+class Layer extends PureComponent {
   static propTypes = {
     id: PropTypes.string.isRequired,
-    layerManager: PropTypes.any.isRequired,
-    onLayerLoading: PropTypes.func,
-    onReady: PropTypes.func
+    layerManager: PropTypes.instanceOf(Manager),
   };
 
-  static defaultProps = {
-    onLayerLoading: () => {},
-    onReady: () => {}
-  };
+  static defaultProps = { layerManager: null };
 
   componentDidMount() {
-    const { layerManager, onLayerLoading, onReady, ...options } = this.props;
-
-    onLayerLoading(true);
-
-    layerManager.add([ options ], options)
-      .then((layerModel) => {
-        onReady(layerModel);
-      })
-      .finally(() => {
-        onLayerLoading(false);
-      });
+    this.addSpecToLayerManager();
   }
 
   componentDidUpdate() {
-    const { layerManager, onLayerLoading, onReady, ...options } = this.props;
-
-    onLayerLoading(true);
-
-    layerManager.add([ options ], options)
-      .then((layerModel) => {
-        onReady(layerModel);
-      })
-      .finally(() => {
-        onLayerLoading(false);
-      });
+    this.addSpecToLayerManager();
   }
 
   componentWillUnmount() {
     const { layerManager, id } = this.props;
     layerManager.remove(id);
+  }
+
+  addSpecToLayerManager() {
+    const { layerManager, ...layerSpec } = this.props;
+    layerManager.add([ layerSpec ], {});
   }
 
   render() {

@@ -72,6 +72,7 @@
     "bluebird": "^3.5.2",
     "lodash": "^4.17.10",
     "prop-types": "^15.6.2",
+    "reselect": "^3.0.1",
     "wri-json-api-serializer": "^1.0.1"
   },
   "peerDependencies": {

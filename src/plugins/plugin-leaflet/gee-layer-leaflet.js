@@ -1,19 +1,26 @@
 import Promise from 'bluebird';
-import { replace } from 'lib/query';
+import { replace } from 'utils/query';
 
 import CanvasLayer from './canvas-layer-leaflet';
 import UTFGridLayer from './utf-grid-layer-leaflet';
 
 const { L } = typeof window !== 'undefined' ? window : {};
 
-const GEELayer = (layerModel) => {
+const GEELayer = layerModel => {
   if (!L) throw new Error('Leaflet must be defined.');
 
-  const { id, layerConfig, interactivity, params, sqlParams, decodeParams } = layerModel;
+  const {
+    id,
+    layerConfig,
+    interactivity,
+    params,
+    sqlParams,
+    decodeParams,
+  } = layerModel;
   const tileUrl = `https://api.resourcewatch.org/v1/layer/${id}/tile/gee/{z}/{x}/{y}`;
-  const layerConfigParsed = (layerConfig.parse === false) ? layerConfig : JSON.parse(
-    replace(JSON.stringify(layerConfig), params, sqlParams)
-  );
+  const layerConfigParsed = layerConfig.parse === false
+    ? layerConfig
+    : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
   let layer;
 
   switch (layerConfigParsed.type) {
@@ -35,14 +42,14 @@ const GEELayer = (layerModel) => {
 
     const LayerGroup = L.LayerGroup.extend({
       group: true,
-      setOpacity: (opacity) => {
-        layerModel.mapLayer.getLayers().forEach((l) => {
+      setOpacity: opacity => {
+        layerModel.mapLayer.getLayers().forEach(l => {
           l.setOpacity(opacity);
         });
-      }
+      },
     });
 
-    layer = new LayerGroup([layer, interactiveLayer]);
+    layer = new LayerGroup([ layer, interactiveLayer ]);
   }
 
   return new Promise((resolve, reject) => {
