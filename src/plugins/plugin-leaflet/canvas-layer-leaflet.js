@@ -100,13 +100,14 @@ const CanvasLayer = L && L.GridLayer.extend({
     },
     drawCanvas(id) {
       'use asm';
+
       if (!this.tiles[id]) {
         return;
       }
 
       const { tile, ctx, image, x, y, z } = this.tiles[id];
 
-      if (!tile || !ctx || !image || !x || !y || !z) {
+      if (!tile || !ctx || !image || typeof x === 'undefined' || typeof y === 'undefined' || typeof z === 'undefined') {
         delete this.tiles[id];
         return;
       }
