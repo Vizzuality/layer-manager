@@ -1,26 +1,25 @@
-import React, { Component, Children, cloneElement, Fragment } from 'react';
+import React, { PureComponent, Children, cloneElement, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import PluginLeaflet from 'plugins/plugin-leaflet/index';
 import Manager from '../layer-manager';
 import Layer from './layer';
 
-class LayerManager extends Component {
+class LayerManager extends PureComponent {
   static propTypes = {
-    map: PropTypes.object.isRequired,
-    plugin: PropTypes.func,
+    map: PropTypes.instanceOf(L.Map),
+    plugin: PropTypes.func.isRequired,
     layersSpec: PropTypes.arrayOf(PropTypes.object),
-    onLayerLoading: PropTypes.func,
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
-      PropTypes.func
-    ])
+      PropTypes.node,
+    ]),
+    onLayerLoading: PropTypes.func,
   };
 
   static defaultProps = {
-    plugin: PluginLeaflet,
     children: [],
     layersSpec: [],
-    onLayerLoading: () => {}
+    map: null,
+    onLayerLoading: () => null,
   };
 
   constructor(props) {
@@ -29,38 +28,45 @@ class LayerManager extends Component {
     this.layerManager = new Manager(map, plugin);
   }
 
-  render() {
-    const { children, layersSpec, onLayerLoading } = this.props;
-
-    if (children && typeof children === 'function') {
-      return children(this.layerManager);
+  componentDidUpdate() {
+    const { onLayerLoading } = this.props;
+    if (this.layerManager.layers && this.layerManager.layers.length) {
+      onLayerLoading(true);
+      this.layerManager.renderLayers().then(() => onLayerLoading(false));
     }
+  }
 
-    if (Children.count(children)) {
+  render() {
+    const { children, layersSpec } = this.props;
+
+    if (children && Children.count(children)) {
       return Children.map(
         children,
         (child, i) =>
           child &&
             cloneElement(child, {
               layerManager: this.layerManager,
-              zIndex: child.props.zIndex || (1000 - i)
-            })
+              zIndex: child.props.zIndex || 1000 - i,
+            }),
       );
     }
 
-    return (
-      <Fragment>
-        {layersSpec.map((spec, i) => (
-          <Layer
-            key={spec.id}
-            {...spec}
-            zIndex={spec.zIndex || (1000 - i)}
-            onLayerLoading={onLayerLoading}
-            layerManager={this.layerManager}
-          />
-        ))}
-      </Fragment>
-    );
+    if (layersSpec && layersSpec.length) {
+      return (
+        <Fragment>
+          {layersSpec.map((spec, i) => (
+            <Layer
+              key={spec.id}
+              {...spec}
+              zIndex={spec.zIndex || 1000 - i}
+              layerManager={this.layerManager}
+            />
+          ))}
+        </Fragment>
+      );
+    }
+
+    return null;
   }
 }
 

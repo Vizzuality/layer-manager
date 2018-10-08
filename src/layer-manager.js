@@ -1,18 +1,28 @@
 import Promise from 'bluebird';
 import isEmpty from 'lodash/isEmpty';
-
 import LayerModel from './layer-model';
 
 function checkPluginProperties(plugin) {
   if (plugin) {
     const requiredProperties = [
-      'add', 'remove', 'setVisibility', 'setOpacity', 'setEvents', 'setZIndex',
-      'setLayerConfig', 'setParams', 'setDecodeParams', 'getLayerByProvider'
+      'add',
+      'remove',
+      'setVisibility',
+      'setOpacity',
+      'setEvents',
+      'setZIndex',
+      'setLayerConfig',
+      'setParams',
+      'setDecodeParams',
+      'getLayerByProvider',
     ];
-    // eslint-disable-next-line prefer-arrow-callback
-    requiredProperties.forEach(function showError(property) {
-      if (!plugin[property]) console.error(`The ${property} function is required for layer manager plugins`);
-    })
+
+    requiredProperties.forEach(property => {
+      if (!plugin[property])
+        console.error(
+          `The ${property} function is required for layer manager plugins`,
+        );
+    });
   }
 }
 
@@ -30,43 +40,39 @@ class LayerManager {
    */
   renderLayers() {
     if (this.layers.length > 0) {
-      this.layers.map((layerModel) => {
-        const {
-          changedAttributes
-        } = layerModel;
+      this.layers.forEach(layerModel => {
+        const { changedAttributes } = layerModel;
         const { sqlParams, params, layerConfig } = changedAttributes;
-        const hasChanged = sqlParams || params || layerConfig;
+        const hasChanged = Object.keys(changedAttributes).length > 0;
+        const shouldUpdate = sqlParams || params || layerConfig;
 
-        // If layer exists let's update it
-        if (layerModel.mapLayer && !hasChanged) {
-          this.update(layerModel);
+        if (!shouldUpdate) {
+          // If layer exists and didn't change don't do anything
+          if (layerModel.mapLayer && !hasChanged) {
+            return false;
+          }
 
-          this.promises[layerModel.id] = new Promise(
-            resolve => resolve(this.layers)
-          );
-
-          return false;
+          // In case has changed, just update it else if (
+          if (layerModel.mapLayer && hasChanged) {
+            return this.updateLayer(layerModel);
+          }
         }
 
-        if (layerModel.mapLayer && hasChanged) {
-          this.update(layerModel);
+        if (layerModel.mapLayer && shouldUpdate) {
+          this.updateLayer(layerModel);
         }
 
-        // If promises exists and it's pending let's cancel it
-        if (
-          this.promises[layerModel.id] &&
-          this.promises[layerModel.id].isPending &&
-          this.promises[layerModel.id].isPending()
-        ) {
-          this.promises[layerModel.id].cancel();
-        }
+        this.promises[layerModel.id] = this.requestLayer(layerModel);
 
-        this.requestLayer(layerModel);
-
-        return false;
+        // reset changedAttributes
+        return layerModel.set('changedAttributes', {});
       });
 
-      return Promise.all(Object.values(this.promises))
+      if (Object.keys(this.promises).length === 0)
+        return new Promise(resolve => resolve(this.layers));
+
+      return Promise
+        .all(Object.values(this.promises))
         .then(() => this.layers)
         .finally(() => {
           this.promises = {};
@@ -88,8 +94,8 @@ class LayerManager {
       opacity: 1,
       visibility: true,
       zIndex: 0,
-      interactivity: null
-    }
+      interactivity: null,
+    },
   ) {
     if (typeof layers === 'undefined') {
       console.error('layers is required');
@@ -101,26 +107,25 @@ class LayerManager {
       return this;
     }
 
-    layers.forEach((layer) => {
-      const layerModel = this.layers.find(l => l.id === layer.id);
+    layers.forEach(layer => {
+      const existingLayer = this.layers.find(l => l.id === layer.id);
       const nextModel = { ...layer, ...layerOptions };
 
-      if (layerModel) {
-        layerModel.update(nextModel);
+      if (existingLayer) {
+        existingLayer.update(nextModel);
       } else {
         this.layers.push(new LayerModel(nextModel));
       }
     });
 
-    // Returnning a promise
-    return this.renderLayers();
+    return this.layers;
   }
 
   /**
    * Updating a specific layer
    * @param  {Object} layerModel
    */
-  update(layerModel) {
+  updateLayer(layerModel) {
     const {
       opacity,
       visibility,
@@ -129,12 +134,18 @@ class LayerManager {
       sqlParams,
       decodeParams,
       layerConfig,
-      events
+      events,
     } = layerModel.changedAttributes;
 
-    if (typeof opacity !== 'undefined') { this.plugin.setOpacity(layerModel, opacity); }
-    if (typeof visibility !== 'undefined') { this.plugin.setOpacity(layerModel, !visibility ? 0 : layerModel.opacity); }
-    if (typeof zIndex !== 'undefined') { this.plugin.setZIndex(layerModel, zIndex); }
+    if (typeof opacity !== 'undefined') {
+      this.plugin.setOpacity(layerModel, opacity);
+    }
+    if (typeof visibility !== 'undefined') {
+      this.plugin.setOpacity(layerModel, !visibility ? 0 : layerModel.opacity);
+    }
+    if (typeof zIndex !== 'undefined') {
+      this.plugin.setZIndex(layerModel, zIndex);
+    }
     if (typeof events !== 'undefined') {
       this.setEvents(layerModel);
     }
@@ -151,7 +162,7 @@ class LayerManager {
    */
   remove(layerIds) {
     const layers = this.layers.slice(0);
-    const ids = Array.isArray(layerIds) ? layerIds : [layerIds];
+    const ids = Array.isArray(layerIds) ? layerIds : [ layerIds ];
 
     this.layers.forEach((layerModel, index) => {
       if (ids) {
@@ -176,7 +187,7 @@ class LayerManager {
     const layerModels = this.layers.filter(l => layerIds.includes(l.id));
 
     if (layerModels.length) {
-      layerModels.forEach((lm) => {
+      layerModels.forEach(lm => {
         this.plugin.setOpacity(lm, opacity);
       });
     } else {
@@ -193,7 +204,7 @@ class LayerManager {
     const layerModels = this.layers.filter(l => layerIds.includes(l.id));
 
     if (layerModels.length) {
-      layerModels.forEach((lm) => {
+      layerModels.forEach(lm => {
         this.plugin.setVisibility(lm, visibility);
       });
     } else {
@@ -210,7 +221,7 @@ class LayerManager {
     const layerModels = this.layers.filter(l => layerIds.includes(l.id));
 
     if (layerModels.length) {
-      layerModels.forEach((lm) => {
+      layerModels.forEach(lm => {
         this.plugin.setZIndex(lm, zIndex);
       });
     } else {
@@ -238,25 +249,32 @@ class LayerManager {
     if (!method) {
       this.promises[layerModel.id] = new Promise(
         (resolve, reject) =>
-          reject(new Error(`${provider} provider is not yet supported.`))
+          reject(new Error(`${provider} provider is not yet supported.`)),
       );
 
       return false;
     }
 
+    // Cancel previous/existing request
+    if (
+      this.promises[layerModel.id] &&
+        this.promises[layerModel.id].isPending &&
+        this.promises[layerModel.id].isPending()
+    ) {
+      this.promises[layerModel.id].cancel();
+    }
+
     // If there is method for it let's call it
-    this.promises[layerModel.id] = method
-      .call(this, layerModel)
-      .then((layer) => {
-        layerModel.set('mapLayer', layer);
+    this.promises[layerModel.id] = method.call(this, layerModel).then(layer => {
+      layerModel.set('mapLayer', layer);
 
-        this.plugin.add(layerModel);
-        this.plugin.setZIndex(layerModel, layerModel.zIndex);
-        this.plugin.setOpacity(layerModel, layerModel.opacity);
-        this.plugin.setVisibility(layerModel, layerModel.visibility);
+      this.plugin.add(layerModel);
+      this.plugin.setZIndex(layerModel, layerModel.zIndex);
+      this.plugin.setOpacity(layerModel, layerModel.opacity);
+      this.plugin.setVisibility(layerModel, layerModel.visibility);
 
-        this.setEvents(layerModel);
-      });
+      this.setEvents(layerModel);
+    });
 
     return this;
   }

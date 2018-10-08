@@ -1,14 +1,14 @@
 import Promise from 'bluebird';
 import { get } from 'lib/request';
-import { replace } from 'lib/query';
+import { replace } from 'utils/query';
 
 export const fetchTile = layerModel => {
   const { layerConfig, params, sqlParams, interactivity } = layerModel;
   const { layerRequest } = layerModel;
 
-  const layerConfigParsed = (layerConfig.parse === false) ? layerConfig : JSON.parse(
-    replace(JSON.stringify(layerConfig), params, sqlParams)
-  );
+  const layerConfigParsed = layerConfig.parse === false
+    ? layerConfig
+    : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
   const layerTpl = JSON.stringify({
     version: '1.3.0',
     stat_tag: 'API',
@@ -17,7 +17,7 @@ export const fetchTile = layerModel => {
         return { ...l, options: { ...l.options, interactivity } };
       }
       return l;
-    })
+    }),
   });
   const apiParams = `?stat_tag=API&config=${encodeURIComponent(layerTpl)}`;
   const url = `https://${layerConfigParsed.account}.carto.com/api/v1/map${apiParams}`;
