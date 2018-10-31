@@ -44,6 +44,7 @@ const CanvasLayer = L && L.GridLayer.extend({
 
       return tile;
     },
+
     getTile({ x, y, z }) {
       const { params, sqlParams } = this.options;
       const { url, dataMaxZoom = 20 } = params;
@@ -95,9 +96,11 @@ const CanvasLayer = L && L.GridLayer.extend({
         xhr.send();
       });
     },
+
     cacheTile(tile) {
       this.tiles[tile.id] = { ...this.tiles[tile.id], ...tile };
     },
+
     drawCanvas(id) {
       'use asm';
 
@@ -154,6 +157,7 @@ const CanvasLayer = L && L.GridLayer.extend({
 
       ctx.putImageData(I, 0, 0);
     },
+
     reDraw(options) {
       this.options.params = options.params;
       this.options.sqlParams = options.sqlParams;

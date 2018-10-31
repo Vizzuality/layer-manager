@@ -6,7 +6,6 @@ import geeLayer from './gee-layer-leaflet';
 import locaLayer from './loca-layer-leaflet';
 import nexgddpLayer from './nexgddp-layer-leaflet';
 import leafletLayer from './leaflet-layer-leaflet';
-import clusterLayer from './cluster-layer-leaflet';
 
 
 class PluginLeaflet {
@@ -34,8 +33,7 @@ class PluginLeaflet {
     nexgddp: nexgddpLayer,
     // LEAFLET
     leaflet: leafletLayer,
-    wms: leafletLayer,
-    cluster: clusterLayer
+    wms: leafletLayer
   };
 
   /**
@@ -77,7 +75,7 @@ class PluginLeaflet {
    * @param {String} provider
    */
   getLayerByProvider(provider) {
-    return this.method['cluster'];
+    return this.method[provider];
   }
 
   /**

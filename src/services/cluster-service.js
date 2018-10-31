@@ -16,8 +16,6 @@ export const fetchData = layerModel => {
     return JSON.parse(res.response);
   });
 
-  layerModel.set('layerRequest', newLayerRequest);
-
   return newLayerRequest;
 };
 
