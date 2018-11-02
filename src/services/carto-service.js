@@ -17,7 +17,7 @@ export const fetchTile = layerModel => {
         return { ...l, options: { ...l.options, interactivity } };
       }
       return l;
-    }),
+    })
   });
   const apiParams = `?stat_tag=API&config=${encodeURIComponent(layerTpl)}`;
   const url = `https://${layerConfigParsed.account}.carto.com/api/v1/map${apiParams}`;

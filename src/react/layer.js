@@ -5,7 +5,7 @@ import Manager from '../layer-manager';
 class Layer extends PureComponent {
   static propTypes = {
     id: PropTypes.string.isRequired,
-    layerManager: PropTypes.instanceOf(Manager),
+    layerManager: PropTypes.instanceOf(Manager)
   };
 
   static defaultProps = { layerManager: null };

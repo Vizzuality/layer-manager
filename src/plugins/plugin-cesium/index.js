@@ -87,7 +87,7 @@ class PluginCesium {
   }
 
   setDecodeParams(layerModel) {
-    console.info('Decode params callback',layerModel, this)
+    console.info('Decode params callback', layerModel, this);
   }
 
   getCoordinatesFromEvent = action => event => {

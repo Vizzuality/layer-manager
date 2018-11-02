@@ -8,9 +8,9 @@ const CartoLayer = layerModel => {
   if (!google) throw new Error('Google maps must be defined.');
 
   const { layerConfig, params, sqlParams } = layerModel;
-  const layerConfigParsed = (layerConfig.parse === false) ? layerConfig : JSON.parse(
-    replace(JSON.stringify(layerConfig), params, sqlParams)
-  );
+  const layerConfigParsed = layerConfig.parse === false
+    ? layerConfig
+    : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
 
   return new Promise((resolve, reject) => {
     fetchTile(layerModel)

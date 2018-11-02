@@ -7,13 +7,12 @@ import locaLayer from './loca-layer-leaflet';
 import nexgddpLayer from './nexgddp-layer-leaflet';
 import leafletLayer from './leaflet-layer-leaflet';
 
-
 class PluginLeaflet {
   constructor(map) {
     this.map = map;
   }
 
-  events = {}
+  events = {};
 
   method = {
     // CARTO
@@ -54,9 +53,9 @@ class PluginLeaflet {
     const { mapLayer, events } = layerModel;
 
     if (events && mapLayer) {
-      Object.keys(events).forEach((k) => {
+      Object.keys(events).forEach(k => {
         if (mapLayer.group) {
-          mapLayer.eachLayer((l) => {
+          mapLayer.eachLayer(l => {
             l.off(k);
           });
         } else {
@@ -125,37 +124,41 @@ class PluginLeaflet {
    * A namespace to set DOM events
    * @param {Object} layerModel
   */
-  setEvents = debounce(layerModel => {
-    const { mapLayer, events } = layerModel;
+  setEvents = debounce(
+    layerModel => {
+      const { mapLayer, events } = layerModel;
 
-    // Remove current events
-    if (this.events[layerModel.id]) {
-      Object.keys(this.events[layerModel.id]).forEach((k) => {
+      // Remove current events
+      if (this.events[layerModel.id]) {
+        Object.keys(this.events[layerModel.id]).forEach(k => {
+          if (mapLayer.group) {
+            mapLayer.eachLayer(l => {
+              l.off(k);
+            });
+          } else {
+            mapLayer.off(k);
+          }
+        });
+      }
+
+      // Add new events
+      Object.keys(events).forEach(k => {
         if (mapLayer.group) {
-          mapLayer.eachLayer((l) => {
-            l.off(k);
+          mapLayer.eachLayer(l => {
+            l.on(k, events[k]);
           });
         } else {
-          mapLayer.off(k);
+          mapLayer.on(k, events[k]);
         }
       });
-    }
+      // Set this.events equal to current ones
+      this.events[layerModel.id] = events;
 
-    // Add new events
-    Object.keys(events).forEach((k) => {
-      if (mapLayer.group) {
-        mapLayer.eachLayer((l) => {
-          l.on(k, events[k]);
-        });
-      } else {
-        mapLayer.on(k, events[k]);
-      }
-    });
-    // Set this.events equal to current ones
-    this.events[layerModel.id] = events;
-
-    return this;
-  }, 200, { leading: true })
+      return this;
+    },
+    200,
+    { leading: true }
+  );
 
   setParams(layerModel) {
     this.remove(layerModel);
