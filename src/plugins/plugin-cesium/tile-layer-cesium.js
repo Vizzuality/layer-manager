@@ -1,6 +1,6 @@
 import Promise from 'bluebird';
 
-export default Cesium => layerModel => new Promise((resolve) => {
+export default Cesium => layerModel => new Promise(resolve => {
   const { layerConfig = {} } = layerModel;
   const { url } = layerConfig.body;
   const provider = new Cesium.UrlTemplateImageryProvider({ url });
@@ -8,4 +8,3 @@ export default Cesium => layerModel => new Promise((resolve) => {
   // don't show warnings
   resolve(new Cesium.ImageryLayer(provider));
 });
-

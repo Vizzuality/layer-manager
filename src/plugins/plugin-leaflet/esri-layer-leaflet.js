@@ -12,7 +12,7 @@ const EsriLayer = layerModel => {
   if (!L) throw new Error('Leaflet must be defined.');
   if (!L.esri) {
     throw new Error(
-      'To support this layer you should add esri library for Leaflet.',
+      'To support this layer you should add esri library for Leaflet.'
     );
   }
 
@@ -78,7 +78,7 @@ const EsriLayer = layerModel => {
           layerModel.mapLayer.getLayers().forEach(l => {
             l.setOpacity(opacity);
           });
-        },
+        }
       });
 
       layer = new LayerGroup([ layer, interactiveLayer ]);

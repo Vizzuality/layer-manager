@@ -7,6 +7,7 @@ const globals = {
   'react-dom': 'ReactDOM',
   react: 'React',
   bluebird: 'Promise',
+  leaflet: 'L',
 };
 const external = Object.keys(globals);
 const babelOptions = { exclude: 'node_modules/**', runtimeHelpers: true };

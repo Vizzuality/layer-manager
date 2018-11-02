@@ -3,23 +3,27 @@ import PropTypes from 'prop-types';
 import Manager from '../layer-manager';
 import Layer from './layer';
 
+// Isomorphic support
+const { L } = typeof window !== 'undefined'
+  ? window
+  : { L: { Map: () => {} }};
+
 class LayerManager extends PureComponent {
   static propTypes = {
-    map: PropTypes.instanceOf(L.Map),
+    map: PropTypes.instanceOf(L.Map).isRequired,
     plugin: PropTypes.func.isRequired,
     layersSpec: PropTypes.arrayOf(PropTypes.object),
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
-      PropTypes.node,
+      PropTypes.node
     ]),
-    onLayerLoading: PropTypes.func,
+    onLayerLoading: PropTypes.func
   };
 
   static defaultProps = {
     children: [],
     layersSpec: [],
-    map: null,
-    onLayerLoading: () => null,
+    onLayerLoading: () => null
   };
 
   constructor(props) {
@@ -46,8 +50,8 @@ class LayerManager extends PureComponent {
           child &&
             cloneElement(child, {
               layerManager: this.layerManager,
-              zIndex: child.props.zIndex || 1000 - i,
-            }),
+              zIndex: child.props.zIndex || 1000 - i
+            })
       );
     }
 

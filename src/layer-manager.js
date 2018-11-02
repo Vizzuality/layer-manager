@@ -14,13 +14,13 @@ function checkPluginProperties(plugin) {
       'setLayerConfig',
       'setParams',
       'setDecodeParams',
-      'getLayerByProvider',
+      'getLayerByProvider'
     ];
 
     requiredProperties.forEach(property => {
       if (!plugin[property])
         console.error(
-          `The ${property} function is required for layer manager plugins`,
+          `The ${property} function is required for layer manager plugins`
         );
     });
   }
@@ -94,8 +94,8 @@ class LayerManager {
       opacity: 1,
       visibility: true,
       zIndex: 0,
-      interactivity: null,
-    },
+      interactivity: null
+    }
   ) {
     if (typeof layers === 'undefined') {
       console.error('layers is required');
@@ -134,7 +134,7 @@ class LayerManager {
       sqlParams,
       decodeParams,
       layerConfig,
-      events,
+      events
     } = layerModel.changedAttributes;
 
     if (typeof opacity !== 'undefined') {
@@ -249,7 +249,7 @@ class LayerManager {
     if (!method) {
       this.promises[layerModel.id] = new Promise(
         (resolve, reject) =>
-          reject(new Error(`${provider} provider is not yet supported.`)),
+          reject(new Error(`${provider} provider is not yet supported.`))
       );
 
       return false;
