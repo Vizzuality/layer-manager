@@ -44,7 +44,7 @@ const ClusterLayer = L && L.GeoJSON.extend({
           iconSize,
           html: html && typeof html === 'function' ?
             html(feature) :
-            `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: orange; color: white; font-size: 14px;">${feature.properties.point_count_abbreviated}</div>`,
+            `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">${feature.properties.point_count_abbreviated}</div>`,
           ...layerModel.layerConfig.clusterIcon
         });
         return L.marker(latlng, {
