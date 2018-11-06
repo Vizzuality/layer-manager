@@ -14,6 +14,10 @@ const ClusterLayer = L && L.GeoJSON.extend({
     const self = this;
     L.GeoJSON.prototype.initialize.call(this, []);
     const { layerConfig, events, decodeClusters } = layerModel;
+    if (!decodeClusters) {
+      console.warn('You must provide a decodeClusters function');
+      return;
+    }
     const { html, sizes = defaultSizes, clusterIcon, icon } = layerModel.layerConfig || {};
 
     L.Util.setOptions(this, {
@@ -57,11 +61,10 @@ const ClusterLayer = L && L.GeoJSON.extend({
             click: () => self.setMapView(feature)
           });
         } else if (events) {
-          const parsedEvents = Object.keys(events).reduce((obj, event) => ({
+          layer.on(Object.keys(events).reduce((obj, event) => ({
             ...obj,
             [event]: e => events[event]({ ...e, data: feature.properties })
-          }), {});
-          layer.on(parsedEvents);
+          }), {}));
         }
       }
     });
