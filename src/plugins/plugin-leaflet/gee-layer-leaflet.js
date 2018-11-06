@@ -15,7 +15,7 @@ const GEELayer = layerModel => {
     interactivity,
     params,
     sqlParams,
-    decodeParams,
+    decodeParams
   } = layerModel;
   const tileUrl = `https://api.resourcewatch.org/v1/layer/${id}/tile/gee/{z}/{x}/{y}`;
   const layerConfigParsed = layerConfig.parse === false
@@ -46,7 +46,7 @@ const GEELayer = layerModel => {
         layerModel.mapLayer.getLayers().forEach(l => {
           l.setOpacity(opacity);
         });
-      },
+      }
     });
 
     layer = new LayerGroup([ layer, interactiveLayer ]);

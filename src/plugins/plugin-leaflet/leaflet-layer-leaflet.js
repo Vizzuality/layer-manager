@@ -20,7 +20,7 @@ const LeafletLayer = layerModel => {
   if (layerConfigParsed.body.crs && L.CRS[layerConfigParsed.body.crs]) {
     layerConfigParsed.body.crs = L.CRS[layerConfigParsed.body.crs.replace(
       ':',
-      '',
+      ''
     )];
     layerConfigParsed.body.pane = 'tilePane';
   }
@@ -29,7 +29,7 @@ const LeafletLayer = layerModel => {
     case 'wms':
       layer = L.tileLayer.wms(
         layerConfigParsed.url || layerConfigParsed.body.url,
-        layerConfigParsed.body,
+        layerConfigParsed.body
       );
       break;
     case 'tileLayer':
@@ -37,7 +37,7 @@ const LeafletLayer = layerModel => {
         JSON.stringify(layerConfigParsed.body).indexOf('style: "function') >= 0
       ) {
         layerConfigParsed.body.style = eval2(
-          `(${layerConfigParsed.body.style})`,
+          `(${layerConfigParsed.body.style})`
         );
       }
       if (decodeParams) {
@@ -45,7 +45,7 @@ const LeafletLayer = layerModel => {
       } else {
         layer = L.tileLayer(
           layerConfigParsed.url || layerConfigParsed.body.url,
-          layerConfigParsed.body,
+          layerConfigParsed.body
         );
       }
       break;
@@ -62,7 +62,7 @@ const LeafletLayer = layerModel => {
     default:
       layer = L[layerConfigParsed.type](
         layerConfigParsed.body,
-        layerConfigParsed.options || {},
+        layerConfigParsed.options || {}
       );
       break;
   }

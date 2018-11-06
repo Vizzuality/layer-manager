@@ -63,7 +63,7 @@ const UTFGridLayer = L && L.GridLayer.extend({
     },
     objectForEvent(e) {
       return L.extend({ latlng: e.latlng, data: null }, e);
-    },
+    }
   });
 
 export default UTFGridLayer;

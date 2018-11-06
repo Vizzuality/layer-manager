@@ -29,7 +29,7 @@ const CartoLayer = layerModel => {
               layerModel.mapLayer.getLayers().forEach(l => {
                 l.setOpacity(opacity);
               });
-            },
+            }
           });
 
           return resolve(new LayerGroup([ layer, interactiveLayer ]));

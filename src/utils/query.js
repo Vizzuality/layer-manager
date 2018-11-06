@@ -46,7 +46,7 @@ export const concatenation = (originalStr, params = {}) => {
         }
 
         return null;
-      }),
+      })
     ).join(' AND ')}`;
 
     if (sql && key.startsWith('where')) sql = `WHERE ${sql}`;

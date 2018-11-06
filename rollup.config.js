@@ -7,6 +7,7 @@ const globals = {
   'react-dom': 'ReactDOM',
   react: 'React',
   bluebird: 'Promise',
+  leaflet: 'L',
 };
 const external = Object.keys(globals);
 const babelOptions = { exclude: 'node_modules/**', runtimeHelpers: true };
@@ -27,12 +28,13 @@ const commonjsOptions = {
 export default [
   {
     input: 'src/index.js',
-    output: { file: 'lib/index.js', format: 'es', globals },
+    output: { file: 'lib/index.js', format: 'cjs', globals, exports: 'named' },
     external: [ ...external ],
     plugins: [
       nodeResolvePlugin(nodeResolveOptions),
       babelPlugin(babelOptions),
       commonjsPlugin(commonjsOptions),
+      uglify(),
     ],
   },
   {
@@ -57,7 +59,7 @@ export default [
     input: 'src/react/index.js',
     output: {
       file: 'lib/react/index.js',
-      format: 'es',
+      format: 'cjs',
       exports: 'named',
       globals,
     },
@@ -66,6 +68,7 @@ export default [
       nodeResolvePlugin(nodeResolveOptions),
       babelPlugin(babelOptions),
       commonjsPlugin(commonjsOptions),
+      uglify(),
     ],
   },
 ];
