@@ -1,6 +1,7 @@
 import Promise from 'bluebird';
 import { replace } from 'utils/query';
 import CanvasLayer from './canvas-layer-leaflet';
+import ClusterLayer from './cluster-layer-leaflet';
 
 const { L } = typeof window !== 'undefined' ? window : {};
 const eval2 = eval;
@@ -47,6 +48,16 @@ const LeafletLayer = layerModel => {
           layerConfigParsed.body
         );
       }
+      break;
+    case 'cluster':
+      if (
+        JSON.stringify(layerConfigParsed.body).indexOf('style: "function') >= 0
+      ) {
+        layerConfigParsed.body.style = eval2(
+          `(${layerConfigParsed.body.style})`,
+        );
+      }
+      layer = new ClusterLayer({ ...layerModel });
       break;
     default:
       layer = L[layerConfigParsed.type](
