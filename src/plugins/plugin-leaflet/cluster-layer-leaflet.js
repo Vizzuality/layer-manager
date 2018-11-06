@@ -14,23 +14,22 @@ const ClusterLayer = L && L.GeoJSON.extend({
     const self = this;
     L.GeoJSON.prototype.initialize.call(this, []);
     const { layerConfig, events, decodeClusters } = layerModel;
+    const { html, sizes = defaultSizes, clusterIcon, icon } = layerModel.layerConfig || {};
 
     L.Util.setOptions(this, {
       // converts feature to icon
       pointToLayer(feature, latlng) {
         const isCluster = feature.properties && feature.properties.cluster;
 
-        // if cluster return normal icon
+        // if cluster return point icon
         if (!isCluster) {
           // see documentation for icon config https://leafletjs.com/reference-1.3.4.html#icon
-          const icon = L.icon(layerModel.layerConfig.icon);
-          return L.marker(latlng, { icon });
+          return L.marker(latlng, { icon: L.icon({ ...icon }) });
         }
 
         const count = feature.properties.point_count;
-        const { html, sizes = defaultSizes } = layerModel.layerConfig || {};
-
         let iconSize = null;
+
         if (typeof sizes === 'function') {
           iconSize = () => sizes(count)
         } else {
@@ -40,15 +39,14 @@ const ClusterLayer = L && L.GeoJSON.extend({
         }
 
         // see documentation for icon config https://leafletjs.com/reference-1.3.4.html#divicon
-        const icon = L.divIcon({
-          iconSize,
-          html: html && typeof html === 'function' ?
-            html(feature) :
-            `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">${feature.properties.point_count_abbreviated}</div>`,
-          ...layerModel.layerConfig.clusterIcon
-        });
         return L.marker(latlng, {
-          icon
+          icon: L.divIcon({
+            iconSize,
+            html: html && typeof html === 'function' ?
+              html(feature) :
+              `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ${clusterIcon.color ? `background-color: ${clusterIcon.color};` : ''}">${feature.properties.point_count_abbreviated}</div>`,
+            ...clusterIcon
+          })
         })
       },
 
@@ -69,7 +67,7 @@ const ClusterLayer = L && L.GeoJSON.extend({
     });
 
     // https://github.com/mapbox/supercluster options available here
-    const { clusterConfig } = layerConfig.body || {};
+    const { clusterConfig } = layerConfig || {};
     this.supercluster = Supercluster({
       radius: 80,
       maxZoom: 16,
