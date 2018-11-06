@@ -28,7 +28,7 @@ const ClusterLayer = L && L.GeoJSON.extend({
         // if cluster return point icon
         if (!isCluster) {
           // see documentation for icon config https://leafletjs.com/reference-1.3.4.html#icon
-          return L.marker(latlng, { icon: L.icon({ ...icon }) });
+          return L.marker(latlng, { icon: L.icon({ iconSize: [35, 35], ...icon }) });
         }
 
         const count = feature.properties.point_count;
