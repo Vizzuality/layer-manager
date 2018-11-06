@@ -127,32 +127,33 @@ class PluginLeaflet {
   setEvents = debounce(
     layerModel => {
       const { mapLayer, events } = layerModel;
+      if (layerModel.layerConfig.type !== 'cluster') {
+        // Remove current events
+        if (this.events[layerModel.id]) {
+          Object.keys(this.events[layerModel.id]).forEach(k => {
+            if (mapLayer.group) {
+              mapLayer.eachLayer(l => {
+                l.off(k);
+              });
+            } else {
+              mapLayer.off(k);
+            }
+          });
+        }
 
-      // Remove current events
-      if (this.events[layerModel.id]) {
-        Object.keys(this.events[layerModel.id]).forEach(k => {
+        // Add new events
+        Object.keys(events).forEach(k => {
           if (mapLayer.group) {
             mapLayer.eachLayer(l => {
-              l.off(k);
+              l.on(k, events[k]);
             });
           } else {
-            mapLayer.off(k);
+            mapLayer.on(k, events[k]);
           }
         });
+        // Set this.events equal to current ones
+        this.events[layerModel.id] = events;
       }
-
-      // Add new events
-      Object.keys(events).forEach(k => {
-        if (mapLayer.group) {
-          mapLayer.eachLayer(l => {
-            l.on(k, events[k]);
-          });
-        } else {
-          mapLayer.on(k, events[k]);
-        }
-      });
-      // Set this.events equal to current ones
-      this.events[layerModel.id] = events;
 
       return this;
     },
