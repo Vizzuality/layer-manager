@@ -70,7 +70,9 @@
   },
   "dependencies": {
     "bluebird": "^3.5.2",
+    "d3-scale": "^2.1.2",
     "lodash": "^4.17.10",
+    "moment": "^2.22.2",
     "prop-types": "^15.6.2",
     "reselect": "^3.0.1",
     "supercluster": "^4.1.1",
