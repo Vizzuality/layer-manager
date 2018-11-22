@@ -3,13 +3,21 @@ import { replace } from 'utils/query';
 import CanvasLayer from './canvas-layer-leaflet';
 import ClusterLayer from './cluster-layer-leaflet';
 
+import UTFGridLayer from './utf-grid-layer-leaflet';
+
 const { L } = typeof window !== 'undefined' ? window : {};
 const eval2 = eval;
 
 const LeafletLayer = layerModel => {
   if (!L) throw new Error('Leaflet must be defined.');
 
-  const { layerConfig, params, sqlParams, decodeParams } = layerModel;
+  const {
+    layerConfig,
+    params,
+    sqlParams,
+    decodeParams,
+    interactivity
+  } = layerModel;
   let layer;
 
   const layerConfigParsed = layerConfig.parse === false
@@ -48,6 +56,23 @@ const LeafletLayer = layerModel => {
           layerConfigParsed.body
         );
       }
+
+      // Add interactivity
+      if (interactivity) {
+        const interactiveLayer = new UTFGridLayer();
+
+        const LayerGroup = L.LayerGroup.extend({
+          group: true,
+          setOpacity: opacity => {
+            layerModel.mapLayer.getLayers().forEach(l => {
+              l.setOpacity(opacity);
+            });
+          }
+        });
+
+        layer = new LayerGroup([ layer, interactiveLayer ]);
+      }
+
       break;
     case 'cluster':
       if (
