@@ -18,11 +18,14 @@ class LayerModel {
         ...layerSpec.params && { params: layerSpec.params },
         ...layerSpec.sqlParams && { sqlParams: layerSpec.sqlParams },
         ...layerSpec.decodeParams && { decodeParams: layerSpec.decodeParams },
-        // adds decodeFunction if the layerSpec contains decode_config params (it is a canvas layer)
-        ...Object.prototype.hasOwnProperty.call(layerSpec.layerConfig, 'decode_config') &&
-          { decodeFunction: canvasDecodes[layerSpec.id] }
+        ...canvasDecodes[layerSpec.id] && { decodeFunction: canvasDecodes[layerSpec.id] }
       }
     }, { changedAttributes: {} });
+
+    // if the model has decodeParams but there's no decoder available, will show a warning.
+    if (Object.prototype.hasOwnProperty.call(this, 'decodeParams') && !this.decodeFunction) {
+      console.warn(`${layerSpec.id}: canvas decoder not found.`)
+    }
   }
 
   get(key) {
@@ -59,31 +62,19 @@ class LayerModel {
       body
     } = layerSpec.layerConfig;
     const { url } = body;
-    let params = {};
-    const sqlParams = {};
-    const decodeParams = {};
-
-    (paramsConfig || []).forEach(_param => {
-      if (_param.key && _param.default) params[_param.key] = _param.default;
-    });
+    let params = (paramsConfig || []).reduce((acc, v) => ({ ...acc, ...{ [v.key]: v.default }}), {});
+    const sqlParams = (sqlParamsConfig || []).reduce((acc, v) => ({ ...acc, ...{ [v.key]: v.default }}), {});
+    const decodeParams = (decodeConfig || []).reduce((acc, v) => ({ ...acc, ...{ [v.key]: v.default }}), {});
 
     params = {
       ...params,
-      url
+      ...url && { url }
     };
 
-    (sqlParamsConfig || []).forEach(_param => {
-      if (_param.key && _param.default) sqlParams[_param.key] = _param.default;
-    });
-
-    (decodeConfig || []).forEach(_param => {
-      if (_param.key && _param.default) decodeParams[_param.key] = _param.default;
-    });
-
     return {
-      params,
-      sqlParams,
-      decodeParams
+      ...Object.keys(params) && { params },
+      ...Object.keys(sqlParams).length && { sqlParams },
+      ...Object.keys(decodeParams).length && { decodeParams }
     };
   }
 }
