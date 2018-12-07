@@ -25,7 +25,7 @@ class Layer extends PureComponent {
 
   addSpecToLayerManager() {
     const { layerManager, ...layerSpec } = this.props;
-    layerManager.add([ layerSpec ], {});
+    layerManager.add([layerSpec], {});
   }
 
   render() {
