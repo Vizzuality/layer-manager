@@ -32,6 +32,15 @@ class LayerManager extends PureComponent {
     this.layerManager = new Manager(map, plugin);
   }
 
+  componentDidMount() {
+    const { onLayerLoading } = this.props;
+    if (this.layerManager.layers && this.layerManager.layers.length) {
+      onLayerLoading(true);
+      this.layerManager.renderLayers().then(() => onLayerLoading(false));
+    }
+  }
+
+
   componentDidUpdate() {
     const { onLayerLoading } = this.props;
     if (this.layerManager.layers && this.layerManager.layers.length) {
