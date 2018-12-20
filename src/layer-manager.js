@@ -1,4 +1,3 @@
-import Promise from 'bluebird';
 import isEmpty from 'lodash/isEmpty';
 import LayerModel from './layer-model';
 

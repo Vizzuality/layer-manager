@@ -1,8 +1,9 @@
-import Promise from 'bluebird';
+import { CancelToken } from 'axios';
 import { get } from 'lib/request';
 import { replace } from 'utils/query';
 
 export const fetchTile = layerModel => {
+  const source = CancelToken.source();
   const { layerConfig, params, sqlParams, interactivity } = layerModel;
   const { layerRequest } = layerModel;
 
@@ -22,9 +23,11 @@ export const fetchTile = layerModel => {
   const apiParams = `?stat_tag=API&config=${encodeURIComponent(layerTpl)}`;
   const url = `https://${layerConfigParsed.account}.carto.com/api/v1/map${apiParams}`;
 
-  if (layerRequest && layerRequest instanceof Promise) layerRequest.cancel();
+  if (layerRequest && layerRequest instanceof Promise) {
+    source.cancel('Operation canceled by the user.');
+  }
 
-  const newLayerRequest = get(url).then(res => {
+  const newLayerRequest = get(url, { cancelToken: source.token }).then(res => {
     if (res.status > 400) {
       console.error(res);
       return false;
