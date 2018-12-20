@@ -1,4 +1,3 @@
-import Promise from 'bluebird';
 import { replace } from 'utils/query';
 import CanvasLayer from './canvas-layer-leaflet';
 import ClusterLayer from './cluster-layer-leaflet';

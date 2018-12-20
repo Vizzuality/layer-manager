@@ -1,5 +1,4 @@
 /* eslint no-underscore-dangle: ["error", { "allow": ["_currentImage", "_image"] }] */
-import Promise from 'bluebird';
 import { replace } from 'utils/query';
 
 import LeafletLayer from './leaflet-layer-leaflet';

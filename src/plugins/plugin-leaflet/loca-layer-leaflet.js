@@ -1,5 +1,3 @@
-import Promise from 'bluebird';
-
 import UTFGridLayer from './utf-grid-layer-leaflet';
 
 const { L } = typeof window !== 'undefined' ? window : {};

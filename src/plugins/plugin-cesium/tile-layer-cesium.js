@@ -1,5 +1,3 @@
-import Promise from 'bluebird';
-
 export default Cesium => layerModel => new Promise(resolve => {
   const { layerConfig = {} } = layerModel;
   const { url } = layerConfig.body;

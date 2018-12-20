@@ -1,4 +1,3 @@
-import Promise from 'bluebird';
 import { fetchTile } from 'services/carto-service';
 import { replace } from 'utils/query';
 
