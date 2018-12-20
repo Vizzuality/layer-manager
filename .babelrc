@@ -1,35 +1,27 @@
 {
   "presets": [
     [
-      "env",
+      "@babel/preset-env",
       {
         "modules": false
       }
     ],
-    "react"
+    "@babel/preset-react"
   ],
   "plugins": [
-    "transform-runtime",
-    "transform-object-rest-spread",
-    ["transform-class-properties", { "spec": true }],
+    "@babel/plugin-proposal-class-properties",
     [
       "module-resolver",
       {
-        "root": ".",
-        "alias": {
-          "components": "./src/components",
-          "lib": "./src/lib",
-          "plugins": "./src/plugins",
-          "services": "./src/services",
-          "utils": "./src/utils"
-        },
+        "root": [
+          "./src/**"
+        ],
         "extensions": [".js", ".jsx"]
       }
     ]
   ],
   "env": {
     "rollup": {
-      "plugins": ["external-helpers"]
     }
   }
 }

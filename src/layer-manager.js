@@ -1,4 +1,5 @@
-import isEmpty from 'lodash/isEmpty';
+import Promise from 'bluebird';
+import isEmpty from 'lodash-es/isEmpty';
 import LayerModel from './layer-model';
 
 function checkPluginProperties(plugin) {
