@@ -15,6 +15,7 @@ const globals = {
   'prop-types': 'PropTypes'
 };
 const external = Object.keys(globals);
+const babelOptions = { externalHelpers: true };
 
 export default [
   {
@@ -24,7 +25,7 @@ export default [
       format: 'esm',
     },
     external,
-    plugins: [babel(), resolve()]
+    plugins: [babel(babelOptions), resolve()]
   },
   {
     input: 'src/index.umd.js',
@@ -36,7 +37,7 @@ export default [
       exports: 'named'
     },
     external,
-    plugins: [babel(), resolve(), commonjs()]
+    plugins: [babel(babelOptions), resolve(), commonjs()]
   },
   {
     input: 'src/index.umd.js',
@@ -48,7 +49,7 @@ export default [
       exports: 'named'
     },
     external,
-    plugins: [babel(), resolve(), commonjs(), uglify({}, minify)]
+    plugins: [babel(babelOptions), resolve(), commonjs(), uglify({}, minify)]
   },
   // Components
   {
@@ -58,7 +59,7 @@ export default [
       format: 'esm',
     },
     external,
-    plugins: [babel(), resolve()]
+    plugins: [babel(babelOptions), resolve()]
   },
   {
     input: 'src/components/index.umd.js',
@@ -70,6 +71,6 @@ export default [
       exports: 'named'
     },
     external,
-    plugins: [babel(), resolve(), commonjs()]
+    plugins: [babel(babelOptions), resolve(), commonjs()]
   }
 ];
