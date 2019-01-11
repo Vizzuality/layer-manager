@@ -10,8 +10,8 @@ const path = 'dist/layer-manager';
 const globals = {
   'react-dom': 'ReactDOM',
   react: 'React',
-  bluebird: 'Promise',
-  leaflet: 'L'
+  leaflet: 'L',
+  axios: 'axios'
 };
 const external = Object.keys(globals);
 

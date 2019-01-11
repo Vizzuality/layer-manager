@@ -1,6 +1,8 @@
-import { CancelToken } from 'axios';
+import axios from 'axios';
 import { get } from 'lib/request';
 import { replace } from 'utils/query';
+
+const { CancelToken } = axios;
 
 export const fetchTile = layerModel => {
   const source = CancelToken.source();
