@@ -9,7 +9,7 @@ class PluginCesium {
     this.map = map;
     this.eventListener = new Cesium.ScreenSpaceEventHandler(map.scene.canvas);
 
-    this.method = {
+    this.methods = {
       carto: cartoLayer(Cesium),
       cartodb: cartoLayer(Cesium),
       cesium: tileLayer(Cesium)
@@ -28,7 +28,7 @@ class PluginCesium {
   }
 
   getLayerByProvider(provider) {
-    return this.method[provider];
+    return this.methods[provider];
   }
 
   setZIndex(layerModel, zIndex) {
@@ -80,6 +80,10 @@ class PluginCesium {
   setParams(layerModel) {
     this.remove(layerModel);
   }
+
+  setSQLParams(layerModel) {
+    this.remove(layerModel);
+  }  
 
   setLayerConfig(layerModel) {
     this.remove(layerModel);

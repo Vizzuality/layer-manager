@@ -14,7 +14,7 @@ class PluginLeaflet {
 
   events = {};
 
-  method = {
+  methods = {
     // CARTO
     cartodb: cartoLayer,
     carto: cartoLayer,
@@ -74,7 +74,7 @@ class PluginLeaflet {
    * @param {String} provider
    */
   getLayerByProvider(provider) {
-    return this.method[provider];
+    return this.methods[provider];
   }
 
   /**
@@ -162,6 +162,10 @@ class PluginLeaflet {
   );
 
   setParams(layerModel) {
+    this.remove(layerModel);
+  }
+
+  setSQLParams(layerModel) {
     this.remove(layerModel);
   }
 
