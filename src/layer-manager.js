@@ -13,6 +13,7 @@ function checkPluginProperties(plugin) {
       'setZIndex',
       'setLayerConfig',
       'setParams',
+      'setSQLParams',
       'setDecodeParams',
       'getLayerByProvider'
     ];

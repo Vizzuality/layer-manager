@@ -12,8 +12,7 @@ or using git:
 
 `npm install vizzuality/layer-manager`
 
-<!-- ## How to use
-
+## Layer Manager
 ```js
 // Import LayersManager and the corresponding Plugin depending on the
 // map provider that you are using
@@ -24,60 +23,54 @@ const map = L.map('map_canvas').setView([40, -3], 5);
 const layerManager = new LayerManager(map, PluginLeaflet, {});
 
 // Adding all layers to map
-layerManager.add(layerSpec, {
-  opacity: 0.5,
-  visibility: true,
-  zIndex: 2,
-  interactivity: [], // It can be any type. It will depend on the layer provider
-  events: {
-    click: e => {},
-    mouseover: e => {}
-  }, // Only events supported by your map provider
-
-  // Some layers need to be decoded
-  params: {
-    url: '', // Tile url to be decoded. * Mandatory
-    iso: 'BRA',
-    thresh: 30
-  }, // * Mandatory
-  sqlParams: {
-    where: {
-      iso: 'BRA',
-      thresh: 30
-    }
-  },
-  decodeParams: {}, // * Mandatory
-  decodeFunction: (data, w, h, z) => {
-    // ...stuff
+layerManager.add([
+  {
+    provider: 'carto',
+    opacity: 1,
+    visibility: true,
+    zIndex: 2,
+    interactivity: ['country', 'iso'],
+    events: {
+      click: (...args) => { console.log(args) }
+    },
+    sqlParams: {
+      where: {
+        year: 2010,
+        commodity: 'rice'
+      },
+    },
+    layerConfig: {
+      type: "leaflet",
+      body: {
+        use_cors: false,
+        url: "https://wri-rw.carto.com/api/v2/sql?q=with s as (SELECT iso, region, value, commodity FROM combined01_prepared {{where}} and impactparameter='Food Demand' and scenario='SSP2-MIRO' and iso is not null and commodity <> 'All Cereals' and commodity <> 'All Pulses' ), r as (SELECT iso, region, sum(value) as value FROM s group by iso, region), d as (SELECT centroid as geometry, iso, value, region FROM impact_regions_159 t inner join r on new_region=iso) select json_build_object('type','FeatureCollection','features',json_agg(json_build_object('geometry',cast(geometry as json),'properties', json_build_object('value',value,'country',region,'iso',iso, 'unit', 'thousand metric tons'),'type','Feature'))) as data from d"
+      },
+      sql_config: [
+        {
+          key: "where",
+          key_params: [
+            {
+              required: true,
+              key: "year"
+            },
+            {
+              required: false,
+              key: "commodity"
+            }
+          ]
+        }
+      ],
+      params_config: [],	
+    },
   }
-});
+]);
 
 // remove all layers
 layerManager.remove();
 
 // removing specific layers
 layerManager.remove(['layerID']);
-
-// Setting opacity to specific layer
-layerManager.setOpacity('layerID', 0.5);
-// Setting visibility to specific layer
-layerManager.setVisibility('layerID', false);
-// Setting z-index to specific layer
-layerManager.setZIndex('layerID', 500);
 ```
-
-`layerSpec` is the response of `http://api.resourcewatch.org/v1/layer?application=rw`.
-
-Support for promises:
-
-```js
-spinner.start();
-
-layerManager.add().then(layer => {
-  spinner.stop();
-  console.log('layer added');
-});
-``` -->
 
 ## Layer Model
 | Attribute      | Description                                                                                                                                                                                      | Type            | Default |
@@ -87,7 +80,7 @@ layerManager.add().then(layer => {
 | zIndex         | A number to set the position of the layer                                                                                                                                                        | Number          |         |
 | provider       | A string that defines the type of layer that you want to display. It depends on the Plugin that you are using. Check the supported providers for each Plugin                                     | String          |         |
 | layerConfig    | An object that defines how to get the layer                                                                                                                                                      | Object          |         |
-| params         | An object that defines how to parse the layer                                                                                                                                                    | Object          |         |
+| params         | An object that defines how to parse the layer.                                                                                                                            | Object          |         |
 | sqlParams      | An object that defines how to parse the layer                                                                                                                                                    | Object          |         |
 | decodeParams   | An object that defines how to decode the layer                                                                                                                                                   | Object          |         |
 | decodeFunction | A function that defines how to decode the layer                                                                                                                                                  | Object          |         |
@@ -261,11 +254,11 @@ const activeLayers = [
     events: {
       click: (...args) => { console.log(args) }
     },
-    // Some layers need to be decoded
-    params: {
-      url: '', // Tile url to be decoded. * Mandatory
-      iso: 'BRA',
-      thresh: 30
+    sqlParams: {
+      where: {
+        year: 2010,
+        commodity: 'rice'
+      },
     },
     layerConfig: {
       type: "leaflet",
