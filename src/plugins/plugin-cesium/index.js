@@ -36,7 +36,6 @@ class PluginCesium {
     const { mapLayer } = layerModel;
     const layerIndex = zIndex >= length ? length - 1 : zIndex;
     const nextIndex = zIndex < 0 ? 0 : layerIndex;
-    // sorry not sorry
     const currentIndex = this.map.imageryLayers.indexOf(mapLayer);
     if (currentIndex !== nextIndex) {
       const steps = nextIndex - currentIndex;

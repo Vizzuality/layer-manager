@@ -32,17 +32,14 @@ export const concatenation = (originalStr, params = {}) => {
         const value = params[key][k];
 
         if (Array.isArray(value) && !!value.length) {
-          // window.isNaN is needed here as Number.isNaN returns
-          // false in the case Number.isNaN('string'). please dont change.
-          const mappedValue = value.map(v => Number.isNaN(v) ? `'${v}'` : v);
-          // eslint-disable-line
+          const mappedValue = value.map(v => typeof v !== 'number' ? `'${v}'` : v);
           return `${k} IN (${mappedValue.join(', ')})`;
         }
 
-        if (value) {
-          return Number.isNaN(value)
+        if (!Array.isArray(value) && value) {
+          return typeof value !== 'number'
             ? `${k} = '${value}'`
-            : `${k} = ${value}`; // eslint-disable-line
+            : `${k} = ${value}`;
         }
 
         return null;
