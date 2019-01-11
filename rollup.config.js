@@ -11,7 +11,8 @@ const globals = {
   'react-dom': 'ReactDOM',
   react: 'React',
   leaflet: 'L',
-  axios: 'axios'
+  axios: 'axios',
+  'prop-types': 'PropTypes'
 };
 const external = Object.keys(globals);
 
@@ -48,5 +49,15 @@ export default [
     },
     external,
     plugins: [babel(), resolve(), commonjs(), uglify({}, minify)]
-  }
+  },
+  // Components
+  {
+    input: 'src/components/index.js',
+    output: {
+      file: 'dist/components/index.js',
+      format: 'esm',
+    },
+    external,
+    plugins: [babel(), resolve()]
+  },
 ];
