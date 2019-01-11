@@ -54,10 +54,22 @@ export default [
   {
     input: 'src/components/index.js',
     output: {
-      file: 'dist/components/index.js',
+      file: 'dist/components/index.esm.js',
       format: 'esm',
     },
     external,
     plugins: [babel(), resolve()]
   },
+  {
+    input: 'src/components/index.umd.js',
+    output: {
+      name,
+      file: 'dist/components/index.js',
+      format: 'umd',
+      globals,
+      exports: 'named'
+    },
+    external,
+    plugins: [babel(), resolve(), commonjs()]
+  }
 ];
