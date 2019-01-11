@@ -15,7 +15,7 @@
     "prepublishOnly": "bnr build",
     "lint": "eslint ./src",
     "test": "mocha --require @babel/register --require ./test/setup --recursive ./test/specs",
-    "watch": "bnr watch",
+    "watch": "bnr watch && bnr babel:watch",
     "build": "bnr build && bnr babel:build",
     "prettier": "prettier --single-quote --write \"src/**/*.js\""
   },
@@ -28,13 +28,16 @@
       }
     },
     "watch": {
-      "command": "rollup -c -w",
+      "command": "rollup -c -w && babel src -d lib --watch",
       "env": {
         "BABEL_ENV": "rollup"
       }
     },
     "babel:build": {
       "command": "babel src -d lib"
+    },
+    "babel:watch": {
+      "command": "babel src -d lib --watch"
     }
   },
   "devDependencies": {
