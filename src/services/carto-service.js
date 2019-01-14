@@ -4,7 +4,7 @@ import { replace } from 'utils/query';
 
 const { CancelToken } = axios;
 
-export const fetchTile = layerModel => {
+export const fetchTile = (layerModel) => {
   const source = CancelToken.source();
   const { layerConfig, params, sqlParams, interactivity } = layerModel;
   const { layerRequest } = layerModel;
@@ -15,7 +15,7 @@ export const fetchTile = layerModel => {
   const layerTpl = JSON.stringify({
     version: '1.3.0',
     stat_tag: 'API',
-    layers: layerConfigParsed.body.layers.map(l => {
+    layers: layerConfigParsed.body.layers.map((l) => {
       if (!!interactivity && interactivity.length) {
         return { ...l, options: { ...l.options, interactivity } };
       }
@@ -29,12 +29,13 @@ export const fetchTile = layerModel => {
     source.cancel('Operation canceled by the user.');
   }
 
-  const newLayerRequest = get(url, { cancelToken: source.token }).then(res => {
+  const newLayerRequest = get(url, { cancelToken: source.token }).then((res) => {
     if (res.status > 400) {
       console.error(res);
       return false;
     }
-    return JSON.parse(res.response);
+
+    return res.data;
   });
 
   layerModel.set('layerRequest', newLayerRequest);
