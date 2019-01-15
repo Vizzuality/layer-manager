@@ -1,3 +1,4 @@
+/* eslint no-underscore-dangle: 0 */
 import { fetchData } from 'services/cluster-service';
 import Supercluster from 'supercluster';
 
@@ -35,7 +36,7 @@ const ClusterLayer = L && L.GeoJSON.extend({
         let iconSize = null;
 
         if (typeof sizes === 'function') {
-          iconSize = () => sizes(count)
+          iconSize = () => sizes(count);
         } else {
           const sizeKey = Object.keys(sizes).find(o => count <= parseInt(o, 10));
           const size = sizes[sizeKey];
@@ -46,12 +47,12 @@ const ClusterLayer = L && L.GeoJSON.extend({
         return L.marker(latlng, {
           icon: L.divIcon({
             iconSize,
-            html: html && typeof html === 'function' ?
-              html(feature) :
-              `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ${clusterIcon.color ? `background-color: ${clusterIcon.color};` : ''}">${feature.properties.point_count_abbreviated}</div>`,
+            html: html && typeof html === 'function'
+              ? html(feature)
+              : `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ${clusterIcon.color ? `background-color: ${clusterIcon.color};` : ''}">${feature.properties.point_count_abbreviated}</div>`,
             ...clusterIcon
           })
-        })
+        });
       },
 
       // parses each feature before adding to the map
@@ -78,11 +79,11 @@ const ClusterLayer = L && L.GeoJSON.extend({
     });
 
     fetchData(layerModel)
-      .then(response => {
+      .then((response) => {
         const features = decodeClusters(response);
         this.supercluster.load(features);
         this.update();
-      })
+      });
   },
 
   setMapView(feature) {
@@ -92,7 +93,7 @@ const ClusterLayer = L && L.GeoJSON.extend({
   },
 
   onAdd(map) {
-		L.GeoJSON.prototype.onAdd.call(this, map);
+    L.GeoJSON.prototype.onAdd.call(this, map);
     map.on('moveend zoomend', this.onMove, this);
   },
 
@@ -114,13 +115,13 @@ const ClusterLayer = L && L.GeoJSON.extend({
       bounds._southWest.lat,
       bounds._northEast.lng,
       bounds._northEast.lat,
-    ]
+    ];
     const clusters = this.supercluster.getClusters(clusterBounds, zoom);
     this.addData(clusters);
   },
 
   clear() {
-		L.GeoJSON.prototype.clearLayers.call(this, []);
+    L.GeoJSON.prototype.clearLayers.call(this, []);
   }
 
 });

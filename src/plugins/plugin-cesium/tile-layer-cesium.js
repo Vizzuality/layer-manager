@@ -1,4 +1,4 @@
-export default Cesium => layerModel => new Promise(resolve => {
+export default Cesium => layerModel => new Promise((resolve) => {
   const { layerConfig = {} } = layerModel;
   const { url } = layerConfig.body;
   const provider = new Cesium.UrlTemplateImageryProvider({ url });

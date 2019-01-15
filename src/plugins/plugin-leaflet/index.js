@@ -53,9 +53,9 @@ class PluginLeaflet {
     const { mapLayer, events } = layerModel;
 
     if (events && mapLayer) {
-      Object.keys(events).forEach(k => {
+      Object.keys(events).forEach((k) => {
         if (mapLayer.group) {
-          mapLayer.eachLayer(l => {
+          mapLayer.eachLayer((l) => {
             l.off(k);
           });
         } else {
@@ -125,14 +125,14 @@ class PluginLeaflet {
    * @param {Object} layerModel
   */
   setEvents = debounce(
-    layerModel => {
+    (layerModel) => {
       const { mapLayer, events } = layerModel;
       if (layerModel.layerConfig.type !== 'cluster') {
         // Remove current events
         if (this.events[layerModel.id]) {
-          Object.keys(this.events[layerModel.id]).forEach(k => {
+          Object.keys(this.events[layerModel.id]).forEach((k) => {
             if (mapLayer.group) {
-              mapLayer.eachLayer(l => {
+              mapLayer.eachLayer((l) => {
                 l.off(k);
               });
             } else {
@@ -142,9 +142,9 @@ class PluginLeaflet {
         }
 
         // Add new events
-        Object.keys(events).forEach(k => {
+        Object.keys(events).forEach((k) => {
           if (mapLayer.group) {
-            mapLayer.eachLayer(l => {
+            mapLayer.eachLayer((l) => {
               l.on(k, events[k]);
             });
           } else {

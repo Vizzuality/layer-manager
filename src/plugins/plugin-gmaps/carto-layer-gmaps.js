@@ -1,9 +1,9 @@
 import { fetchTile } from 'services/carto-service';
-import { replace } from 'lib/query';
+import { replace } from 'utils/query';
 
 const { google } = typeof window !== 'undefined' ? window : {};
 
-const CartoLayer = layerModel => {
+const CartoLayer = (layerModel) => {
   if (!google) throw new Error('Google maps must be defined.');
 
   const { layerConfig, params, sqlParams } = layerModel;
@@ -13,7 +13,7 @@ const CartoLayer = layerModel => {
 
   return new Promise((resolve, reject) => {
     fetchTile(layerModel)
-      .then(response => {
+      .then((response) => {
         const tileUrl = `${response.cdn_url.templates.https.url}/${layerConfigParsed.account}/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.png`;
         const layer = new google.maps.ImageMapType({
           name: layerConfigParsed.slug,

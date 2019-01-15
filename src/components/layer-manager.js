@@ -6,7 +6,7 @@ import Layer from './layer';
 // Isomorphic support
 const { L } = typeof window !== 'undefined'
   ? window
-  : { L: { Map: () => {} }};
+  : { L: { Map: () => {} } };
 
 class LayerManager extends PureComponent {
   static propTypes = {
@@ -55,9 +55,8 @@ class LayerManager extends PureComponent {
     if (children && Children.count(children)) {
       return Children.map(
         children,
-        (child, i) =>
-          child &&
-            cloneElement(child, {
+        (child, i) => child
+            && cloneElement(child, {
               layerManager: this.layerManager,
               zIndex: child.props.zIndex || 1000 - i
             })

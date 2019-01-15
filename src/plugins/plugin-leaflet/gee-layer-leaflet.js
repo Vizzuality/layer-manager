@@ -5,7 +5,7 @@ import UTFGridLayer from './utf-grid-layer-leaflet';
 
 const { L } = typeof window !== 'undefined' ? window : {};
 
-const GEELayer = layerModel => {
+const GEELayer = (layerModel) => {
   if (!L) throw new Error('Leaflet must be defined.');
 
   const {
@@ -41,14 +41,14 @@ const GEELayer = layerModel => {
 
     const LayerGroup = L.LayerGroup.extend({
       group: true,
-      setOpacity: opacity => {
-        layerModel.mapLayer.getLayers().forEach(l => {
+      setOpacity: (opacity) => {
+        layerModel.mapLayer.getLayers().forEach((l) => {
           l.setOpacity(opacity);
         });
       }
     });
 
-    layer = new LayerGroup([ layer, interactiveLayer ]);
+    layer = new LayerGroup([layer, interactiveLayer]);
   }
 
   return new Promise((resolve, reject) => {
