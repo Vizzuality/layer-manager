@@ -6,7 +6,7 @@ import Layer from './layer';
 // Isomorphic support
 const { L } = typeof window !== 'undefined'
   ? window
-  : { L: { Map: () => {} }};
+  : { L: { Map: () => {} } };
 
 class LayerManager extends PureComponent {
   static propTypes = {
@@ -32,6 +32,15 @@ class LayerManager extends PureComponent {
     this.layerManager = new Manager(map, plugin);
   }
 
+  componentDidMount() {
+    const { onLayerLoading } = this.props;
+    if (this.layerManager.layers && this.layerManager.layers.length) {
+      onLayerLoading(true);
+      this.layerManager.renderLayers().then(() => onLayerLoading(false));
+    }
+  }
+
+
   componentDidUpdate() {
     const { onLayerLoading } = this.props;
     if (this.layerManager.layers && this.layerManager.layers.length) {
@@ -46,9 +55,8 @@ class LayerManager extends PureComponent {
     if (children && Children.count(children)) {
       return Children.map(
         children,
-        (child, i) =>
-          child &&
-            cloneElement(child, {
+        (child, i) => child
+            && cloneElement(child, {
               layerManager: this.layerManager,
               zIndex: child.props.zIndex || 1000 - i
             })

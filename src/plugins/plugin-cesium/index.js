@@ -36,7 +36,6 @@ class PluginCesium {
     const { mapLayer } = layerModel;
     const layerIndex = zIndex >= length ? length - 1 : zIndex;
     const nextIndex = zIndex < 0 ? 0 : layerIndex;
-    // sorry not sorry
     const currentIndex = this.map.imageryLayers.indexOf(mapLayer);
     if (currentIndex !== nextIndex) {
       const steps = nextIndex - currentIndex;
@@ -65,7 +64,7 @@ class PluginCesium {
 
   setEvents(layerModel) {
     const { events } = layerModel;
-    Object.keys(events).forEach(type => {
+    Object.keys(events).forEach((type) => {
       const action = events[type];
       if (this.eventListener.getInputAction(type)) {
         this.eventListener.removeInputAction(type);
@@ -90,7 +89,7 @@ class PluginCesium {
     console.info('Decode params callback', layerModel, this);
   }
 
-  getCoordinatesFromEvent = action => event => {
+  getCoordinatesFromEvent = action => (event) => {
     const { position } = event;
     const { Cesium } = PluginCesium;
     const clicked = new Cesium.Cartesian2(position.x, position.y);

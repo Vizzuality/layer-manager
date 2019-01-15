@@ -1,4 +1,4 @@
-import isEqual from 'lodash/isEqual';
+import isEqual from 'lodash-es/isEqual';
 
 class LayerModel {
   opacity = 1;
@@ -25,7 +25,7 @@ class LayerModel {
     // reseting changedAttributes for every update
     this.set('changedAttributes', {});
 
-    Object.keys(nextData).forEach(k => {
+    Object.keys(nextData).forEach((k) => {
       if (!isEqual(prevData[k], nextData[k])) {
         this.changedAttributes[k] = nextData[k];
         this.set(k, nextData[k]);

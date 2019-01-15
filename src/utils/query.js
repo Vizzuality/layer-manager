@@ -1,4 +1,4 @@
-import compact from 'lodash/compact';
+import compact from 'lodash-es/compact';
 
 /**
  * Params should have this format => { key:'xxx', key2:'xxx' }
@@ -8,7 +8,7 @@ import compact from 'lodash/compact';
  */
 export const substitution = (originalStr, params = {}) => {
   let str = originalStr;
-  Object.keys(params).forEach(key => {
+  Object.keys(params).forEach((key) => {
     str = str
       .replace(new RegExp(`{{${key}}}`, 'g'), params[key])
       .replace(new RegExp(`{${key}}`, 'g'), params[key]);
@@ -26,23 +26,20 @@ export const concatenation = (originalStr, params = {}) => {
   let str = originalStr;
   let sql;
 
-  Object.keys(params).forEach(key => {
+  Object.keys(params).forEach((key) => {
     sql = `${compact(
-      Object.keys(params[key]).map(k => {
+      Object.keys(params[key]).map((k) => {
         const value = params[key][k];
 
         if (Array.isArray(value) && !!value.length) {
-          // window.isNaN is needed here as Number.isNaN returns
-          // false in the case Number.isNaN('string'). please dont change.
-          const mappedValue = value.map(v => Number.isNaN(v) ? `'${v}'` : v);
-          // eslint-disable-line
+          const mappedValue = value.map(v => (typeof v !== 'number' ? `'${v}'` : v));
           return `${k} IN (${mappedValue.join(', ')})`;
         }
 
-        if (value) {
-          return Number.isNaN(value)
+        if (!Array.isArray(value) && value) {
+          return typeof value !== 'number'
             ? `${k} = '${value}'`
-            : `${k} = ${value}`; // eslint-disable-line
+            : `${k} = ${value}`;
         }
 
         return null;

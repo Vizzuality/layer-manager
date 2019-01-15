@@ -1,5 +1,4 @@
 /* eslint no-underscore-dangle: ["error", { "allow": ["_currentImage", "_image"] }] */
-import Promise from 'bluebird';
 import { replace } from 'utils/query';
 
 import LeafletLayer from './leaflet-layer-leaflet';
@@ -8,7 +7,7 @@ import UTFGridLayer from './utf-grid-layer-leaflet';
 const { L } = typeof window !== 'undefined' ? window : {};
 const eval2 = eval;
 
-const EsriLayer = layerModel => {
+const EsriLayer = (layerModel) => {
   if (!L) throw new Error('Leaflet must be defined.');
   if (!L.esri) {
     throw new Error(
@@ -61,7 +60,7 @@ const EsriLayer = layerModel => {
     }
 
     if (!layer.setZIndex) {
-      layer.setZIndex = zIndex => {
+      layer.setZIndex = (zIndex) => {
         if (layer._currentImage) {
           layer._currentImage._image.style.zIndex = zIndex;
         }
@@ -74,14 +73,14 @@ const EsriLayer = layerModel => {
 
       const LayerGroup = L.LayerGroup.extend({
         group: true,
-        setOpacity: opacity => {
-          layerModel.mapLayer.getLayers().forEach(l => {
+        setOpacity: (opacity) => {
+          layerModel.mapLayer.getLayers().forEach((l) => {
             l.setOpacity(opacity);
           });
         }
       });
 
-      layer = new LayerGroup([ layer, interactiveLayer ]);
+      layer = new LayerGroup([layer, interactiveLayer]);
     }
 
     return resolve(layer);
