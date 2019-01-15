@@ -1,6 +1,6 @@
 {
   "name": "layer-manager",
-  "version": "1.14.0",
+  "version": "1.14.1",
   "description": "A library to get a layer depending on provider and layer spec",
   "repository": {
     "type": "git",
@@ -80,13 +80,5 @@
   },
   "peerDependencies": {
     "react": "^15.0.0 || ^16.0.0"
-  },
-  "engines": {
-    "node": ">=10.x.x"
-  },
-  "auto-changelog": {
-    "output": "CHANGELOG.md",
-    "template": "keepachangelog",
-    "commitLimit": false
   }
 }
