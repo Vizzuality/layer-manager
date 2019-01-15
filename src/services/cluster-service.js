@@ -11,12 +11,13 @@ export const fetchData = (layerModel) => {
     source.cancel('Operation canceled by the user.');
   }
 
-  const newLayerRequest = get(url).then((res) => {
+  const newLayerRequest = get(url, { cancelToken: source.token }).then((res) => {
     if (res.status > 400) {
       console.error(res);
       return false;
     }
-    return JSON.parse(res.response);
+
+    return res.data;
   });
 
   return newLayerRequest;
