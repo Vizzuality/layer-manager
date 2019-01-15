@@ -75,7 +75,7 @@ class LayerManager {
       return Promise
         .all(Object.values(this.promises))
         .then(() => this.layers)
-        .finally(() => {
+        .then(() => {
           this.promises = {};
         });
     }
