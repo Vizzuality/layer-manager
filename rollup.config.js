@@ -22,6 +22,15 @@ const babelOptionsFn = () => ({
     'transform-class-properties',
     'transform-object-rest-spread',
     'external-helpers',
+    [
+      'module-resolver',
+      {
+        'root': [
+          './src/**'
+        ],
+        'extensions': ['.js', '.jsx']
+      }
+    ]
   ],
 });
 const babelOptions = babelOptionsFn();
