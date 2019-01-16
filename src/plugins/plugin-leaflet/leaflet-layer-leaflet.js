@@ -81,7 +81,7 @@ const LeafletLayer = (layerModel) => {
           `(${layerConfigParsed.body.style})`,
         );
       }
-      layer = new ClusterLayer({ ...layerModel });
+      layer = new ClusterLayer(layerModel);
       break;
     default:
       layer = L[layerConfigParsed.type](
