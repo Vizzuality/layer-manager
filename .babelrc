@@ -1,7 +1,6 @@
 {
   "presets": ["env", "react"],
   "plugins": [
-    "es6-promise",
     "transform-class-properties",
     [
       "transform-object-rest-spread",

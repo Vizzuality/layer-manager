@@ -1,13 +1,9 @@
-import axios from 'axios';
+import { CancelToken } from 'axios';
 import { get } from 'lib/request';
 import { replace } from 'utils/query';
 
-const { CancelToken } = axios;
-
 export const fetchTile = (layerModel) => {
-  const source = CancelToken.source();
   const { layerConfig, params, sqlParams, interactivity } = layerModel;
-  const { layerRequest } = layerModel;
 
   const layerConfigParsed = layerConfig.parse === false
     ? layerConfig
@@ -25,11 +21,15 @@ export const fetchTile = (layerModel) => {
   const apiParams = `?stat_tag=API&config=${encodeURIComponent(layerTpl)}`;
   const url = `https://${layerConfigParsed.account}.carto.com/api/v1/map${apiParams}`;
 
-  if (layerRequest && layerRequest instanceof Promise) {
-    source.cancel('Operation canceled by the user.');
+  const { layerRequest } = layerModel;
+  if (layerRequest) {
+    layerRequest.cancel('Operation canceled by the user.');
   }
 
-  const newLayerRequest = get(url, { cancelToken: source.token }).then((res) => {
+  const layerRequestSource = CancelToken.source();
+  layerModel.set('layerRequest', layerRequestSource);
+
+  const newLayerRequest = get(url, { cancelToken: layerRequestSource.token }).then((res) => {
     if (res.status > 400) {
       console.error(res);
       return false;
@@ -37,8 +37,6 @@ export const fetchTile = (layerModel) => {
 
     return res.data;
   });
-
-  layerModel.set('layerRequest', newLayerRequest);
 
   return newLayerRequest;
 };
