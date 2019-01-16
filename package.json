@@ -23,7 +23,6 @@
     "build": {
       "command": "rollup -c",
       "env": {
-        "BABEL_ENV": "rollup",
         "NODE_ENV": "production"
       }
     },

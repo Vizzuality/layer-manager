@@ -1,13 +1,5 @@
 {
-  "presets": [
-    [
-      "env",
-      {
-        "modules": false
-      }
-    ],
-    "react"
-  ],
+  "presets": ["env", "react"],
   "plugins": [
     "es6-promise",
     "transform-class-properties",
@@ -26,10 +18,5 @@
         "extensions": [".js", ".jsx"]
       }
     ]
-  ],
-  "env": {
-    "rollup": {
-      "plugins": ["external-helpers"],
-    }
-  }
+  ]
 }

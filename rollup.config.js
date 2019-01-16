@@ -15,7 +15,16 @@ const globals = {
   'prop-types': 'PropTypes'
 };
 const external = Object.keys(globals);
-const babelOptions = { externalHelpers: true };
+const babelOptionsFn = () => ({
+  babelrc: false,
+  presets: [['env', { modules: false }], 'react'],
+  plugins: [
+    'transform-class-properties',
+    'transform-object-rest-spread',
+    'external-helpers',
+  ],
+});
+const babelOptions = babelOptionsFn();
 
 export default [
   {
