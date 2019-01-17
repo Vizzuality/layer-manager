@@ -1,5 +1,3 @@
-import debounce from 'lodash-es/debounce';
-
 import cartoLayer from './carto-layer-leaflet';
 import esriLayer from './esri-layer-leaflet';
 import geeLayer from './gee-layer-leaflet';
