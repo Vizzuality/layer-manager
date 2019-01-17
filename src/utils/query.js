@@ -1,4 +1,4 @@
-import compact from 'lodash-es/compact';
+import compact from 'lodash/compact';
 
 /**
  * Params should have this format => { key:'xxx', key2:'xxx' }
