@@ -1,13 +1,5 @@
 {
-  "presets": [
-    [
-      "env",
-      {
-        "modules": false
-      }
-    ],
-    "react"
-  ],
+  "presets": ["env", "react"],
   "plugins": [
     "transform-class-properties",
     [
@@ -26,9 +18,5 @@
       }
     ]
   ],
-  "env": {
-    "rollup": {
-      "plugins": ["external-helpers"],
-    }
-  }
+  "ignore": ["node_modules"]
 }
