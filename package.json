@@ -72,7 +72,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "lodash-es": "^4.17.11",
+    "lodash": "^4.17.11",
     "prop-types": "^15.6.2",
     "supercluster": "^4.1.1",
     "wri-json-api-serializer": "^1.0.1"

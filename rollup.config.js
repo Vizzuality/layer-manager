@@ -8,14 +8,18 @@ import pkg from './package.json';
 const name = 'LayerManager';
 const path = 'dist/layer-manager';
 const globals = {
+  axios: 'axios',
+  leaflet: 'L',
+  'lodash/compact': 'compact',
+  'lodash/debounce': 'debounce',
+  'lodash/isEmpty': 'isEmpty',
+  'lodash/isEqual': 'isEqual',
+  'prop-types': 'PropTypes',
   'react-dom': 'ReactDOM',
   react: 'React',
-  leaflet: 'L',
-  axios: 'axios',
-  'prop-types': 'PropTypes'
 };
 const external = Object.keys(globals);
-const babelOptionsFn = () => ({
+const babelOptions = () => ({
   babelrc: false,
   presets: [['env', { modules: false }], 'react'],
   plugins: [
@@ -33,17 +37,16 @@ const babelOptionsFn = () => ({
     ]
   ],
 });
-const babelOptions = babelOptionsFn();
 
 export default [
   {
     input: 'src/index.js',
     output: {
       file: pkg.module,
-      format: 'esm',
+      format: 'es',
     },
     external,
-    plugins: [babel(babelOptions), resolve()]
+    plugins: [babel(babelOptions()), resolve()]
   },
   {
     input: 'src/index.umd.js',
@@ -52,10 +55,9 @@ export default [
       file: `${path}.js`,
       format: 'umd',
       globals,
-      exports: 'named'
     },
     external,
-    plugins: [babel(babelOptions), resolve(), commonjs()]
+    plugins: [babel(babelOptions()), resolve(), commonjs()]
   },
   {
     input: 'src/index.umd.js',
@@ -64,10 +66,9 @@ export default [
       file: `${path}.min.js`,
       format: 'umd',
       globals,
-      exports: 'named'
     },
     external,
-    plugins: [babel(babelOptions), resolve(), commonjs(), uglify({}, minify)]
+    plugins: [babel(babelOptions()), resolve(), commonjs(), uglify({}, minify)]
   },
   // Components
   {
@@ -77,7 +78,7 @@ export default [
       format: 'esm',
     },
     external,
-    plugins: [babel(babelOptions), resolve()]
+    plugins: [babel(babelOptions()), resolve()]
   },
   {
     input: 'src/components/index.umd.js',
@@ -86,9 +87,8 @@ export default [
       file: 'dist/components/index.js',
       format: 'umd',
       globals,
-      exports: 'named'
     },
     external,
-    plugins: [babel(babelOptions), resolve(), commonjs()]
+    plugins: [babel(babelOptions()), resolve(), commonjs()]
   }
 ];
