@@ -27,9 +27,7 @@ const NEXGDDPLayer = layerModel => {
     layer = new LayerGroup([layer, interactiveLayer]);
   }
 
-  return new Promise(resolve => {
-    resolve(layer);
-  });
+  return Promise.resolve(layer);
 };
 
 export default NEXGDDPLayer;
