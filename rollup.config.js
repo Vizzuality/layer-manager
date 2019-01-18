@@ -1,9 +1,12 @@
 import babel from 'rollup-plugin-babel';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
-import { uglify } from 'rollup-plugin-uglify';
-import { minify } from 'uglify-es';
+import { terser } from 'rollup-plugin-terser';
 import pkg from './package.json';
+
+const terserOptions = {
+  safari10: true
+};
 
 const name = 'LayerManager';
 const path = 'dist/layer-manager';
@@ -29,10 +32,10 @@ const babelOptions = () => ({
     [
       'module-resolver',
       {
-        'root': [
+        root: [
           './src/**'
         ],
-        'extensions': ['.js', '.jsx']
+        extensions: ['.js', '.jsx']
       }
     ]
   ],
@@ -68,7 +71,7 @@ export default [
       globals,
     },
     external,
-    plugins: [babel(babelOptions()), resolve(), commonjs(), uglify({}, minify)]
+    plugins: [babel(babelOptions()), resolve(), commonjs(), terser(terserOptions)]
   },
   // Components
   {

@@ -1,23 +1,25 @@
 {
-  "extends": "vizzuality",
+  "extends": ["vizzuality", "prettier"],
   "env": {
     "browser": true,
     "node": true,
     "es6": true,
-    "mocha": true
+    "jest/globals": true
   },
   "globals": {
     "L": true
   },
+  "parser": "babel-eslint",
+  "plugins": [
+    "babel",
+    "jest",
+    "prettier"
+  ],
   "rules": {
     "no-debugger": 1,
     "no-eval": [1, { "allowIndirect": true }],
     "import/no-extraneous-dependencies": 0
   },
-  "parser": "babel-eslint",
-  "plugins": [
-    "babel"
-  ],
   "settings": {
     "import/resolver": {
       "babel-module": {},
