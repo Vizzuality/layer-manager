@@ -3,18 +3,21 @@ import { replace } from 'utils/query';
 
 const { google } = typeof window !== 'undefined' ? window : {};
 
-const CartoLayer = (layerModel) => {
+const CartoLayer = layerModel => {
   if (!google) throw new Error('Google maps must be defined.');
 
   const { layerConfig, params, sqlParams } = layerModel;
-  const layerConfigParsed = layerConfig.parse === false
-    ? layerConfig
-    : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
+  const layerConfigParsed =
+    layerConfig.parse === false
+      ? layerConfig
+      : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
 
   return new Promise((resolve, reject) => {
     fetchTile(layerModel)
-      .then((response) => {
-        const tileUrl = `${response.cdn_url.templates.https.url}/${layerConfigParsed.account}/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.png`;
+      .then(response => {
+        const tileUrl = `${response.cdn_url.templates.https.url}/${
+          layerConfigParsed.account
+        }/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.png`;
         const layer = new google.maps.ImageMapType({
           name: layerConfigParsed.slug,
           getTileUrl(coord, zoom) {

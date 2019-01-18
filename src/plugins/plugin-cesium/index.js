@@ -64,15 +64,12 @@ class PluginCesium {
 
   setEvents(layerModel) {
     const { events } = layerModel;
-    Object.keys(events).forEach((type) => {
+    Object.keys(events).forEach(type => {
       const action = events[type];
       if (this.eventListener.getInputAction(type)) {
         this.eventListener.removeInputAction(type);
       }
-      this.eventListener.setInputAction(
-        this.getCoordinatesFromEvent(action),
-        type
-      );
+      this.eventListener.setInputAction(this.getCoordinatesFromEvent(action), type);
     });
     return this;
   }
@@ -89,7 +86,7 @@ class PluginCesium {
     console.info('Decode params callback', layerModel, this);
   }
 
-  getCoordinatesFromEvent = action => (event) => {
+  getCoordinatesFromEvent = action => event => {
     const { position } = event;
     const { Cesium } = PluginCesium;
     const clicked = new Cesium.Cartesian2(position.x, position.y);

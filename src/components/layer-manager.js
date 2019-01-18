@@ -4,19 +4,14 @@ import Manager from '../layer-manager';
 import Layer from './layer';
 
 // Isomorphic support
-const { L } = typeof window !== 'undefined'
-  ? window
-  : { L: { Map: () => {} } };
+const { L } = typeof window !== 'undefined' ? window : { L: { Map: () => {} } };
 
 class LayerManager extends PureComponent {
   static propTypes = {
     map: PropTypes.instanceOf(L.Map).isRequired,
     plugin: PropTypes.func.isRequired,
     layersSpec: PropTypes.arrayOf(PropTypes.object),
-    children: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.node),
-      PropTypes.node
-    ]),
+    children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
     onLayerLoading: PropTypes.func
   };
 
@@ -40,7 +35,6 @@ class LayerManager extends PureComponent {
     }
   }
 
-
   componentDidUpdate() {
     const { onLayerLoading } = this.props;
     if (this.layerManager.layers && this.layerManager.layers.length) {
@@ -55,11 +49,12 @@ class LayerManager extends PureComponent {
     if (children && Children.count(children)) {
       return Children.map(
         children,
-        (child, i) => child
-            && cloneElement(child, {
-              layerManager: this.layerManager,
-              zIndex: child.props.zIndex || 1000 - i
-            })
+        (child, i) =>
+          child &&
+          cloneElement(child, {
+            layerManager: this.layerManager,
+            zIndex: child.props.zIndex || 1000 - i
+          })
       );
     }
 

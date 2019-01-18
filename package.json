@@ -17,7 +17,7 @@
     "test": "jest --config ./jest.config.js --colors",
     "watch": "bnr watch && bnr babel:watch",
     "build": "bnr build && bnr babel:build",
-    "prettier": "prettier --single-quote --write \"src/**/*.js\""
+    "prettier": "prettier --single-quote --write 'src/**/*.js'"
   },
   "betterScripts": {
     "build": {
@@ -90,7 +90,7 @@
     "axios": "^0.18.0",
     "lodash": "^4.17.11",
     "prop-types": "^15.6.2",
-    "supercluster": "^6.0.0"
+    "supercluster": "^4.1.1"
   },
   "peerDependencies": {
     "react": "^15.0.0 || ^16.0.0"
