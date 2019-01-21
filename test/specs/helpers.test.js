@@ -19,7 +19,7 @@ describe('# Cancellable request', () => {
         result = json;
         return result;
       })
-      .finally(() => {
+      .then(() => {
         if (!request.isCancelled()) result = 1;
         expect(result).to.equal(null);
         done();
