@@ -1,5 +1,3 @@
-import debounce from 'lodash/debounce';
-
 import cartoLayer from './carto-layer-leaflet';
 import esriLayer from './esri-layer-leaflet';
 import geeLayer from './gee-layer-leaflet';
@@ -53,9 +51,9 @@ class PluginLeaflet {
     const { mapLayer, events } = layerModel;
 
     if (events && mapLayer) {
-      Object.keys(events).forEach(k => {
+      Object.keys(events).forEach((k) => {
         if (mapLayer.group) {
-          mapLayer.eachLayer(l => {
+          mapLayer.eachLayer((l) => {
             l.off(k);
           });
         } else {
@@ -124,42 +122,38 @@ class PluginLeaflet {
    * A namespace to set DOM events
    * @param {Object} layerModel
   */
-  setEvents = debounce(
-    layerModel => {
-      const { mapLayer, events } = layerModel;
-      if (layerModel.layerConfig.type !== 'cluster') {
-        // Remove current events
-        if (this.events[layerModel.id]) {
-          Object.keys(this.events[layerModel.id]).forEach(k => {
-            if (mapLayer.group) {
-              mapLayer.eachLayer(l => {
-                l.off(k);
-              });
-            } else {
-              mapLayer.off(k);
-            }
-          });
-        }
-
-        // Add new events
-        Object.keys(events).forEach(k => {
+  setEvents = (layerModel) => {
+    const { mapLayer, events } = layerModel;
+    if (layerModel.layerConfig.type !== 'cluster') {
+      // Remove current events
+      if (this.events[layerModel.id]) {
+        Object.keys(this.events[layerModel.id]).forEach((k) => {
           if (mapLayer.group) {
-            mapLayer.eachLayer(l => {
-              l.on(k, events[k]);
+            mapLayer.eachLayer((l) => {
+              l.off(k);
             });
           } else {
-            mapLayer.on(k, events[k]);
+            mapLayer.off(k);
           }
         });
-        // Set this.events equal to current ones
-        this.events[layerModel.id] = events;
       }
 
-      return this;
-    },
-    200,
-    { leading: true }
-  );
+      // Add new events
+      Object.keys(events).forEach((k) => {
+        if (mapLayer.group) {
+          mapLayer.eachLayer((l) => {
+            l.on(k, events[k]);
+          });
+        } else {
+          mapLayer.on(k, events[k]);
+        }
+      });
+      // Set this.events equal to current ones
+      this.events[layerModel.id] = events;
+    }
+
+    return this;
+  };
 
   setParams(layerModel) {
     this.remove(layerModel);

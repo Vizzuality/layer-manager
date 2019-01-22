@@ -1,4 +1,3 @@
-import Promise from 'bluebird';
 import isEmpty from 'lodash/isEmpty';
 import LayerModel from './layer-model';
 
@@ -18,11 +17,12 @@ function checkPluginProperties(plugin) {
       'getLayerByProvider'
     ];
 
-    requiredProperties.forEach(property => {
-      if (!plugin[property])
+    requiredProperties.forEach((property) => {
+      if (!plugin[property]) {
         console.error(
           `The ${property} function is required for layer manager plugins`
         );
+      }
     });
   }
 }
@@ -41,7 +41,7 @@ class LayerManager {
    */
   renderLayers() {
     if (this.layers.length > 0) {
-      this.layers.forEach(layerModel => {
+      this.layers.forEach((layerModel) => {
         const { changedAttributes } = layerModel;
         const { sqlParams, params, layerConfig } = changedAttributes;
         const hasChanged = Object.keys(changedAttributes).length > 0;
@@ -69,13 +69,14 @@ class LayerManager {
         return layerModel.set('changedAttributes', {});
       });
 
-      if (Object.keys(this.promises).length === 0)
+      if (Object.keys(this.promises).length === 0) {
         return new Promise(resolve => resolve(this.layers));
+      }
 
       return Promise
         .all(Object.values(this.promises))
         .then(() => this.layers)
-        .finally(() => {
+        .then(() => {
           this.promises = {};
         });
     }
@@ -108,7 +109,7 @@ class LayerManager {
       return this;
     }
 
-    layers.forEach(layer => {
+    layers.forEach((layer) => {
       const existingLayer = this.layers.find(l => l.id === layer.id);
       const nextModel = { ...layer, ...layerOptions };
 
@@ -163,7 +164,7 @@ class LayerManager {
    */
   remove(layerIds) {
     const layers = this.layers.slice(0);
-    const ids = Array.isArray(layerIds) ? layerIds : [ layerIds ];
+    const ids = Array.isArray(layerIds) ? layerIds : [layerIds];
 
     this.layers.forEach((layerModel, index) => {
       if (ids) {
@@ -188,7 +189,7 @@ class LayerManager {
     const layerModels = this.layers.filter(l => layerIds.includes(l.id));
 
     if (layerModels.length) {
-      layerModels.forEach(lm => {
+      layerModels.forEach((lm) => {
         this.plugin.setOpacity(lm, opacity);
       });
     } else {
@@ -205,7 +206,7 @@ class LayerManager {
     const layerModels = this.layers.filter(l => layerIds.includes(l.id));
 
     if (layerModels.length) {
-      layerModels.forEach(lm => {
+      layerModels.forEach((lm) => {
         this.plugin.setVisibility(lm, visibility);
       });
     } else {
@@ -222,7 +223,7 @@ class LayerManager {
     const layerModels = this.layers.filter(l => layerIds.includes(l.id));
 
     if (layerModels.length) {
-      layerModels.forEach(lm => {
+      layerModels.forEach((lm) => {
         this.plugin.setZIndex(lm, zIndex);
       });
     } else {
@@ -249,8 +250,7 @@ class LayerManager {
 
     if (!method) {
       this.promises[layerModel.id] = new Promise(
-        (resolve, reject) =>
-          reject(new Error(`${provider} provider is not yet supported.`))
+        (resolve, reject) => reject(new Error(`${provider} provider is not yet supported.`))
       );
 
       return false;
@@ -258,15 +258,15 @@ class LayerManager {
 
     // Cancel previous/existing request
     if (
-      this.promises[layerModel.id] &&
-        this.promises[layerModel.id].isPending &&
-        this.promises[layerModel.id].isPending()
+      this.promises[layerModel.id]
+        && this.promises[layerModel.id].isPending
+        && this.promises[layerModel.id].isPending()
     ) {
       this.promises[layerModel.id].cancel();
     }
 
     // If there is method for it let's call it
-    this.promises[layerModel.id] = method.call(this, layerModel).then(layer => {
+    this.promises[layerModel.id] = method.call(this, layerModel).then((layer) => {
       layerModel.set('mapLayer', layer);
 
       this.plugin.add(layerModel);

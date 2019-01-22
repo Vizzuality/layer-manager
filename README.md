@@ -236,8 +236,9 @@ setLayerConfig(layerModel) {
 ## React
 There are two React components that can be used to help with rendering layers via the layer manager. It can be imported and used as follows:
 
-```jsx
-import { LayerManager, Layer } from 'layer-manager/lib/react';
+
+```js
+import { LayerManager, Layer } from 'layer-manager/dist/components';
 import { PluginLeaflet } from 'layer-manager';
 
 // map is a reference to whichever map API you are using
