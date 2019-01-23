@@ -83,6 +83,19 @@ const LeafletLayer = (layerModel) => {
       }
       layer = new ClusterLayer(layerModel);
       break;
+    case 'vector':
+      if (
+        JSON.stringify(layerConfigParsed.body).indexOf('style: "function') >= 0
+      ) {
+        layerConfigParsed.body.style = eval2(
+          `(${layerConfigParsed.body.style})`,
+        );
+      }
+      layer = L.vectorGrid.protobuf(layerConfigParsed.url || layerConfigParsed.body.url, {
+        ...layerConfigParsed.body,
+        interactive: interactivity
+      });
+      break;
     default:
       layer = L[layerConfigParsed.type](
         layerConfigParsed.body,
