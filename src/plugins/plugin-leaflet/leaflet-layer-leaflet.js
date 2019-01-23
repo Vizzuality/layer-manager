@@ -91,7 +91,7 @@ const LeafletLayer = (layerModel) => {
           `(${layerConfigParsed.body.style})`,
         );
       }
-      layer = L.vectorGrid.protobuf(layerConfigParsed.url || layerConfigParsed.body.url, {
+      layer = L.vectorGrid && L.vectorGrid.protobuf(layerConfigParsed.url || layerConfigParsed.body.url, {
         ...layerConfigParsed.body,
         interactive: interactivity
       });
