@@ -20,13 +20,12 @@ const CartoLayer = (layerModel) => {
           },
           layer: {
             id,
-            type: 'line',
+            type: 'fill',
             source: id,
-            minzoom: 0,
-            maxzoom: 18,
-            'source-layer': id,
+            'source-layer': 'layer0',
             paint: {
-              'line-color': '#ff0000'
+              'fill-color': 'transparent',
+              'fill-outline-color': '#ff0000'
             }
           }
         });

@@ -1,5 +1,7 @@
 import rasterLayer from './raster-layer-mapbox-gl';
 import cartoLayer from './carto-layer-mapbox-gl';
+import vectorLayer from './vector-layer-mapbox-gl';
+import geoJsonLayer from './geojson-layer-mapbox-gl';
 
 class PluginMapboxGL {
   constructor(map) {
@@ -10,7 +12,9 @@ class PluginMapboxGL {
 
   method = {
     leaflet: rasterLayer,
-    cartodb: cartoLayer
+    cartodb: cartoLayer,
+    mapbox: vectorLayer,
+    geojson: geoJsonLayer
   };
 
   /**
@@ -20,7 +24,14 @@ class PluginMapboxGL {
   add(layerModel) {
     const { mapLayer } = layerModel;
     this.map.addSource(mapLayer.id, mapLayer.source);
-    this.map.addLayer(mapLayer.layer);
+    if (mapLayer.layer) {
+      this.map.addLayer(mapLayer.layer);
+    }
+    if (mapLayer.layers) {
+      mapLayer.layers.forEach((l) => {
+        this.map.addLayer(l);
+      });
+    }
   }
 
   /**
@@ -28,23 +39,9 @@ class PluginMapboxGL {
    * @param {Object} layerModel
    */
   remove(layerModel) {
-    const { mapLayer, events } = layerModel;
+    const { mapLayer } = layerModel;
 
-    // if (events && mapLayer) {
-    //   Object.keys(events).forEach((k) => {
-    //     if (mapLayer.group) {
-    //       mapLayer.eachLayer((l) => {
-    //         l.off(k);
-    //       });
-    //     } else {
-    //       mapLayer.off(k);
-    //     }
-    //   });
-    // }
-
-    if (mapLayer) {
-      this.map.removeLayer(mapLayer);
-    }
+    this.map.removeLayer(mapLayer.id);
   }
 
   /**
@@ -61,11 +58,7 @@ class PluginMapboxGL {
    * @param {Number} zIndex
    */
   setZIndex(layerModel, zIndex) {
-    const { mapLayer } = layerModel;
-
-    // mapLayer.setZIndex(zIndex);
-
-    return this;
+    // const { mapLayer } = layerModel;
   }
 
   /**
@@ -75,16 +68,7 @@ class PluginMapboxGL {
    */
   setOpacity(layerModel, opacity) {
     const { mapLayer } = layerModel;
-
-    if (typeof mapLayer.setOpacity === 'function') {
-      mapLayer.setOpacity(opacity);
-    }
-
-    if (typeof mapLayer.setStyle === 'function') {
-      mapLayer.setStyle({ opacity });
-    }
-
-    return this;
+    this.map.setPaintProperty(mapLayer.id, `${mapLayer.layer.type}-opacity`, opacity);
   }
 
   /**
@@ -93,47 +77,10 @@ class PluginMapboxGL {
    * @param {Boolean} visibility
    */
   setVisibility(layerModel, visibility) {
-    const { opacity } = layerModel;
+    const { mapLayer } = layerModel;
 
-    this.setOpacity(layerModel, !visibility ? 0 : opacity);
+    this.map.setLayoutProperty(mapLayer.id, 'visibility', visibility ? 'visible' : 'none');
   }
-
-  /**
-   * A namespace to set DOM events
-   * @param {Object} layerModel
-  */
-  setEvents = (layerModel) => {
-    const { mapLayer, events } = layerModel;
-    if (layerModel.layerConfig.type !== 'cluster') {
-      // Remove current events
-      if (this.events[layerModel.id]) {
-        Object.keys(this.events[layerModel.id]).forEach((k) => {
-          if (mapLayer.group) {
-            mapLayer.eachLayer((l) => {
-              l.off(k);
-            });
-          } else {
-            mapLayer.off(k);
-          }
-        });
-      }
-
-      // Add new events
-      Object.keys(events).forEach((k) => {
-        if (mapLayer.group) {
-          mapLayer.eachLayer((l) => {
-            l.on(k, events[k]);
-          });
-        } else {
-          this.map.on(k, mapLayer.id, events[k]);
-        }
-      });
-      // Set this.events equal to current ones
-      this.events[layerModel.id] = events;
-    }
-
-    return this;
-  };
 
   setParams(layerModel) {
     this.remove(layerModel);
