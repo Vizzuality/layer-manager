@@ -1,10 +1,6 @@
-import { replace } from 'utils/query';
-
 const GeoJsonLayer = (layerModel) => {
   const {
     layerConfig,
-    params,
-    sqlParams,
     id
   } = layerModel;
 
@@ -14,13 +10,13 @@ const GeoJsonLayer = (layerModel) => {
       type: 'geojson',
       data: layerConfig.body
     },
-    layers: [
+    layers: layerConfig.layers || [
       {
         id: `${id}-fill`,
         type: 'fill',
         source: id,
         paint: {
-          'fill-color': 'transparent'
+          'fill-color': 'blue'
         }
       },
       {

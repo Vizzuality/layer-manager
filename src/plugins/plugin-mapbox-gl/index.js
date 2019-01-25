@@ -1,5 +1,4 @@
 import rasterLayer from './raster-layer-mapbox-gl';
-import cartoLayer from './carto-layer-mapbox-gl';
 import vectorLayer from './vector-layer-mapbox-gl';
 import geoJsonLayer from './geojson-layer-mapbox-gl';
 
@@ -8,11 +7,10 @@ class PluginMapboxGL {
     this.map = map;
   }
 
-  events = {};
-
   method = {
     leaflet: rasterLayer,
-    cartodb: cartoLayer,
+    gee: rasterLayer,
+    cartodb: vectorLayer,
     mapbox: vectorLayer,
     geojson: geoJsonLayer
   };
@@ -23,11 +21,12 @@ class PluginMapboxGL {
    */
   add(layerModel) {
     const { mapLayer } = layerModel;
-    this.map.addSource(mapLayer.id, mapLayer.source);
-    if (mapLayer.layer) {
-      this.map.addLayer(mapLayer.layer);
+    if (this.map.getSource(mapLayer.id)) {
+      this.map.removeSource(mapLayer.id);
     }
+    this.map.addSource(mapLayer.id, mapLayer.source);
     if (mapLayer.layers) {
+      console.log(mapLayer.id, mapLayer.layers);
       mapLayer.layers.forEach((l) => {
         this.map.addLayer(l);
       });
@@ -40,8 +39,16 @@ class PluginMapboxGL {
    */
   remove(layerModel) {
     const { mapLayer } = layerModel;
-
-    this.map.removeLayer(mapLayer.id);
+    if (mapLayer) {
+      if (mapLayer.layer) {
+        this.map.removeLayer(mapLayer.id);
+      }
+      if (mapLayer.layers) {
+        mapLayer.layers.forEach((l) => {
+          this.map.removeLayer(l.id);
+        });
+      }
+    }
   }
 
   /**
@@ -68,7 +75,14 @@ class PluginMapboxGL {
    */
   setOpacity(layerModel, opacity) {
     const { mapLayer } = layerModel;
-    this.map.setPaintProperty(mapLayer.id, `${mapLayer.layer.type}-opacity`, opacity);
+    if (mapLayer.layer) {
+      this.map.setPaintProperty(mapLayer.id, `${mapLayer.layer.type}-opacity`, opacity);
+    }
+    if (mapLayer.layers) {
+      mapLayer.layers.forEach((l) => {
+        this.map.setPaintProperty(l.id, `${l.type}-opacity`, opacity);
+      });
+    }
   }
 
   /**
@@ -90,6 +104,10 @@ class PluginMapboxGL {
     this.remove(layerModel);
   }
 
+  setEvents() {
+
+  }
+
   setDecodeParams(layerModel) {
     const {
       mapLayer,
@@ -98,8 +116,6 @@ class PluginMapboxGL {
       decodeParams,
       decodeFunction
     } = layerModel;
-
-    mapLayer.reDraw({ decodeParams, decodeFunction, params, sqlParams });
 
     return this;
   }
