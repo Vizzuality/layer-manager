@@ -10,7 +10,6 @@ const { L } = typeof window !== 'undefined'
 
 class LayerManager extends PureComponent {
   static propTypes = {
-    map: PropTypes.instanceOf(L.Map).isRequired,
     plugin: PropTypes.func.isRequired,
     layersSpec: PropTypes.arrayOf(PropTypes.object),
     children: PropTypes.oneOfType([

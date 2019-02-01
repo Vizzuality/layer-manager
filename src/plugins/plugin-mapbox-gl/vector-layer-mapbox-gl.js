@@ -27,7 +27,7 @@ const VectorLayer = (layerModel) => {
       ...l,
       id: `${id}-${l.type}`,
       source: id,
-      'source-layer': 'layer0',
+      'source-layer': l['source-layer'] || 'layer0',
       paint: {
         [`${l.type}-opacity`]: layerModel.opacity,
         [`${l.type}-color`]: '#f69',

@@ -25,8 +25,7 @@ class PluginMapboxGL {
       this.map.removeSource(mapLayer.id);
     }
     this.map.addSource(mapLayer.id, mapLayer.source);
-    if (mapLayer.layers) {
-      console.log(mapLayer.id, mapLayer.layers);
+    if (mapLayer && mapLayer.layers) {
       mapLayer.layers.forEach((l) => {
         this.map.addLayer(l);
       });
@@ -39,15 +38,10 @@ class PluginMapboxGL {
    */
   remove(layerModel) {
     const { mapLayer } = layerModel;
-    if (mapLayer) {
-      if (mapLayer.layer) {
-        this.map.removeLayer(mapLayer.id);
-      }
-      if (mapLayer.layers) {
-        mapLayer.layers.forEach((l) => {
-          this.map.removeLayer(l.id);
-        });
-      }
+    if (mapLayer && mapLayer.layers && this.map) {
+      mapLayer.layers.forEach((l) => {
+        this.map.removeLayer(l.id);
+      });
     }
   }
 
