@@ -99,7 +99,6 @@ class PluginMapboxGL {
   }
 
   setEvents() {
-
   }
 
   setDecodeParams(layerModel) {

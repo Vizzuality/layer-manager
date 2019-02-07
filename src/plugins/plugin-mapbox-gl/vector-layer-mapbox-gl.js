@@ -27,7 +27,7 @@ const VectorLayer = (layerModel) => {
       ...l,
       id: `${id}-${l.type}`,
       source: id,
-      'source-layer': l['source-layer'] || 'layer0',
+      'source-layer': l['source-layer'] || 'plantations_all',
       paint: {
         [`${l.type}-opacity`]: layerModel.opacity,
         [`${l.type}-color`]: '#f69',
@@ -38,22 +38,41 @@ const VectorLayer = (layerModel) => {
         id: `${id}-fill`,
         type: 'fill',
         source: id,
-        'source-layer': 'layer0',
+        'source-layer': 'plantations_all',
         paint: {
-          'fill-color': '#f69',
+          'fill-color': {
+            property: 'species_simp',
+            type: 'categorical',
+            default: '#a0c746',
+            stops: [
+              ['Oil Palm ', '#fdada9'],
+              ['Wood fiber / timber', '#98a7c4'],
+              ['Rubber', '#9993a3'],
+              ['Fruit', '#dada95'],
+              ['Other', '#d1e6ab'],
+              ['Wood fiber / timber Mix', '#9ebbf2'],
+              ['Oil Palm Mix', '#fcc4c1'],
+              ['Rubber Mix', '#a4fdff'],
+              ['Fruit Mix', '#fefe97'],
+              ['Other Mix', '#e1efc8'],
+              ['Unknown', '#dcd9d9'],
+              ['Recently cleared', '#d5a6ea']
+            ]
+          },
           'fill-opacity': layerModel.opacity
         }
       },
-      {
-        id: `${id}-line`,
-        type: 'line',
-        source: id,
-        'source-layer': 'layer0',
-        paint: {
-          'line-color': '#f69',
-          'line-opacity': layerModel.opacity
-        }
-      }
+      // {
+      //   id: `${id}-line`,
+      //   type: 'line',
+      //   source: id,
+      //   'source-layer': 'plantations_all',
+      //   paint: {
+      //     'line-color': '#f69',
+      //     'line-opacity': layerModel.opacity,
+      //     'line-width': 2
+      //   }
+      // }
     ]
   };
 
