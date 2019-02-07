@@ -27,7 +27,7 @@ const VectorLayer = (layerModel) => {
       ...l,
       id: `${id}-${l.type}`,
       source: id,
-      'source-layer': l['source-layer'] || 'plantations_all',
+      'source-layer': l['source-layer'] || 'layer0',
       paint: {
         [`${l.type}-opacity`]: layerModel.opacity,
         [`${l.type}-color`]: '#f69',
@@ -38,41 +38,265 @@ const VectorLayer = (layerModel) => {
         id: `${id}-fill`,
         type: 'fill',
         source: id,
-        'source-layer': 'plantations_all',
+        'source-layer': 'layer0',
         paint: {
-          'fill-color': {
-            property: 'species_simp',
-            type: 'categorical',
-            default: '#a0c746',
-            stops: [
-              ['Oil Palm ', '#fdada9'],
-              ['Wood fiber / timber', '#98a7c4'],
-              ['Rubber', '#9993a3'],
-              ['Fruit', '#dada95'],
-              ['Other', '#d1e6ab'],
-              ['Wood fiber / timber Mix', '#9ebbf2'],
-              ['Oil Palm Mix', '#fcc4c1'],
-              ['Rubber Mix', '#a4fdff'],
-              ['Fruit Mix', '#fefe97'],
-              ['Other Mix', '#e1efc8'],
-              ['Unknown', '#dcd9d9'],
-              ['Recently cleared', '#d5a6ea']
-            ]
-          },
+          'fill-color': 'transparent',
           'fill-opacity': layerModel.opacity
         }
       },
-      // {
-      //   id: `${id}-line`,
-      //   type: 'line',
-      //   source: id,
-      //   'source-layer': 'plantations_all',
-      //   paint: {
-      //     'line-color': '#f69',
-      //     'line-opacity': layerModel.opacity,
-      //     'line-width': 2
-      //   }
-      // }
+      {
+        id: `${id}-line-0`,
+        type: 'line',
+        source: id,
+        'source-layer': 'layer0',
+        maxzoom: 4,
+        filter: ['==', 'level', 0],
+        paint: {
+          'line-color': '#7f7f7f',
+          'line-opacity': layerModel.opacity,
+          'line-width': 0.7
+        }
+      },
+      {
+        id: `${id}-line-1`,
+        type: 'line',
+        source: id,
+        'source-layer': 'layer0',
+        maxzoom: 4,
+        filter: ['all', ['==', 'size', 'huge'], ['==', 'level', 0]],
+        paint: {
+          'line-color': '#7f7f7f',
+          'line-opacity': layerModel.opacity,
+          'line-width': 0.7
+        }
+      },
+      {
+        id: `${id}-line-2`,
+        type: 'line',
+        source: id,
+        'source-layer': 'layer0',
+        maxzoom: 5,
+        filter: ['all', ['==', 'size', 'very big'], ['==', 'level', 0]],
+        paint: {
+          'line-color': '#7f7f7f',
+          'line-opacity': layerModel.opacity,
+          'line-width': 0.7
+        }
+      },
+      {
+        id: `${id}-line-3`,
+        type: 'line',
+        source: id,
+        'source-layer': 'layer0',
+        maxzoom: 6,
+        filter: ['all', ['==', 'size', 'big'], ['==', 'level', 0]],
+        paint: {
+          'line-color': '#7f7f7f',
+          'line-opacity': layerModel.opacity,
+          'line-width': 0.7
+        }
+      },
+      {
+        id: `${id}-line-4`,
+        type: 'line',
+        source: id,
+        'source-layer': 'layer0',
+        maxzoom: 7,
+        filter: ['all', ['==', 'size', 'medium'], ['==', 'level', 0]],
+        paint: {
+          'line-color': '#7f7f7f',
+          'line-opacity': layerModel.opacity,
+          'line-width': 0.7
+        }
+      },
+      {
+        id: `${id}-line-5`,
+        type: 'line',
+        source: id,
+        'source-layer': 'layer0',
+        maxzoom: 8,
+        filter: ['all', ['==', 'size', 'small'], ['==', 'level', 0]],
+        paint: {
+          'line-color': '#7f7f7f',
+          'line-opacity': layerModel.opacity,
+          'line-width': 0.7
+        }
+      },
+      {
+        id: `${id}-line-6`,
+        type: 'line',
+        source: id,
+        'source-layer': 'layer0',
+        maxzoom: 9,
+        filter: ['all', ['==', 'size', 'very small'], ['==', 'level', 0]],
+        paint: {
+          'line-color': '#7f7f7f',
+          'line-opacity': layerModel.opacity,
+          'line-width': 0.7
+        }
+      },
+      {
+        id: `${id}-line-7`,
+        type: 'line',
+        source: id,
+        'source-layer': 'layer0',
+        minzoom: 3,
+        maxzoom: 6,
+        filter: ['all', ['==', 'size', 'huge'], ['==', 'level', 1]],
+        paint: {
+          'line-color': '#8b8b8b',
+          'line-opacity': layerModel.opacity,
+          'line-width': 0.7
+        }
+      },
+      {
+        id: `${id}-line-8`,
+        type: 'line',
+        source: id,
+        'source-layer': 'layer0',
+        minzoom: 4,
+        maxzoom: 7,
+        filter: ['all', ['==', 'size', 'very big'], ['==', 'level', 1]],
+        paint: {
+          'line-color': '#8b8b8b',
+          'line-opacity': layerModel.opacity,
+          'line-width': 0.7
+        }
+      },
+      {
+        id: `${id}-line-9`,
+        type: 'line',
+        source: id,
+        'source-layer': 'layer0',
+        minzoom: 5,
+        maxzoom: 8,
+        filter: ['all', ['==', 'size', 'big'], ['==', 'level', 1]],
+        paint: {
+          'line-color': '#8b8b8b',
+          'line-opacity': layerModel.opacity,
+          'line-width': 0.7
+        }
+      },
+      {
+        id: `${id}-line-10`,
+        type: 'line',
+        source: id,
+        'source-layer': 'layer0',
+        minzoom: 6,
+        maxzoom: 9,
+        filter: ['all', ['==', 'size', 'medium'], ['==', 'level', 1]],
+        paint: {
+          'line-color': '#8b8b8b',
+          'line-opacity': layerModel.opacity,
+          'line-width': 0.7
+        }
+      },
+      {
+        id: `${id}-line-11`,
+        type: 'line',
+        source: id,
+        'source-layer': 'layer0',
+        minzoom: 7,
+        maxzoom: 9,
+        filter: ['all', ['==', 'size', 'small'], ['==', 'level', 1]],
+        paint: {
+          'line-color': '#8b8b8b',
+          'line-opacity': layerModel.opacity,
+          'line-width': 0.7
+        }
+      },
+      {
+        id: `${id}-line-12`,
+        type: 'line',
+        source: id,
+        'source-layer': 'layer0',
+        minzoom: 8,
+        maxzoom: 10,
+        filter: ['all', ['==', 'size', 'very small'], ['==', 'level', 1]],
+        paint: {
+          'line-color': '#8b8b8b',
+          'line-opacity': layerModel.opacity,
+          'line-width': 0.7
+        }
+      },
+      {
+        id: `${id}-line-13`,
+        type: 'line',
+        source: id,
+        'source-layer': 'layer0',
+        minzoom: 5,
+        filter: ['all', ['==', 'size', 'huge'], ['==', 'level', 2]],
+        paint: {
+          'line-color': '#444444',
+          'line-opacity': layerModel.opacity,
+          'line-width': 0.7
+        }
+      },
+      {
+        id: `${id}-line-14`,
+        type: 'line',
+        source: id,
+        'source-layer': 'layer0',
+        minzoom: 6,
+        filter: ['all', ['==', 'size', 'very big'], ['==', 'level', 2]],
+        paint: {
+          'line-color': '#444444',
+          'line-opacity': layerModel.opacity,
+          'line-width': 0.7
+        }
+      },
+      {
+        id: `${id}-line-15`,
+        type: 'line',
+        source: id,
+        'source-layer': 'layer0',
+        minzoom: 7,
+        filter: ['all', ['==', 'size', 'big'], ['==', 'level', 2]],
+        paint: {
+          'line-color': '#444444',
+          'line-opacity': layerModel.opacity,
+          'line-width': 0.7
+        }
+      },
+      {
+        id: `${id}-line-16`,
+        type: 'line',
+        source: id,
+        'source-layer': 'layer0',
+        minzoom: 8,
+        filter: ['all', ['==', 'size', 'medium'], ['==', 'level', 2]],
+        paint: {
+          'line-color': '#444444',
+          'line-opacity': layerModel.opacity,
+          'line-width': 0.7
+        }
+      },
+      {
+        id: `${id}-line-17`,
+        type: 'line',
+        source: id,
+        'source-layer': 'layer0',
+        minzoom: 8,
+        filter: ['all', ['==', 'size', 'small'], ['==', 'level', 2]],
+        paint: {
+          'line-color': '#444444',
+          'line-opacity': layerModel.opacity,
+          'line-width': 0.7
+        }
+      },
+      {
+        id: `${id}-line-18`,
+        type: 'line',
+        source: id,
+        'source-layer': 'layer0',
+        minzoom: 9,
+        filter: ['all', ['==', 'size', 'very small'], ['==', 'level', 2]],
+        paint: {
+          'line-color': '#444444',
+          'line-opacity': layerModel.opacity,
+          'line-width': 0.7
+        }
+      }
     ]
   };
 
