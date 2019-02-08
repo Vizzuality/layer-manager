@@ -14,7 +14,11 @@ class Layer extends PureComponent {
     this.addSpecToLayerManager();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
+    const { layerManager, id } = this.props;
+    if (id && id !== prevProps.id) {
+      layerManager.remove(prevProps.id);
+    }
     this.addSpecToLayerManager();
   }
 

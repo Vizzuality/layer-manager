@@ -59,7 +59,6 @@ class PluginMapboxGL {
    * @param {Number} zIndex
    */
   setZIndex(layerModel, zIndex) {
-    // const { mapLayer } = layerModel;
   }
 
   /**

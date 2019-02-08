@@ -23,19 +23,17 @@ const VectorLayer = (layerModel) => {
         url: layerConfigParsed.url || layerConfigParsed.body.url
       }
     },
-    layers: layerConfigParsed.layers ? layerConfigParsed.layers.map(l => ({
+    layers: layerConfigParsed.layers ? layerConfigParsed.layers.map((l, i) => ({
       ...l,
-      id: `${id}-${l.type}`,
+      id: `${id}-${l.type}-${i}`,
       source: id,
-      'source-layer': l['source-layer'] || 'layer0',
       paint: {
-        [`${l.type}-opacity`]: layerModel.opacity,
-        [`${l.type}-color`]: '#f69',
+        [`${l.type}-opacity`]: l.opacity ? layerModel.opacity * l.opacity : layerModel.opacity,
         ...l.paint,
       }
     })) : [
       {
-        id: `${id}-fill`,
+        id: `${id}-fill-0`,
         type: 'fill',
         source: id,
         'source-layer': 'layer0',
@@ -49,7 +47,7 @@ const VectorLayer = (layerModel) => {
         type: 'line',
         source: id,
         'source-layer': 'layer0',
-        maxzoom: 4,
+        maxzoom: 3,
         filter: ['==', 'level', 0],
         paint: {
           'line-color': '#7f7f7f',
@@ -62,7 +60,7 @@ const VectorLayer = (layerModel) => {
         type: 'line',
         source: id,
         'source-layer': 'layer0',
-        maxzoom: 4,
+        maxzoom: 3,
         filter: ['all', ['==', 'size', 'huge'], ['==', 'level', 0]],
         paint: {
           'line-color': '#7f7f7f',
@@ -75,7 +73,7 @@ const VectorLayer = (layerModel) => {
         type: 'line',
         source: id,
         'source-layer': 'layer0',
-        maxzoom: 5,
+        maxzoom: 4,
         filter: ['all', ['==', 'size', 'very big'], ['==', 'level', 0]],
         paint: {
           'line-color': '#7f7f7f',
@@ -88,7 +86,7 @@ const VectorLayer = (layerModel) => {
         type: 'line',
         source: id,
         'source-layer': 'layer0',
-        maxzoom: 6,
+        maxzoom: 5,
         filter: ['all', ['==', 'size', 'big'], ['==', 'level', 0]],
         paint: {
           'line-color': '#7f7f7f',
@@ -101,7 +99,7 @@ const VectorLayer = (layerModel) => {
         type: 'line',
         source: id,
         'source-layer': 'layer0',
-        maxzoom: 7,
+        maxzoom: 6,
         filter: ['all', ['==', 'size', 'medium'], ['==', 'level', 0]],
         paint: {
           'line-color': '#7f7f7f',
@@ -114,7 +112,7 @@ const VectorLayer = (layerModel) => {
         type: 'line',
         source: id,
         'source-layer': 'layer0',
-        maxzoom: 8,
+        maxzoom: 7,
         filter: ['all', ['==', 'size', 'small'], ['==', 'level', 0]],
         paint: {
           'line-color': '#7f7f7f',
@@ -127,7 +125,7 @@ const VectorLayer = (layerModel) => {
         type: 'line',
         source: id,
         'source-layer': 'layer0',
-        maxzoom: 9,
+        maxzoom: 8,
         filter: ['all', ['==', 'size', 'very small'], ['==', 'level', 0]],
         paint: {
           'line-color': '#7f7f7f',
@@ -140,13 +138,13 @@ const VectorLayer = (layerModel) => {
         type: 'line',
         source: id,
         'source-layer': 'layer0',
-        minzoom: 3,
-        maxzoom: 6,
+        minzoom: 2,
+        maxzoom: 5,
         filter: ['all', ['==', 'size', 'huge'], ['==', 'level', 1]],
         paint: {
           'line-color': '#8b8b8b',
           'line-opacity': layerModel.opacity,
-          'line-width': 0.7
+          'line-width': 0.3
         }
       },
       {
@@ -154,13 +152,13 @@ const VectorLayer = (layerModel) => {
         type: 'line',
         source: id,
         'source-layer': 'layer0',
-        minzoom: 4,
-        maxzoom: 7,
+        minzoom: 3,
+        maxzoom: 6,
         filter: ['all', ['==', 'size', 'very big'], ['==', 'level', 1]],
         paint: {
           'line-color': '#8b8b8b',
           'line-opacity': layerModel.opacity,
-          'line-width': 0.7
+          'line-width': 0.3
         }
       },
       {
@@ -168,13 +166,13 @@ const VectorLayer = (layerModel) => {
         type: 'line',
         source: id,
         'source-layer': 'layer0',
-        minzoom: 5,
-        maxzoom: 8,
+        minzoom: 4,
+        maxzoom: 7,
         filter: ['all', ['==', 'size', 'big'], ['==', 'level', 1]],
         paint: {
           'line-color': '#8b8b8b',
           'line-opacity': layerModel.opacity,
-          'line-width': 0.7
+          'line-width': 0.3
         }
       },
       {
@@ -182,13 +180,13 @@ const VectorLayer = (layerModel) => {
         type: 'line',
         source: id,
         'source-layer': 'layer0',
-        minzoom: 6,
-        maxzoom: 9,
+        minzoom: 5,
+        maxzoom: 8,
         filter: ['all', ['==', 'size', 'medium'], ['==', 'level', 1]],
         paint: {
           'line-color': '#8b8b8b',
           'line-opacity': layerModel.opacity,
-          'line-width': 0.7
+          'line-width': 0.3
         }
       },
       {
@@ -196,13 +194,13 @@ const VectorLayer = (layerModel) => {
         type: 'line',
         source: id,
         'source-layer': 'layer0',
-        minzoom: 7,
-        maxzoom: 9,
+        minzoom: 6,
+        maxzoom: 8,
         filter: ['all', ['==', 'size', 'small'], ['==', 'level', 1]],
         paint: {
           'line-color': '#8b8b8b',
           'line-opacity': layerModel.opacity,
-          'line-width': 0.7
+          'line-width': 0.3
         }
       },
       {
@@ -210,13 +208,13 @@ const VectorLayer = (layerModel) => {
         type: 'line',
         source: id,
         'source-layer': 'layer0',
-        minzoom: 8,
-        maxzoom: 10,
+        minzoom: 7,
+        maxzoom: 9,
         filter: ['all', ['==', 'size', 'very small'], ['==', 'level', 1]],
         paint: {
           'line-color': '#8b8b8b',
           'line-opacity': layerModel.opacity,
-          'line-width': 0.7
+          'line-width': 0.3
         }
       },
       {
@@ -224,12 +222,13 @@ const VectorLayer = (layerModel) => {
         type: 'line',
         source: id,
         'source-layer': 'layer0',
-        minzoom: 5,
+        minzoom: 4,
         filter: ['all', ['==', 'size', 'huge'], ['==', 'level', 2]],
         paint: {
           'line-color': '#444444',
           'line-opacity': layerModel.opacity,
-          'line-width': 0.7
+          'line-width': 0.5,
+          'line-dasharray': [2, 4]
         }
       },
       {
@@ -237,12 +236,13 @@ const VectorLayer = (layerModel) => {
         type: 'line',
         source: id,
         'source-layer': 'layer0',
-        minzoom: 6,
+        minzoom: 5,
         filter: ['all', ['==', 'size', 'very big'], ['==', 'level', 2]],
         paint: {
           'line-color': '#444444',
           'line-opacity': layerModel.opacity,
-          'line-width': 0.7
+          'line-width': 0.5,
+          'line-dasharray': [2, 4]
         }
       },
       {
@@ -250,12 +250,13 @@ const VectorLayer = (layerModel) => {
         type: 'line',
         source: id,
         'source-layer': 'layer0',
-        minzoom: 7,
+        minzoom: 6,
         filter: ['all', ['==', 'size', 'big'], ['==', 'level', 2]],
         paint: {
           'line-color': '#444444',
           'line-opacity': layerModel.opacity,
-          'line-width': 0.7
+          'line-width': 0.5,
+          'line-dasharray': [2, 4]
         }
       },
       {
@@ -263,12 +264,13 @@ const VectorLayer = (layerModel) => {
         type: 'line',
         source: id,
         'source-layer': 'layer0',
-        minzoom: 8,
+        minzoom: 7,
         filter: ['all', ['==', 'size', 'medium'], ['==', 'level', 2]],
         paint: {
           'line-color': '#444444',
           'line-opacity': layerModel.opacity,
-          'line-width': 0.7
+          'line-width': 0.5,
+          'line-dasharray': [2, 4]
         }
       },
       {
@@ -276,12 +278,13 @@ const VectorLayer = (layerModel) => {
         type: 'line',
         source: id,
         'source-layer': 'layer0',
-        minzoom: 8,
+        minzoom: 7,
         filter: ['all', ['==', 'size', 'small'], ['==', 'level', 2]],
         paint: {
           'line-color': '#444444',
           'line-opacity': layerModel.opacity,
-          'line-width': 0.7
+          'line-width': 0.5,
+          'line-dasharray': [2, 4]
         }
       },
       {
@@ -289,12 +292,13 @@ const VectorLayer = (layerModel) => {
         type: 'line',
         source: id,
         'source-layer': 'layer0',
-        minzoom: 9,
+        minzoom: 8,
         filter: ['all', ['==', 'size', 'very small'], ['==', 'level', 2]],
         paint: {
           'line-color': '#444444',
           'line-opacity': layerModel.opacity,
-          'line-width': 0.7
+          'line-width': 0.5,
+          'line-dasharray': [2, 4]
         }
       }
     ]
