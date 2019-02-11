@@ -55,8 +55,12 @@ class PluginMapboxGL {
     return this.method[provider];
   }
 
+  getLayersOnMap() {
+    return this.map.getStyle().layers.map(l => l.id);
+  }
+
   getNextLayerId(layers, zIndex) {
-    const layersOnMap = this.map.getStyle().layers.map(l => l.id);
+    const layersOnMap = this.getLayersOnMap();
     const sortedLayers = [...layers].sort((a, b) => a.zIndex - b.zIndex);
     const nextLayer = sortedLayers.find(l => l.zIndex > zIndex);
     const mapLayerIds = layersOnMap.filter(l => l.includes(nextLayer && nextLayer.id));
@@ -70,9 +74,11 @@ class PluginMapboxGL {
    * @param {Number} zIndex
    */
   setZIndex(layerModel, zIndex, layers) {
+    const layersOnMap = this.getLayersOnMap();
     const nextLayerId = this.getNextLayerId(layers, zIndex);
-    if (nextLayerId) {
-      this.map.moveLayer(layerModel.id, nextLayerId);
+    const layersToSetIndex = layersOnMap.filter(l => l.includes(layerModel.id));
+    if (nextLayerId && layersToSetIndex) {
+      layersToSetIndex.forEach(id => this.map.moveLayer(id, nextLayerId));
     }
   }
 
