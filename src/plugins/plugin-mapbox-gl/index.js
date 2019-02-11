@@ -20,7 +20,7 @@ class PluginMapboxGL {
    * Add a layer
    * @param {Object} layerModel
    */
-  add(layerModel) {
+  add(layerModel, layers) {
     const { mapLayer } = layerModel;
     if (this.map.getSource(mapLayer.id)) {
       this.map.removeSource(mapLayer.id);
@@ -28,7 +28,8 @@ class PluginMapboxGL {
     this.map.addSource(mapLayer.id, mapLayer.source);
     if (mapLayer && mapLayer.layers) {
       mapLayer.layers.forEach((l) => {
-        this.map.addLayer(l);
+        const nextLayerId = this.getNextLayerId(layers, l.zIndex);
+        this.map.addLayer(l, nextLayerId);
       });
     }
   }
@@ -54,20 +55,24 @@ class PluginMapboxGL {
     return this.method[provider];
   }
 
+  getNextLayerId(layers, zIndex) {
+    const layersOnMap = this.map.getStyle().layers.map(l => l.id);
+    const sortedLayers = [...layers].sort((a, b) => a.zIndex - b.zIndex);
+    const nextLayer = sortedLayers.find(l => l.zIndex > zIndex);
+    const mapLayerIds = layersOnMap.filter(l => l.includes(nextLayer && nextLayer.id));
+
+    return mapLayerIds && mapLayerIds[0];
+  }
+
   /**
    * A namespace to set z-index
    * @param {Object} layerModel
    * @param {Number} zIndex
    */
   setZIndex(layerModel, zIndex, layers) {
-    const layersOnMap = this.map.getStyle().layers.map(l => l.id);
-    console.log('map layers:', layersOnMap);
-    const sortedLayers = [...layers].sort((a, b) => a.zIndex - b.zIndex);
-    const nextLayer = sortedLayers.find(l => l.zIndex > zIndex);
-    const { id } = layerModel;
-    console.log('Moving layer', layerModel.name, 'below', nextLayer ? nextLayer.name : 'labels');
-    if (nextLayer && nextLayer.id && layersOnMap.includes(nextLayer.id)) {
-      this.map.moveLayer(id, nextLayer.id);
+    const nextLayerId = this.getNextLayerId(layers, zIndex);
+    if (nextLayerId) {
+      this.map.moveLayer(layerModel.id, nextLayerId);
     }
   }
 

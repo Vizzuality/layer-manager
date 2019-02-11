@@ -268,7 +268,7 @@ class LayerManager {
     this.promises[layerModel.id] = method.call(this, layerModel).then((layer) => {
       layerModel.set('mapLayer', layer);
 
-      this.plugin.add(layerModel);
+      this.plugin.add(layerModel, this.layers);
       this.plugin.setZIndex(layerModel, layerModel.zIndex, this.layers);
       this.plugin.setOpacity(layerModel, layerModel.opacity);
       this.plugin.setVisibility(layerModel, layerModel.visibility);
