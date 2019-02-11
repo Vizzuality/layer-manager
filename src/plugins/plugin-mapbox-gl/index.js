@@ -1,3 +1,4 @@
+
 import rasterLayer from './raster-layer-mapbox-gl';
 import vectorLayer from './vector-layer-mapbox-gl';
 import geoJsonLayer from './geojson-layer-mapbox-gl';
@@ -58,7 +59,16 @@ class PluginMapboxGL {
    * @param {Object} layerModel
    * @param {Number} zIndex
    */
-  setZIndex(layerModel, zIndex) {
+  setZIndex(layerModel, zIndex, layers) {
+    const layersOnMap = this.map.getStyle().layers.map(l => l.id);
+    console.log('map layers:', layersOnMap);
+    const sortedLayers = [...layers].sort((a, b) => a.zIndex - b.zIndex);
+    const nextLayer = sortedLayers.find(l => l.zIndex > zIndex);
+    const { id } = layerModel;
+    console.log('Moving layer', layerModel.name, 'below', nextLayer ? nextLayer.name : 'labels');
+    if (nextLayer && nextLayer.id && layersOnMap.includes(nextLayer.id)) {
+      this.map.moveLayer(id, nextLayer.id);
+    }
   }
 
   /**

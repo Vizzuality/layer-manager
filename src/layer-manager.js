@@ -145,7 +145,7 @@ class LayerManager {
       this.plugin.setOpacity(layerModel, !visibility ? 0 : layerModel.opacity);
     }
     if (typeof zIndex !== 'undefined') {
-      this.plugin.setZIndex(layerModel, zIndex);
+      this.plugin.setZIndex(layerModel, zIndex, this.layers);
     }
     if (typeof events !== 'undefined') {
       this.setEvents(layerModel);
@@ -223,7 +223,7 @@ class LayerManager {
 
     if (layerModels.length) {
       layerModels.forEach((lm) => {
-        this.plugin.setZIndex(lm, zIndex);
+        this.plugin.setZIndex(lm, zIndex, this.layers);
       });
     } else {
       console.error("Can't find the layer");
@@ -269,7 +269,7 @@ class LayerManager {
       layerModel.set('mapLayer', layer);
 
       this.plugin.add(layerModel);
-      this.plugin.setZIndex(layerModel, layerModel.zIndex);
+      this.plugin.setZIndex(layerModel, layerModel.zIndex, this.layers);
       this.plugin.setOpacity(layerModel, layerModel.opacity);
       this.plugin.setVisibility(layerModel, layerModel.visibility);
 
