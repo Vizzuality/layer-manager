@@ -56,10 +56,18 @@ class PluginMapboxGL {
     return this.method[provider];
   }
 
+  /**
+   * Get all mapbox layers
+   */
   getLayersOnMap() {
     return this.map.getStyle().layers.map(l => l.id);
   }
 
+  /**
+   * Get the layer above the given z-index
+   * @param {Object} layerModel
+   * @param {Number} zIndex
+   */
   getNextLayerId(layers, zIndex) {
     const layersOnMap = this.getLayersOnMap();
     const sortedLayers = [...layers].sort((a, b) => a.zIndex - b.zIndex);
@@ -95,7 +103,15 @@ class PluginMapboxGL {
     }
     if (mapLayer.layers) {
       mapLayer.layers.forEach((l) => {
-        this.map.setPaintProperty(l.id, `${l.type}-opacity`, opacity);
+        if (l.type === 'symbol') {
+          this.map.setPaintProperty(l.id, 'icon-opacity', opacity);
+          this.map.setPaintProperty(l.id, 'text-opacity', opacity);
+        } else if (l.type === 'circle') {
+          this.map.setPaintProperty(l.id, 'circle-opacity', opacity);
+          this.map.setPaintProperty(l.id, 'circle-stroke-opacity', opacity);
+        } else {
+          this.map.setPaintProperty(l.id, `${l.type}-opacity`, opacity);
+        }
       });
     }
   }
