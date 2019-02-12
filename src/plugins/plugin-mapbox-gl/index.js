@@ -27,9 +27,10 @@ class PluginMapboxGL {
     }
     this.map.addSource(mapLayer.id, mapLayer.source);
     if (mapLayer && mapLayer.layers) {
+      const nextLayerId = this.getNextLayerId(layers, layerModel.zIndex);
       mapLayer.layers.forEach((l) => {
-        const nextLayerId = this.getNextLayerId(layers, l.zIndex);
         this.map.addLayer(l, nextLayerId);
+        layers.forEach(layer => this.setZIndex(layer, layer.zIndex, layers));
       });
     }
   }
@@ -65,7 +66,7 @@ class PluginMapboxGL {
     const nextLayer = sortedLayers.find(l => l.zIndex > zIndex);
     const mapLayerIds = layersOnMap.filter(l => l.includes(nextLayer && nextLayer.id));
 
-    return mapLayerIds && mapLayerIds[0];
+    return (mapLayerIds && mapLayerIds[0]);
   }
 
   /**
