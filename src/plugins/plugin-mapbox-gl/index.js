@@ -9,7 +9,7 @@ class PluginMapboxGL {
   }
 
   method = {
-    leaflet: rasterLayer,
+    leaflet: geoJsonLayer,
     gee: rasterLayer,
     cartodb: vectorLayer,
     mapbox: vectorLayer,
@@ -136,6 +136,27 @@ class PluginMapboxGL {
   }
 
   setEvents() {
+    // inspect a cluster on click
+    this.map.on('click', 'clusters', (e) => {
+      console.log('zzomigf');
+      const features = this.map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+      const clusterId = features[0].properties.cluster_id;
+      this.map.getSource('d7b12b17-9ed4-43ab-b8e4-efa2668c47f8').getClusterExpansionZoom(clusterId, (err, zoom) => {
+        if (err) return;
+        this.map.easeTo({
+          center: features[0].geometry.coordinates,
+          zoom
+        });
+      });
+    });
+
+    this.map.on('mouseenter', 'clusters', () => {
+      this.map.getCanvas().style.cursor = 'pointer';
+    });
+
+    this.map.on('mouseleave', 'clusters', () => {
+      this.map.getCanvas().style.cursor = '';
+    });
   }
 
   setDecodeParams(layerModel) {

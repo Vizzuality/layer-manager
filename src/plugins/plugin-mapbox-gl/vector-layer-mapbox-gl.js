@@ -13,7 +13,9 @@ const VectorLayer = (layerModel) => {
     ? layerConfig
     : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
 
-  const { body, url } = layerConfigParsed || {};
+  const { body, url, layers } = layerConfigParsed || {};
+  const { vectorLayers } = body || {};
+  const vectorStyleLayers = layers || vectorLayers;
 
   const layer = {
     id,
@@ -23,15 +25,76 @@ const VectorLayer = (layerModel) => {
         url: layerConfigParsed.url || layerConfigParsed.body.url
       }
     },
-    layers: layerConfigParsed.layers ? layerConfigParsed.layers.map((l, i) => ({
+    layers: vectorStyleLayers ? vectorStyleLayers.map((l, i) => ({
       ...l,
       id: `${id}-${l.type}-${i}`,
       source: id,
       paint: {
         [`${l.type}-opacity`]: l.opacity ? layerModel.opacity * l.opacity : layerModel.opacity,
-        ...l.paint,
+        ...l.paint
       }
-    })) : []
+    })) : [
+      // {
+      //   id: `${id}-fill-0`,
+      //   source: id,
+      //   type: 'fill',
+      //   'source-layer': 'layer0',
+      //   paint: {
+      //     'fill-opacity': layerModel.opacity * 0.5 || 0.5,
+      //     'fill-color': '#f69'
+      //   }
+      // },
+      // {
+      //   id: `${id}-line-0`,
+      //   source: id,
+      //   type: 'line',
+      //   'source-layer': 'layer0',
+      //   paint: {
+      //     'line-opacity': layerModel.opacity || 1,
+      //     'line-color': '#f69'
+      //   }
+      // },
+      // {
+      //   id: `${id}-circle-0`,
+      //   source: id,
+      //   type: 'circle',
+      //   'source-layer': 'layer0',
+      //   paint: {
+      //     'circle-opacity': layerModel.opacity || 1,
+      //     'circle-color': '#f69'
+      //   }
+      // },
+      {
+        id: `${id}-symbol-0`,
+        source: id,
+        type: 'symbol',
+        'source-layer': 'layer0',
+        maxzoom: 8,
+        layout: {
+          'icon-image': 'ptw-mongabay'
+        }
+      },
+      {
+        id: `${id}-line-0`,
+        source: id,
+        type: 'line',
+        'source-layer': 'layer0',
+        minzoom: 8,
+        paint: {
+          'line-color': '#f69'
+        }
+      },
+      {
+        id: `${id}-fill-0`,
+        source: id,
+        type: 'fill',
+        'source-layer': 'layer0',
+        minzoom: 8,
+        paint: {
+          'fill-color': '#f69'
+        }
+      }
+    ]
   };
 
   if (layerModel.provider === 'cartodb') {
