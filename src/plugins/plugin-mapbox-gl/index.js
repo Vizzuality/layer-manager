@@ -9,7 +9,7 @@ class PluginMapboxGL {
   }
 
   method = {
-    leaflet: rasterLayer,
+    leaflet: geoJsonLayer,
     gee: rasterLayer,
     cartodb: vectorLayer,
     mapbox: vectorLayer,
