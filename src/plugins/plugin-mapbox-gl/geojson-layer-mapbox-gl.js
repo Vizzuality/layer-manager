@@ -23,9 +23,9 @@ const GeoJsonLayer = (layerModel) => {
           clusterRadius: 20,
           ...clusterConfig
         },
-        layers: vectorLayers ? vectorLayers.map(l => ({
+        layers: vectorLayers ? vectorLayers.map((l, i) => ({
           ...l,
-          id: `${id}-${l.id}`,
+          id: `${id}-${l.type}-${i}`,
           source: id,
           ...l.paint && {
             paint: {
