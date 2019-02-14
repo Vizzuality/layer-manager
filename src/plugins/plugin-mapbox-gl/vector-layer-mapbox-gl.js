@@ -17,7 +17,7 @@ const VectorLayer = (layerModel) => {
   const { body, url, layers } = layerConfigParsed || {};
   const { vectorLayers } = body || {};
   const vectorStyleLayers = layers || vectorLayers;
-  console.log(layerModel.name, getVectorStyleLayers(vectorStyleLayers, layerModel));
+
   const layer = {
     id,
     source: {
