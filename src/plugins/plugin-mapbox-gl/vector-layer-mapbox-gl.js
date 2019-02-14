@@ -22,7 +22,7 @@ const VectorLayer = (layerModel) => {
     id,
     source: {
       type: 'vector',
-      ...(url || body.url) && {
+      ...(url || (body && body.url)) && {
         url: layerConfigParsed.url || layerConfigParsed.body.url
       }
     },
