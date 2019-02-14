@@ -35,7 +35,7 @@ const RasterLayer = (layerModel) => {
       tileSize: 256,
     },
     layers: [{
-      id,
+      id: `${id}-raster`,
       type: 'raster',
       source: id,
       ...body,

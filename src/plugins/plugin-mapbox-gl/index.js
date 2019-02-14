@@ -9,7 +9,7 @@ class PluginMapboxGL {
   }
 
   method = {
-    leaflet: geoJsonLayer,
+    leaflet: rasterLayer,
     gee: rasterLayer,
     cartodb: vectorLayer,
     mapbox: vectorLayer,
@@ -52,7 +52,11 @@ class PluginMapboxGL {
    * Get provider method
    * @param {String} provider
    */
-  getLayerByProvider(provider) {
+  getLayerByProvider(provider, layerModel) {
+    // required to maintain current layerSpec without creating a breaking change
+    if (provider === 'leaflet' && layerModel.layerConfig.type === 'cluster') {
+      return this.method.geojson;
+    }
     return this.method[provider];
   }
 
@@ -133,9 +137,6 @@ class PluginMapboxGL {
 
   setLayerConfig(layerModel) {
     this.remove(layerModel);
-  }
-
-  setEvents() {
   }
 
   setDecodeParams(layerModel) {

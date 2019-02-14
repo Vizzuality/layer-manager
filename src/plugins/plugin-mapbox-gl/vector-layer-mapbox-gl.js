@@ -1,5 +1,6 @@
 import { replace } from 'utils/query';
 import { fetchTile } from 'services/carto-service';
+import { getVectorStyleLayers } from 'utils/vector-style-layers';
 
 const VectorLayer = (layerModel) => {
   const {
@@ -16,7 +17,7 @@ const VectorLayer = (layerModel) => {
   const { body, url, layers } = layerConfigParsed || {};
   const { vectorLayers } = body || {};
   const vectorStyleLayers = layers || vectorLayers;
-
+  console.log(layerModel.name, getVectorStyleLayers(vectorStyleLayers, layerModel));
   const layer = {
     id,
     source: {
@@ -25,53 +26,15 @@ const VectorLayer = (layerModel) => {
         url: layerConfigParsed.url || layerConfigParsed.body.url
       }
     },
-    layers: vectorStyleLayers ? vectorStyleLayers.map((l, i) => ({
-      ...l,
-      id: `${id}-${l.type}-${i}`,
-      source: id,
-      paint: {
-        [`${l.type}-opacity`]: l.opacity ? layerModel.opacity * l.opacity : layerModel.opacity,
-        ...l.paint
-      }
-    })) : [
-      // {
-      //   id: `${id}-fill-0`,
-      //   source: id,
-      //   type: 'fill',
-      //   'source-layer': 'layer0',
-      //   paint: {
-      //     'fill-opacity': layerModel.opacity * 0.5 || 0.5,
-      //     'fill-color': '#f69'
-      //   }
-      // },
-      // {
-      //   id: `${id}-line-0`,
-      //   source: id,
-      //   type: 'line',
-      //   'source-layer': 'layer0',
-      //   paint: {
-      //     'line-opacity': layerModel.opacity || 1,
-      //     'line-color': '#f69'
-      //   }
-      // },
-      // {
-      //   id: `${id}-circle-0`,
-      //   source: id,
-      //   type: 'circle',
-      //   'source-layer': 'layer0',
-      //   paint: {
-      //     'circle-opacity': layerModel.opacity || 1,
-      //     'circle-color': '#f69'
-      //   }
-      // },
+    layers: vectorStyleLayers ? getVectorStyleLayers(vectorStyleLayers, layerModel) : [
       {
-        id: `${id}-symbol-0`,
+        id: `${id}-fill-0`,
         source: id,
-        type: 'symbol',
+        type: 'fill',
         'source-layer': 'layer0',
-        maxzoom: 8,
-        layout: {
-          'icon-image': 'ptw-mongabay'
+        paint: {
+          'fill-opacity': layerModel.opacity * 0.5 || 0.5,
+          'fill-color': '#f69'
         }
       },
       {
@@ -79,21 +42,21 @@ const VectorLayer = (layerModel) => {
         source: id,
         type: 'line',
         'source-layer': 'layer0',
-        minzoom: 8,
         paint: {
+          'line-opacity': layerModel.opacity || 1,
           'line-color': '#f69'
         }
       },
       {
-        id: `${id}-fill-0`,
+        id: `${id}-circle-0`,
         source: id,
-        type: 'fill',
+        type: 'circle',
         'source-layer': 'layer0',
-        minzoom: 8,
         paint: {
-          'fill-color': '#f69'
+          'circle-opacity': layerModel.opacity || 1,
+          'circle-color': '#f69'
         }
-      }
+      },
     ]
   };
 

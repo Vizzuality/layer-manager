@@ -1,4 +1,5 @@
 import { fetchData } from 'services/cluster-service';
+import { getVectorStyleLayers } from 'utils/vector-style-layers';
 
 const GeoJsonLayer = (layerModel) => {
   const {
@@ -23,28 +24,15 @@ const GeoJsonLayer = (layerModel) => {
           clusterRadius: 20,
           ...clusterConfig
         },
-        layers: vectorLayers ? vectorLayers.map((l, i) => ({
-          ...l,
-          id: `${id}-${l.type}-${i}`,
-          source: id,
-          ...l.paint && {
-            paint: {
-              [`${l.type}-opacity`]: l.opacity ? layerModel.opacity * l.opacity : layerModel.opacity,
-              ...l.paint
-            }
-          }
-        })) : [
+        layers: vectorLayers ? getVectorStyleLayers(vectorLayers, layerModel) : [
           {
             id: `${id}-clusters`,
             type: 'circle',
             source: id,
+            filter: ['has', 'point_count'],
             paint: {
-              'circle-color': [
-                'step',
-                ['get', 'point_count'],
-                '#008000', 100, '#f1f075', 750, '#f28cb1'
-              ],
-              'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40]
+              'circle-color': '#f69',
+              'circle-radius': 12
             }
           },
           {
@@ -54,7 +42,6 @@ const GeoJsonLayer = (layerModel) => {
             filter: ['has', 'point_count'],
             layout: {
               'text-field': '{point_count_abbreviated}',
-              'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
               'text-size': 12
             }
           },
@@ -65,7 +52,7 @@ const GeoJsonLayer = (layerModel) => {
             filter: ['!', ['has', 'point_count']],
             paint: {
               'circle-color': '#f69',
-              'circle-radius': 5
+              'circle-radius': 12
             }
           }
         ]
@@ -78,15 +65,7 @@ const GeoJsonLayer = (layerModel) => {
           type: 'geojson',
           data: url || data
         },
-        layers: vectorLayers ? vectorLayers.map((l, i) => ({
-          ...l,
-          id: `${id}-${l.type}-${i}`,
-          source: id,
-          paint: {
-            [`${l.type}-opacity`]: l.opacity ? layerModel.opacity * l.opacity : layerModel.opacity,
-            ...l.paint
-          }
-        })) : [
+        layers: vectorLayers ? getVectorStyleLayers(vectorLayers, layerModel) : [
           {
             id: `${id}-fill`,
             type: 'fill',

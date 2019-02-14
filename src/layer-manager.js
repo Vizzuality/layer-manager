@@ -8,7 +8,6 @@ function checkPluginProperties(plugin) {
       'remove',
       'setVisibility',
       'setOpacity',
-      'setEvents',
       'setZIndex',
       'setLayerConfig',
       'setParams',
@@ -237,7 +236,7 @@ class LayerManager {
   setEvents(layerModel) {
     const { events } = layerModel;
 
-    if (events) {
+    if (events && this.plugin.setEvents) {
       // Let's leave the managment of event to the plugin
       this.plugin.setEvents(layerModel);
     }
@@ -245,7 +244,7 @@ class LayerManager {
 
   requestLayer(layerModel) {
     const { provider } = layerModel;
-    const method = this.plugin.getLayerByProvider(provider);
+    const method = this.plugin.getLayerByProvider(provider, layerModel);
 
     if (!method) {
       this.promises[layerModel.id] = new Promise(
