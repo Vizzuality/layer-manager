@@ -17,13 +17,15 @@ class LayerManager extends PureComponent {
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node
     ]),
-    onLayerLoading: PropTypes.func
+    onLayerLoading: PropTypes.func,
+    onReady: PropTypes.func
   };
 
   static defaultProps = {
     children: [],
     layersSpec: [],
-    onLayerLoading: () => null
+    onLayerLoading: null,
+    onReady: null
   };
 
   constructor(props) {
@@ -33,19 +35,21 @@ class LayerManager extends PureComponent {
   }
 
   componentDidMount() {
-    const { onLayerLoading } = this.props;
-    if (this.layerManager.layers && this.layerManager.layers.length) {
-      onLayerLoading(true);
-      this.layerManager.renderLayers().then(() => onLayerLoading(false));
-    }
+    this.onRenderLayers();
   }
 
-
   componentDidUpdate() {
-    const { onLayerLoading } = this.props;
+    this.onRenderLayers();
+  }
+
+  onRenderLayers = () => {
+    const { onLayerLoading, onReady } = this.props;
     if (this.layerManager.layers && this.layerManager.layers.length) {
-      onLayerLoading(true);
-      this.layerManager.renderLayers().then(() => onLayerLoading(false));
+      if (onLayerLoading) onLayerLoading(true);
+      this.layerManager.renderLayers().then(() => {
+        if (onReady) onReady(this.layerManager.layers);
+        if (onLayerLoading) onLayerLoading(false);
+      });
     }
   }
 
