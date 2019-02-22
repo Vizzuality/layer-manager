@@ -62,26 +62,28 @@ class LayerManager {
           this.updateLayer(layerModel);
         }
 
-        this.promises[layerModel.id] = this.requestLayer(layerModel);
+
+        // full fills an array of promises for every layer
+        this.requestLayer(layerModel);
 
         // reset changedAttributes
         return layerModel.set('changedAttributes', {});
       });
 
+
       if (Object.keys(this.promises).length === 0) {
-        return new Promise(resolve => resolve(this.layers));
+        return Promise.resolve(this.layers);
       }
+
 
       return Promise
         .all(Object.values(this.promises))
         .then(() => this.layers)
-        .then(() => {
-          this.promises = {};
-        });
+        .finally(() => { this.promises = {}; });
     }
 
     // By default it will return a empty layers
-    return new Promise(resolve => resolve(this.layers));
+    return Promise.resolve(this.layers);
   }
 
   /**
@@ -248,10 +250,7 @@ class LayerManager {
     const method = this.plugin.getLayerByProvider(provider);
 
     if (!method) {
-      this.promises[layerModel.id] = new Promise(
-        (resolve, reject) => reject(new Error(`${provider} provider is not yet supported.`))
-      );
-
+      this.promises[layerModel.id] = Promise.reject(new Error(`${provider} provider is not yet supported.`));
       return false;
     }
 
@@ -264,7 +263,8 @@ class LayerManager {
       this.promises[layerModel.id].cancel();
     }
 
-    // If there is method for it let's call it
+    // every render method returns a promise that we store in the array
+    // to control when all layers are fetched.
     this.promises[layerModel.id] = method.call(this, layerModel).then((layer) => {
       layerModel.set('mapLayer', layer);
 

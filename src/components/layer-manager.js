@@ -46,8 +46,8 @@ class LayerManager extends PureComponent {
     const { onLayerLoading, onReady } = this.props;
     if (this.layerManager.layers && this.layerManager.layers.length) {
       if (onLayerLoading) onLayerLoading(true);
-      this.layerManager.renderLayers().then(() => {
-        if (onReady) onReady(this.layerManager.layers);
+      this.layerManager.renderLayers().then((layers) => {
+        if (onReady) onReady(layers);
         if (onLayerLoading) onLayerLoading(false);
       });
     }
