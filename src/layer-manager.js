@@ -63,7 +63,7 @@ class LayerManager {
         }
 
 
-        // full fills an array of promises for every layer
+        // adds a new promise to `this.promises` every time it gets called
         this.requestLayer(layerModel);
 
         // reset changedAttributes
