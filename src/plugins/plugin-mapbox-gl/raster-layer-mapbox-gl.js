@@ -15,7 +15,7 @@ const RasterLayer = (layerModel) => {
   let tileUrl;
 
   const { body, url } = layerConfigParsed || {};
-  const { paint } = body || {};
+  const { paint, minzoom, maxzoom } = body || {};
 
   switch (layerModel.provider) {
     case 'gee':
@@ -38,7 +38,12 @@ const RasterLayer = (layerModel) => {
       id: `${id}-raster`,
       type: 'raster',
       source: id,
-      ...body,
+      ...maxzoom && {
+        maxzoom
+      },
+      ...minzoom && {
+        minzoom
+      },
       paint: {
         ...paint,
         'raster-opacity': opacity || 1
