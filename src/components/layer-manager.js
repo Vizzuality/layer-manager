@@ -3,14 +3,9 @@ import PropTypes from 'prop-types';
 import Manager from '../layer-manager';
 import Layer from './layer';
 
-// Isomorphic support
-const { L } = typeof window !== 'undefined'
-  ? window
-  : { L: { Map: () => {} } };
-
 class LayerManager extends PureComponent {
   static propTypes = {
-    map: PropTypes.instanceOf(L.Map).isRequired,
+    map: PropTypes.object.isRequired,
     plugin: PropTypes.func.isRequired,
     layersSpec: PropTypes.arrayOf(PropTypes.object),
     children: PropTypes.oneOfType([
