@@ -1,4 +1,5 @@
 import { replace } from 'utils/query';
+import DeckLayer from './deckgl-layer-mapbox-gl';
 
 const RasterLayer = (layerModel) => {
   const {
@@ -6,8 +7,15 @@ const RasterLayer = (layerModel) => {
     params,
     sqlParams,
     id,
-    opacity
+    opacity,
+    decodeFunction
   } = layerModel;
+
+  if (decodeFunction) {
+    return new Promise((resolve) => {
+      resolve(DeckLayer(layerModel));
+    });
+  }
 
   const layerConfigParsed = layerConfig.parse === false
     ? layerConfig

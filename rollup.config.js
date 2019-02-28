@@ -17,6 +17,13 @@ const globals = {
   'prop-types': 'PropTypes',
   'react-dom': 'ReactDOM',
   react: 'React',
+  '@luma.gl/constants': '@luma.gl/constants',
+  '@deck.gl/core': '@deck.gl/core',
+  'luma.gl': 'luma.gl',
+  '@loaders.gl/core': '@loaders.gl/core',
+  'viewport-mercator-project': 'viewport-mercator-project',
+  'deck.gl': 'deck.gl',
+  '@deck.gl/mapbox': '@deck.gl/mapbox'
 };
 const external = Object.keys(globals);
 const babelOptions = () => ({

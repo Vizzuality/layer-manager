@@ -2,6 +2,7 @@
 import rasterLayer from './raster-layer-mapbox-gl';
 import vectorLayer from './vector-layer-mapbox-gl';
 import geoJsonLayer from './geojson-layer-mapbox-gl';
+import deckLayer from './deckgl-layer-mapbox-gl';
 
 class PluginMapboxGL {
   constructor(map) {
@@ -13,7 +14,8 @@ class PluginMapboxGL {
     gee: rasterLayer,
     cartodb: vectorLayer,
     mapbox: vectorLayer,
-    geojson: geoJsonLayer
+    geojson: geoJsonLayer,
+    deckgl: deckLayer
   };
 
   /**
@@ -22,10 +24,18 @@ class PluginMapboxGL {
    */
   add(layerModel, layers) {
     const { mapLayer } = layerModel;
+
+    // remove old source
     if (this.map.getSource(mapLayer.id)) {
       this.map.removeSource(mapLayer.id);
     }
-    this.map.addSource(mapLayer.id, mapLayer.source);
+
+    // add source if it has one
+    if (mapLayer.source) {
+      this.map.addSource(mapLayer.id, mapLayer.source);
+    }
+
+    // add layers
     if (mapLayer && mapLayer.layers) {
       const nextLayerId = this.getNextLayerId(layers, layerModel.zIndex);
       mapLayer.layers.forEach((l) => {
