@@ -13,8 +13,8 @@ uniform float desaturate;
 uniform vec4 transparentColor;
 uniform vec3 tintColor;
 uniform float opacity;
-uniform float startDate;
-uniform float endDate;
+uniform float startYear;
+uniform float endYear;
 uniform float zoom;
 
 // apply desaturation
@@ -65,11 +65,11 @@ vec4 decodeFunction(vec3 color, float year) {
   float alpha = zoom < 13. ? scaleIntensity / 255. : color.r;
 
   // map to years
-  if (year >= startDate && year <= endDate && year >= 2001.) {
+  if (year >= startYear && year <= endYear && year >= 2001.) {
     color.r = 220. / 255.;
     color.g = (72. - zoom + 102. - 3. * scaleIntensity / zoom) / 255.;
     color.b = (33. - zoom + 153. - intensity / zoom) / 255.;
-    return vec4(color, alpha);
+    return vec4(color, alpha * opacity);
   } else {
     return vec4(0., 0., 0., 0.);
   }

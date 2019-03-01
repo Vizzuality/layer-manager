@@ -96,10 +96,10 @@ export default class TileLayer extends CompositeLayer {
 
   renderLayers() {
     // eslint-disable-next-line no-unused-vars
-    const { getTileData, renderSubLayers, visible, ...geoProps } = this.props;
+    const { getTileData, renderSubLayers, visible, decodeParams, opacity } = this.props;
     const zoomLevel = this.getLayerZoomLevel();
 
-    return this.state.tiles.map(tile => {
+    return this.state.tiles.map((tile) => {
       const { x, y, z } = tile;
       const topLeft = [this.tile2long(x, z), this.tile2lat(y, z)];
       const topRight = [this.tile2long(x + 1, z), this.tile2lat(y, z)];
@@ -120,9 +120,10 @@ export default class TileLayer extends CompositeLayer {
         transparentColor: [0, 0, 0, 0],
         visible: z === zoomLevel,
         tintColor: [255, 255, 255],
+        fp64: true,
         zoom: zoomLevel,
-        endDate: this.props.endDate,
-        fp64: true
+        decodeParams,
+        opacity
       });
     });
   }

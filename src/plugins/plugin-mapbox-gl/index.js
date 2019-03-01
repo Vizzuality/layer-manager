@@ -111,11 +111,11 @@ class PluginMapboxGL {
    * @param {Number} opacity
    */
   setOpacity(layerModel, opacity) {
-    const { mapLayer } = layerModel;
-    if (mapLayer.layer) {
+    const { mapLayer, decodeFunction } = layerModel;
+    if (mapLayer.layer && !decodeFunction) {
       this.map.setPaintProperty(mapLayer.id, `${mapLayer.layer.type}-opacity`, opacity);
     }
-    if (mapLayer.layers) {
+    if (mapLayer.layers && !decodeFunction) {
       mapLayer.layers.forEach((l) => {
         if (l.type === 'symbol') {
           this.map.setPaintProperty(l.id, 'icon-opacity', opacity);
@@ -127,6 +127,9 @@ class PluginMapboxGL {
           this.map.setPaintProperty(l.id, `${l.type}-opacity`, opacity);
         }
       });
+    }
+    if (decodeFunction) {
+      mapLayer.layers[0].setProps({ opacity });
     }
   }
 
@@ -152,11 +155,10 @@ class PluginMapboxGL {
   setDecodeParams(layerModel) {
     const {
       mapLayer,
-      params,
-      sqlParams,
-      decodeParams,
-      decodeFunction
+      decodeParams
     } = layerModel;
+
+    mapLayer.layers[0].setProps({ decodeParams });
 
     return this;
   }

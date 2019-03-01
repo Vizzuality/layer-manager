@@ -169,7 +169,7 @@ export default class BitmapLayer extends Layer {
 
   draw({uniforms}) {
     const {bitmapTexture, model} = this.state;
-    const {desaturate, transparentColor, tintColor, startDate, endDate, zoom} = this.props;
+    const {desaturate, transparentColor, tintColor, zoom, decodeParams, opacity } = this.props;
 
     // // TODO fix zFighting
     // Render the image
@@ -180,9 +180,9 @@ export default class BitmapLayer extends Layer {
           desaturate,
           transparentColor,
           tintColor,
-          startDate,
-          endDate,
-          zoom
+          zoom,
+          ...decodeParams,
+          opacity
         })
       );
     }

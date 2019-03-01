@@ -44,8 +44,8 @@ const DeckLayer = (layerModel) => {
         minZoom: minzoom,
         maxZoom: maxzoom,
         getTileData: e => getTileData(e, url || body.url),
-        ...decodeParams,
-        endDate: 2018,
+        opacity: layerModel.opacity,
+        decodeParams
       })
     ]
   };
