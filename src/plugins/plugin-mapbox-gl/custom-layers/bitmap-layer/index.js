@@ -24,7 +24,7 @@ import { Layer } from '@deck.gl/core';
 import { Model, Geometry, Texture2D, fp64 } from 'luma.gl';
 import { loadImage } from '@loaders.gl/core';
 import vs from './bitmap-layer-vertex';
-import fs from './bitmap-layer-fragment';
+import shaderTemplate from './bitmap-layer-fragment';
 
 const { fp64LowPart } = fp64;
 
@@ -50,6 +50,11 @@ const defaultProps = {
 export default class BitmapLayer extends Layer {
   getShaders() {
     const projectModule = this.use64bitProjection() ? 'project64' : 'project32';
+
+    const fs = shaderTemplate
+      .replace('{decodeParams}', Object.keys(this.props.decodeParams).map(p => `uniform float ${p};`).join(' '))
+      .replace('{decodeFunction}', this.props.decodeFunction || '');
+
     return { vs, fs, modules: [projectModule, 'picking'] };
   }
 

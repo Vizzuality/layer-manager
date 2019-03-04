@@ -62,7 +62,8 @@ const RasterLayer = (layerModel) => {
           maxZoom: maxzoom,
           getTileData: e => getTileData(e, url || body.url),
           opacity: layerModel.opacity,
-          decodeParams
+          decodeParams,
+          decodeFunction
         })
       ]
     };
