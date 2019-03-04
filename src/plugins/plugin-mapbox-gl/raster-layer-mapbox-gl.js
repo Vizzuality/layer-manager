@@ -1,21 +1,35 @@
 import { replace } from 'utils/query';
-import DeckLayer from './deckgl-layer-mapbox-gl';
+import { MapboxLayer } from '@deck.gl/mapbox';
+
+import TileLayer from './custom-layers/tile-layer';
+
+const getTileData = ({ x, y, z }, url) => {
+  const mapSource = url
+    .replace('{z}', z)
+    .replace('{x}', x)
+    .replace('{y}', y);
+
+  return fetch(mapSource)
+    .then(response => response.blob())
+    .then((response) => {
+      const src = URL.createObjectURL(response);
+      const image = new Image();
+
+      image.src = src;
+      return image;
+    });
+};
 
 const RasterLayer = (layerModel) => {
   const {
     layerConfig,
     params,
     sqlParams,
+    decodeParams,
     id,
     opacity,
     decodeFunction
   } = layerModel;
-
-  if (decodeFunction) {
-    return new Promise((resolve) => {
-      resolve(DeckLayer(layerModel));
-    });
-  }
 
   const layerConfigParsed = layerConfig.parse === false
     ? layerConfig
@@ -34,30 +48,50 @@ const RasterLayer = (layerModel) => {
       break;
   }
 
-  const layer = {
-    id,
-    type: 'raster',
-    source: {
+  let layer = {};
+
+  // if decoded layer use custom deck layer
+  if (decodeFunction) {
+    layer = {
+      id,
+      layers: [
+        new MapboxLayer({
+          id,
+          type: TileLayer,
+          minZoom: minzoom,
+          maxZoom: maxzoom,
+          getTileData: e => getTileData(e, url || body.url),
+          opacity: layerModel.opacity,
+          decodeParams
+        })
+      ]
+    };
+  } else {
+    layer = {
+      id,
       type: 'raster',
-      tiles: [tileUrl],
-      tileSize: 256,
-    },
-    layers: [{
-      id: `${id}-raster`,
-      type: 'raster',
-      source: id,
-      ...maxzoom && {
-        maxzoom
+      source: {
+        type: 'raster',
+        tiles: [tileUrl],
+        tileSize: 256,
       },
-      ...minzoom && {
-        minzoom
-      },
-      paint: {
-        ...paint,
-        'raster-opacity': opacity || 1
-      }
-    }]
-  };
+      layers: [{
+        id: `${id}-raster`,
+        type: 'raster',
+        source: id,
+        ...maxzoom && {
+          maxzoom
+        },
+        ...minzoom && {
+          minzoom
+        },
+        paint: {
+          ...paint,
+          'raster-opacity': opacity || 1
+        }
+      }]
+    };
+  }
 
   return new Promise((resolve, reject) => {
     if (layer) {

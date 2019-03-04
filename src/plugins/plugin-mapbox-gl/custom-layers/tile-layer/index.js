@@ -51,7 +51,7 @@ export default class TileLayer extends CompositeLayer {
       const { viewport } = context;
       const z = this.getLayerZoomLevel();
       if (viewport.id !== 'DEFAULT-INITIAL-VIEWPORT') {
-        this.state.tileCache.update(viewport, tiles => {
+        this.state.tileCache.update(viewport, (tiles) => {
           const currTiles = tiles.filter(tile => tile.z === z);
           const allCurrTilesLoaded = currTiles.every(tile => tile.isLoaded);
           this.setState({ tiles, isLoaded: allCurrTilesLoaded });
@@ -100,31 +100,35 @@ export default class TileLayer extends CompositeLayer {
     const zoomLevel = this.getLayerZoomLevel();
 
     return this.state.tiles.map((tile) => {
-      const { x, y, z } = tile;
-      const topLeft = [this.tile2long(x, z), this.tile2lat(y, z)];
-      const topRight = [this.tile2long(x + 1, z), this.tile2lat(y, z)];
-      const bottomLeft = [this.tile2long(x, z), this.tile2lat(y + 1, z)];
-      const bottomRight = [this.tile2long(x + 1, z), this.tile2lat(y + 1, z)];
-      const bounds = [bottomLeft, topLeft, topRight, bottomRight];
+      const { x, y, z, _data } = tile;
 
-      // Supported formats:
-      // - Coordinates of the bounding box of the bitmap `[minX, minY, maxX, maxY]`
-      // - Coordinates of four corners of the bitmap, should follow the sequence of `[[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY]]`
-      // each position could be `[x, y]` or `[x, y, z]` format.
+      if (_data && _data.src) {
+        // Supported formats:
+        // - Coordinates of the bounding box of the bitmap `[minX, minY, maxX, maxY]`
+        // - Coordinates of four corners of the bitmap, should follow the sequence of `[[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY]]`
+        // each position could be `[x, y]` or `[x, y, z]` format.
 
-      return new BitmapLayer({
-        id: `${this.id}-${x}-${y}-${z}`,
-        image: `https://storage.googleapis.com/wri-public/Hansen17/tiles/hansen_world/v1/tc30/${z}/${x}/${y}.png`,
-        bitmapBounds: bounds,
-        desaturate: 0,
-        transparentColor: [0, 0, 0, 0],
-        visible: z === zoomLevel,
-        tintColor: [255, 255, 255],
-        fp64: true,
-        zoom: zoomLevel,
-        decodeParams,
-        opacity
-      });
+        const topLeft = [this.tile2long(x, z), this.tile2lat(y, z)];
+        const topRight = [this.tile2long(x + 1, z), this.tile2lat(y, z)];
+        const bottomLeft = [this.tile2long(x, z), this.tile2lat(y + 1, z)];
+        const bottomRight = [this.tile2long(x + 1, z), this.tile2lat(y + 1, z)];
+        const bounds = [bottomLeft, topLeft, topRight, bottomRight];
+
+        return new BitmapLayer({
+          id: `${this.id}-${x}-${y}-${z}`,
+          image: _data.src,
+          bitmapBounds: bounds,
+          desaturate: 0,
+          transparentColor: [0, 0, 0, 0],
+          visible: z === zoomLevel,
+          tintColor: [255, 255, 255],
+          fp64: true,
+          zoom: zoomLevel,
+          decodeParams,
+          opacity
+        });
+      }
+      return null;
     });
   }
 }

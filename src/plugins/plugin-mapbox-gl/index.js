@@ -2,7 +2,6 @@
 import rasterLayer from './raster-layer-mapbox-gl';
 import vectorLayer from './vector-layer-mapbox-gl';
 import geoJsonLayer from './geojson-layer-mapbox-gl';
-import deckLayer from './deckgl-layer-mapbox-gl';
 
 class PluginMapboxGL {
   constructor(map) {
@@ -14,8 +13,7 @@ class PluginMapboxGL {
     gee: rasterLayer,
     cartodb: vectorLayer,
     mapbox: vectorLayer,
-    geojson: geoJsonLayer,
-    deckgl: deckLayer
+    geojson: geoJsonLayer
   };
 
   /**
