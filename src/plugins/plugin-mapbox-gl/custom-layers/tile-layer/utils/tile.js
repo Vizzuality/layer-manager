@@ -1,5 +1,5 @@
 export default class Tile {
-  constructor({getTileData, x, y, z, onGetTileDataError}) {
+  constructor({ getTileData, x, y, z, onGetTileDataError }) {
     this.x = x;
     this.y = y;
     this.z = z;
@@ -23,11 +23,11 @@ export default class Tile {
   }
 
   _loadData() {
-    const {x, y, z} = this;
+    const { x, y, z } = this;
     if (!this.getTileData) {
       return null;
     }
-    const getTileDataPromise = this.getTileData({x, y, z});
+    const getTileDataPromise = this.getTileData({ x, y, z });
     return getTileDataPromise
       .then(buffers => {
         this._data = buffers;
@@ -41,7 +41,7 @@ export default class Tile {
   }
 
   isOverlapped(tile) {
-    const {x, y, z} = this;
+    const { x, y, z } = this;
     const m = Math.pow(2, tile.z - z);
     return Math.floor(tile.x / m) === x && Math.floor(tile.y / m) === y;
   }

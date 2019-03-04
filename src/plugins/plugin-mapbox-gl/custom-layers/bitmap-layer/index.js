@@ -30,15 +30,15 @@ const { fp64LowPart } = fp64;
 
 const defaultProps = {
   image: null,
-  bitmapBounds: {type: 'array', value: [1, 0, 0, 1], compare: true},
+  bitmapBounds: { type: 'array', value: [1, 0, 0, 1], compare: true },
   fp64: false,
 
-  desaturate: {type: 'number', min: 0, max: 1, value: 0},
+  desaturate: { type: 'number', min: 0, max: 1, value: 0 },
   // More context: because of the blending mode we're using for ground imagery,
   // alpha is not effective when blending the bitmap layers with the base map.
   // Instead we need to manually dim/blend rgb values with a background color.
-  transparentColor: {type: 'color', value: [0, 0, 0, 0]},
-  tintColor: {type: 'color', value: [255, 255, 255]}
+  transparentColor: { type: 'color', value: [0, 0, 0, 0] },
+  tintColor: { type: 'color', value: [255, 255, 255] }
 };
 
 /*
@@ -50,7 +50,7 @@ const defaultProps = {
 export default class BitmapLayer extends Layer {
   getShaders() {
     const projectModule = this.use64bitProjection() ? 'project64' : 'project32';
-    return {vs, fs, modules: [projectModule, 'picking']};
+    return { vs, fs, modules: [projectModule, 'picking'] };
   }
 
   initializeState() {
@@ -76,14 +76,14 @@ export default class BitmapLayer extends Layer {
     });
   }
 
-  updateState({props, oldProps, changeFlags}) {
+  updateState({ props, oldProps }) {
     // setup model first
     if (props.fp64 !== oldProps.fp64) {
-      const {gl} = this.context;
+      const { gl } = this.context;
       if (this.state.model) {
         this.state.model.delete();
       }
-      this.setState({model: this._getModel(gl)});
+      this.setState({ model: this._getModel(gl) });
       this.getAttributeManager().invalidateAll();
     }
 
@@ -167,9 +167,9 @@ export default class BitmapLayer extends Layer {
     );
   }
 
-  draw({uniforms}) {
-    const {bitmapTexture, model} = this.state;
-    const {desaturate, transparentColor, tintColor, zoom, decodeParams, opacity } = this.props;
+  draw({ uniforms }) {
+    const { bitmapTexture, model } = this.state;
+    const { desaturate, transparentColor, tintColor, zoom, decodeParams, opacity } = this.props;
 
     // // TODO fix zFighting
     // Render the image
@@ -189,8 +189,8 @@ export default class BitmapLayer extends Layer {
   }
 
   loadTexture() {
-    const {gl} = this.context;
-    const {image} = this.props;
+    const { gl } = this.context;
+    const { image } = this.props;
 
     const textureOptions = {
       parameters: {
@@ -200,31 +200,35 @@ export default class BitmapLayer extends Layer {
         [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE,
       },
       mipmaps: false
-    }
+    };
 
     if (typeof image === 'string') {
-      loadImage(image).then(data => {
-        this.setState({bitmapTexture: new Texture2D(gl, {
-          data,
-          ...textureOptions
-        })});
+      loadImage(image).then((data) => {
+        this.setState({
+          bitmapTexture: new Texture2D(gl, {
+            data,
+            ...textureOptions
+          })
+        });
       });
     } else if (image instanceof Texture2D) {
-      this.setState({bitmapTexture: image});
+      this.setState({ bitmapTexture: image });
     } else if (
       // browser object
-      image instanceof Image ||
-      image instanceof HTMLCanvasElement
+      image instanceof Image
+      || image instanceof HTMLCanvasElement
     ) {
-      this.setState({bitmapTexture: new Texture2D(gl, {
-        data: image,
-        ...textureOptions
-      })});
+      this.setState({
+        bitmapTexture: new Texture2D(gl, {
+          data: image,
+          ...textureOptions
+        })
+      });
     }
   }
 
-  calculatePositions({value}) {
-    const {positions} = this.state;
+  calculatePositions({ value }) {
+    const { positions } = this.state;
     value.set(positions);
   }
 
@@ -237,7 +241,7 @@ export default class BitmapLayer extends Layer {
       return;
     }
 
-    const {value} = attribute;
+    const { value } = attribute;
     value.set(this.state.positions.map(fp64LowPart));
   }
 }

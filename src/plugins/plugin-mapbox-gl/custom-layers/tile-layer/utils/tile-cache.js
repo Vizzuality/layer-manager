@@ -1,5 +1,5 @@
 import Tile from './tile';
-import {getTileIndices} from './viewport-util';
+import { getTileIndices } from './viewport-util';
 
 /**
  * Manages loading and purging of tiles data. This class caches recently visited tiles
@@ -11,7 +11,7 @@ export default class TileCache {
    * Takes in a function that returns tile data, a cache size, and a max and a min zoom level.
    * Cache size defaults to 5 * number of tiles in the current viewport
    */
-  constructor({getTileData, maxSize, maxZoom, minZoom, onGetTileDataError}) {
+  constructor({ getTileData, maxSize, maxZoom, minZoom, onGetTileDataError }) {
     // TODO: Instead of hardcode size, we should calculate how much memory left
     this._getTileData = getTileData;
     this._maxSize = maxSize;
@@ -41,7 +41,7 @@ export default class TileCache {
    * @param {*} onUpdate
    */
   update(viewport, onUpdate) {
-    const {_cache, _getTileData, _maxSize, _maxZoom, _minZoom} = this;
+    const { _cache, _getTileData, _maxSize, _maxZoom, _minZoom } = this;
     this._markOldTiles();
     const tileIndices = getTileIndices(viewport, _maxZoom, _minZoom);
     if (!tileIndices || tileIndices.length === 0) {
@@ -59,7 +59,7 @@ export default class TileCache {
     for (let i = 0; i < tileIndices.length; i++) {
       const tileIndex = tileIndices[i];
 
-      const {x, y, z} = tileIndex;
+      const { x, y, z } = tileIndex;
       let tile = this._getTile(x, y, z);
       if (!tile) {
         tile = new Tile({
@@ -87,7 +87,7 @@ export default class TileCache {
    * Clear tiles that are not visible when the cache is full
    */
   _resizeCache(maxSize) {
-    const {_cache} = this;
+    const { _cache } = this;
     if (_cache.size > maxSize) {
       const iterator = _cache[Symbol.iterator]();
       for (const cachedTile of iterator) {
