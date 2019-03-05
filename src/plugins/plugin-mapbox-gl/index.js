@@ -85,7 +85,9 @@ class PluginMapboxGL {
     const sortedLayers = [...layers].sort((a, b) => a.zIndex - b.zIndex);
     const nextLayer = sortedLayers.find(l => l.zIndex > zIndex);
     const mapLayerIds = layersOnMap.filter(l => l.includes(nextLayer && nextLayer.id));
-
+    if ((!mapLayerIds || !mapLayerIds.length) && nextLayer && nextLayer.decodeFunction) {
+      mapLayerIds.push(`${nextLayer.id}-raster-decode`);
+    }
     return (mapLayerIds && mapLayerIds[0]);
   }
 
@@ -98,6 +100,9 @@ class PluginMapboxGL {
     const layersOnMap = this.getLayersOnMap();
     const nextLayerId = this.getNextLayerId(layers, zIndex);
     const layersToSetIndex = layersOnMap.filter(l => l.includes(layerModel.id));
+    if (layerModel.decodeFunction) {
+      layersToSetIndex.push(`${layerModel.id}-raster-decode`);
+    }
     if (nextLayerId && layersToSetIndex) {
       layersToSetIndex.forEach(id => this.map.moveLayer(id, nextLayerId));
     }

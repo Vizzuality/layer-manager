@@ -56,7 +56,7 @@ const RasterLayer = (layerModel) => {
       id,
       layers: [
         new MapboxLayer({
-          id,
+          id: `${id}-raster-decode`,
           type: TileLayer,
           minZoom: minzoom,
           maxZoom: maxzoom,

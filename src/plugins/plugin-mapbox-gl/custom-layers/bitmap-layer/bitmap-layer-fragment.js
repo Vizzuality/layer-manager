@@ -9,14 +9,15 @@ uniform sampler2D bitmapTexture;
 
 varying vec2 vTexCoord;
 
+{decodeParams}
+
 uniform float opacity;
 uniform float zoom;
 
-{decodeParams}
 
 vec4 decodeFunction(vec3 color, float alpha) {
   {decodeFunction}
-  return vec4(color, alpha);
+  return vec4(color, alpha * opacity);
 }
 
 void main(void) {

@@ -176,7 +176,7 @@ export default class BitmapLayer extends Layer {
     const { bitmapTexture, model } = this.state;
     const { desaturate, transparentColor, tintColor, zoom, decodeParams, opacity } = this.props;
 
-    // // TODO fix zFighting
+    // TODO fix zFighting
     // Render the image
     if (bitmapTexture && model) {
       model.render(
