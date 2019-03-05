@@ -77,17 +77,19 @@ class PluginMapboxGL {
 
   /**
    * Get the layer above the given z-index
+   * @param {Array} layers
    * @param {Object} layerModel
-   * @param {Number} zIndex
    */
   getNextLayerId(layers, zIndex) {
     const layersOnMap = this.getLayersOnMap();
     const sortedLayers = [...layers].sort((a, b) => a.zIndex - b.zIndex);
     const nextLayer = sortedLayers.find(l => l.zIndex > zIndex);
-    const mapLayerIds = layersOnMap.filter(l => l.includes(nextLayer && nextLayer.id));
-    if ((!mapLayerIds || !mapLayerIds.length) && nextLayer && nextLayer.decodeFunction) {
-      mapLayerIds.push(`${nextLayer.id}-raster-decode`);
-    }
+
+    const { decodeFunction, id } = nextLayer || {};
+    const mapLayerIds = layersOnMap.filter(l => (
+      l.includes(decodeFunction ? id : nextLayer && nextLayer.id)
+    ));
+
     return (mapLayerIds && mapLayerIds[0]);
   }
 
@@ -95,6 +97,7 @@ class PluginMapboxGL {
    * A namespace to set z-index
    * @param {Object} layerModel
    * @param {Number} zIndex
+   * @param {Array} layers
    */
   setZIndex(layerModel, zIndex, layers) {
     const layersOnMap = this.getLayersOnMap();

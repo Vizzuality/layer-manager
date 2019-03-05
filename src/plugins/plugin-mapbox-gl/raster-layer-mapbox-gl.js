@@ -54,6 +54,7 @@ const RasterLayer = (layerModel) => {
   if (decodeFunction) {
     layer = {
       id,
+      type: 'custom',
       layers: [
         new MapboxLayer({
           id: `${id}-raster-decode`,
@@ -64,7 +65,20 @@ const RasterLayer = (layerModel) => {
           opacity: layerModel.opacity,
           decodeParams,
           decodeFunction
-        })
+        }),
+        {
+          id: `${id}-raster`,
+          type: 'background',
+          paint: {
+            'background-color': 'transparent'
+          },
+          ...maxzoom && {
+            maxzoom
+          },
+          ...minzoom && {
+            minzoom
+          }
+        }
       ]
     };
   } else {
