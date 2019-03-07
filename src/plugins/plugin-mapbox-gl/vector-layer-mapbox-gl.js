@@ -14,9 +14,8 @@ const VectorLayer = (layerModel) => {
     ? layerConfig
     : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
 
-  const { body, url, layers } = layerConfigParsed || {};
+  const { body, url } = layerConfigParsed || {};
   const { vectorLayers } = body || {};
-  const vectorStyleLayers = layers || vectorLayers;
 
   const layer = {
     id,
@@ -26,7 +25,7 @@ const VectorLayer = (layerModel) => {
         url: layerConfigParsed.url || layerConfigParsed.body.url
       }
     },
-    layers: vectorStyleLayers ? getVectorStyleLayers(vectorStyleLayers, layerModel) : [
+    layers: vectorLayers ? getVectorStyleLayers(vectorLayers, layerModel) : [
       {
         id: `${id}-fill-0`,
         source: id,
