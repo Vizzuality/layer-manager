@@ -103,9 +103,11 @@ class PluginMapboxGL {
     const layersOnMap = this.getLayersOnMap();
     const nextLayerId = this.getNextLayerId(layers, zIndex);
     const layersToSetIndex = layersOnMap.filter(l => l.includes(layerModel.id));
-    if (layerModel.decodeFunction) {
+
+    if (layerModel.decodeFunction && layersOnMap.includes(layerModel.id)) {
       layersToSetIndex.push(`${layerModel.id}-raster-decode`);
     }
+
     if (nextLayerId && layersToSetIndex) {
       layersToSetIndex.forEach(id => this.map.moveLayer(id, nextLayerId));
     }
