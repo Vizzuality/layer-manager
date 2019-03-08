@@ -104,7 +104,7 @@ class PluginMapboxGL {
     const nextLayerId = this.getNextLayerId(layers, zIndex);
     const layersToSetIndex = layersOnMap.filter(l => l.includes(layerModel.id));
 
-    if (layerModel.decodeFunction && layersOnMap.includes(layerModel.id)) {
+    if (layerModel.decodeFunction) {
       layersToSetIndex.push(`${layerModel.id}-raster-decode`);
     }
 

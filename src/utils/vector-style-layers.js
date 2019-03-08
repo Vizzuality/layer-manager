@@ -24,13 +24,22 @@ export const getVectorStyleLayers = (vectorLayers, layerModel) => {
         };
       }, {});
 
+      // if paint properties or null are passed it breaks interaction
+      // on mapbox. We need to remove these
+      const filteredPaintProperties = l.paint && Object.entries(l.paint).reduce((obj, arr) => ({
+        ...obj,
+        ...!!arr[1] && {
+          [arr[0]]: arr[1]
+        }
+      }), {});
+
       return {
         ...l,
         id: `${id}-${l.type}-${i}`,
         source: id,
         ...l.paint && {
           paint: {
-            ...l.paint,
+            ...filteredPaintProperties,
             ...opacityPaintStyles
           }
         }
