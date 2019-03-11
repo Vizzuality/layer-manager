@@ -84,7 +84,7 @@ class PluginMapboxGL {
     const layersOnMap = this.getLayersOnMap();
     const layersOnMapIds = layersOnMap.map(l => l.id);
     const sortedLayers = [...layers].sort((a, b) => a.zIndex - b.zIndex);
-    const firstLabelLayer = layersOnMap && layersOnMap.length && layersOnMap.find(l => l.id.includes('label'));
+    const firstLabelLayer = layersOnMap && layersOnMap.length && layersOnMap.find(l => l.id.includes('label') || l.id.includes('place') || l.id.includes('poi'));
 
     const nextLayer = sortedLayers.find(l => l.zIndex > zIndex) || firstLabelLayer;
     const { decodeFunction, id } = nextLayer || {};
