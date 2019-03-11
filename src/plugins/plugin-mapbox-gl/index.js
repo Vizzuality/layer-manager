@@ -72,7 +72,7 @@ class PluginMapboxGL {
    * Get all mapbox layers
    */
   getLayersOnMap() {
-    return this.map.getStyle().layers.map(l => l.id);
+    return this.map.getStyle().layers;
   }
 
   /**
@@ -82,11 +82,13 @@ class PluginMapboxGL {
    */
   getNextLayerId(layers, zIndex) {
     const layersOnMap = this.getLayersOnMap();
+    const layersOnMapIds = layersOnMap.map(l => l.id);
     const sortedLayers = [...layers].sort((a, b) => a.zIndex - b.zIndex);
-    const nextLayer = sortedLayers.find(l => l.zIndex > zIndex);
+    const firstLabelLayer = layersOnMap && layersOnMap.length && layersOnMap.find(l => l.id.includes('label'));
 
+    const nextLayer = sortedLayers.find(l => l.zIndex > zIndex) || firstLabelLayer;
     const { decodeFunction, id } = nextLayer || {};
-    const mapLayerIds = layersOnMap.filter(l => (
+    const mapLayerIds = layersOnMapIds.filter(l => (
       l.includes(decodeFunction ? id : nextLayer && nextLayer.id)
     ));
 
@@ -102,14 +104,14 @@ class PluginMapboxGL {
   setZIndex(layerModel, zIndex, layers) {
     const layersOnMap = this.getLayersOnMap();
     const nextLayerId = this.getNextLayerId(layers, zIndex);
-    const layersToSetIndex = layersOnMap.filter(l => l.includes(layerModel.id));
+    const layersToSetIndex = layersOnMap.filter(l => l.id.includes(layerModel.id));
 
     if (layerModel.decodeFunction) {
-      layersToSetIndex.push(`${layerModel.id}-raster-decode`);
+      layersToSetIndex.push({ id: `${layerModel.id}-raster-decode` });
     }
 
-    if (nextLayerId && layersToSetIndex) {
-      layersToSetIndex.forEach(id => this.map.moveLayer(id, nextLayerId));
+    if (nextLayerId && layersToSetIndex && layersToSetIndex.length) {
+      layersToSetIndex.forEach(l => this.map.moveLayer(l.id, nextLayerId));
     }
   }
 
