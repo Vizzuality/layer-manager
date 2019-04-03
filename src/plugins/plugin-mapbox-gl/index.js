@@ -151,7 +151,11 @@ class PluginMapboxGL {
   setVisibility(layerModel, visibility) {
     const { mapLayer } = layerModel;
 
-    this.map.setLayoutProperty(mapLayer.id, 'visibility', visibility ? 'visible' : 'none');
+    if (mapLayer && mapLayer.layers && this.map && this.map.style) {
+      mapLayer.layers.forEach((l) => {
+        this.map.setLayoutProperty(l.id, 'visibility', visibility ? 'visible' : 'none');
+      });
+    }
   }
 
   setParams(layerModel) {

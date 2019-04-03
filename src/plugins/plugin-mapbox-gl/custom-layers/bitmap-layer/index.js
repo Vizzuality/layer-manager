@@ -215,6 +215,9 @@ export default class BitmapLayer extends Layer {
             ...textureOptions
           })
         });
+      })
+      .catch(e => {
+        console.warn(e);
       });
     } else if (image instanceof Texture2D) {
       this.setState({ bitmapTexture: image });
