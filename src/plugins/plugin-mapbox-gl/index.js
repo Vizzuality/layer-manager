@@ -24,12 +24,12 @@ class PluginMapboxGL {
     const { mapLayer } = layerModel;
 
     // remove old source
-    if (this.map.getSource(mapLayer.id)) {
+    if (mapLayer.id && this.map && this.map.getSource(mapLayer.id)) {
       this.map.removeSource(mapLayer.id);
     }
 
     // add source if it has one
-    if (mapLayer.source) {
+    if (mapLayer.source && mapLayer.id && this.map) {
       this.map.addSource(mapLayer.id, mapLayer.source);
     }
 
