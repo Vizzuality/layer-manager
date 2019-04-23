@@ -4,8 +4,16 @@ import vectorLayer from './vector-layer-mapbox-gl';
 import geoJsonLayer from './geojson-layer-mapbox-gl';
 
 class PluginMapboxGL {
-  constructor(map) {
+  constructor(map, options) {
     this.map = map;
+    this.options = options;
+
+    // You can change mapStyles and all the layers will be repositioned
+    this.map.on('style.load', () => {
+      const { getLayers } = this.options;
+      const layers = getLayers();
+      layers.forEach(layer => this.add(layer, layers));
+    });
   }
 
   method = {
@@ -84,9 +92,9 @@ class PluginMapboxGL {
     const layersOnMap = this.getLayersOnMap();
     const layersOnMapIds = layersOnMap.map(l => l.id);
     const sortedLayers = [...layers].sort((a, b) => a.zIndex - b.zIndex);
-    const firstLabelLayer = layersOnMap && layersOnMap.length && layersOnMap.find(l => l.id.includes('label') || l.id.includes('place') || l.id.includes('poi'));
+    const customLayerId = layersOnMap && layersOnMap.length && layersOnMap.find(l => l.id.includes('custom-layers') || l.id.includes('label') || l.id.includes('place') || l.id.includes('poi'));
 
-    const nextLayer = sortedLayers.find(l => l.zIndex > zIndex) || firstLabelLayer;
+    const nextLayer = sortedLayers.find(l => l.zIndex > zIndex) || customLayerId;
     const { decodeFunction, id } = nextLayer || {};
     const mapLayerIds = layersOnMapIds.filter(l => (
       l.includes(decodeFunction ? id : nextLayer && nextLayer.id)

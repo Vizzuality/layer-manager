@@ -28,10 +28,14 @@ function checkPluginProperties(plugin) {
 class LayerManager {
   constructor(map, Plugin) {
     this.map = map;
-    this.plugin = new Plugin(this.map);
-    checkPluginProperties(this.plugin);
     this.layers = [];
     this.promises = {};
+    this.options = {
+      getLayers: this.getLayers.bind(this)
+    };
+
+    this.plugin = new Plugin(this.map, this.options);
+    checkPluginProperties(this.plugin);
   }
 
   /**
@@ -178,6 +182,10 @@ class LayerManager {
     });
 
     this.layers = ids ? layers : [];
+  }
+
+  getLayers() {
+    return this.layers;
   }
 
   /**
