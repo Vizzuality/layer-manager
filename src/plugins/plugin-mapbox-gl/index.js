@@ -151,7 +151,7 @@ class PluginMapboxGL {
 
     const { layerConfig, mapLayer, decodeFunction } = layerModel;
     const { body } = layerConfig;
-    const { vectorLayers } = body;
+    const { vectorLayers = [] } = body;
 
     if (mapLayer.layers && !decodeFunction) {
       mapLayer.layers.forEach((l) => {
@@ -159,7 +159,7 @@ class PluginMapboxGL {
         const paintStyleNames = PAINT_STYLE_NAMES[l.type] || [l.type];
 
         // Select the paint property from the original layer
-        const { paint = {} } = vectorLayers.find(v => v.id === l.id);
+        const { paint = {} } = (vectorLayers.find(v => v.id === l.id) || {});
 
         // Loop each style name and check if there is an opacity in the original layer
         paintStyleNames.forEach((name) => {
