@@ -11,16 +11,23 @@ export const getVectorStyleLayers = (vectorLayers, layerModel) => {
   if (vectorLayers && vectorLayers.length) {
     const vectorLayersParsed = JSON.parse(replace(JSON.stringify(vectorLayers), params, sqlParams));
     return vectorLayersParsed && vectorLayersParsed.map((l, i) => {
-      let opacityPaintTypes = [l.type];
-      if (l.type === 'symbol') opacityPaintTypes = ['icon', 'text'];
-      if (l.type === 'circle') opacityPaintTypes = ['circle', 'circle-stroke'];
+      const PAINT_STYLE_NAMES = {
+        symbol: ['icon', 'text'],
+        circle: ['circle', 'circle-stroke']
+      };
 
-      const opacityPaintStyles = opacityPaintTypes.reduce((obj, type) => {
-        const paintOpacity = l.paint && l.paint[`${type}-opacity`];
+      // Select the paint property from the original layer
+      const { paint = {} } = l;
+
+      // Select the style to change depending on the type of layer
+      const opacityPaintNames = PAINT_STYLE_NAMES[l.type] || [l.type];
+
+      const opacityPaintStyles = opacityPaintNames.reduce((obj, name) => {
+        const paintOpacity = paint[`${name}-opacity`] || 1;
 
         return {
           ...obj,
-          [`${type}-opacity`]: paintOpacity ? layerModel.opacity * paintOpacity : layerModel.opacity
+          [`${name}-opacity`]: paintOpacity * layerModel.opacity
         };
       }, {});
 

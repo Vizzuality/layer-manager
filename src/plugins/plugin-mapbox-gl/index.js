@@ -51,7 +51,9 @@ class PluginMapboxGL {
         const next = (metadata.position === 'top') ? null : nextLayerId;
 
         this.map.addLayer(l, next);
-        layers.forEach(layer => this.setZIndex(layer, layer.zIndex, layers));
+        layers.forEach((layer) => {
+          this.setZIndex(layer, layer.zIndex, layers);
+        });
       });
     }
   }
@@ -142,21 +144,28 @@ class PluginMapboxGL {
    * @param {Number} opacity
    */
   setOpacity(layerModel, opacity) {
-    const { mapLayer, decodeFunction } = layerModel;
-    if (mapLayer.layer && !decodeFunction) {
-      this.map.setPaintProperty(mapLayer.id, `${mapLayer.layer.type}-opacity`, opacity);
-    }
+    const PAINT_STYLE_NAMES = {
+      symbol: ['icon', 'text'],
+      circle: ['circle', 'circle-stroke']
+    };
+
+    const { layerConfig, mapLayer, decodeFunction } = layerModel;
+    const { body } = layerConfig;
+    const { vectorLayers } = body;
+
     if (mapLayer.layers && !decodeFunction) {
       mapLayer.layers.forEach((l) => {
-        if (l.type === 'symbol') {
-          this.map.setPaintProperty(l.id, 'icon-opacity', opacity);
-          this.map.setPaintProperty(l.id, 'text-opacity', opacity);
-        } else if (l.type === 'circle') {
-          this.map.setPaintProperty(l.id, 'circle-opacity', opacity);
-          this.map.setPaintProperty(l.id, 'circle-stroke-opacity', opacity);
-        } else {
-          this.map.setPaintProperty(l.id, `${l.type}-opacity`, opacity);
-        }
+        // Select the style to change depending on the type of layer
+        const paintStyleNames = PAINT_STYLE_NAMES[l.type] || [l.type];
+
+        // Select the paint property from the original layer
+        const { paint = {} } = vectorLayers.find(v => v.id === l.id);
+
+        // Loop each style name and check if there is an opacity in the original layer
+        paintStyleNames.forEach((name) => {
+          const paintOpacity = paint[`${name}-opacity`] || 1;
+          this.map.setPaintProperty(l.id, `${name}-opacity`, paintOpacity * opacity);
+        });
       });
     }
     if (decodeFunction) {
