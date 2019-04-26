@@ -35,7 +35,7 @@ export const getVectorStyleLayers = (vectorLayers, layerModel) => {
 
       return {
         ...l,
-        id: `${id}-${l.type}-${i}`,
+        // id: `${id}-${l.type}-${i}`,
         source: id,
         ...l.paint && {
           paint: {

@@ -12,6 +12,7 @@ class PluginMapboxGL {
     this.map.on('style.load', () => {
       const { getLayers } = this.options;
       const layers = getLayers();
+
       layers.forEach(layer => this.add(layer, layers));
     });
   }
@@ -44,8 +45,12 @@ class PluginMapboxGL {
     // add layers
     if (mapLayer && mapLayer.layers) {
       const nextLayerId = this.getNextLayerId(layers, layerModel.zIndex);
+
       mapLayer.layers.forEach((l) => {
-        this.map.addLayer(l, nextLayerId);
+        const { metadata = {} } = l;
+        const next = (metadata.position === 'top') ? null : nextLayerId;
+
+        this.map.addLayer(l, next);
         layers.forEach(layer => this.setZIndex(layer, layer.zIndex, layers));
       });
     }
@@ -92,9 +97,12 @@ class PluginMapboxGL {
     const layersOnMap = this.getLayersOnMap();
     const layersOnMapIds = layersOnMap.map(l => l.id);
     const sortedLayers = [...layers].sort((a, b) => a.zIndex - b.zIndex);
+
     const customLayerId = layersOnMap && layersOnMap.length && layersOnMap.find(l => l.id.includes('custom-layers') || l.id.includes('label') || l.id.includes('place') || l.id.includes('poi'));
 
     const nextLayer = sortedLayers.find(l => l.zIndex > zIndex) || customLayerId;
+
+    // TODO: ED BRETT should explain what is is this
     const { decodeFunction, id } = nextLayer || {};
     const mapLayerIds = layersOnMapIds.filter(l => (
       l.includes(decodeFunction ? id : nextLayer && nextLayer.id)
@@ -119,7 +127,12 @@ class PluginMapboxGL {
     }
 
     if (nextLayerId && layersToSetIndex && layersToSetIndex.length) {
-      layersToSetIndex.forEach(l => this.map.moveLayer(l.id, nextLayerId));
+      layersToSetIndex.forEach((l) => {
+        const { id, metadata = {} } = l;
+        const next = (metadata.position === 'top') ? null : nextLayerId;
+
+        this.map.moveLayer(id, next);
+      });
     }
   }
 

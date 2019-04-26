@@ -13,15 +13,12 @@ const GeoJsonLayer = (layerModel) => {
   let layer = {};
 
   switch (layerConfig.type) {
-    case 'cluster':
+    case 'markers':
       layer = {
         id,
         source: {
           type: 'geojson',
           data: url || data,
-          cluster: true,
-          clusterMaxZoom: 14,
-          clusterRadius: 20,
           ...clusterConfig
         },
         layers: vectorLayers ? getVectorStyleLayers(vectorLayers, layerModel) : [
