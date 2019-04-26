@@ -1,6 +1,6 @@
 {
   "name": "layer-manager",
-  "version": "1.16.0-mapbox",
+  "version": "1.16.1-mapbox",
   "description": "A library to get a layer depending on provider and layer spec",
   "repository": {
     "type": "git",
