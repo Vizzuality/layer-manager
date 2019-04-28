@@ -1,4 +1,6 @@
 
+import flatten from 'lodash/flatten';
+
 import rasterLayer from './raster-layer-mapbox-gl';
 import vectorLayer from './vector-layer-mapbox-gl';
 import geoJsonLayer from './geojson-layer-mapbox-gl';
@@ -122,7 +124,15 @@ class PluginMapboxGL {
   setZIndex(layerModel, zIndex, layers) {
     const layersOnMap = this.getLayersOnMap();
     const nextLayerId = this.getNextLayerId(layers, zIndex);
-    const layersToSetIndex = layersOnMap.filter(l => l.id.includes(layerModel.id));
+    const layersToSetIndex = layersOnMap.filter((l) => {
+      const { id } = l;
+      const ids = flatten(layers.map(({ mapLayer }) => {
+        const { layers: lys } = mapLayer;
+        return lys.map(ly => ly.id);
+      }));
+
+      return ids.includes(id);
+    });
 
     if (layerModel.decodeFunction) {
       layersToSetIndex.push({ id: `${layerModel.id}-raster-decode` });
