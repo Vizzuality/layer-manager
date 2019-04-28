@@ -121,7 +121,9 @@ class PluginMapboxGL {
    * @param {Number} zIndex
    * @param {Array} layers
    */
-  setZIndex(layerModel, zIndex, layers) {
+  setZIndex(layerModel, zIndex) {
+    const { getLayers } = this.options;
+    const layers = getLayers();
     const layersOnMap = this.getLayersOnMap();
     const nextLayerId = this.getNextLayerId(layers, zIndex);
     const layersToSetIndex = layersOnMap.filter((l) => {
