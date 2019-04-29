@@ -109,7 +109,7 @@ class PluginMapboxGL {
 
     const nextLayer = sortedLayers.find(l => l.zIndex > zIndex);
 
-    if (!nextLayer) {
+    if (!nextLayer || (!!nextLayer && !nextLayer.mapLayer)) {
       return customLayer.id;
     }
 
@@ -131,6 +131,11 @@ class PluginMapboxGL {
    */
   setZIndex(layerModel, zIndex) {
     const { mapLayer } = layerModel;
+
+    if (!mapLayer) {
+      return false;
+    }
+
     const { layers } = mapLayer;
     const layersOnMap = this.getLayersOnMap();
     const layersToSetIndex = layersOnMap.filter((l) => {
@@ -154,6 +159,8 @@ class PluginMapboxGL {
         this.map.moveLayer(id, next);
       });
     }
+
+    return true;
   }
 
   /**
