@@ -1,5 +1,5 @@
 
-import flatten from 'lodash/flatten';
+import sortBy from 'lodash/sortBy';
 
 import rasterLayer from './raster-layer-mapbox-gl';
 import vectorLayer from './vector-layer-mapbox-gl';
@@ -103,7 +103,7 @@ class PluginMapboxGL {
     }
 
     const layersOnMap = this.getLayersOnMap();
-    const sortedLayers = [...layers].sort((a, b) => a.zIndex - b.zIndex);
+    const sortedLayers = sortBy(layers, 'zIndex');
 
     const customLayer = layersOnMap && layersOnMap.length && layersOnMap.find(l => l.id.includes('custom-layers') || l.id.includes('label') || l.id.includes('place') || l.id.includes('poi'));
 
@@ -120,7 +120,9 @@ class PluginMapboxGL {
     // ));
 
     const nextLayerMapLayers = nextLayer.mapLayer.layers;
-    return nextLayerMapLayers[nextLayerMapLayers.length - 1].id;
+    const nextLayerId = nextLayerMapLayers[0].id;
+
+    return layersOnMap.find(l => nextLayerId === l.id) ? nextLayerId : customLayer.id;
   }
 
   /**
@@ -129,18 +131,18 @@ class PluginMapboxGL {
    * @param {Number} zIndex
    * @param {Array} layers
    */
-  setZIndex(layerModel, zIndex) {
+  setZIndex(layerModel, zIndex, layers) {
     const { mapLayer } = layerModel;
 
     if (!mapLayer) {
       return false;
     }
 
-    const { layers } = mapLayer;
+    const { layers: mapLayers } = mapLayer;
     const layersOnMap = this.getLayersOnMap();
     const layersToSetIndex = layersOnMap.filter((l) => {
       const { id = {} } = l;
-      const ids = layers.map(ly => ly.id);
+      const ids = mapLayers.map(ly => ly.id);
 
       return ids.includes(id);
     });

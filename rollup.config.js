@@ -14,7 +14,7 @@ const globals = {
   'lodash/debounce': 'debounce',
   'lodash/isEmpty': 'isEmpty',
   'lodash/isEqual': 'isEqual',
-  'lodash/flatten': 'flatten',
+  'lodash/sortBy': 'sortBy',
   'prop-types': 'PropTypes',
   'react-dom': 'ReactDOM',
   react: 'React',
