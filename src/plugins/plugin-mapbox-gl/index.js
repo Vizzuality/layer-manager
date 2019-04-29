@@ -46,10 +46,10 @@ class PluginMapboxGL {
 
     // add layers
     if (mapLayer && mapLayer.layers) {
-      const nextLayerId = this.getNextLayerId(layers, layerModel.zIndex);
-
       mapLayer.layers.forEach((l) => {
         const { metadata = {} } = l;
+        const { position } = metadata;
+        const nextLayerId = this.getNextLayerId(layers, layerModel.zIndex, position);
         const next = (metadata.position === 'top') ? null : nextLayerId;
 
         this.map.addLayer(l, next);
@@ -97,22 +97,30 @@ class PluginMapboxGL {
    * @param {Array} layers
    * @param {Object} layerModel
    */
-  getNextLayerId(layers, zIndex) {
+  getNextLayerId(layers, zIndex, position) {
+    if (position === 'top') {
+      return null;
+    }
+
     const layersOnMap = this.getLayersOnMap();
-    const layersOnMapIds = layersOnMap.map(l => l.id);
     const sortedLayers = [...layers].sort((a, b) => a.zIndex - b.zIndex);
 
-    const customLayerId = layersOnMap && layersOnMap.length && layersOnMap.find(l => l.id.includes('custom-layers') || l.id.includes('label') || l.id.includes('place') || l.id.includes('poi'));
+    const customLayer = layersOnMap && layersOnMap.length && layersOnMap.find(l => l.id.includes('custom-layers') || l.id.includes('label') || l.id.includes('place') || l.id.includes('poi'));
 
-    const nextLayer = sortedLayers.find(l => l.zIndex > zIndex) || customLayerId;
+    const nextLayer = sortedLayers.find(l => l.zIndex > zIndex);
+
+    if (!nextLayer) {
+      return customLayer.id;
+    }
 
     // TODO: ED BRETT should explain what is is this
-    const { decodeFunction, id } = nextLayer || {};
-    const mapLayerIds = layersOnMapIds.filter(l => (
-      l.includes(decodeFunction ? id : nextLayer && nextLayer.id)
-    ));
+    // const { decodeFunction, id } = nextLayer || {};
+    // const mapLayerIds = layersOnMapIds.filter(l => (
+    //   l.includes(decodeFunction ? id : nextLayer && nextLayer.id)
+    // ));
 
-    return (mapLayerIds && mapLayerIds[0]);
+    const nextLayerMapLayers = nextLayer.mapLayer.layers;
+    return nextLayerMapLayers[nextLayerMapLayers.length - 1].id;
   }
 
   /**
@@ -122,16 +130,12 @@ class PluginMapboxGL {
    * @param {Array} layers
    */
   setZIndex(layerModel, zIndex) {
-    const { getLayers } = this.options;
-    const layers = getLayers();
+    const { mapLayer } = layerModel;
+    const { layers } = mapLayer;
     const layersOnMap = this.getLayersOnMap();
-    const nextLayerId = this.getNextLayerId(layers, zIndex);
     const layersToSetIndex = layersOnMap.filter((l) => {
-      const { id } = l;
-      const ids = flatten(layers.map(({ mapLayer }) => {
-        const { layers: lys } = mapLayer;
-        return lys.map(ly => ly.id);
-      }));
+      const { id = {} } = l;
+      const ids = layers.map(ly => ly.id);
 
       return ids.includes(id);
     });
@@ -140,9 +144,11 @@ class PluginMapboxGL {
       layersToSetIndex.push({ id: `${layerModel.id}-raster-decode` });
     }
 
-    if (nextLayerId && layersToSetIndex && layersToSetIndex.length) {
+    if (layersToSetIndex && layersToSetIndex.length) {
       layersToSetIndex.forEach((l) => {
         const { id, metadata = {} } = l;
+        const { position } = metadata;
+        const nextLayerId = this.getNextLayerId(layers, zIndex, position);
         const next = (metadata.position === 'top') ? null : nextLayerId;
 
         this.map.moveLayer(id, next);
