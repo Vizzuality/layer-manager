@@ -4,7 +4,10 @@ import Manager from '../layer-manager';
 
 class Layer extends PureComponent {
   static propTypes = {
-    id: PropTypes.string.isRequired,
+    id: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]).isRequired,
     layerManager: PropTypes.instanceOf(Manager)
   };
 

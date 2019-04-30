@@ -16,6 +16,7 @@ class PluginLeaflet {
     // CARTO
     cartodb: cartoLayer,
     carto: cartoLayer,
+    raster: cartoLayer,
     // ESRI
     arcgis: esriLayer,
     featureservice: esriLayer,

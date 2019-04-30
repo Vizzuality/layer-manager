@@ -11,7 +11,3 @@
 
 # Logs
 *.log*
-
-# Compiled assets
-/dist
-/lib

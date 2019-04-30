@@ -165,12 +165,14 @@ const CanvasLayer = L && L.GridLayer.extend({
 
     const { params, sqlParams } = options;
 
-    Object.keys(this.tiles).map((k) => {
-      const { x, y, z } = this.tiles[k];
-      const id = replace(params.url, { x, y, z, ...params, sqlParams });
+    if (params && params.url) {
+      Object.keys(this.tiles).map((k) => {
+        const { x, y, z } = this.tiles[k];
+        const id = replace(params.url, { x, y, z, ...params, sqlParams });
 
-      return this.drawCanvas(id);
-    });
+        return this.drawCanvas(id);
+      });
+    }
   },
 });
 
