@@ -41,8 +41,10 @@ export const getVectorStyleLayers = (vectorLayers, layerModel) => {
       }), {});
 
       return {
+        // id: This will avoid having issues with any layer, but you should specify an id when you create it.
+        // If you don't set an id in the definition, and you set a fill-opacity, it won't work
+        id: `${id}-${l.type}-${i}`,
         ...l,
-        // id: `${id}-${l.type}-${i}`,
         source: id,
         ...l.paint && {
           paint: {
