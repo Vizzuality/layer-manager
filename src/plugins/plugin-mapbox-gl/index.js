@@ -53,6 +53,7 @@ class PluginMapboxGL {
         const next = (metadata.position === 'top') ? null : nextLayerId;
 
         this.map.addLayer(l, next);
+
         layers.forEach((layer) => {
           this.setZIndex(layer, layer.zIndex, layers);
         });
@@ -103,10 +104,10 @@ class PluginMapboxGL {
     }
 
     const layersOnMap = this.getLayersOnMap();
-    const sortedLayers = sortBy(layers, 'zIndex');
 
     const customLayer = layersOnMap && layersOnMap.length && layersOnMap.find(l => l.id.includes('custom-layers') || l.id.includes('label') || l.id.includes('place') || l.id.includes('poi'));
 
+    const sortedLayers = sortBy(layers, l => l.zIndex);
     const nextLayer = sortedLayers.find(l => l.zIndex > zIndex);
 
     if (!nextLayer || (!!nextLayer && !nextLayer.mapLayer)) {
@@ -120,7 +121,7 @@ class PluginMapboxGL {
     // ));
 
     const nextLayerMapLayers = nextLayer.mapLayer.layers;
-    const nextLayerId = nextLayerMapLayers[0].id;
+    const nextLayerId = nextLayerMapLayers[nextLayerMapLayers.length - 1].id;
 
     return layersOnMap.find(l => nextLayerId === l.id) ? nextLayerId : customLayer.id;
   }
