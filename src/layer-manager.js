@@ -62,7 +62,6 @@ class LayerManager {
           this.updateLayer(layerModel);
         }
 
-
         // adds a new promise to `this.promises` every time it gets called
         this.requestLayer(layerModel);
 

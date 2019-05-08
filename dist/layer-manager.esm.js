@@ -1598,7 +1598,7 @@ var LeafletLayer = function LeafletLayer(layerModel) {
       if (JSON.stringify(layerConfigParsed.body).indexOf('style: "function') >= 0) {
         layerConfigParsed.body.style = eval2('(' + layerConfigParsed.body.style + ')');
       }
-      if (decodeParams) {
+      if (decodeParams && layerConfigParsed.canvas) {
         layer = new CanvasLayer(_extends({}, layerModel));
       } else {
         layer = L$4.tileLayer(layerConfigParsed.url || layerConfigParsed.body.url, layerConfigParsed.body);

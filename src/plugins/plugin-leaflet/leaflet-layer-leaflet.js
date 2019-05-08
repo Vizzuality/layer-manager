@@ -47,7 +47,7 @@ const LeafletLayer = (layerModel) => {
           `(${layerConfigParsed.body.style})`
         );
       }
-      if (decodeParams) {
+      if (decodeParams && layerConfigParsed.canvas) {
         layer = new CanvasLayer({ ...layerModel });
       } else {
         layer = L.tileLayer(
