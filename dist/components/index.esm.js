@@ -192,7 +192,7 @@ var LayerManager = function () {
 
         return Promise.all(Object.values(this.promises)).then(function () {
           return _this.layers;
-        }).finally(function () {
+        }).then(function () {
           _this.promises = {};
         });
       }

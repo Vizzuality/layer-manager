@@ -78,7 +78,7 @@ class LayerManager {
       return Promise
         .all(Object.values(this.promises))
         .then(() => this.layers)
-        .finally(() => { this.promises = {}; });
+        .then(() => { this.promises = {}; });
     }
 
     // By default it will return a empty layers
