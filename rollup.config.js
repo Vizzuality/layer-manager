@@ -29,10 +29,10 @@ const babelOptions = () => ({
     [
       'module-resolver',
       {
-        'root': [
+        root: [
           './src/**'
         ],
-        'extensions': ['.js', '.jsx']
+        extensions: ['.js', '.jsx']
       }
     ]
   ],
