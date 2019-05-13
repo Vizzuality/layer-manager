@@ -141,6 +141,7 @@ class PluginMapboxGL {
 
     const { layers: mapLayers } = mapLayer;
     const layersOnMap = this.getLayersOnMap();
+    const layersOnMapIds = layersOnMap.map(l => l.id);
     const layersToSetIndex = layersOnMap.filter((l) => {
       const { id = {} } = l;
       const ids = mapLayers.map(ly => ly.id);
@@ -148,7 +149,7 @@ class PluginMapboxGL {
       return ids.includes(id);
     });
 
-    if (layerModel.decodeFunction) {
+    if (layerModel.decodeFunction && layersOnMapIds.includes(`${layerModel.id}-raster-decode`)) {
       layersToSetIndex.push({ id: `${layerModel.id}-raster-decode` });
     }
 
