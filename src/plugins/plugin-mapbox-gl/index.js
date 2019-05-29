@@ -143,9 +143,9 @@ class PluginMapboxGL {
       return ids.includes(id);
     });
 
-    const rasterDecodeId = `${layerModel.id}-raster-decode`;
+    const rasterDecodeId = `${layerModel.id}-raster`;
     if (layerModel.decodeFunction && layersOnMapIds.includes(rasterDecodeId)) {
-      layersToSetIndex.push({ id: rasterDecodeId });
+      layersToSetIndex.push({ id: `${rasterDecodeId}-decode` });
     }
 
     if (layersToSetIndex && layersToSetIndex.length) {
