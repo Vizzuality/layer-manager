@@ -114,12 +114,6 @@ class PluginMapboxGL {
       return customLayer.id;
     }
 
-    // TODO: ED BRETT should explain what is is this
-    // const { decodeFunction, id } = nextLayer || {};
-    // const mapLayerIds = layersOnMapIds.filter(l => (
-    //   l.includes(decodeFunction ? id : nextLayer && nextLayer.id)
-    // ));
-
     const nextLayerMapLayers = nextLayer.mapLayer.layers;
     const nextLayerId = nextLayerMapLayers[nextLayerMapLayers.length - 1].id;
 
@@ -149,8 +143,9 @@ class PluginMapboxGL {
       return ids.includes(id);
     });
 
-    if (layerModel.decodeFunction && layersOnMapIds.includes(`${layerModel.id}-raster-decode`)) {
-      layersToSetIndex.push({ id: `${layerModel.id}-raster-decode` });
+    const rasterDecodeId = `${layerModel.id}-raster`;
+    if (layerModel.decodeFunction && layersOnMapIds.includes(rasterDecodeId)) {
+      layersToSetIndex.push({ id: `${rasterDecodeId}-decode` });
     }
 
     if (layersToSetIndex && layersToSetIndex.length) {
