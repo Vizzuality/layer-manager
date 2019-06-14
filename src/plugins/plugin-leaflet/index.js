@@ -77,6 +77,13 @@ class PluginLeaflet {
   }
 
   /**
+   * A request to layer bounds
+   */
+  getLayerBoundsByProvider(provider) {
+    return this.method[provider].getBounds;
+  }
+
+  /**
    * A namespace to set z-index
    * @param {Object} layerModel
    * @param {Number} zIndex
@@ -176,6 +183,14 @@ class PluginLeaflet {
     mapLayer.reDraw({ decodeParams, decodeFunction, params, sqlParams });
 
     return this;
+  }
+
+  fitMapToLayer = (layerModel) => {
+    const bounds = layerModel.get('mapLayerBounds');
+
+    if (bounds) {
+      this.map.fitBounds(bounds);
+    }
   }
 }
 

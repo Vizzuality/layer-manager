@@ -1,4 +1,4 @@
-import { fetchTile } from 'services/carto-service';
+import { fetchTile, fetchBounds } from 'services/carto-service';
 import { replace } from 'utils/query';
 
 const { L } = typeof window !== 'undefined' ? window : {};
@@ -37,6 +37,20 @@ const CartoLayer = (layerModel) => {
         return resolve(layer);
       })
       .catch(err => reject(err));
+  });
+};
+
+CartoLayer.getBounds = (layerModel) => {
+  if (!L) throw new Error('Leaflet must be defined.');
+
+  return fetchBounds(layerModel).then((response) => {
+    const { maxy, maxx, miny, minx } = response.rows[0];
+    const bounds = [
+      [maxy, maxx],
+      [miny, minx]
+    ];
+
+    return bounds;
   });
 };
 

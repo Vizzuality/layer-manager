@@ -8,10 +8,7 @@ class LayerManager extends PureComponent {
     map: PropTypes.object.isRequired,
     plugin: PropTypes.func.isRequired,
     layersSpec: PropTypes.arrayOf(PropTypes.object),
-    children: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.node),
-      PropTypes.node
-    ]),
+    children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
     onLayerLoading: PropTypes.func,
     onReady: PropTypes.func
   };
@@ -46,7 +43,9 @@ class LayerManager extends PureComponent {
         if (onLayerLoading) onLayerLoading(false);
       });
     }
-  }
+  };
+
+  fitMapToLayer = layerId => this.layerManager.fitMapToLayer(layerId);
 
   render() {
     const { children, layersSpec } = this.props;
@@ -55,10 +54,10 @@ class LayerManager extends PureComponent {
       return Children.map(
         children,
         (child, i) => child
-            && cloneElement(child, {
-              layerManager: this.layerManager,
-              zIndex: child.props.zIndex || 1000 - i
-            })
+          && cloneElement(child, {
+            layerManager: this.layerManager,
+            zIndex: child.props.zIndex || 1000 - i
+          })
       );
     }
 

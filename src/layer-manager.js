@@ -64,6 +64,7 @@ class LayerManager {
 
         // adds a new promise to `this.promises` every time it gets called
         this.requestLayer(layerModel);
+        this.requestLayerBounds(layerModel);
 
         // reset changedAttributes
         return layerModel.set('changedAttributes', {});
@@ -244,6 +245,17 @@ class LayerManager {
     }
   }
 
+  fitMapToLayer = (layerId) => {
+    if (typeof this.plugin.fitMapToLayer !== 'function') {
+      console.error('This plugin does not support fitting map bounds to layer yet.');
+      return;
+    }
+
+    const layerModel = this.layers.find(l => l.id === layerId);
+
+    if (layerModel) this.plugin.fitMapToLayer(layerModel);
+  }
+
   requestLayer(layerModel) {
     const { provider } = layerModel;
     const method = this.plugin.getLayerByProvider(provider);
@@ -273,6 +285,33 @@ class LayerManager {
       this.plugin.setVisibility(layerModel, layerModel.visibility);
 
       this.setEvents(layerModel);
+    });
+
+    return this;
+  }
+
+  requestLayerBounds(layerModel) {
+    const { provider } = layerModel;
+    const method = this.plugin.getLayerBoundsByProvider(provider);
+
+    if (!method) {
+      return false;
+    }
+
+    const promiseHash = `${layerModel.id}_bounds`;
+    // Cancel previous/existing request
+    if (
+      this.promises[promiseHash]
+        && this.promises[promiseHash].isPending
+        && this.promises[promiseHash].isPending()
+    ) {
+      this.promises[promiseHash].cancel();
+    }
+
+    // every render method returns a promise that we store in the array
+    // to control when all layers are fetched.
+    this.promises[promiseHash] = method.call(this, layerModel).then((bounds) => {
+      layerModel.set('mapLayerBounds', bounds);
     });
 
     return this;
