@@ -100,4 +100,33 @@ const LeafletLayer = (layerModel) => {
   });
 };
 
+LeafletLayer.getBounds = (layerModel) => {
+  if (!L) throw new Error('Leaflet must be defined.');
+
+  const {
+    layerConfig,
+    params,
+    sqlParams,
+  } = layerModel;
+
+  const layerConfigParsed = layerConfig.parse === false
+    ? layerConfig
+    : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
+
+  const { bbox } = layerConfigParsed;
+
+  return new Promise((resolve) => {
+    if (bbox) {
+      const bounds = [
+        [bbox[1], bbox[0]],
+        [bbox[3], bbox[2]]
+      ];
+
+      resolve(bounds);
+    } else {
+      resolve(null);
+    }
+  });
+};
+
 export default LeafletLayer;

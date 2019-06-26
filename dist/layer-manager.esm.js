@@ -433,12 +433,12 @@ var LayerManager = function () {
       var provider = layerModel.provider;
 
       var method = this.plugin.getLayerBoundsByProvider(provider);
-      var promiseHash = layerModel.id + '_bounds';
 
       if (!method) {
         return false;
       }
 
+      var promiseHash = layerModel.id + '_bounds';
       // Cancel previous/existing request
       if (this.promises[promiseHash] && this.promises[promiseHash].isPending && this.promises[promiseHash].isPending()) {
         this.promises[promiseHash].cancel();
@@ -670,16 +670,18 @@ var CartoLayer = function CartoLayer(layerModel) {
 CartoLayer.getBounds = function (layerModel) {
   if (!L) throw new Error('Leaflet must be defined.');
 
-  return fetchBounds(layerModel).then(function (response) {
-    var _response$rows$ = response.rows[0],
-        maxy = _response$rows$.maxy,
-        maxx = _response$rows$.maxx,
-        miny = _response$rows$.miny,
-        minx = _response$rows$.minx;
+  return new Promise(function (resolve, reject) {
+    fetchBounds(layerModel).then(function (response) {
+      var _response$rows$ = response.rows[0],
+          maxy = _response$rows$.maxy,
+          maxx = _response$rows$.maxx,
+          miny = _response$rows$.miny,
+          minx = _response$rows$.minx;
 
-    var bounds = [[maxy, maxx], [miny, minx]];
+      var bounds = [[maxy, maxx], [miny, minx]];
 
-    return bounds;
+      return resolve(bounds);
+    }).catch(reject);
   });
 };
 
@@ -1735,6 +1737,30 @@ var LeafletLayer = function LeafletLayer(layerModel) {
       resolve(layer);
     } else {
       reject(new Error('"type" specified in layer spec doesn`t exist'));
+    }
+  });
+};
+
+LeafletLayer.getBounds = function (layerModel) {
+  if (!L$4) throw new Error('Leaflet must be defined.');
+
+  var layerConfig = layerModel.layerConfig,
+      params = layerModel.params,
+      sqlParams = layerModel.sqlParams;
+
+
+  var layerConfigParsed = layerConfig.parse === false ? layerConfig : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
+
+  var bbox = layerConfigParsed.bbox;
+
+
+  return new Promise(function (resolve) {
+    if (bbox) {
+      var bounds = [[bbox[1], bbox[0]], [bbox[3], bbox[2]]];
+
+      resolve(bounds);
+    } else {
+      resolve(null);
     }
   });
 };

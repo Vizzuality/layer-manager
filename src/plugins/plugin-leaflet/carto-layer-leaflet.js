@@ -43,14 +43,18 @@ const CartoLayer = (layerModel) => {
 CartoLayer.getBounds = (layerModel) => {
   if (!L) throw new Error('Leaflet must be defined.');
 
-  return fetchBounds(layerModel).then((response) => {
-    const { maxy, maxx, miny, minx } = response.rows[0];
-    const bounds = [
-      [maxy, maxx],
-      [miny, minx]
-    ];
+  return new Promise((resolve, reject) => {
+    fetchBounds(layerModel)
+      .then((response) => {
+        const { maxy, maxx, miny, minx } = response.rows[0];
+        const bounds = [
+          [maxy, maxx],
+          [miny, minx]
+        ];
 
-    return bounds;
+        return resolve(bounds);
+      })
+      .catch(reject);
   });
 };
 

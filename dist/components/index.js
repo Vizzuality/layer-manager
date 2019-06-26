@@ -460,12 +460,12 @@
         var provider = layerModel.provider;
 
         var method = this.plugin.getLayerBoundsByProvider(provider);
-        var promiseHash = layerModel.id + '_bounds';
 
         if (!method) {
           return false;
         }
 
+        var promiseHash = layerModel.id + '_bounds';
         // Cancel previous/existing request
         if (this.promises[promiseHash] && this.promises[promiseHash].isPending && this.promises[promiseHash].isPending()) {
           this.promises[promiseHash].cancel();
