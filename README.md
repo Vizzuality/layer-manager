@@ -12,6 +12,9 @@ or using git:
 
 `npm install vizzuality/layer-manager`
 
+## ❗ Requirements
+`layer-manager` requires `react@16.3.2` or higher to work.
+
 ## How to use
 
 ```js
@@ -128,3 +131,4 @@ this.map = L.map('c-map', mapOptions);
 	))}
 </LayerManager>;
 ```
+
