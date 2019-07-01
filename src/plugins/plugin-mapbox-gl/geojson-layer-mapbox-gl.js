@@ -1,18 +1,26 @@
+import { replace } from 'utils/query';
 import { fetchData } from 'services/cluster-service';
 import { getVectorStyleLayers } from 'utils/vector-style-layers';
 
 const GeoJsonLayer = (layerModel) => {
   const {
     layerConfig,
+    params,
+    sqlParams,
     id,
-    decodeGeoJson,
+    decodeGeoJson
   } = layerModel;
-  const { data, body } = layerConfig || {};
+
+  const layerConfigParsed = layerConfig.parse === false
+    ? layerConfig
+    : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
+
+  const { data, body, type } = layerConfigParsed || {};
   const { url, vectorLayers, clusterConfig } = body || {};
 
   let layer = {};
 
-  if (['markers', 'cluster'].includes(layerConfig.type)) {
+  if (['markers', 'cluster'].includes(type)) {
     layer = {
       id,
       source: {
