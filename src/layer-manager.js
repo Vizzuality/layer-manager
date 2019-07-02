@@ -84,6 +84,9 @@ class LayerManager {
         .then(() => {
           this.promises = {};
           return this.layers;
+        })
+        .catch(() => {
+          this.promises = {};
         });
     }
 
