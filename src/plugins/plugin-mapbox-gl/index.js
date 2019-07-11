@@ -192,8 +192,13 @@ class PluginMapboxGL {
         });
       });
     }
+
     if (decodeFunction) {
-      mapLayer.layers[0].setProps({ opacity });
+      const layer = mapLayer.layers[0];
+
+      if (layer && typeof layer.setProps === 'function') {
+        layer.setProps({ opacity });
+      }
     }
   }
 
@@ -226,7 +231,13 @@ class PluginMapboxGL {
       decodeParams
     } = layerModel;
 
-    mapLayer.layers[0].setProps({ decodeParams });
+    const layer = mapLayer.layers[0];
+
+    if (layer && typeof layer.setProps === 'function') {
+      layer.setProps({ decodeParams });
+    } else {
+      console.error('Layer is not present. You defined decodeParams but maybe you didn\'t define a decodeFunction');
+    }
 
     return this;
   }
