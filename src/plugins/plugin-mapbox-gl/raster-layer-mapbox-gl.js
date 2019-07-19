@@ -56,18 +56,8 @@ const RasterLayer = (layerModel) => {
       id,
       type: 'custom',
       layers: [
-        new MapboxLayer({
-          id: `${id}-raster-decode`,
-          type: TileLayer,
-          minZoom: minzoom,
-          maxZoom: maxzoom,
-          getTileData: e => getTileData(e, url || body.url),
-          opacity: layerModel.opacity,
-          decodeParams,
-          decodeFunction
-        }),
         {
-          id: `${id}-raster`,
+          id: `${id}-raster-decode-bg`,
           type: 'background',
           paint: {
             'background-color': 'transparent'
@@ -78,7 +68,17 @@ const RasterLayer = (layerModel) => {
           ...minzoom && {
             minzoom
           }
-        }
+        },
+        new MapboxLayer({
+          id: `${id}-raster-decode`,
+          type: TileLayer,
+          minZoom: minzoom,
+          maxZoom: maxzoom,
+          getTileData: e => getTileData(e, url || body.url),
+          opacity: layerModel.opacity,
+          decodeParams,
+          decodeFunction
+        })
       ]
     };
   } else {
