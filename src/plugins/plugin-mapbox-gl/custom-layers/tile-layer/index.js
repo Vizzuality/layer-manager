@@ -117,12 +117,8 @@ export default class TileLayer extends CompositeLayer {
         return new BitmapLayer({
           id: `${this.id}-${x}-${y}-${z}`,
           image: _data.src,
-          bitmapBounds: bounds,
-          desaturate: 0,
-          transparentColor: [0, 0, 0, 0],
+          bounds,
           visible: z === zoomLevel,
-          tintColor: [255, 255, 255],
-          fp64: true,
           zoom: zoomLevel,
           decodeParams,
           decodeFunction,
