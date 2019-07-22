@@ -32,6 +32,7 @@ class PluginMapboxGL {
    */
   add(layerModel) {
     const { mapLayer } = layerModel;
+    const allLayers = this.getLayers();
 
     // remove old source
     if (this.map && mapLayer && mapLayer.id && this.map.getSource(mapLayer.id)) {
@@ -49,11 +50,12 @@ class PluginMapboxGL {
         const { metadata = {} } = l;
         const nextLayerId = (metadata.position === 'top') ? null : this.getNextLayerId(layerModel);
         this.map.addLayer(l, nextLayerId);
+
+        allLayers.forEach(() => {
+          this.setZIndex();
+        });
       });
     }
-
-    // incase some layers weren't added in time, lets set zIndexs again
-    this.setZIndex();
   }
 
   /**
