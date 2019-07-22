@@ -32,7 +32,6 @@ class PluginMapboxGL {
    */
   add(layerModel) {
     const { mapLayer } = layerModel;
-    const layers = this.getLayers();
 
     // remove old source
     if (this.map && mapLayer && mapLayer.id && this.map.getSource(mapLayer.id)) {
@@ -50,13 +49,11 @@ class PluginMapboxGL {
         const { metadata = {} } = l;
         const nextLayerId = (metadata.position === 'top') ? null : this.getNextLayerId(layerModel);
         this.map.addLayer(l, nextLayerId);
-
-        // if we don't find the next layer id, we should also set all layers zIndex again
-        layers.forEach((layer) => {
-          this.setZIndex(layer);
-        });
       });
     }
+
+    // incase some layers weren't added in time, lets set zIndexs again
+    this.setZIndex();
   }
 
   /**
@@ -116,7 +113,6 @@ class PluginMapboxGL {
     const sortedLayers = sortBy(allLayers, l => l.zIndex);
 
     // get the layer with zIndex greater than current layer from all layers
-    // if next layer is a decode layer we cannot add the layer below it, so need need to add it below the layer ahove that.
     const nextLayer = sortedLayers.find(l => l.zIndex > zIndex);
 
     // if no layer above it then use the custom layer
@@ -140,29 +136,10 @@ class PluginMapboxGL {
    * @param {Object} layerModel
    */
   setZIndex() {
-    // const { mapLayer, zIndex } = layerModel;
-    // if (!mapLayer) {
-    //   return false;
-    // }
-
     const allLayers = this.getLayers();
     const layersOnMap = this.getLayersOnMap();
-    // const { layers } = mapLayer;
 
-    // // const layersOnMapIds = layersOnMap.map(l => l.id);
-    // const layersToSetIndex = layersOnMap.filter((l) => {
-    //   const { id = {} } = l;
-    //   const ids = mapLayers.map(ly => ly.id);
-
-    //   return ids.includes(id);
-    // });
-
-    // const rasterDecodeId = `${layerModel.id}-raster-decode`;
-    // if (layerModel.decodeFunction) {
-    //   layersToSetIndex.push({ id: rasterDecodeId });
-    // }
-
-    // if (layersToSetIndex && layersToSetIndex.length) {
+    // set zIndex for all layers currently on map
     layersOnMap.forEach((l) => {
       const { id, metadata = {} } = l;
       const layerModel = allLayers.find(ly => id.includes(ly.id));
@@ -172,15 +149,14 @@ class PluginMapboxGL {
       }
     });
 
+    // set for all decode layers that don't exist inside mapStyle()
     const decodeLayers = allLayers.filter(l => !!l.decodeFunction);
 
     if (decodeLayers) {
       decodeLayers.forEach((l) => {
-        const isDecodeLayerAdded = layersOnMap.find(ly => ly.id === `${l.id}-raster-decode-bg`);
-        console.log(isDecodeLayerAdded);
-        if (isDecodeLayerAdded) {
-          const nextLayerId = this.getNextLayerId(l);
-          this.map.moveLayer(`${l.id}-raster-decode`, nextLayerId);
+        const deocodeParentLayer = layersOnMap.find(ly => ly.id === `${l.id}-raster-decode-bg`);
+        if (deocodeParentLayer) {
+          this.map.moveLayer(`${l.id}-raster-decode`, deocodeParentLayer.id);
         }
       });
     }
