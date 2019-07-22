@@ -153,10 +153,16 @@ class PluginMapboxGL {
     const decodeLayers = allLayers.filter(l => !!l.decodeFunction);
 
     if (decodeLayers) {
-      decodeLayers.forEach((l) => {
-        const deocodeParentLayer = layersOnMap.find(ly => ly.id === `${l.id}-raster-decode-bg`);
-        if (deocodeParentLayer) {
-          this.map.moveLayer(`${l.id}-raster-decode`, deocodeParentLayer.id);
+      decodeLayers.forEach((layerModel) => {
+        const { mapLayer } = layerModel;
+        if (mapLayer) {
+          const { layers } = mapLayer;
+          const parentLayer = layers[0];
+          const childLayer = layers[1];
+          const parentLayerOnMap = layersOnMap.find(ly => ly.id === parentLayer.id);
+          if (parentLayerOnMap) {
+            this.map.moveLayer(childLayer.id, parentLayer.id);
+          }
         }
       });
     }
