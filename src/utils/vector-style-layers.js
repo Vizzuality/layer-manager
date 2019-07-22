@@ -27,7 +27,7 @@ export const getVectorStyleLayers = (vectorLayers, layerModel) => {
 
         return {
           ...obj,
-          [`${name}-opacity`]: paintOpacity * layerModel.opacity
+          [`${name}-opacity`]: paintOpacity * layerModel.opacity * 0.99
         };
       }, {});
 
