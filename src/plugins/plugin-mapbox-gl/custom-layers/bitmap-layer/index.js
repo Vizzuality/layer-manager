@@ -30,9 +30,8 @@ import shaderTemplate from './bitmap-layer-fragment';
 const { fp64LowPart } = fp64;
 
 const DEFAULT_TEXTURE_PARAMETERS = {
-  [GL.TEXTURE_MIN_FILTER]: GL.LINEAR_MIPMAP_LINEAR,
-  // GL.LINEAR is the default value but explicitly set it here
-  [GL.TEXTURE_MAG_FILTER]: GL.LINEAR,
+  [GL.TEXTURE_MIN_FILTER]: GL.NEAREST,
+  [GL.TEXTURE_MAG_FILTER]: GL.NEAREST,
   [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
   [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE
 };
@@ -232,7 +231,8 @@ export default class BitmapLayer extends Layer {
       this.setState({
         bitmapTexture: new Texture2D(gl, {
           data: image,
-          parameters: DEFAULT_TEXTURE_PARAMETERS
+          parameters: DEFAULT_TEXTURE_PARAMETERS,
+          mipmaps: false
         })
       });
     }
