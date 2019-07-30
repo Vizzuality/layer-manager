@@ -124,7 +124,12 @@ class PluginMapboxGL {
 
     // get the first layer of the next layer's array
     const nextLayerMapLayers = nextLayer.mapLayer.layers;
-    const nextLayerId = nextLayerMapLayers[0].id;
+    const nextLayerMapLayer = nextLayerMapLayers[0];
+
+    // Filter layers with custom metadata position
+    const { id, metadata = {} } = nextLayerMapLayer;
+    const { position } = metadata;
+    const nextLayerId = !position ? id : customLayer.id;
 
     // if it has a layer above it, check if that layer has been added to the map and get its id
     const isNextLayerOnMap = !!layersOnMap.find(l => nextLayerId === l.id);
@@ -145,6 +150,7 @@ class PluginMapboxGL {
     layersOnMap.forEach((l) => {
       const { id, metadata = {} } = l;
       const layerModel = allLayers.find(ly => id.includes(ly.id));
+
       if (layerModel) {
         const nextLayerId = (metadata.position === 'top') ? null : this.getNextLayerId(layerModel);
         this.map.moveLayer(id, nextLayerId);
@@ -157,12 +163,16 @@ class PluginMapboxGL {
     if (decodeLayers && this.map && this.map.__deck && this.map.__deck.layerManager) {
       decodeLayers.forEach((layerModel) => {
         const { mapLayer } = layerModel;
+
         if (mapLayer) {
           const { layers } = mapLayer;
           const parentLayer = layers[0];
           const childLayer = layers[1];
+
           const parentLayerOnMap = layersOnMap.find(ly => ly.id === parentLayer.id);
-          if (parentLayerOnMap) {
+          const childLayerOnMap = this.map.getLayer(childLayer.id);
+
+          if (parentLayerOnMap && childLayerOnMap) {
             this.map.moveLayer(childLayer.id, parentLayer.id);
           }
         }
