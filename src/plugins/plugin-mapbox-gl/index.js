@@ -127,15 +127,13 @@ class PluginMapboxGL {
     const nextLayerMapLayer = nextLayerMapLayers[0];
 
     // Filter layers with custom metadata position
-    const { id, metadata = {} } = nextLayerMapLayer;
-    const { position } = metadata;
-    const nextLayerId = !position ? id : customLayer.id;
+    const { id } = nextLayerMapLayer;
 
     // if it has a layer above it, check if that layer has been added to the map and get its id
-    const isNextLayerOnMap = !!layersOnMap.find(l => nextLayerId === l.id);
+    const isNextLayerOnMap = !!layersOnMap.find(l => id === l.id);
 
     // if next layer is on map return the id, else return the custom layer to add below
-    return isNextLayerOnMap ? nextLayerId : customLayer.id;
+    return isNextLayerOnMap ? id : customLayer.id;
   }
 
   /**
