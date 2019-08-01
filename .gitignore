@@ -5,6 +5,7 @@
 *.sublime*
 .sublime*
 .idea*
+.vscode
 
 # Vendors
 /node_modules
