@@ -115,7 +115,7 @@ class PluginMapboxGL {
     const sortedLayers = sortBy(allLayers, l => l.zIndex);
 
     // get the layer with zIndex greater than current layer from all layers
-    const nextLayer = sortedLayers.find(l => l.zIndex > zIndex);
+    const nextLayer = sortedLayers.find(l => l.zIndex > zIndex && (!l.mapLayer || !l.mapLayer.layers || !l.mapLayer.layers[0] || !l.mapLayer.layers[0].metadata || !l.mapLayer.layers[0].metadata.position));
 
     // if no layer above it then use the custom layer
     if (!nextLayer || (!!nextLayer && !nextLayer.mapLayer)) {
