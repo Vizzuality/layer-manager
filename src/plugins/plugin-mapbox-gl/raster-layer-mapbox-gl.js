@@ -12,11 +12,16 @@ const getTileData = ({ x, y, z }, url) => {
   return fetch(mapSource)
     .then(response => response.blob())
     .then((response) => {
-      const src = URL.createObjectURL(response);
-      const image = new Image();
+      const { type } = response || {};
+      if (type === 'image/png') {
+        const src = URL.createObjectURL(response);
+        const image = new Image();
 
-      image.src = src;
-      return image;
+        image.src = src;
+        return image;
+      }
+
+      return false;
     });
 };
 
