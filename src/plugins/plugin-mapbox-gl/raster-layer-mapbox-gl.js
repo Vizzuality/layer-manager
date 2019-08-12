@@ -46,7 +46,7 @@ const RasterLayer = (layerModel) => {
 
   switch (layerModel.provider) {
     case 'gee':
-      tileUrl = `https://api.resourcewatch.org/v1/layer/${id}/tile/gee/{z}/{x}/{y}`;
+      tileUrl = url || body.url || `https://api.resourcewatch.org/v1/layer/${id}/tile/gee/{z}/{x}/{y}`;
       break;
     default:
       tileUrl = url || body.url;
