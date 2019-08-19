@@ -19,6 +19,12 @@ describe('# Cancellable request', () => {
         result = json;
         return result;
       })
+      .catch((err) => {
+        if (!request.isCancelled()) result = 1;
+        expect(result).to.equal(null);
+        done();
+        console.error(err);
+      })
       .then(() => {
         if (!request.isCancelled()) result = 1;
         expect(result).to.equal(null);

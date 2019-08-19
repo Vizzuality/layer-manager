@@ -14,9 +14,18 @@ const globals = {
   'lodash/debounce': 'debounce',
   'lodash/isEmpty': 'isEmpty',
   'lodash/isEqual': 'isEqual',
+  'lodash/sortBy': 'sortBy',
   'prop-types': 'PropTypes',
   'react-dom': 'ReactDOM',
   react: 'React',
+  '@deck.gl/core': '@deck.gl/core',
+  '@deck.gl/mapbox': '@deck.gl/mapbox',
+  '@loaders.gl/core': '@loaders.gl/core',
+  '@loaders.gl/images': '@loaders.gl/images',
+  '@luma.gl/constants': '@luma.gl/constants',
+  'deck.gl': 'deck.gl',
+  'luma.gl': 'luma.gl',
+  'viewport-mercator-project': 'viewport-mercator-project'
 };
 const external = Object.keys(globals);
 const babelOptions = () => ({

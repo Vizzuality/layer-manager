@@ -8,7 +8,6 @@ function checkPluginProperties(plugin) {
       'remove',
       'setVisibility',
       'setOpacity',
-      'setEvents',
       'setZIndex',
       'setLayerConfig',
       'setParams',
@@ -29,10 +28,14 @@ function checkPluginProperties(plugin) {
 class LayerManager {
   constructor(map, Plugin) {
     this.map = map;
-    this.plugin = new Plugin(this.map);
-    checkPluginProperties(this.plugin);
     this.layers = [];
     this.promises = {};
+    this.options = {
+      getLayers: this.getLayers.bind(this)
+    };
+
+    this.plugin = new Plugin(this.map, this.options);
+    checkPluginProperties(this.plugin);
   }
 
   /**
@@ -78,8 +81,13 @@ class LayerManager {
 
       return Promise
         .all(Object.values(this.promises))
-        .then(() => this.layers)
-        .finally(() => { this.promises = {}; });
+        .then(() => {
+          this.promises = {};
+          return this.layers;
+        })
+        .catch(() => {
+          this.promises = {};
+        });
     }
 
     // By default it will return a empty layers
@@ -181,6 +189,10 @@ class LayerManager {
     this.layers = ids ? layers : [];
   }
 
+  getLayers() {
+    return this.layers;
+  }
+
   /**
    * A namespace to set opacity on selected layer
    * @param {Array} layerIds
@@ -239,7 +251,7 @@ class LayerManager {
   setEvents(layerModel) {
     const { events } = layerModel;
 
-    if (events) {
+    if (events && this.plugin.setEvents) {
       // Let's leave the managment of event to the plugin
       this.plugin.setEvents(layerModel);
     }
@@ -247,7 +259,7 @@ class LayerManager {
 
   requestLayer(layerModel) {
     const { provider } = layerModel;
-    const method = this.plugin.getLayerByProvider(provider);
+    const method = this.plugin.getLayerByProvider(provider, layerModel);
 
     if (!method) {
       this.promises[layerModel.id] = Promise.reject(new Error(`${provider} provider is not yet supported.`));
@@ -268,7 +280,7 @@ class LayerManager {
     this.promises[layerModel.id] = method.call(this, layerModel).then((layer) => {
       layerModel.set('mapLayer', layer);
 
-      this.plugin.add(layerModel);
+      this.plugin.add(layerModel, this.layers);
       this.plugin.setZIndex(layerModel, layerModel.zIndex);
       this.plugin.setOpacity(layerModel, layerModel.opacity);
       this.plugin.setVisibility(layerModel, layerModel.visibility);
