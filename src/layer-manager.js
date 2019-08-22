@@ -49,14 +49,14 @@ class LayerManager {
         const hasChanged = Object.keys(changedAttributes).length > 0;
         const shouldUpdate = sqlParams || params || layerConfig;
 
-        if (!shouldUpdate) {
+        if (layerModel.mapLayer && !shouldUpdate) {
           // If layer exists and didn't change don't do anything
-          if (layerModel.mapLayer && !hasChanged) {
+          if (!hasChanged) {
             return false;
           }
 
-          // In case has changed, just update it else if (
-          if (layerModel.mapLayer && hasChanged) {
+          // In case has changed, just update it
+          if (hasChanged) {
             return this.updateLayer(layerModel);
           }
         }
@@ -90,7 +90,7 @@ class LayerManager {
         });
     }
 
-    // By default it will return a empty layers
+    // By default it will return empty layers
     return Promise.resolve(this.layers);
   }
 
@@ -174,6 +174,10 @@ class LayerManager {
   remove(layerIds) {
     const layers = this.layers.slice(0);
     const ids = Array.isArray(layerIds) ? layerIds : [layerIds];
+
+    ids.forEach((id) => {
+      this.requestCancel(id);
+    });
 
     this.layers.forEach((layerModel, index) => {
       if (ids) {
@@ -267,13 +271,7 @@ class LayerManager {
     }
 
     // Cancel previous/existing request
-    if (
-      this.promises[layerModel.id]
-        && this.promises[layerModel.id].isPending
-        && this.promises[layerModel.id].isPending()
-    ) {
-      this.promises[layerModel.id].cancel();
-    }
+    this.requestCancel(layerModel.id);
 
     // every render method returns a promise that we store in the array
     // to control when all layers are fetched.
@@ -289,6 +287,17 @@ class LayerManager {
     });
 
     return this;
+  }
+
+  requestCancel(layerModelId) {
+    // Cancel previous/existing request
+    if (
+      this.promises[layerModelId]
+      && this.promises[layerModelId].isPending
+      && this.promises[layerModelId].isPending()
+    ) {
+      this.promises[layerModelId].cancel('Cancelling layer method request');
+    }
   }
 }
 
