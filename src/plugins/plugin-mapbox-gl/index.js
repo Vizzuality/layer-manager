@@ -203,11 +203,12 @@ class PluginMapboxGL {
         const paintStyleNames = PAINT_STYLE_NAMES[l.type] || [l.type];
 
         // Select the paint property from the original layer
-        const { paint = {} } = (vectorLayers.find(v => v.id === l.id) || {});
+        const { paint = {} } = (vectorLayers.find((v, i) => (v.id || `${l.source}-${v.type}-${i}`) === l.id) || {});
 
         // Loop each style name and check if there is an opacity in the original layer
         paintStyleNames.forEach((name) => {
-          const paintOpacity = paint[`${name}-opacity`] || 1;
+          const currentProperty = paint[`${name}-opacity`];
+          const paintOpacity = currentProperty !== undefined ? currentProperty : 1;
           this.map.setPaintProperty(l.id, `${name}-opacity`, paintOpacity * opacity * 0.99);
         });
       });

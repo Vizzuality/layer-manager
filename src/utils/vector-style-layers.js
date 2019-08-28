@@ -23,7 +23,8 @@ export const getVectorStyleLayers = (vectorLayers, layerModel) => {
       const opacityPaintNames = PAINT_STYLE_NAMES[l.type] || [l.type];
 
       const opacityPaintStyles = opacityPaintNames.reduce((obj, name) => {
-        const paintOpacity = paint[`${name}-opacity`] || 1;
+        const currentProperty = paint[`${name}-opacity`];
+        const paintOpacity = currentProperty !== undefined ? currentProperty : 1;
 
         return {
           ...obj,
