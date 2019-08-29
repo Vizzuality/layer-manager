@@ -1,4 +1,4 @@
-export { default } from './layer-manager';
+export { default } from './layer-manager-new';
 
 // Plugins
 export { default as PluginLeaflet } from './plugins/plugin-leaflet';

@@ -1,2 +1,2 @@
-export { default as LayerManager } from './layer-manager';
-export { default as Layer } from './layer';
+export { default as LayerManager } from './layer-manager-new';
+export { default as Layer } from './layer-new';

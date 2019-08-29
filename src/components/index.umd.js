@@ -3,8 +3,8 @@
 // compatible with mixed imports (which exist in index.js)
 // This file does away with named imports in favor of a single export default.
 
-import LayerManager from './layer-manager';
-import Layer from './layer';
+import LayerManager from './layer-manager-new';
+import Layer from './layer-new';
 
 const Components = {};
 

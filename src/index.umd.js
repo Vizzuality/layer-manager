@@ -7,7 +7,7 @@ import PluginLeaflet from './plugins/plugin-leaflet';
 import PluginMapboxGl from './plugins/plugin-mapbox-gl';
 import PluginCesium from './plugins/plugin-cesium';
 import { replace, substitution, concatenation } from './utils/query';
-import LayerManager from './layer-manager';
+import LayerManager from './layer-manager-new';
 
 LayerManager.PluginLeaflet = PluginLeaflet;
 LayerManager.PluginCesium = PluginCesium;
