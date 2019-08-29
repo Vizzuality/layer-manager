@@ -56,9 +56,9 @@ class Layer extends PureComponent {
     } = this.props;
 
     if (
-      !isEqual(layerConfig, prevLayerConfig) ||
-      !isEqual(params, prevParams) ||
-      !isEqual(sqlParams, prevSqlParams)
+      (layerConfig && !isEqual(layerConfig, prevLayerConfig)) ||
+      (params && !isEqual(params, prevParams)) ||
+      (sqlParams && !isEqual(sqlParams, prevSqlParams))
     ) {
       this.remove();
       this.add();
@@ -88,10 +88,10 @@ class Layer extends PureComponent {
     layerManager.update(props.id, props);
   }
 
-  remove() {
+  remove = debounce(() => {
     const { layerManager, id } = this.props;
     layerManager.remove(id);
-  }
+  }, 150)
 
   render() {
     return null;

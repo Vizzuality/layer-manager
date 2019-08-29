@@ -34,13 +34,8 @@ class PluginMapboxGL {
     const { mapLayer } = layerModel;
     const allLayers = this.getLayers();
 
-    // remove old source
-    if (this.map && mapLayer && mapLayer.id && this.map.getSource(mapLayer.id)) {
-      this.map.removeSource(mapLayer.id);
-    }
-
     // add source if it has one
-    if (this.map && mapLayer && mapLayer.source && mapLayer.id) {
+    if (this.map && mapLayer && mapLayer.source && mapLayer.id && !this.map.getSource(mapLayer.id)) {
       this.map.addSource(mapLayer.id, mapLayer.source);
     }
 
@@ -49,7 +44,9 @@ class PluginMapboxGL {
       mapLayer.layers.forEach((l) => {
         const { metadata = {} } = l;
         const nextLayerId = (metadata.position === 'top') ? null : this.getNextLayerId(layerModel);
-        this.map.addLayer(l, nextLayerId);
+        if (!this.map.getLayer(l.id)) {
+          this.map.addLayer(l, nextLayerId);
+        }
 
         allLayers.forEach(() => {
           this.setZIndex();

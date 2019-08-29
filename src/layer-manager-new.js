@@ -105,7 +105,10 @@ class LayerManager {
     this.requestCancel(id);
 
     const layerModel = this.getLayerModel(id);
-    this.plugin.remove(layerModel);
+
+    if (layerModel) {
+      this.plugin.remove(layerModel);
+    }
 
     this.layers = layers.filter(l => l.id !== id);
   }
