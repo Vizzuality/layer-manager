@@ -250,6 +250,10 @@ class PluginMapboxGL {
       decodeParams
     } = layerModel;
 
+    if (!mapLayer) {
+      return this;
+    }
+
     const layer = mapLayer.layers[1];
 
     if (layer && typeof layer.setProps === 'function') {
