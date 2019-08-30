@@ -1,7 +1,6 @@
 import { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-import debounce from 'lodash/debounce';
 import isEqual from 'lodash/isEqual'; // We can use another library
 
 
@@ -18,7 +17,7 @@ class Layer extends PureComponent {
     visibility: PropTypes.bool,
     zIndex: PropTypes.number,
 
-    layerManager: PropTypes.shape({}).isRequired
+    layerManager: PropTypes.shape({})
   };
 
   static defaultProps = {
@@ -27,7 +26,9 @@ class Layer extends PureComponent {
     decodeParams: undefined,
     opacity: 1,
     visibility: true,
-    zIndex: 1000
+    zIndex: 1000,
+
+    layerManager: null
   };
 
   componentDidMount() {
