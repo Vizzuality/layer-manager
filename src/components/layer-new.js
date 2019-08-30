@@ -1,9 +1,6 @@
 import { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-
-import debounce from 'lodash/debounce';
-import isEqual from 'lodash/isEqual'; // We can use another library
-
+import isEqual from 'lodash/isEqual';
 
 class Layer extends PureComponent {
   static propTypes = {
@@ -65,10 +62,10 @@ class Layer extends PureComponent {
     }
 
     if (
-      opacity !== prevOpacity ||
-      visibility !== prevVisibility ||
-      zIndex !== prevZIndex ||
-      !isEqual(decodeParams, prevDecodeParams)
+      opacity !== prevOpacity
+      || visibility !== prevVisibility
+      || zIndex !== prevZIndex
+      || !isEqual(decodeParams, prevDecodeParams)
     ) {
       this.update();
     }
