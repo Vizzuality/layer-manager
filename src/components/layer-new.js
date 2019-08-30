@@ -1,6 +1,7 @@
 import { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
+import isEmpty from 'lodash/isEmpty';
 
 class Layer extends PureComponent {
   static propTypes = {
@@ -53,21 +54,31 @@ class Layer extends PureComponent {
     } = this.props;
 
     if (
-      (layerConfig && !isEqual(layerConfig, prevLayerConfig)) ||
-      (params && !isEqual(params, prevParams)) ||
-      (sqlParams && !isEqual(sqlParams, prevSqlParams))
+      (layerConfig && !isEqual(layerConfig, prevLayerConfig))
+      || (params && !isEqual(params, prevParams))
+      || (sqlParams && !isEqual(sqlParams, prevSqlParams))
     ) {
       this.remove();
       this.add();
     }
 
-    if (
-      opacity !== prevOpacity
-      || visibility !== prevVisibility
-      || zIndex !== prevZIndex
-      || !isEqual(decodeParams, prevDecodeParams)
-    ) {
-      this.update();
+    const changedProps = {
+      ...opacity !== prevOpacity && {
+        opacity
+      },
+      ...visibility !== prevVisibility && {
+        visibility
+      },
+      ...zIndex !== prevZIndex && {
+        zIndex
+      },
+      ...!isEqual(decodeParams, prevDecodeParams) && {
+        decodeParams
+      }
+    };
+
+    if (!isEmpty(changedProps)) {
+      this.update(changedProps);
     }
   }
 
@@ -80,9 +91,10 @@ class Layer extends PureComponent {
     layerManager.add(props, {});
   }
 
-  update = () => {
-    const { layerManager, ...props } = this.props;
-    layerManager.update(props.id, props);
+  update = (changedProps) => {
+    const { layerManager, id } = this.props;
+
+    layerManager.update(id, changedProps);
   }
 
   remove = () => {
