@@ -12,7 +12,8 @@
   "rules": {
     "no-debugger": 1,
     "no-eval": [1, { "allowIndirect": true }],
-    "import/no-extraneous-dependencies": 0
+    "import/no-extraneous-dependencies": 0,
+    "react/sort-comp": "off"
   },
   "parser": "babel-eslint",
   "plugins": [
