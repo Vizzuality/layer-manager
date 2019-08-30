@@ -1,5 +1,5 @@
 import isEmpty from 'lodash/isEmpty';
-import Promise from 'utils/promise';
+// import Promise from 'utils/promise';
 
 import LayerModel from './layer-model';
 
@@ -171,30 +171,23 @@ class LayerManager {
 
     // every render method returns a promise that we store in the array
     // to control when all layers are fetched.
-    this.promises[layerModel.id] = method.call(this, layerModel).then((layer) => {
-      const { _canceled: canceled } = this.promises[layerModel.id];
+    this.promises[layerModel.id] = Promise.all([layerModel.id, method.call(this, layerModel)])
+      .then(([id, layer]) => {
+        if (this.promises[id]) {
+          layerModel.set('mapLayer', layer);
 
-      if (!canceled) {
-        layerModel.set('mapLayer', layer);
-
-        this.plugin.add(layerModel, this.layers);
-        this.plugin.setZIndex(layerModel, layerModel.zIndex);
-        this.plugin.setOpacity(layerModel, layerModel.opacity);
-        this.plugin.setVisibility(layerModel, layerModel.visibility);
-      }
-    });
+          this.plugin.add(layerModel, this.layers);
+          this.plugin.setZIndex(layerModel, layerModel.zIndex);
+          this.plugin.setOpacity(layerModel, layerModel.opacity);
+          this.plugin.setVisibility(layerModel, layerModel.visibility);
+        }
+      });
 
     return this;
   }
 
   requestCancel(layerModelId) {
-    // Cancel previous/existing request
-    if (
-      this.promises[layerModelId]
-      && this.promises[layerModelId].cancel
-    ) {
-      this.promises[layerModelId].cancel();
-    }
+    this.promises[layerModelId] = null;
   }
 }
 

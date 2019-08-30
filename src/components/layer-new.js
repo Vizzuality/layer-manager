@@ -78,20 +78,20 @@ class Layer extends PureComponent {
     this.remove();
   }
 
-  add = debounce(() => {
+  add = () => {
     const { layerManager, ...props } = this.props;
     layerManager.add(props, {});
-  }, 50)
+  }
 
-  update() {
+  update = () => {
     const { layerManager, ...props } = this.props;
     layerManager.update(props.id, props);
   }
 
-  remove = debounce(() => {
+  remove = () => {
     const { layerManager, id } = this.props;
     layerManager.remove(id);
-  }, 150)
+  }
 
   render() {
     return null;
