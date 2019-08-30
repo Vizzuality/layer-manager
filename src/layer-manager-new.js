@@ -77,7 +77,7 @@ class LayerManager {
    */
   update(id, changedProps) {
     const layerModel = this.getLayerModel(id);
-    if (!layerModel) return;
+    if (!layerModel || !layerModel.mapLayer) return;
 
     layerModel.update(changedProps);
 
