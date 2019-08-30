@@ -1,5 +1,8 @@
+import Promise from 'utils/promise';
+
 import { replace } from 'utils/query';
 import { MapboxLayer } from '@deck.gl/mapbox';
+
 
 import TileLayer from './custom-layers/tile-layer';
 

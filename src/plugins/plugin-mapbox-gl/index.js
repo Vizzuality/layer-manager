@@ -44,6 +44,7 @@ class PluginMapboxGL {
       mapLayer.layers.forEach((l) => {
         const { metadata = {} } = l;
         const nextLayerId = (metadata.position === 'top') ? null : this.getNextLayerId(layerModel);
+
         if (!this.map.getLayer(l.id)) {
           this.map.addLayer(l, nextLayerId);
         }
@@ -59,7 +60,7 @@ class PluginMapboxGL {
    * Remove a layer
    * @param {Object} layerModel
    */
-  remove(layerModel) {
+  remove(layerModel = {}) {
     const { mapLayer } = layerModel;
     if (mapLayer && mapLayer.layers && this.map && this.map.style) {
       mapLayer.layers.forEach((l) => {

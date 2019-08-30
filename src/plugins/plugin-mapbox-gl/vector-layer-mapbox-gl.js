@@ -1,3 +1,5 @@
+import Promise from 'utils/promise';
+
 import { replace } from 'utils/query';
 import { fetchTile } from 'services/carto-service';
 import { getVectorStyleLayers } from 'utils/vector-style-layers';
