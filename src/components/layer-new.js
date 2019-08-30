@@ -1,13 +1,7 @@
 import { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-<<<<<<< HEAD
-
-import isEqual from 'lodash/isEqual'; // We can use another library
-
-=======
 import isEqual from 'lodash/isEqual';
 import isEmpty from 'lodash/isEmpty';
->>>>>>> a533a582f2b99ac7d65839af4eaf2e7b3fd9f1c6
 
 class Layer extends PureComponent {
   static propTypes = {
