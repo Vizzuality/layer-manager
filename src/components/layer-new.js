@@ -88,10 +88,10 @@ class Layer extends PureComponent {
     layerManager.update(props.id, props);
   }
 
-  remove() {
+  remove = debounce(() => {
     const { layerManager, id } = this.props;
     layerManager.remove(id);
-  }
+  }, 150)
 
   render() {
     return null;
