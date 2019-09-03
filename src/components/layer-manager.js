@@ -9,15 +9,11 @@ class LayerManager extends PureComponent {
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node
-    ]),
-    onLayerLoading: PropTypes.func,
-    onReady: PropTypes.func
+    ])
   };
 
   static defaultProps = {
-    children: [],
-    onLayerLoading: null,
-    onReady: null
+    children: []
   };
 
   constructor(props) {
@@ -26,36 +22,16 @@ class LayerManager extends PureComponent {
     this.layerManager = new Manager(map, plugin);
   }
 
-  componentDidMount() {
-    this.onRenderLayers();
-  }
-
-  componentDidUpdate() {
-    this.onRenderLayers();
-  }
-
-  onRenderLayers = () => {
-    const { onLayerLoading, onReady } = this.props;
-    if (this.layerManager.layers && this.layerManager.layers.length) {
-      if (onLayerLoading) onLayerLoading(true);
-      this.layerManager.renderLayers().then((layers) => {
-        if (onReady) onReady(layers);
-        if (onLayerLoading) onLayerLoading(false);
-      });
-    }
-  }
-
   render() {
     const { children } = this.props;
 
     if (children && Children.count(children)) {
       return Children.map(
         children,
-        (child, i) => child
-            && cloneElement(child, {
-              layerManager: this.layerManager,
-              zIndex: child.props.zIndex || 1000 - i
-            })
+        (child, i) => child && cloneElement(child, {
+          layerManager: this.layerManager,
+          zIndex: child.props.zIndex || 1000 - i
+        })
       );
     }
 
