@@ -1,5 +1,8 @@
+import Promise from 'utils/promise';
+
 import { replace } from 'utils/query';
 import { MapboxLayer } from '@deck.gl/mapbox';
+
 
 import TileLayer from './custom-layers/tile-layer';
 
@@ -13,7 +16,7 @@ const getTileData = ({ x, y, z }, url) => {
     .then(response => response.blob())
     .then((response) => {
       const { type } = response || {};
-      if (type !== 'application/xml' || type !== 'text/xml' || type !== 'text/html') {
+      if (type !== 'application/xml' && type !== 'text/xml' && type !== 'text/html') {
         const src = URL.createObjectURL(response);
         const image = new Image();
 

@@ -1,3 +1,5 @@
+import Promise from 'utils/promise';
+
 import { replace } from 'utils/query';
 import { fetchData } from 'services/cluster-service';
 import { getVectorStyleLayers } from 'utils/vector-style-layers';

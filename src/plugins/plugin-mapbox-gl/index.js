@@ -18,13 +18,19 @@ class PluginMapboxGL {
     });
   }
 
-  method = {
+  provider = {
     leaflet: rasterLayer,
     gee: rasterLayer,
     cartodb: vectorLayer,
     mapbox: vectorLayer,
     geojson: geoJsonLayer
   };
+
+  type = {
+    raster: rasterLayer,
+    vector: vectorLayer,
+    geojson: geoJsonLayer
+  }
 
   /**
    * Add a layer
@@ -34,13 +40,8 @@ class PluginMapboxGL {
     const { mapLayer } = layerModel;
     const allLayers = this.getLayers();
 
-    // remove old source
-    if (this.map && mapLayer && mapLayer.id && this.map.getSource(mapLayer.id)) {
-      this.map.removeSource(mapLayer.id);
-    }
-
     // add source if it has one
-    if (this.map && mapLayer && mapLayer.source && mapLayer.id) {
+    if (this.map && mapLayer && mapLayer.source && mapLayer.id && !this.map.getSource(mapLayer.id)) {
       this.map.addSource(mapLayer.id, mapLayer.source);
     }
 
@@ -49,7 +50,10 @@ class PluginMapboxGL {
       mapLayer.layers.forEach((l) => {
         const { metadata = {} } = l;
         const nextLayerId = (metadata.position === 'top') ? null : this.getNextLayerId(layerModel);
-        this.map.addLayer(l, nextLayerId);
+
+        if (!this.map.getLayer(l.id)) {
+          this.map.addLayer(l, nextLayerId);
+        }
 
         allLayers.forEach(() => {
           this.setZIndex();
@@ -62,7 +66,7 @@ class PluginMapboxGL {
    * Remove a layer
    * @param {Object} layerModel
    */
-  remove(layerModel) {
+  remove(layerModel = {}) {
     const { mapLayer } = layerModel;
     if (mapLayer && mapLayer.layers && this.map && this.map.style) {
       mapLayer.layers.forEach((l) => {
@@ -74,15 +78,23 @@ class PluginMapboxGL {
   }
 
   /**
-   * Get provider method
+   * Get method by provider
    * @param {String} provider
    */
   getLayerByProvider(provider, layerModel) {
     // required to maintain current layerSpec without creating a breaking change
     if (provider === 'leaflet' && layerModel.layerConfig.type === 'cluster') {
-      return this.method.geojson;
+      return this.provider.geojson;
     }
-    return this.method[provider];
+    return this.provider[provider];
+  }
+
+  /**
+   * Get method by type
+   * @param {String} type
+   */
+  getLayerByType(type) {
+    return this.type[type];
   }
 
   /**
@@ -251,6 +263,10 @@ class PluginMapboxGL {
       mapLayer,
       decodeParams
     } = layerModel;
+
+    if (!mapLayer) {
+      return this;
+    }
 
     const layer = mapLayer.layers[1];
 
