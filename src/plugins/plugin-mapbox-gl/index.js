@@ -18,13 +18,19 @@ class PluginMapboxGL {
     });
   }
 
-  method = {
+  provider = {
     leaflet: rasterLayer,
     gee: rasterLayer,
     cartodb: vectorLayer,
     mapbox: vectorLayer,
     geojson: geoJsonLayer
   };
+
+  type = {
+    raster: rasterLayer,
+    vector: vectorLayer,
+    geojson: geoJsonLayer
+  }
 
   /**
    * Add a layer
@@ -72,15 +78,23 @@ class PluginMapboxGL {
   }
 
   /**
-   * Get provider method
+   * Get method by provider
    * @param {String} provider
    */
   getLayerByProvider(provider, layerModel) {
     // required to maintain current layerSpec without creating a breaking change
     if (provider === 'leaflet' && layerModel.layerConfig.type === 'cluster') {
-      return this.method.geojson;
+      return this.provider.geojson;
     }
-    return this.method[provider];
+    return this.provider[provider];
+  }
+
+  /**
+   * Get method by type
+   * @param {String} type
+   */
+  getLayerByType(type) {
+    return this.type[type];
   }
 
   /**
