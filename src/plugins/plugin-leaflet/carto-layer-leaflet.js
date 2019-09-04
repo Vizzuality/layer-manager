@@ -19,7 +19,7 @@ const CartoLayer = (layerModel) => {
 
         // Add interactivity
         if (interactivity && interactivity.length) {
-          const gridUrl = `https://${layerConfigParsed.account}.carto.com/api/v1/map/${response.layergroupid}/0/{z}/{x}/{y}.grid.json`;
+          const gridUrl = `${response.cdn_url.templates.https.url}/${layerConfigParsed.account}/api/v1/map/${response.layergroupid}/0/{z}/{x}/{y}.grid.json`;
           const interactiveLayer = L.utfGrid(gridUrl);
 
           const LayerGroup = L.LayerGroup.extend({

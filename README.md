@@ -12,7 +12,12 @@ or using git:
 
 `npm install vizzuality/layer-manager`
 
-## Layer Manager
+
+## ❗ Requirements
+`layer-manager` requires `react@16.3.2` or higher to work.
+
+## How to use
+
 ```js
 // Import LayersManager and the corresponding Plugin depending on the
 // map provider that you are using
@@ -293,3 +298,4 @@ const activeLayers = [
   ))}
 </LayerManager>;
 ```
+
