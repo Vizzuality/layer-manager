@@ -12,6 +12,7 @@ function checkPluginProperties(plugin) {
       'setZIndex',
       'setLayerConfig',
       'setParams',
+      'setSQLParams',
       'setDecodeParams',
       'getLayerByProvider'
     ];
@@ -155,7 +156,7 @@ class LayerManager {
 
     if (!isEmpty(layerConfig)) this.plugin.setLayerConfig(layerModel);
     if (!isEmpty(params)) this.plugin.setParams(layerModel);
-    if (!isEmpty(sqlParams)) this.plugin.setParams(layerModel);
+    if (!isEmpty(sqlParams)) this.plugin.setSQLParams(layerModel);
     if (!isEmpty(decodeParams)) this.plugin.setDecodeParams(layerModel);
   }
 
