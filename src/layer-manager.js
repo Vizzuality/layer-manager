@@ -158,8 +158,8 @@ class LayerManager {
   }
 
   requestLayer(layerModel) {
-    const { provider } = layerModel;
-    const method = this.plugin.getLayerByProvider(provider, layerModel);
+    const { layerType, provider } = layerModel;
+    const method = this.plugin.getLayerByType(layerType) || this.plugin.getLayerByProvider(provider, layerModel);
 
     if (!method) {
       this.promises[layerModel.id] = Promise.reject(new Error(`${provider} provider is not yet supported.`));
