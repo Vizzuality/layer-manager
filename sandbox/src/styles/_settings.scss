@@ -1,0 +1,92 @@
+// Colors
+$color-1: #FFCC00;
+
+$color-sucess: #1EBE28;
+$color-error: #FC4349;
+
+$color-white: #FFFFFF;
+$color-black: #000000;
+$color-gray-1: #1B1B1B;
+$color-gray-2: #515151;
+$color-gray-3: #999999;
+$color-gray-4: #ECECEC;
+$color-gray-5: #FBFBFB;
+
+$color-social-twitter: #55ACEE;
+$color-social-facebook: #3B5998;
+$color-social-linkedin: #0077B5;
+$color-social-pinterest: #BD081C;
+
+// Typography
+$font-size-extra-small: 9px;
+$font-size-small: 12px;
+$font-size-default: 16px;
+$font-size-medium: 18px;
+$font-size-big: 22px;
+$font-size-huge: 120px;
+
+$font-size-h1: 46px;
+$font-size-h2: 32px;
+$font-size-h3: 22px;
+$font-size-h4: 12px;
+$font-size-h5: 9px;
+
+// TODO: Get the NG font
+$font-family: 'Geographic', sans-serif;
+$font-family-2: Georgia, sans-serif;
+
+// Weights
+$font-weight-light: 300;
+$font-weight-regular: 400;
+$font-weight-bold: 500;
+
+// Assets
+$ASSETS_URL: 'https://nationalgeographic.org/earth-pulse/assets';
+
+// Space
+$space-1: 8px;
+$space-2: 12.5px;
+
+// Paddings
+$box-padding: 40px 30px;
+
+// Sizes
+$c-sidebar-width: 80px;
+
+// Z-index
+$z-index-1: 0;
+$z-index-2: 1;
+$z-index-3: 9;
+$z-index-4: 10;
+
+// Times
+$animation-time: .16s;
+$animation-time-2: .24s;
+$animation-time-3: .5s;
+$animation-time-4: .75s;
+
+// Eases
+$ease-in-cubic: cubic-bezier(0.550, 0.055, 0.675, 0.190);
+$ease-out-cubic: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+$ease-in-out-cubic: cubic-bezier(0.645, 0.045, 0.355, 1.000);
+$ease-in-sine: cubic-bezier(0.470, 0.000, 0.745, 0.715);
+$ease-out-sine: cubic-bezier(0.390, 0.575, 0.565, 1.000);
+$ease-in-out-sine: cubic-bezier(0.445, 0.050, 0.550, 0.950);
+
+// Flexbox grid
+$sm: 24rem;
+$md: 48rem;
+$lg: 62rem;
+$xlg: 80rem;
+
+$flexboxgrid-max-width: 1024px;
+$flexboxgrid-grid-columns: 12;
+$flexboxgrid-gutter-width: 1.5rem;
+$flexboxgrid-outer-margin: 1.5rem;
+$flexboxgrid-breakpoints: (
+  sm: $sm,
+  md: $md,
+  lg: $lg,
+  xlg: $xlg
+);
+

@@ -17,7 +17,10 @@
     "test": "mocha --require @babel/register --require ./test/setup --recursive ./test/specs",
     "watch": "bnr watch && bnr babel:watch",
     "build": "bnr build && bnr babel:build",
-    "prettier": "prettier --single-quote --write \"src/**/*.js\""
+    "prettier": "prettier --single-quote --write \"src/**/*.js\"",
+    "start:sandbox": "cd sandbox && yarn start",
+    "build:sandbox": "cd sandbox && yarn build",
+    "test:sandbox": "cd sandbox && yarn test"
   },
   "betterScripts": {
     "build": {

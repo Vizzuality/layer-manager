@@ -1,0 +1,26 @@
+.l-page {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.l-sidebar {
+  position: fixed;
+  display: block;
+  width: $c-sidebar-width;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: $z-index-3;
+}
+
+.l-content {
+  position: relative;
+  width: calc(100% - #{$c-sidebar-width});
+  height: 100%;
+  left: $c-sidebar-width;
+  z-index: $z-index-1;
+}
