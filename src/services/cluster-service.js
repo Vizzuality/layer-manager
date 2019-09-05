@@ -1,9 +1,21 @@
+import { replace } from 'utils/query';
 import { CancelToken } from 'axios';
 import { get } from 'lib/request';
 
 export const fetchData = (layerModel) => {
-  const { layerConfig, layerRequest } = layerModel;
-  const { url } = layerConfig.body;
+  const {
+    layerConfig,
+    params,
+    sqlParams,
+    layerRequest
+  } = layerModel;
+
+  const layerConfigParsed = layerConfig.parse === false
+    ? layerConfig
+    : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
+
+  const { body } = layerConfigParsed || {};
+  const { url } = body;
 
   if (layerRequest) {
     layerRequest.cancel('Operation canceled by the user.');
