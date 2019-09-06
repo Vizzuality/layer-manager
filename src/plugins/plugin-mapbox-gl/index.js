@@ -254,6 +254,10 @@ class PluginMapboxGL {
     this.remove(layerModel);
   }
 
+  setSQLParams(layerModel) {
+    this.remove(layerModel);
+  }
+
   setLayerConfig(layerModel) {
     this.remove(layerModel);
   }
