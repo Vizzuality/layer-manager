@@ -1,17 +1,5 @@
 [
   {
-    "id": "74c4bb92-9799-45f5-9f4d-f44b76508ce8",
-    "layerConfig": {
-      "body": {
-        "sldValue": "<RasterSymbolizer><ColorMap type=\"ramp\" extended=\"false\" ><ColorMapEntry color=\"#ffffcc\" quantity=\"0.6\"  opacity=\"1\" /><ColorMapEntry color=\"#c2e699\" quantity=\"0.7\" /><ColorMapEntry color=\"#78c679\" quantity=\"0.8\" /><ColorMapEntry color=\"#31a354\" quantity=\"0.9\"  /><ColorMapEntry color=\"#006837\" quantity=\"1.0\"  /></ColorMap></RasterSymbolizer>",
-        "styleType": "sld"
-      },
-      "assetId": "users/resourcewatch/bio_014_bio_intactness",
-      "type": "gee"
-    },
-    "provider": "gee"
-  },
-  {
     "id": "0911abc4-d861-4d7a-84d6-0fa07b51d7d8",
     "layerConfig": {
       "account": "wri-01",
@@ -53,5 +41,17 @@
       ]
     },
     "provider": "cartodb"
+  },
+  {
+    "id": "74c4bb92-9799-45f5-9f4d-f44b76508ce8",
+    "layerConfig": {
+      "body": {
+        "sldValue": "<RasterSymbolizer><ColorMap type=\"ramp\" extended=\"false\" ><ColorMapEntry color=\"#ffffcc\" quantity=\"0.6\"  opacity=\"1\" /><ColorMapEntry color=\"#c2e699\" quantity=\"0.7\" /><ColorMapEntry color=\"#78c679\" quantity=\"0.8\" /><ColorMapEntry color=\"#31a354\" quantity=\"0.9\"  /><ColorMapEntry color=\"#006837\" quantity=\"1.0\"  /></ColorMap></RasterSymbolizer>",
+        "styleType": "sld"
+      },
+      "assetId": "users/resourcewatch/bio_014_bio_intactness",
+      "type": "gee"
+    },
+    "provider": "gee"
   }
 ]
