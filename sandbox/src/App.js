@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Map from 'components/map';
 import { LayerManager, Layer } from 'layer-manager/dist/components';
 import { PluginMapboxGl } from 'layer-manager'
 import layers from 'layers.json';
 
+import LayerToggle from 'components/map/controls/layer-toggle';
+
 import './App.scss'
 
 function App() {
+  const [activeLayers, setActiveLayers] = useState(layers.map(l => ({...l, active: true})));
+
   return (
     <div className="c-app">
       <Map
@@ -18,7 +22,7 @@ function App() {
             map={map}
             plugin={PluginMapboxGl}
           >
-            {layers.map(layer => (
+            {activeLayers.filter(l => l.active).map(layer => (
               <Layer
                 key={layer.id}
                 {...layer}
@@ -27,6 +31,7 @@ function App() {
           </LayerManager>
         }
       </Map>
+      <LayerToggle layers={activeLayers} setLayers={setActiveLayers} />
     </div>
   );
 }
