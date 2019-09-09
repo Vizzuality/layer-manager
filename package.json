@@ -20,7 +20,8 @@
     "prettier": "prettier --single-quote --write \"src/**/*.js\"",
     "start:sandbox": "cd sandbox && yarn start",
     "build:sandbox": "cd sandbox && yarn build",
-    "test:sandbox": "cd sandbox && yarn test"
+    "test:sandbox": "cd sandbox && yarn test",
+    "deploy:sandbox": "cd sandbox && yarn deploy"
   },
   "betterScripts": {
     "build": {
