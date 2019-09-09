@@ -25,7 +25,7 @@ class Layer extends PureComponent {
     decodeParams: undefined,
     opacity: 1,
     visibility: true,
-    zIndex: 1000,
+    zIndex: undefined,
 
     layerManager: null
   };

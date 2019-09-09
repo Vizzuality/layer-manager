@@ -1,0 +1,57 @@
+[
+  {
+    "id": "0911abc4-d861-4d7a-84d6-0fa07b51d7d8",
+    "layerConfig": {
+      "account": "wri-01",
+      "body": {
+        "layers": [
+          {
+            "options": {
+              "cartocss": "#gfw_oil_palm{ polygon-fill: #ee9587; polygon-opacity: 0.7; line-color: #ee9587; line-width: 1; line-opacity: 1;}",
+              "cartocss_version": "2.3.0",
+              "sql": "SELECT cartodb_id, the_geom_webmercator, name,company, type, country, area_ha FROM gfw_oil_palm"
+            },
+            "type": "cartodb"
+          }
+        ],
+        "maxzoom": 19,
+        "minzoom": 2,
+        "vectorLayers": [
+          {
+            "paint": {
+              "fill-color": "#ee9587",
+              "fill-opacity": 0.7
+            },
+            "source-layer": "layer0",
+            "type": "fill"
+          }
+        ]
+      },
+      "params_config": [],
+      "sql_config": [
+        {
+          "key": "where",
+          "key_params": [
+            {
+              "key": "country",
+              "required": false
+            }
+          ]
+        }
+      ]
+    },
+    "provider": "cartodb"
+  },
+  {
+    "id": "74c4bb92-9799-45f5-9f4d-f44b76508ce8",
+    "layerConfig": {
+      "body": {
+        "sldValue": "<RasterSymbolizer><ColorMap type=\"ramp\" extended=\"false\" ><ColorMapEntry color=\"#ffffcc\" quantity=\"0.6\"  opacity=\"1\" /><ColorMapEntry color=\"#c2e699\" quantity=\"0.7\" /><ColorMapEntry color=\"#78c679\" quantity=\"0.8\" /><ColorMapEntry color=\"#31a354\" quantity=\"0.9\"  /><ColorMapEntry color=\"#006837\" quantity=\"1.0\"  /></ColorMap></RasterSymbolizer>",
+        "styleType": "sld"
+      },
+      "assetId": "users/resourcewatch/bio_014_bio_intactness",
+      "type": "gee"
+    },
+    "provider": "gee"
+  }
+]
