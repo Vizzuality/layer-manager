@@ -18,11 +18,9 @@ function checkPluginProperties(plugin) {
       'getLayerByProvider'
     ];
 
-    requiredProperties.forEach((property) => {
+    requiredProperties.forEach(property => {
       if (!plugin[property]) {
-        console.error(
-          `The ${property} function is required for layer manager plugins`
-        );
+        console.error(`The ${property} function is required for layer manager plugins`);
       }
     });
   }
@@ -40,7 +38,6 @@ class LayerManager {
     this.plugin = new Plugin(this.map, this.options);
     checkPluginProperties(this.plugin);
   }
-
 
   /**
    * Add layers
@@ -82,12 +79,7 @@ class LayerManager {
 
     layerModel.update(changedProps);
 
-    const {
-      opacity,
-      visibility,
-      zIndex,
-      decodeParams
-    } = changedProps;
+    const { opacity, visibility, zIndex, decodeParams } = changedProps;
 
     if (typeof opacity !== 'undefined') {
       this.plugin.setOpacity(layerModel, opacity);
@@ -160,10 +152,13 @@ class LayerManager {
 
   requestLayer(layerModel) {
     const { layerType, provider } = layerModel;
-    const method = this.plugin.getLayerByType(layerType) || this.plugin.getLayerByProvider(provider, layerModel);
+    const method =
+      this.plugin.getLayerByType(layerType) || this.plugin.getLayerByProvider(provider, layerModel);
 
     if (!method) {
-      this.promises[layerModel.id] = Promise.reject(new Error(`${provider} provider is not yet supported.`));
+      this.promises[layerModel.id] = Promise.reject(
+        new Error(`${provider} provider is not yet supported.`)
+      );
       return false;
     }
 
@@ -172,7 +167,7 @@ class LayerManager {
 
     // every render method returns a promise that we store in the array
     // to control when all layers are fetched.
-    this.promises[layerModel.id] = method.call(this, layerModel).then((layer) => {
+    this.promises[layerModel.id] = method.call(this, layerModel).then(layer => {
       const { _canceled: canceled } = this.promises[layerModel.id];
       if (!canceled) {
         layerModel.set('mapLayer', layer);
@@ -189,10 +184,7 @@ class LayerManager {
 
   requestCancel(layerModelId) {
     // Cancel previous/existing request
-    if (
-      this.promises[layerModelId]
-      && this.promises[layerModelId].cancel
-    ) {
+    if (this.promises[layerModelId] && this.promises[layerModelId].cancel) {
       this.promises[layerModelId].cancel();
     }
   }
