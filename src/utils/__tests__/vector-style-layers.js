@@ -1,4 +1,4 @@
-import { getVectorStyleLayers } from '../vector-style-layers';
+import { getVectorStyleLayers } from 'utils/vector-style-layers';
 
 describe('Returns mountable layers with id and opacity applied', () => {
   const LAYER_MODEL = { id: 1234, opacity: 0.5 };
