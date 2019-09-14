@@ -1,6 +1,6 @@
-# Layer Manager 🤵
+# Layer Manager
 
-Fast management of layers across different map clients
+A library to manage the addition, and removal of layers in Leaflet and Cesium maps (Google coming soon). Furthermore it provides methods to set opacity, visibility, events and more.
 
 ## Install
 
