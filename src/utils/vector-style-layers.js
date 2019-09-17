@@ -10,51 +10,59 @@ export const getVectorStyleLayers = (vectorLayers, layerModel) => {
   const { id, params, sqlParams } = layerModel;
   if (vectorLayers && vectorLayers.length) {
     const vectorLayersParsed = JSON.parse(replace(JSON.stringify(vectorLayers), params, sqlParams));
-    return vectorLayersParsed && vectorLayersParsed.map((l, i) => {
-      const PAINT_STYLE_NAMES = {
-        symbol: ['icon', 'text'],
-        circle: ['circle', 'circle-stroke']
-      };
+    return (
+      vectorLayersParsed &&
+      vectorLayersParsed.map((l, i) => {
+        const PAINT_STYLE_NAMES = {
+          symbol: ['icon', 'text'],
+          circle: ['circle', 'circle-stroke']
+        };
 
-      // Select the paint property from the original layer
-      const { paint = {} } = l;
+        // Select the paint property from the original layer
+        const { paint = {} } = l;
 
-      // Select the style to change depending on the type of layer
-      const opacityPaintNames = PAINT_STYLE_NAMES[l.type] || [l.type];
+        // Select the style to change depending on the type of layer
+        const opacityPaintNames = PAINT_STYLE_NAMES[l.type] || [l.type];
 
-      const opacityPaintStyles = opacityPaintNames.reduce((obj, name) => {
-        const currentProperty = paint[`${name}-opacity`];
-        const paintOpacity = currentProperty !== undefined ? currentProperty : 1;
+        const opacityPaintStyles = opacityPaintNames.reduce((obj, name) => {
+          const currentProperty = paint[`${name}-opacity`];
+          const paintOpacity = currentProperty !== undefined ? currentProperty : 1;
+
+          return {
+            ...obj,
+            [`${name}-opacity`]: paintOpacity * layerModel.opacity * 0.99
+          };
+        }, {});
+
+        // if paint properties or null are passed it breaks interaction
+        // on mapbox. We need to remove these
+        const filteredPaintProperties =
+          l.paint &&
+          Object.entries(l.paint).reduce(
+            (obj, arr) => ({
+              ...obj,
+              ...(!!arr[1] && {
+                [arr[0]]: arr[1]
+              })
+            }),
+            {}
+          );
 
         return {
-          ...obj,
-          [`${name}-opacity`]: paintOpacity * layerModel.opacity * 0.99
+          // id: This will avoid having issues with any layer, but you should specify an id when you create it.
+          // If you don't set an id in the definition, and you set a fill-opacity, it won't work
+          id: `${id}-${l.type}-${i}`,
+          ...l,
+          source: id,
+          ...(l.paint && {
+            paint: {
+              ...filteredPaintProperties,
+              ...opacityPaintStyles
+            }
+          })
         };
-      }, {});
-
-      // if paint properties or null are passed it breaks interaction
-      // on mapbox. We need to remove these
-      const filteredPaintProperties = l.paint && Object.entries(l.paint).reduce((obj, arr) => ({
-        ...obj,
-        ...!!arr[1] && {
-          [arr[0]]: arr[1]
-        }
-      }), {});
-
-      return {
-        // id: This will avoid having issues with any layer, but you should specify an id when you create it.
-        // If you don't set an id in the definition, and you set a fill-opacity, it won't work
-        id: `${id}-${l.type}-${i}`,
-        ...l,
-        source: id,
-        ...l.paint && {
-          paint: {
-            ...filteredPaintProperties,
-            ...opacityPaintStyles
-          }
-        }
-      };
-    });
+      })
+    );
   }
 
   return false;

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign,no-restricted-properties,class-methods-use-this,no-underscore-dangle */
 import { CompositeLayer } from 'deck.gl';
 
 import BitmapLayer from '../bitmap-layer';
@@ -6,8 +7,8 @@ import TileCache from './utils/tile-cache';
 
 const defaultProps = {
   renderSubLayers: props => new BitmapLayer(props),
-  getTileData: ({ x, y, z }) => Promise.resolve(null),
-  onDataLoaded: () => { },
+  getTileData: (/* { x, y, z } */) => Promise.resolve(null),
+  onDataLoaded: () => {},
   // eslint-disable-next-line
   onGetTileDataError: err => console.error(err),
   maxZoom: null,
@@ -51,7 +52,7 @@ export default class TileLayer extends CompositeLayer {
       const { viewport } = context;
       const z = this.getLayerZoomLevel();
       if (viewport.id !== 'DEFAULT-INITIAL-VIEWPORT') {
-        this.state.tileCache.update(viewport, (tiles) => {
+        this.state.tileCache.update(viewport, tiles => {
           const currTiles = tiles.filter(tile => tile.z === z);
           const allCurrTilesLoaded = currTiles.every(tile => tile.isLoaded);
           this.setState({ tiles, isLoaded: allCurrTilesLoaded });
@@ -79,27 +80,27 @@ export default class TileLayer extends CompositeLayer {
     const { maxZoom, minZoom } = this.props;
     if (maxZoom && parseInt(maxZoom, 10) === maxZoom && z > maxZoom) {
       return maxZoom;
-    } else if (minZoom && parseInt(minZoom, 10) === minZoom && z < minZoom) {
+    }
+    if (minZoom && parseInt(minZoom, 10) === minZoom && z < minZoom) {
       return minZoom;
     }
     return z;
   }
 
   tile2long(x, z) {
-    return (x / Math.pow(2, z) * 360 - 180);
+    return (x / Math.pow(2, z)) * 360 - 180;
   }
 
   tile2lat(y, z) {
-    const n = Math.PI - 2 * Math.PI * y / Math.pow(2, z);
-    return (180 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n))));
+    const n = Math.PI - (2 * Math.PI * y) / Math.pow(2, z);
+    return (180 / Math.PI) * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
   }
 
   renderLayers() {
-    // eslint-disable-next-line no-unused-vars
     const { decodeParams, decodeFunction, opacity } = this.props;
     const zoomLevel = this.getLayerZoomLevel();
 
-    return this.state.tiles.map((tile) => {
+    return this.state.tiles.map(tile => {
       const { x, y, z, _data } = tile;
 
       if (_data && _data.src) {

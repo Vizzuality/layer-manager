@@ -2,16 +2,17 @@ import { CancelToken } from 'axios';
 import { get } from 'lib/request';
 import { replace } from 'utils/query';
 
-export const fetchTile = (layerModel) => {
+export const fetchTile = layerModel => {
   const { layerConfig, params, sqlParams, interactivity } = layerModel;
 
-  const layerConfigParsed = layerConfig.parse === false
-    ? layerConfig
-    : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
+  const layerConfigParsed =
+    layerConfig.parse === false
+      ? layerConfig
+      : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
   const layerTpl = JSON.stringify({
     version: '1.3.0',
     stat_tag: 'API',
-    layers: layerConfigParsed.body.layers.map((l) => {
+    layers: layerConfigParsed.body.layers.map(l => {
       if (!!interactivity && interactivity.length) {
         return { ...l, options: { ...l.options, interactivity } };
       }
@@ -29,7 +30,7 @@ export const fetchTile = (layerModel) => {
   const layerRequestSource = CancelToken.source();
   layerModel.set('layerRequest', layerRequestSource);
 
-  const newLayerRequest = get(url, { cancelToken: layerRequestSource.token }).then((res) => {
+  const newLayerRequest = get(url, { cancelToken: layerRequestSource.token }).then(res => {
     if (res.status > 400) {
       console.error(res);
       return false;

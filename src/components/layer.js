@@ -16,7 +16,11 @@ class Layer extends PureComponent {
     visibility: PropTypes.bool,
     zIndex: PropTypes.number,
 
-    layerManager: PropTypes.shape({})
+    layerManager: PropTypes.shape({
+      add: PropTypes.func.isRequired,
+      update: PropTypes.func.isRequired,
+      remove: PropTypes.func.isRequired
+    })
   };
 
   static defaultProps = {
@@ -56,27 +60,27 @@ class Layer extends PureComponent {
     } = this.props;
 
     if (
-      (layerConfig && !isEqual(layerConfig, prevLayerConfig))
-      || (params && !isEqual(params, prevParams))
-      || (sqlParams && !isEqual(sqlParams, prevSqlParams))
+      (layerConfig && !isEqual(layerConfig, prevLayerConfig)) ||
+      (params && !isEqual(params, prevParams)) ||
+      (sqlParams && !isEqual(sqlParams, prevSqlParams))
     ) {
       this.remove();
       this.add();
     }
 
     const changedProps = {
-      ...opacity !== prevOpacity && {
+      ...(opacity !== prevOpacity && {
         opacity
-      },
-      ...visibility !== prevVisibility && {
+      }),
+      ...(visibility !== prevVisibility && {
         visibility
-      },
-      ...zIndex !== prevZIndex && {
+      }),
+      ...(zIndex !== prevZIndex && {
         zIndex
-      },
-      ...!isEqual(decodeParams, prevDecodeParams) && {
+      }),
+      ...(!isEqual(decodeParams, prevDecodeParams) && {
         decodeParams
-      }
+      })
     };
 
     if (!isEmpty(changedProps)) {
@@ -91,18 +95,18 @@ class Layer extends PureComponent {
   add = () => {
     const { layerManager, ...props } = this.props;
     layerManager.add(props, {});
-  }
+  };
 
-  update = (changedProps) => {
+  update = changedProps => {
     const { layerManager, id } = this.props;
 
     layerManager.update(id, changedProps);
-  }
+  };
 
   remove = () => {
     const { layerManager, id } = this.props;
     layerManager.remove(id);
-  }
+  };
 
   render() {
     return null;

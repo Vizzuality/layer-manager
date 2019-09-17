@@ -51,9 +51,9 @@ class PluginLeaflet {
     const { mapLayer, events } = layerModel;
 
     if (events && mapLayer) {
-      Object.keys(events).forEach((k) => {
+      Object.keys(events).forEach(k => {
         if (mapLayer.group) {
-          mapLayer.eachLayer((l) => {
+          mapLayer.eachLayer(l => {
             l.off(k);
           });
         } else {
@@ -121,15 +121,15 @@ class PluginLeaflet {
   /**
    * A namespace to set DOM events
    * @param {Object} layerModel
-  */
-  setEvents = (layerModel) => {
+   */
+  setEvents = layerModel => {
     const { mapLayer, events } = layerModel;
     if (layerModel.layerConfig.type !== 'cluster') {
       // Remove current events
       if (this.events[layerModel.id]) {
-        Object.keys(this.events[layerModel.id]).forEach((k) => {
+        Object.keys(this.events[layerModel.id]).forEach(k => {
           if (mapLayer.group) {
-            mapLayer.eachLayer((l) => {
+            mapLayer.eachLayer(l => {
               l.off(k);
             });
           } else {
@@ -139,9 +139,9 @@ class PluginLeaflet {
       }
 
       // Add new events
-      Object.keys(events).forEach((k) => {
+      Object.keys(events).forEach(k => {
         if (mapLayer.group) {
-          mapLayer.eachLayer((l) => {
+          mapLayer.eachLayer(l => {
             l.on(k, events[k]);
           });
         } else {
@@ -168,13 +168,7 @@ class PluginLeaflet {
   }
 
   setDecodeParams(layerModel) {
-    const {
-      mapLayer,
-      params,
-      sqlParams,
-      decodeParams,
-      decodeFunction
-    } = layerModel;
+    const { mapLayer, params, sqlParams, decodeParams, decodeFunction } = layerModel;
 
     mapLayer.reDraw({ decodeParams, decodeFunction, params, sqlParams });
 
