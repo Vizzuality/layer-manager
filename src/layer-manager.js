@@ -15,12 +15,19 @@ function checkPluginProperties(plugin) {
       'setParams',
       'setSQLParams',
       'setDecodeParams',
-      'getLayerByProvider'
+      'getLayerByType'
     ];
 
     requiredProperties.forEach(property => {
       if (!plugin[property]) {
         console.error(`The ${property} function is required for layer manager plugins`);
+      }
+    });
+
+    const deprecatedProperties = ['getLayerByProvider'];
+    deprecatedProperties.forEach(property => {
+      if (plugin[property]) {
+        console.error(`The ${property} function is deprecated for layer manager plugins`);
       }
     });
   }
@@ -61,7 +68,9 @@ class LayerManager {
     const layerModel = new LayerModel({ ...layer, ...layerOptions });
     const { id } = layerModel;
 
-    if (this.layers.find(l => l.id === id)) return this.layers;
+    if (this.layers.find(l => l.id === id)) {
+      return this.layers;
+    }
     this.layers.push(layerModel);
 
     this.requestLayer(layerModel);
@@ -85,13 +94,15 @@ class LayerManager {
       this.plugin.setOpacity(layerModel, opacity);
     }
     if (typeof visibility !== 'undefined') {
-      this.plugin.setOpacity(layerModel, !visibility ? 0 : layerModel.opacity);
+      this.plugin.setVisibility(layerModel, visibility);
     }
     if (typeof zIndex !== 'undefined') {
       this.plugin.setZIndex(layerModel, zIndex);
     }
 
-    if (!isEmpty(decodeParams)) this.plugin.setDecodeParams(layerModel);
+    if (!isEmpty(decodeParams)) {
+      this.plugin.setDecodeParams(layerModel);
+    }
   }
 
   /**
@@ -165,13 +176,12 @@ class LayerManager {
     // Cancel previous/existing request
     this.requestCancel(layerModel.id);
 
-    // every render method returns a promise that we store in the array
+    // every request method returns a promise that we store in the array
     // to control when all layers are fetched.
     this.promises[layerModel.id] = method.call(this, layerModel).then(layer => {
       const { _canceled: canceled } = this.promises[layerModel.id];
       if (!canceled) {
         layerModel.set('mapLayer', layer);
-
         this.plugin.add(layerModel, this.layers);
         this.plugin.setZIndex(layerModel, layerModel.zIndex);
         this.plugin.setOpacity(layerModel, layerModel.opacity);
