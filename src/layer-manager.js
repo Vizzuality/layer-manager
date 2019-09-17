@@ -94,7 +94,7 @@ class LayerManager {
       this.plugin.setOpacity(layerModel, opacity);
     }
     if (typeof visibility !== 'undefined') {
-      this.plugin.setOpacity(layerModel, !visibility ? 0 : layerModel.opacity);
+      this.plugin.setVisibility(layerModel, visibility);
     }
     if (typeof zIndex !== 'undefined') {
       this.plugin.setZIndex(layerModel, zIndex);
