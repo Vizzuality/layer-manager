@@ -27,7 +27,7 @@ function checkPluginProperties(plugin) {
     const deprecatedProperties = ['getLayerByProvider'];
     deprecatedProperties.forEach(property => {
       if (plugin[property]) {
-        console.error(`The ${property} function is deprecated for layer manager plugins`);
+        console.warn(`The ${property} function is deprecated for layer manager plugins`);
       }
     });
   }
