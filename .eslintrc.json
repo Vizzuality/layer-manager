@@ -16,6 +16,8 @@
     "prettier"
   ],
   "rules": {
+    "import/prefer-default-export": 0,
+    "no-underscore-dangle": 0,
     "no-debugger": 1,
     "no-eval": [1, { "allowIndirect": true }],
     "import/no-extraneous-dependencies": 0,

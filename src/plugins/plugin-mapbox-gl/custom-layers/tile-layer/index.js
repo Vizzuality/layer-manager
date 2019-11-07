@@ -6,22 +6,21 @@ import BitmapLayer from '../bitmap-layer';
 import TileCache from './utils/tile-cache';
 
 const defaultProps = {
-  renderSubLayers: props => new BitmapLayer(props),
-  getTileData: (/* { x, y, z } */) => Promise.resolve(null),
-  onDataLoaded: () => {},
+  renderSubLayers: { type: 'function', value: props => new BitmapLayer(props) },
+  getTileData: { type: 'function', value: () => Promise.resolve(null) },
+  // TODO - change to onViewportLoad to align with Tile3DLayer
+  onViewportLoaded: { type: 'function', optional: true, value: null },
   // eslint-disable-next-line
-  onGetTileDataError: err => console.error(err),
+  onTileError: { type: 'function', value: err => console.error(err) },
   maxZoom: null,
-  minZoom: null,
+  minZoom: 0,
   maxCacheSize: null
 };
 
 export default class TileLayer extends CompositeLayer {
   initializeState() {
-    const { maxZoom, minZoom, getTileData, onGetTileDataError } = this.props;
     this.state = {
       tiles: [],
-      tileCache: new TileCache({ getTileData, maxZoom, minZoom, onGetTileDataError }),
       isLoaded: false
     };
   }
@@ -31,42 +30,59 @@ export default class TileLayer extends CompositeLayer {
   }
 
   updateState({ props, context, changeFlags }) {
-    const { onDataLoaded, onGetTileDataError } = props;
+    let { tileCache } = this.state;
     if (
-      changeFlags.updateTriggersChanged &&
-      (changeFlags.updateTriggersChanged.all || changeFlags.updateTriggersChanged.getTileData)
+      !tileCache ||
+      (changeFlags.updateTriggersChanged &&
+        (changeFlags.updateTriggersChanged.all || changeFlags.updateTriggersChanged.getTileData))
     ) {
       const { getTileData, maxZoom, minZoom, maxCacheSize } = props;
-      this.state.tileCache.finalize();
-      this.setState({
-        tileCache: new TileCache({
-          getTileData,
-          maxSize: maxCacheSize,
-          maxZoom,
-          minZoom,
-          onGetTileDataError
-        })
+      if (tileCache) {
+        tileCache.finalize();
+      }
+      tileCache = new TileCache({
+        getTileData,
+        maxSize: maxCacheSize,
+        maxZoom,
+        minZoom,
+        onTileLoad: this._onTileLoad.bind(this),
+        onTileError: this._onTileError.bind(this)
+      });
+      this.setState({ tileCache });
+    } else if (changeFlags.updateTriggersChanged) {
+      // if any updateTriggersChanged (other than getTileData), delete the layer
+      this.state.tileCache.tiles.forEach(tile => {
+        tile.layer = null;
       });
     }
-    if (changeFlags.viewportChanged) {
-      const { viewport } = context;
+
+    const { viewport } = context;
+    if (changeFlags.viewportChanged && viewport.id !== 'DEFAULT-INITIAL-VIEWPORT') {
       const z = this.getLayerZoomLevel();
-      if (viewport.id !== 'DEFAULT-INITIAL-VIEWPORT') {
-        this.state.tileCache.update(viewport, tiles => {
-          const currTiles = tiles.filter(tile => tile.z === z);
-          const allCurrTilesLoaded = currTiles.every(tile => tile.isLoaded);
-          this.setState({ tiles, isLoaded: allCurrTilesLoaded });
-          if (!allCurrTilesLoaded) {
-            Promise.all(currTiles.map(tile => tile.data)).then(() => {
-              this.setState({ isLoaded: true });
-              onDataLoaded(currTiles.filter(tile => tile._data).map(tile => tile._data));
-            });
-          } else {
-            onDataLoaded(currTiles.filter(tile => tile._data).map(tile => tile._data));
-          }
-        });
+      tileCache.update(viewport);
+      // The tiles that should be displayed at this zoom level
+      const currTiles = tileCache.tiles.filter(tile => tile.z === z);
+      this.setState({ isLoaded: false, tiles: currTiles });
+      this._onTileLoad();
+    }
+  }
+
+  _onTileLoad() {
+    const { onViewportLoaded } = this.props;
+    const currTiles = this.state.tiles;
+    const allCurrTilesLoaded = currTiles.every(tile => tile.isLoaded);
+    if (this.state.isLoaded !== allCurrTilesLoaded) {
+      this.setState({ isLoaded: allCurrTilesLoaded });
+      if (allCurrTilesLoaded && onViewportLoaded) {
+        onViewportLoaded(currTiles.filter(tile => tile._data).map(tile => tile._data));
       }
     }
+  }
+
+  _onTileError(error) {
+    this.props.onTileError(error);
+    // errorred tiles should not block rendering, are considered "loaded" with empty data
+    this._onTileLoad();
   }
 
   getPickingInfo({ info, sourceLayer }) {
@@ -78,22 +94,14 @@ export default class TileLayer extends CompositeLayer {
   getLayerZoomLevel() {
     const z = Math.floor(this.context.viewport.zoom) + 1;
     const { maxZoom, minZoom } = this.props;
-    if (maxZoom && parseInt(maxZoom, 10) === maxZoom && z > maxZoom) {
-      return maxZoom;
+    if (Number.isFinite(maxZoom) && z > maxZoom) {
+      return Math.floor(maxZoom);
     }
-    if (minZoom && parseInt(minZoom, 10) === minZoom && z < minZoom) {
-      return minZoom;
+
+    if (Number.isFinite(minZoom) && z < minZoom) {
+      return Math.ceil(minZoom);
     }
     return z;
-  }
-
-  tile2long(x, z) {
-    return (x / Math.pow(2, z)) * 360 - 180;
-  }
-
-  tile2lat(y, z) {
-    const n = Math.PI - (2 * Math.PI * y) / Math.pow(2, z);
-    return (180 / Math.PI) * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
   }
 
   renderLayers() {
@@ -101,24 +109,13 @@ export default class TileLayer extends CompositeLayer {
     const zoomLevel = this.getLayerZoomLevel();
 
     return this.state.tiles.map(tile => {
-      const { x, y, z, _data } = tile;
+      const { x, y, z, bbox, _data } = tile;
 
       if (_data && _data.src) {
-        // Supported formats:
-        // - Coordinates of the bounding box of the bitmap `[minX, minY, maxX, maxY]`
-        // - Coordinates of four corners of the bitmap, should follow the sequence of `[[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY]]`
-        // each position could be `[x, y]` or `[x, y, z]` format.
-
-        const topLeft = [this.tile2long(x, z), this.tile2lat(y, z)];
-        const topRight = [this.tile2long(x + 1, z), this.tile2lat(y, z)];
-        const bottomLeft = [this.tile2long(x, z), this.tile2lat(y + 1, z)];
-        const bottomRight = [this.tile2long(x + 1, z), this.tile2lat(y + 1, z)];
-        const bounds = [bottomLeft, topLeft, topRight, bottomRight];
-
         return new BitmapLayer({
           id: `${this.id}-${x}-${y}-${z}`,
           image: _data.src,
-          bounds,
+          bounds: bbox,
           visible: z === zoomLevel,
           zoom: zoomLevel,
           decodeParams,
