@@ -24,8 +24,8 @@ import GL from '@luma.gl/constants';
 import { Layer } from '@deck.gl/core';
 import { Model, Geometry, Texture2D, fp64 } from 'luma.gl';
 import { loadImage } from '@loaders.gl/images';
-import vs from './bitmap-layer-vertex';
-import shaderTemplate from './bitmap-layer-fragment';
+import decodeVX from './decode-layer-vertex';
+import decodeFR from './decode-layer-fragment';
 
 const { fp64LowPart } = fp64;
 
@@ -55,10 +55,10 @@ const defaultProps = {
  * @param {number} props.transparentColor - color to interpret transparency to
  * @param {number} props.tintColor - color bias
  */
-export default class BitmapLayer extends Layer {
+export default class DecodeLayer extends Layer {
   getShaders() {
     const projectModule = this.use64bitProjection() ? 'project64' : 'project32';
-    const fs = shaderTemplate
+    const fs = decodeFR
       .replace(
         '{decodeParams}',
         Object.keys(this.props.decodeParams)
@@ -67,7 +67,7 @@ export default class BitmapLayer extends Layer {
       )
       .replace('{decodeFunction}', this.props.decodeFunction || '');
 
-    return { vs, fs, modules: [projectModule, 'picking'] };
+    return { vs: decodeVX, fs, modules: [projectModule, 'picking'] };
   }
 
   initializeState() {
@@ -262,5 +262,5 @@ export default class BitmapLayer extends Layer {
   }
 }
 
-BitmapLayer.layerName = 'BitmapLayer';
-BitmapLayer.defaultProps = defaultProps;
+DecodeLayer.layerName = 'DecodeLayer';
+DecodeLayer.defaultProps = defaultProps;

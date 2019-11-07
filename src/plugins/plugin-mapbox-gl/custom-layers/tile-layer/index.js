@@ -1,12 +1,12 @@
 /* eslint-disable no-param-reassign,no-restricted-properties,class-methods-use-this,no-underscore-dangle */
 import { CompositeLayer } from 'deck.gl';
 
-import BitmapLayer from '../bitmap-layer';
+import DecodeLayer from '../decode-layer';
 
 import TileCache from './utils/tile-cache';
 
 const defaultProps = {
-  renderSubLayers: { type: 'function', value: props => new BitmapLayer(props) },
+  renderSubLayers: { type: 'function', value: props => new DecodeLayer(props) },
   getTileData: { type: 'function', value: () => Promise.resolve(null) },
   // TODO - change to onViewportLoad to align with Tile3DLayer
   onViewportLoaded: { type: 'function', optional: true, value: null },
@@ -112,7 +112,7 @@ export default class TileLayer extends CompositeLayer {
       const { x, y, z, bbox, _data } = tile;
 
       if (_data && _data.src) {
-        return new BitmapLayer({
+        return new DecodeLayer({
           id: `${this.id}-${x}-${y}-${z}`,
           image: _data.src,
           bounds: bbox,

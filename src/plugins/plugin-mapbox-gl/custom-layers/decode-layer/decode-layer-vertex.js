@@ -9,9 +9,9 @@ varying vec2 vTexCoord;
 
 void main(void) {
   gl_Position = project_position_to_clipspace(positions, positions64xyLow, vec3(0.0));
- 
+
   vTexCoord = texCoords;
- 
+
   picking_setPickingColor(vec3(0., 0., 1.));
 }
 `;
