@@ -24,7 +24,8 @@ class PluginMapboxGL {
     gee: rasterLayer,
     cartodb: vectorLayer,
     mapbox: vectorLayer,
-    geojson: geoJsonLayer
+    geojson: geoJsonLayer,
+    video: videoLayer
   };
 
   type = {

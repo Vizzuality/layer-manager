@@ -4,6 +4,7 @@ import { replace } from 'utils/query';
 import { MapboxLayer } from '@deck.gl/mapbox';
 
 import TileLayer from './custom-layers/tile-layer';
+import BitmapLayer from './custom-layers/bitmap-layer';
 
 const VideoLayer = layerModel => {
   const { layerConfig, params, sqlParams, id } = layerModel;
@@ -36,18 +37,15 @@ const VideoLayer = layerModel => {
       new MapboxLayer({
         id: `${id}-video`,
         type: TileLayer,
-        // renderSubLayers: ({ id, data, tile, visible, zoom }) => {
-        //   if (data && data.src) {
-        //     return new BitmapLayer({
-        //       id,
-        //       image: data.src,
-        //       bounds: tile.bbox,
-        //       visible,
-        //       zoom
-        //     });
-        //   }
-        //   return null;
-        // },
+        renderSubLayers: ({ id: subLayerId, data, tile, visible, zoom }) => {
+          return new BitmapLayer({
+            id: subLayerId,
+            image: data.src,
+            bounds: tile.bbox,
+            visible,
+            zoom
+          });
+        },
         minZoom: minzoom,
         maxZoom: maxzoom,
         opacity: layerModel.opacity
