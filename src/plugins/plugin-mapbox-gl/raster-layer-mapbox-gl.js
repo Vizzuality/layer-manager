@@ -4,6 +4,7 @@ import { replace } from 'utils/query';
 import { MapboxLayer } from '@deck.gl/mapbox';
 
 import TileLayer from './custom-layers/tile-layer';
+import DecodedLayer from './custom-layers/decoded-layer';
 
 const getTileData = ({ x, y, z }, url) => {
   const mapSource = url
@@ -76,6 +77,21 @@ const RasterLayer = layerModel => {
           minZoom: minzoom,
           maxZoom: maxzoom,
           getTileData: e => getTileData(e, url || body.url),
+          renderSubLayers: ({ id: subLayerId, data, tile, visible, zoom }) => {
+            if (data && data.src) {
+              return new DecodedLayer({
+                id: subLayerId,
+                image: data.src,
+                bounds: tile.bbox,
+                visible,
+                zoom,
+                decodeParams,
+                decodeFunction,
+                opacity
+              });
+            }
+            return null;
+          },
           opacity: layerModel.opacity,
           decodeParams,
           decodeFunction

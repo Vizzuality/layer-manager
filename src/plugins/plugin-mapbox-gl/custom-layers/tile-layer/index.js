@@ -1,12 +1,10 @@
 /* eslint-disable no-param-reassign,no-restricted-properties,class-methods-use-this,no-underscore-dangle */
 import { CompositeLayer } from 'deck.gl';
 
-import DecodeLayer from '../decode-layer';
-
 import TileCache from './utils/tile-cache';
 
 const defaultProps = {
-  renderSubLayers: { type: 'function', value: props => new DecodeLayer(props) },
+  renderSubLayers: { type: 'function', value: () => null },
   getTileData: { type: 'function', value: () => Promise.resolve(null) },
   // TODO - change to onViewportLoad to align with Tile3DLayer
   onViewportLoaded: { type: 'function', optional: true, value: null },
@@ -105,25 +103,30 @@ export default class TileLayer extends CompositeLayer {
   }
 
   renderLayers() {
-    const { decodeParams, decodeFunction, opacity } = this.props;
-    const zoomLevel = this.getLayerZoomLevel();
+    const { visible, renderSubLayers } = this.props;
+    const z = this.getLayerZoomLevel();
 
     return this.state.tiles.map(tile => {
-      const { x, y, z, bbox, _data } = tile;
-
-      if (_data && _data.src) {
-        return new DecodeLayer({
-          id: `${this.id}-${x}-${y}-${z}`,
-          image: _data.src,
-          bounds: bbox,
-          visible: z === zoomLevel,
-          zoom: zoomLevel,
-          decodeParams,
-          decodeFunction,
-          opacity
-        });
+      // For a tile to be visible:
+      // - parent layer must be visible
+      // - tile must be visible in the current viewport
+      // - if all tiles are loaded, only display the tiles from the current z level
+      const isVisible = visible && tile.isVisible && (!this.state.isLoaded || tile.z === z);
+      // cache the rendered layer in the tile
+      if (!tile.layer) {
+        tile.layer = renderSubLayers(
+          Object.assign({}, this.props, {
+            id: `${this.id}-${tile.x}-${tile.y}-${tile.z}`,
+            data: tile.data,
+            visible: isVisible,
+            tile,
+            zoom: z
+          })
+        );
+      } else if (tile.layer.props.visible !== isVisible) {
+        tile.layer = tile.layer.clone({ visible: isVisible });
       }
-      return null;
+      return tile.layer;
     });
   }
 }

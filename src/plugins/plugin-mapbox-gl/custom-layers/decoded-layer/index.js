@@ -24,8 +24,8 @@ import GL from '@luma.gl/constants';
 import { Layer } from '@deck.gl/core';
 import { Model, Geometry, Texture2D, fp64 } from 'luma.gl';
 import { loadImage } from '@loaders.gl/images';
-import decodeVX from './decode-layer-vertex';
-import decodeFR from './decode-layer-fragment';
+import decodeVX from './decoded-layer-vertex';
+import decodeFR from './decoded-layer-fragment';
 
 const { fp64LowPart } = fp64;
 

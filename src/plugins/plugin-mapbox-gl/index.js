@@ -4,6 +4,7 @@ import sortBy from 'lodash/sortBy';
 import rasterLayer from './raster-layer-mapbox-gl';
 import vectorLayer from './vector-layer-mapbox-gl';
 import geoJsonLayer from './geojson-layer-mapbox-gl';
+import videoLayer from './video-layer-mapbox-gl';
 
 class PluginMapboxGL {
   constructor(map, options) {
@@ -29,7 +30,8 @@ class PluginMapboxGL {
   type = {
     raster: rasterLayer,
     vector: vectorLayer,
-    geojson: geoJsonLayer
+    geojson: geoJsonLayer,
+    video: videoLayer
   };
 
   /**
