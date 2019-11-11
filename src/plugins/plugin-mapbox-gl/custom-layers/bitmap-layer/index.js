@@ -73,7 +73,7 @@ export default class BitmapLayer extends Layer {
 
     this.setState({
       numInstances: 1,
-      positions: new Float64Array(12)
+      positions: new Float32Array(12)
     });
   }
 

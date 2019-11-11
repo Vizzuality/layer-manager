@@ -77,7 +77,15 @@ const RasterLayer = layerModel => {
           minZoom: minzoom,
           maxZoom: maxzoom,
           getTileData: e => getTileData(e, url || body.url),
-          renderSubLayers: ({ id: subLayerId, data, tile, visible, zoom }) => {
+          renderSubLayers: ({
+            id: subLayerId,
+            data,
+            tile,
+            visible,
+            zoom,
+            decodeParams: decodeParamsSub,
+            decodeFunction: decodeFunctionSub
+          }) => {
             if (data && data.src) {
               return new DecodedLayer({
                 id: subLayerId,
@@ -85,8 +93,8 @@ const RasterLayer = layerModel => {
                 bounds: tile.bbox,
                 visible,
                 zoom,
-                decodeParams,
-                decodeFunction,
+                decodeParams: decodeParamsSub,
+                decodeFunction: decodeFunctionSub,
                 opacity
               });
             }
