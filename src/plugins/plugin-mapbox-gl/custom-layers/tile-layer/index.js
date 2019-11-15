@@ -113,20 +113,20 @@ export default class TileLayer extends CompositeLayer {
       // - if all tiles are loaded, only display the tiles from the current z level
       const isVisible = visible && tile.isVisible && (!this.state.isLoaded || tile.z === z);
       // cache the rendered layer in the tile
-      // if (!tile.layer) {
-      // I have an error when I try this condition. I think is related to return the same tile.layer
-      // https://github.com/uber/deck.gl/blob/c616dbfbcbdc9d8533b88ba8a142c5527764bbd8/modules/core/src/lib/layer-manager.js#L67-L70
-      tile.layer = renderSubLayers({
-        ...this.props,
-        id: `${this.id}-${tile.x}-${tile.y}-${tile.z}`,
-        data: tile.data,
-        visible: isVisible,
-        tile,
-        zoom: z
-      });
-      // } else if (tile.layer.props.visible !== isVisible) {
-      //   tile.layer = tile.layer.clone({ visible: isVisible });
-      // }
+      if (!tile.layer) {
+        // I have an error when I try this condition. I think is related to return the same tile.layer
+        // https://github.com/uber/deck.gl/blob/c616dbfbcbdc9d8533b88ba8a142c5527764bbd8/modules/core/src/lib/layer-manager.js#L67-L70
+        tile.layer = renderSubLayers({
+          ...this.props,
+          id: `${this.id}-${tile.x}-${tile.y}-${tile.z}`,
+          data: tile.data,
+          visible: isVisible,
+          tile,
+          zoom: z
+        });
+      } else if (tile.layer.props.visible !== isVisible) {
+        tile.layer = tile.layer.clone({ visible: isVisible });
+      }
       return tile.layer;
     });
   }

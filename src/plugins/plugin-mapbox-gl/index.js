@@ -196,7 +196,7 @@ class PluginMapboxGL {
     });
 
     // set for all decode layers that don't exist inside mapStyle()
-    const decodeLayers = allLayers.filter(l => !!l.decodeFunction);
+    const decodeLayers = allLayers.filter(l => !!l.decodeFunction || l.provider === 'video');
 
     if (decodeLayers && this.map) {
       decodeLayers.forEach(layerModel => {
@@ -231,11 +231,11 @@ class PluginMapboxGL {
       circle: ['circle', 'circle-stroke']
     };
 
-    const { layerConfig, mapLayer, decodeFunction } = layerModel;
+    const { provider, layerConfig, mapLayer, decodeFunction } = layerModel;
     const { body } = layerConfig;
     const { vectorLayers = [] } = body;
 
-    if (mapLayer.layers && !decodeFunction) {
+    if (mapLayer.layers && !decodeFunction && provider !== 'video') {
       mapLayer.layers.forEach(l => {
         // Select the style to change depending on the type of layer
         const paintStyleNames = PAINT_STYLE_NAMES[l.type] || [l.type];
@@ -253,7 +253,7 @@ class PluginMapboxGL {
       });
     }
 
-    if (decodeFunction) {
+    if (decodeFunction || provider === 'video') {
       const layer = mapLayer.layers[1];
 
       if (layer && typeof layer.setProps === 'function') {

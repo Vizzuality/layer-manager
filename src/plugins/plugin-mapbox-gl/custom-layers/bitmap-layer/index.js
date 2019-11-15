@@ -1,5 +1,4 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable prefer-destructuring */
+/* eslint-disable */
 // Copyright (c) 2015 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,7 +22,7 @@
 /* global HTMLVideoElement */
 import GL from '@luma.gl/constants';
 import { Layer } from '@deck.gl/core';
-import { Model, Geometry, Texture2D } from 'luma.gl';
+import { Model, Geometry, Texture2D } from '@luma.gl/core';
 
 import vs from './bitmap-layer-vertex';
 import fs from './bitmap-layer-fragment';
@@ -73,7 +72,7 @@ export default class BitmapLayer extends Layer {
 
     this.setState({
       numInstances: 1,
-      positions: new Float32Array(12)
+      positions: new Float64Array(12)
     });
   }
 
