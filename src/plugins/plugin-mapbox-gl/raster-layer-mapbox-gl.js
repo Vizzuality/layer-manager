@@ -1,8 +1,9 @@
 import Promise from 'utils/promise';
 
 import { replace } from 'utils/query';
-import { MapboxLayer } from '@deck.gl/mapbox';
+// import { MapboxLayer } from '@deck.gl/mapbox';
 
+import MapboxLayer from './custom-layers/mapbox-layer';
 import TileLayer from './custom-layers/tile-layer';
 import DecodedLayer from './custom-layers/decoded-layer';
 

@@ -28,7 +28,7 @@ import vs from './bitmap-layer-vertex';
 import fs from './bitmap-layer-fragment';
 
 const DEFAULT_TEXTURE_PARAMETERS = {
-  [GL.TEXTURE_MIN_FILTER]: GL.LINEAR_MIPMAP_LINEAR,
+  [GL.TEXTURE_MIN_FILTER]: GL.LINEAR,
   [GL.TEXTURE_MAG_FILTER]: GL.LINEAR,
   [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
   [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE
@@ -189,11 +189,17 @@ export default class BitmapLayer extends Layer {
         bitmapTexture.resize({ width: image.videoWidth, height: image.videoHeight, mipmaps: true });
         bitmapTexture.setSubImageData({
           data: image,
-          paramters: DEFAULT_TEXTURE_PARAMETERS
+          parameters: {
+            ...DEFAULT_TEXTURE_PARAMETERS,
+            [GL.UNPACK_FLIP_Y_WEBGL]: true
+          }
         });
       } else {
         bitmapTexture.setSubImageData({
-          data: image
+          data: image,
+          parameters: {
+            [GL.UNPACK_FLIP_Y_WEBGL]: true
+          }
         });
       }
 
@@ -232,6 +238,10 @@ export default class BitmapLayer extends Layer {
           width: 1,
           height: 1,
           parameters: DEFAULT_TEXTURE_PARAMETERS,
+          unpackFlipY: false,
+          pixelStore: {
+            [GL.UNPACK_FLIP_Y_WEBGL]: false
+          },
           mipmaps: false
         })
       });
