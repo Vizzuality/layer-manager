@@ -47,6 +47,9 @@ const VideoLayer = layerModel => {
           // const url = 'https://raw.githubusercontent.com/uber-common/deck.gl-data/master/examples/ascii/Felix_BoldKingCole.mp4';
           const url =
             'https://storage.googleapis.com/skydipper_materials/movie-tiles/EVI/{z}/{x}/{y}.mp4';
+          // const url =
+          // 'https://storage.googleapis.com/skydipper_materials/movie-tiles/MODIS/{z}/{x}/{y}.mp4';
+
           const urlParsed = url
             .replace('{z}', tile.z)
             .replace('{x}', tile.x)
