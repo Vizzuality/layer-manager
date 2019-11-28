@@ -5,7 +5,7 @@ import { MapboxLayer } from '@deck.gl/mapbox';
 
 import TileLayer from './custom-layers/tile-layer';
 
-const getTileData = ({ x, y, z }, url) => {
+const getTileData = ({ x, y, z }, url, parseTileData) => {
   const mapSource = url
     .replace('{z}', z)
     .replace('{x}', x)
@@ -18,8 +18,15 @@ const getTileData = ({ x, y, z }, url) => {
       if (type !== 'application/xml' && type !== 'text/xml' && type !== 'text/html') {
         const src = URL.createObjectURL(response);
         const image = new Image();
-
         image.src = src;
+
+        // we want to read the rgba from each pixel of a given tile
+        if (parseTileData) {
+          image.onload = () => {
+            parseTileData(image);
+          };
+        }
+
         return image;
       }
 
@@ -28,8 +35,16 @@ const getTileData = ({ x, y, z }, url) => {
 };
 
 const RasterLayer = layerModel => {
-  const { layerConfig, params, sqlParams, decodeParams, id, opacity, decodeFunction } = layerModel;
-
+  const {
+    layerConfig,
+    params,
+    sqlParams,
+    decodeParams,
+    id,
+    opacity,
+    decodeFunction,
+    parseTileData
+  } = layerModel;
   const layerConfigParsed =
     layerConfig.parse === false
       ? layerConfig
@@ -75,7 +90,7 @@ const RasterLayer = layerModel => {
           type: TileLayer,
           minZoom: minzoom,
           maxZoom: maxzoom,
-          getTileData: e => getTileData(e, url || body.url),
+          getTileData: e => getTileData(e, url || body.url, parseTileData),
           opacity: layerModel.opacity,
           decodeParams,
           decodeFunction
