@@ -58,7 +58,8 @@ class LayerManager {
       visibility: true,
       zIndex: 0,
       interactivity: null
-    }
+    },
+    onAfterAdd
   ) {
     if (typeof layer === 'undefined') {
       console.error('layer is required');
@@ -73,7 +74,7 @@ class LayerManager {
     }
     this.layers.push(layerModel);
 
-    this.requestLayer(layerModel);
+    this.requestLayer(layerModel, onAfterAdd);
 
     return this.layers;
   }
@@ -161,7 +162,7 @@ class LayerManager {
     this.plugin.setZIndex(layerModel, zIndex);
   }
 
-  requestLayer(layerModel) {
+  requestLayer(layerModel, onAfterAdd) {
     const { layerType, provider } = layerModel;
     const method =
       this.plugin.getLayerByType(layerType) || this.plugin.getLayerByProvider(provider, layerModel);
@@ -186,6 +187,8 @@ class LayerManager {
         this.plugin.setZIndex(layerModel, layerModel.zIndex);
         this.plugin.setOpacity(layerModel, layerModel.opacity);
         this.plugin.setVisibility(layerModel, layerModel.visibility);
+
+        onAfterAdd(layer);
       }
     });
 

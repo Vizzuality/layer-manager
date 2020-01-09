@@ -16,6 +16,8 @@ class Layer extends PureComponent {
     visibility: PropTypes.bool,
     zIndex: PropTypes.number,
 
+    onAfterAdd: PropTypes.func,
+
     layerManager: PropTypes.shape({
       add: PropTypes.func.isRequired,
       update: PropTypes.func.isRequired,
@@ -31,7 +33,9 @@ class Layer extends PureComponent {
     visibility: true,
     zIndex: undefined,
 
-    layerManager: null
+    layerManager: null,
+
+    onAfterAdd: () => {}
   };
 
   componentDidMount() {
@@ -93,8 +97,8 @@ class Layer extends PureComponent {
   }
 
   add = () => {
-    const { layerManager, ...props } = this.props;
-    layerManager.add(props, {});
+    const { layerManager, onAfterAdd, ...props } = this.props;
+    layerManager.add(props, {}, onAfterAdd);
   };
 
   update = changedProps => {
