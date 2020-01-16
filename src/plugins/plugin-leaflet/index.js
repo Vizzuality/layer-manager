@@ -76,6 +76,14 @@ class PluginLeaflet {
   }
 
   /**
+   * Get method by type
+   * @param {String} type
+   */
+  getLayerByType(type) {
+    return this.type[type];
+  }
+
+  /**
    * A namespace to set z-index
    * @param {Object} layerModel
    * @param {Number} zIndex
