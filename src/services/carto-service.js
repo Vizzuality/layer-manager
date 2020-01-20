@@ -3,16 +3,17 @@ import { get } from 'lib/request';
 import { replace } from 'utils/query';
 
 export const fetchTile = layerModel => {
-  const { layerConfig, params, sqlParams, interactivity } = layerModel;
+  const { source, params, sqlParams, interactivity } = layerModel;
 
-  const layerConfigParsed =
-    layerConfig.parse === false
-      ? layerConfig
-      : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
+  const sourceParsed =
+    source.parse === false
+      ? source
+      : JSON.parse(replace(JSON.stringify(source), params, sqlParams));
+
   const layerTpl = JSON.stringify({
     version: '1.3.0',
     stat_tag: 'API',
-    layers: layerConfigParsed.body.layers.map(l => {
+    layers: sourceParsed.providerOptions.layers.map(l => {
       if (!!interactivity && interactivity.length) {
         return { ...l, options: { ...l.options, interactivity } };
       }
@@ -20,7 +21,7 @@ export const fetchTile = layerModel => {
     })
   });
   const apiParams = `?stat_tag=API&config=${encodeURIComponent(layerTpl)}`;
-  const url = `https://${layerConfigParsed.account}.carto.com/api/v1/map${apiParams}`;
+  const url = `https://${sourceParsed.providerOptions.account}.carto.com/api/v1/map${apiParams}`;
 
   const { layerRequest } = layerModel;
   if (layerRequest) {

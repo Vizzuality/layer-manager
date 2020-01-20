@@ -90,11 +90,7 @@ class PluginMapboxGL {
    * Get method by provider
    * @param {String} provider
    */
-  getLayerByProvider(provider, layerModel) {
-    // required to maintain current layerSpec without creating a breaking change
-    if (provider === 'leaflet' && layerModel.layerConfig.type === 'cluster') {
-      return this.provider.geojson;
-    }
+  getLayerByProvider(provider) {
     return this.provider[provider];
   }
 
@@ -236,9 +232,8 @@ class PluginMapboxGL {
       circle: ['circle', 'circle-stroke']
     };
 
-    const { layerConfig, mapLayer, decodeFunction } = layerModel;
-    const { body } = layerConfig;
-    const { vectorLayers = [] } = body;
+    const { render, mapLayer, decodeFunction } = layerModel;
+    const { layers = [] } = render;
 
     if (mapLayer.layers && !decodeFunction) {
       mapLayer.layers.forEach(l => {
@@ -247,7 +242,7 @@ class PluginMapboxGL {
 
         // Select the paint property from the original layer
         const { paint = {} } =
-          vectorLayers.find((v, i) => (v.id || `${l.source}-${v.type}-${i}`) === l.id) || {};
+          layers.find((v, i) => (v.id || `${l.source}-${v.type}-${i}`) === l.id) || {};
 
         // Loop each style name and check if there is an opacity in the original layer
         paintStyleNames.forEach(name => {

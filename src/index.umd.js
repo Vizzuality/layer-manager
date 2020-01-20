@@ -5,12 +5,11 @@
 
 import PluginLeaflet from './plugins/plugin-leaflet';
 import PluginMapboxGl from './plugins/plugin-mapbox-gl';
-import PluginCesium from './plugins/plugin-cesium';
+
 import { replace, substitution, concatenation } from './utils/query';
 import LayerManager from './layer-manager';
 
 LayerManager.PluginLeaflet = PluginLeaflet;
-LayerManager.PluginCesium = PluginCesium;
 LayerManager.PluginMapboxGl = PluginMapboxGl;
 LayerManager.replace = replace;
 LayerManager.substitution = substitution;

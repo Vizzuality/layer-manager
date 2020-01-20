@@ -163,9 +163,8 @@ class LayerManager {
   }
 
   requestLayer(layerModel, onAfterAdd) {
-    const { layerType, provider } = layerModel;
-    const method =
-      this.plugin.getLayerByType(layerType) || this.plugin.getLayerByProvider(provider, layerModel);
+    const { type, provider } = layerModel;
+    const method = this.plugin.getLayerByType(type);
 
     if (!method) {
       this.promises[layerModel.id] = Promise.reject(

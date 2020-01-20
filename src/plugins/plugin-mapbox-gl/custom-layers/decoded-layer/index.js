@@ -57,7 +57,7 @@ const defaultProps = {
  */
 export default class DecodeLayer extends Layer {
   getShaders() {
-    const projectModule = this.use64bitProjection() ? 'project64' : 'project32';
+    const projectModule = 'project32';
     const fs = decodeFR
       .replace(
         '{decodeParams}',

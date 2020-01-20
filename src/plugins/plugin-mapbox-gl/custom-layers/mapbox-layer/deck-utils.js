@@ -94,13 +94,13 @@ export function drawLayer(deck, map, layer) {
     clearCanvas: false
   });
 
-  if (ANIMATION) cancelAnimationFrame(ANIMATION);
+  // if (ANIMATION) cancelAnimationFrame(ANIMATION);
 
-  ANIMATION = requestAnimationFrame(() => {
-    deck._drawLayers('mapbox-repaint', {
-      clearCanvas: false
-    });
-  });
+  // ANIMATION = requestAnimationFrame(() => {
+  //   deck._drawLayers('mapbox-repaint', {
+  //     clearCanvas: false
+  //   });
+  // });
 }
 
 function getViewState(map) {

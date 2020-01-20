@@ -46,7 +46,7 @@ layerManager.add([
         commodity: 'rice'
       },
     },
-    layerConfig: {
+    source: {
       type: "leaflet",
       body: {
         use_cors: false,

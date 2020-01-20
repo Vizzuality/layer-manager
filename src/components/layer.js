@@ -7,7 +7,7 @@ class Layer extends PureComponent {
   static propTypes = {
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 
-    layerConfig: PropTypes.shape({}).isRequired,
+    source: PropTypes.shape({}).isRequired,
     params: PropTypes.shape({}),
     sqlParams: PropTypes.shape({}),
     decodeParams: PropTypes.shape({}),
@@ -44,7 +44,7 @@ class Layer extends PureComponent {
 
   componentDidUpdate(prevProps) {
     const {
-      layerConfig: prevLayerConfig,
+      source: prevSource,
       params: prevParams,
       sqlParams: prevSqlParams,
       decodeParams: prevDecodeParams,
@@ -53,18 +53,10 @@ class Layer extends PureComponent {
       zIndex: prevZIndex
     } = prevProps;
 
-    const {
-      layerConfig,
-      params,
-      sqlParams,
-      decodeParams,
-      opacity,
-      visibility,
-      zIndex
-    } = this.props;
+    const { source, params, sqlParams, decodeParams, opacity, visibility, zIndex } = this.props;
 
     if (
-      (layerConfig && !isEqual(layerConfig, prevLayerConfig)) ||
+      (source && !isEqual(source, prevSource)) ||
       (params && !isEqual(params, prevParams)) ||
       (sqlParams && !isEqual(sqlParams, prevSqlParams))
     ) {

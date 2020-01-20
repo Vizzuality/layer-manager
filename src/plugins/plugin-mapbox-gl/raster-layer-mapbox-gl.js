@@ -30,26 +30,26 @@ const getTileData = ({ x, y, z }, url) => {
 };
 
 const RasterLayer = layerModel => {
-  const { layerConfig, params, sqlParams, decodeParams, id, opacity, decodeFunction } = layerModel;
+  const {
+    source = {},
+    render = {},
+    params,
+    sqlParams,
+    decodeParams,
+    id,
+    opacity,
+    decodeFunction
+  } = layerModel;
 
-  const layerConfigParsed =
-    layerConfig.parse === false
-      ? layerConfig
-      : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
-  let tileUrl;
+  const sourceParsed =
+    source.parse === false
+      ? source
+      : JSON.parse(replace(JSON.stringify(source), params, sqlParams));
 
-  const { body, url } = layerConfigParsed || {};
-  const { paint, minzoom, maxzoom } = body || {};
-
-  switch (layerModel.provider) {
-    case 'gee':
-      tileUrl =
-        url || body.url || `https://api.resourcewatch.org/v1/layer/${id}/tile/gee/{z}/{x}/{y}`;
-      break;
-    default:
-      tileUrl = url || body.url;
-      break;
-  }
+  const renderParsed =
+    render.parse === false
+      ? render
+      : JSON.parse(replace(JSON.stringify(render), params, sqlParams));
 
   let layer = {};
 
@@ -65,46 +65,42 @@ const RasterLayer = layerModel => {
           paint: {
             'background-color': 'transparent'
           },
-          ...(maxzoom && {
-            maxzoom
-          }),
-          ...(minzoom && {
-            minzoom
-          })
+          ...renderParsed
         },
-        new MapboxLayer({
-          id: `${id}-raster-decode`,
-          type: TileLayer,
-          minZoom: minzoom,
-          maxZoom: maxzoom,
-          getTileData: e => getTileData(e, url || body.url),
-          renderSubLayers: ({
-            id: subLayerId,
-            data,
-            tile,
-            visible,
-            zoom,
-            decodeParams: decodeParamsSub,
-            decodeFunction: decodeFunctionSub
-          }) => {
-            if (data && data.src) {
-              return new DecodedLayer({
+        ...sourceParsed.tiles.map(
+          t =>
+            new MapboxLayer({
+              id: `${id}-raster-decode`,
+              type: TileLayer,
+              getTileData: e => getTileData(e, t),
+              renderSubLayers: ({
                 id: subLayerId,
-                image: data.src,
-                bounds: tile.bbox,
+                data,
+                tile,
                 visible,
                 zoom,
                 decodeParams: decodeParamsSub,
-                decodeFunction: decodeFunctionSub,
-                opacity
-              });
-            }
-            return null;
-          },
-          opacity: layerModel.opacity,
-          decodeParams,
-          decodeFunction
-        })
+                decodeFunction: decodeFunctionSub
+              }) => {
+                if (data && data.src) {
+                  return new DecodedLayer({
+                    id: subLayerId,
+                    image: data.src,
+                    bounds: tile.bbox,
+                    visible,
+                    zoom,
+                    decodeParams: decodeParamsSub,
+                    decodeFunction: decodeFunctionSub,
+                    opacity
+                  });
+                }
+                return null;
+              },
+              opacity: layerModel.opacity,
+              decodeParams,
+              decodeFunction
+            })
+        )
       ]
     };
   } else {
@@ -113,24 +109,15 @@ const RasterLayer = layerModel => {
       type: 'raster',
       source: {
         type: 'raster',
-        tiles: [tileUrl],
-        tileSize: 256
+        tileSize: 256,
+        ...sourceParsed
       },
       layers: [
         {
           id: `${id}-raster`,
           type: 'raster',
           source: id,
-          ...(maxzoom && {
-            maxzoom
-          }),
-          ...(minzoom && {
-            minzoom
-          }),
-          paint: {
-            ...paint,
-            'raster-opacity': opacity || 1
-          }
+          ...renderParsed
         }
       ]
     };
