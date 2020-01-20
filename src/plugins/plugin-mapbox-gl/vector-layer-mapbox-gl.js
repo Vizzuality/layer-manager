@@ -1,7 +1,7 @@
 import Promise from 'utils/promise';
 
 import { replace } from 'utils/query';
-import { fetchTile } from 'services/carto-service';
+import { fetchCartoAnonymous } from 'services/carto-service';
 import { getVectorStyleLayers } from 'utils/vector-style-layers';
 
 const VectorLayer = layerModel => {
@@ -11,6 +11,8 @@ const VectorLayer = layerModel => {
     source.parse === false
       ? source
       : JSON.parse(replace(JSON.stringify(source), params, sqlParams));
+
+  const { provider } = sourceParsed;
 
   const renderParsed =
     render.parse === false
@@ -29,12 +31,12 @@ const VectorLayer = layerModel => {
     layers: getVectorStyleLayers(layers, layerModel)
   };
 
-  if (sourceParsed.provider === 'cartodb' || sourceParsed.provider === 'carto') {
+  if (provider && (provider.type === 'cartodb' || provider.type === 'carto')) {
     return new Promise((resolve, reject) => {
-      fetchTile(layerModel)
+      fetchCartoAnonymous(layerModel)
         .then(response => {
           const tileUrl = `${response.cdn_url.templates.https.url.replace('{s}', 'a')}/${
-            sourceParsed.providerOptions.account
+            provider.options.account
           }/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.mvt`;
 
           return resolve({

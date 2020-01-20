@@ -1,7 +1,7 @@
 import Promise from 'utils/promise';
 
 import { replace } from 'utils/query';
-// import { MapboxLayer } from '@deck.gl/mapbox';
+import { fetchCartoAnonymous } from 'services/carto-service';
 
 import MapboxLayer from './custom-layers/mapbox-layer';
 import TileLayer from './custom-layers/tile-layer';
@@ -45,6 +45,8 @@ const RasterLayer = layerModel => {
     source.parse === false
       ? source
       : JSON.parse(replace(JSON.stringify(source), params, sqlParams));
+
+  const { provider } = sourceParsed;
 
   const renderParsed =
     render.parse === false
@@ -121,6 +123,27 @@ const RasterLayer = layerModel => {
         }
       ]
     };
+  }
+
+  if (provider && (provider.type === 'cartodb' || provider.type === 'carto')) {
+    return new Promise((resolve, reject) => {
+      fetchCartoAnonymous(layerModel)
+        .then(response => {
+          const tileUrl = `${response.cdn_url.templates.https.url.replace('{s}', 'a')}/${
+            provider.options.account
+          }/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.png`;
+
+          return resolve({
+            ...layer,
+            source: {
+              type: 'raster',
+              tileSize: 256,
+              tiles: [tileUrl]
+            }
+          });
+        })
+        .catch(err => reject(err));
+    });
   }
 
   return new Promise((resolve, reject) => {

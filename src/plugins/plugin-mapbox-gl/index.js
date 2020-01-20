@@ -87,14 +87,6 @@ class PluginMapboxGL {
   }
 
   /**
-   * Get method by provider
-   * @param {String} provider
-   */
-  getLayerByProvider(provider) {
-    return this.provider[provider];
-  }
-
-  /**
    * Get method by type
    * @param {String} type
    */

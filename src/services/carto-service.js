@@ -2,7 +2,7 @@ import { CancelToken } from 'axios';
 import { get } from 'lib/request';
 import { replace } from 'utils/query';
 
-export const fetchTile = layerModel => {
+export const fetchCartoAnonymous = layerModel => {
   const { source, params, sqlParams, interactivity } = layerModel;
 
   const sourceParsed =
@@ -10,18 +10,29 @@ export const fetchTile = layerModel => {
       ? source
       : JSON.parse(replace(JSON.stringify(source), params, sqlParams));
 
+  const { provider } = sourceParsed;
+
   const layerTpl = JSON.stringify({
     version: '1.3.0',
     stat_tag: 'API',
-    layers: sourceParsed.providerOptions.layers.map(l => {
+    layers: provider.options.layers.map(l => {
       if (!!interactivity && interactivity.length) {
         return { ...l, options: { ...l.options, interactivity } };
       }
       return l;
     })
   });
-  const apiParams = `?stat_tag=API&config=${encodeURIComponent(layerTpl)}`;
-  const url = `https://${sourceParsed.providerOptions.account}.carto.com/api/v1/map${apiParams}`;
+
+  // https://carto.com/developers/auth-api/guides/how-to-send-API-Keys/
+  const apiParams = {
+    stat_tag: 'API',
+    config: encodeURIComponent(layerTpl),
+    ...(provider.options.api_key && { api_key: provider.options.api_key })
+  };
+  const apiParamsString = Object.keys(apiParams)
+    .map(k => `${k}=${apiParams[k]}`)
+    .join('&');
+  const url = `https://${provider.options.account}.carto.com/api/v1/map?${apiParamsString}`;
 
   const { layerRequest } = layerModel;
   if (layerRequest) {
@@ -43,4 +54,4 @@ export const fetchTile = layerModel => {
   return newLayerRequest;
 };
 
-export default { fetchTile };
+export default { fetchCartoAnonymous };
