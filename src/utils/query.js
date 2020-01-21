@@ -9,7 +9,7 @@ import compact from 'lodash/compact';
 export const substitution = (originalStr, params = {}) => {
   let str = originalStr;
   Object.keys(params).forEach(key => {
-    if (typeof params[key] === 'number') {
+    if (typeof params[key] === 'number' || typeof params[key] === 'boolean') {
       str = str
         .replace(new RegExp(`"{{${key}}}"`, 'g'), params[key])
         .replace(new RegExp(`'{{${key}}}'`, 'g'), params[key])
