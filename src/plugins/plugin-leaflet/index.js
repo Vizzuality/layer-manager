@@ -163,6 +163,14 @@ class PluginLeaflet {
     return this;
   };
 
+  setSource() {
+    return this;
+  }
+
+  setRender() {
+    return this;
+  }
+
   setParams(layerModel) {
     this.remove(layerModel);
   }
