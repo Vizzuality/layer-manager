@@ -19,15 +19,6 @@ class PluginMapboxGL {
     });
   }
 
-  provider = {
-    leaflet: rasterLayer,
-    gee: rasterLayer,
-    cartodb: vectorLayer,
-    mapbox: vectorLayer,
-    geojson: geoJsonLayer,
-    video: videoLayer
-  };
-
   type = {
     raster: rasterLayer,
     vector: vectorLayer,
@@ -269,16 +260,43 @@ class PluginMapboxGL {
     }
   }
 
-  setParams(layerModel) {
-    this.remove(layerModel);
+  setSource() {
+    return this;
   }
 
-  setSQLParams(layerModel) {
-    this.remove(layerModel);
+  setRender(layerModel) {
+    const { mapLayer, render } = layerModel;
+    const { layers: renderLayers } = render;
+
+    if (!mapLayer) {
+      return this;
+    }
+
+    mapLayer.layers.forEach((layer, i) => {
+      const { id } = layer;
+      const rl = renderLayers[i];
+      const { minzoom = 0, maxzoom = 24, paint = {}, layout = {} } = rl;
+
+      this.map.setLayerZoomRange(id, minzoom, maxzoom);
+
+      Object.keys(paint).forEach(p => {
+        this.map.setPaintProperty(id, p, paint[p]);
+      });
+
+      Object.keys(layout).forEach(l => {
+        this.map.setLayoutProperty(id, l, layout[l]);
+      });
+    });
+
+    return this;
   }
 
-  setLayerConfig(layerModel) {
-    this.remove(layerModel);
+  setParams() {
+    return this;
+  }
+
+  setSQLParams() {
+    return this;
   }
 
   setDecodeParams(layerModel) {

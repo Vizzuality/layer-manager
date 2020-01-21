@@ -3,11 +3,19 @@ import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 import isEmpty from 'lodash/isEmpty';
 
+import { replace } from 'utils/query';
+
 class Layer extends PureComponent {
   static propTypes = {
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 
-    source: PropTypes.shape({}).isRequired,
+    source: PropTypes.shape({
+      parse: PropTypes.bool
+    }),
+    render: PropTypes.shape({
+      parse: PropTypes.bool
+    }),
+
     params: PropTypes.shape({}),
     sqlParams: PropTypes.shape({}),
     decodeParams: PropTypes.shape({}),
@@ -33,6 +41,11 @@ class Layer extends PureComponent {
     visibility: true,
     zIndex: undefined,
 
+    source: {
+      parse: true
+    },
+    render: {},
+
     layerManager: null,
 
     onAfterAdd: () => {}
@@ -45,6 +58,7 @@ class Layer extends PureComponent {
   componentDidUpdate(prevProps) {
     const {
       source: prevSource,
+      render: prevRender,
       params: prevParams,
       sqlParams: prevSqlParams,
       decodeParams: prevDecodeParams,
@@ -53,15 +67,45 @@ class Layer extends PureComponent {
       zIndex: prevZIndex
     } = prevProps;
 
-    const { source, params, sqlParams, decodeParams, opacity, visibility, zIndex } = this.props;
+    const {
+      source,
+      render,
+      params,
+      sqlParams,
+      decodeParams,
+      opacity,
+      visibility,
+      zIndex
+    } = this.props;
 
-    if (
-      (source && !isEqual(source, prevSource)) ||
-      (params && !isEqual(params, prevParams)) ||
-      (sqlParams && !isEqual(sqlParams, prevSqlParams))
-    ) {
+    // Check that source has changed
+    const prevSourceParsed =
+      prevSource.parse === false
+        ? prevSource
+        : JSON.parse(replace(JSON.stringify(prevSource), prevParams, prevSqlParams));
+
+    const sourceParsed =
+      source.parse === false
+        ? source
+        : JSON.parse(replace(JSON.stringify(source), params, sqlParams));
+
+    // Check that render has changed
+    const prevRenderParsed =
+      prevRender.parse === false
+        ? prevRender
+        : JSON.parse(replace(JSON.stringify(prevRender), prevParams, prevSqlParams));
+
+    const renderParsed =
+      render.parse === false
+        ? render
+        : JSON.parse(replace(JSON.stringify(render), params, sqlParams));
+
+    if (sourceParsed && !isEqual(sourceParsed, prevSourceParsed)) {
       this.remove();
       this.add();
+
+      // prevent updating layer
+      return;
     }
 
     const changedProps = {
@@ -73,6 +117,9 @@ class Layer extends PureComponent {
       }),
       ...(zIndex !== prevZIndex && {
         zIndex
+      }),
+      ...(!isEqual(renderParsed, prevRenderParsed) && {
+        render: renderParsed
       }),
       ...(!isEqual(decodeParams, prevDecodeParams) && {
         decodeParams

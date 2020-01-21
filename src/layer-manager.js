@@ -11,7 +11,8 @@ function checkPluginProperties(plugin) {
       'setVisibility',
       'setOpacity',
       'setZIndex',
-      'setLayerConfig',
+      'setSource',
+      'setRender',
       'setParams',
       'setSQLParams',
       'setDecodeParams',
@@ -89,16 +90,30 @@ class LayerManager {
 
     layerModel.update(changedProps);
 
-    const { opacity, visibility, zIndex, decodeParams } = changedProps;
+    const { opacity, visibility, zIndex, render, params, sqlParams, decodeParams } = changedProps;
 
     if (typeof opacity !== 'undefined') {
       this.plugin.setOpacity(layerModel, opacity);
     }
+
     if (typeof visibility !== 'undefined') {
       this.plugin.setVisibility(layerModel, visibility);
     }
+
     if (typeof zIndex !== 'undefined') {
       this.plugin.setZIndex(layerModel, zIndex);
+    }
+
+    if (!isEmpty(render)) {
+      this.plugin.setRender(layerModel);
+    }
+
+    if (!isEmpty(params)) {
+      this.plugin.setParams(layerModel);
+    }
+
+    if (!isEmpty(sqlParams)) {
+      this.plugin.setSqlParams(layerModel);
     }
 
     if (!isEmpty(decodeParams)) {
