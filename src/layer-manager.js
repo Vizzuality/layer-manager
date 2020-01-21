@@ -202,7 +202,7 @@ class LayerManager {
         this.plugin.setOpacity(layerModel, layerModel.opacity);
         this.plugin.setVisibility(layerModel, layerModel.visibility);
 
-        onAfterAdd(layer);
+        onAfterAdd(layerModel);
       }
     });
 

@@ -275,9 +275,11 @@ class PluginMapboxGL {
     mapLayer.layers.forEach((layer, i) => {
       const { id } = layer;
       const rl = renderLayers[i];
-      const { minzoom = 0, maxzoom = 24, paint = {}, layout = {} } = rl;
+      const { minzoom = 0, maxzoom = 24, paint = {}, layout = {}, filter = null } = rl;
 
       this.map.setLayerZoomRange(id, minzoom, maxzoom);
+
+      this.map.setFilter(id, filter);
 
       Object.keys(paint).forEach(p => {
         this.map.setPaintProperty(id, p, paint[p]);

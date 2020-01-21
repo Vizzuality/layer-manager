@@ -19,6 +19,9 @@ or using git:
 `layer-manager` requires `react@16.3.2` or higher to work.
 
 
+You should also install this packages versions to have everything working `deck.gl@7.3.6`, `luma.gl@7.3.2` and `viewport-mercator-project@6.1.1`
+
+
 ## Usage
 There are two React components that can be used to help with rendering layers via the layer manager. It can be imported and used as follows:
 

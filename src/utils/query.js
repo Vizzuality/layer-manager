@@ -9,6 +9,16 @@ import compact from 'lodash/compact';
 export const substitution = (originalStr, params = {}) => {
   let str = originalStr;
   Object.keys(params).forEach(key => {
+    if (typeof params[key] === 'number') {
+      str = str
+        .replace(new RegExp(`"{{${key}}}"`, 'g'), params[key])
+        .replace(new RegExp(`'{{${key}}}'`, 'g'), params[key])
+        .replace(new RegExp(`\`{{${key}}}\``, 'g'), params[key])
+        .replace(new RegExp(`"{${key}}"`, 'g'), params[key])
+        .replace(new RegExp(`'{${key}}'`, 'g'), params[key])
+        .replace(new RegExp(`\`{${key}}\``, 'g'), params[key]);
+    }
+
     str = str
       .replace(new RegExp(`{{${key}}}`, 'g'), params[key])
       .replace(new RegExp(`{${key}}`, 'g'), params[key]);

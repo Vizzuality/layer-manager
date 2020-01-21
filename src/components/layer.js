@@ -100,6 +100,7 @@ class Layer extends PureComponent {
         ? render
         : JSON.parse(replace(JSON.stringify(render), params, sqlParams));
 
+    // TODO: don't add and remove if provider is geojson
     if (sourceParsed && !isEqual(sourceParsed, prevSourceParsed)) {
       this.remove();
       this.add();

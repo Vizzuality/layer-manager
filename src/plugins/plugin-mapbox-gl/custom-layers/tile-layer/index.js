@@ -46,6 +46,7 @@ export default class TileLayer extends CompositeLayer {
         onTileLoad: this._onTileLoad.bind(this),
         onTileError: this._onTileError.bind(this)
       });
+
       this.setState({ tileCache });
     } else if (changeFlags.updateTriggersChanged) {
       // if any updateTriggersChanged (other than getTileData), delete the layer
@@ -69,6 +70,7 @@ export default class TileLayer extends CompositeLayer {
     const { onViewportLoaded } = this.props;
     const currTiles = this.state.tiles;
     const allCurrTilesLoaded = currTiles.every(tile => tile.isLoaded);
+
     if (this.state.isLoaded !== allCurrTilesLoaded) {
       this.setState({ isLoaded: allCurrTilesLoaded });
       if (allCurrTilesLoaded && onViewportLoaded) {
