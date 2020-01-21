@@ -112,6 +112,7 @@ export default class TileLayer extends CompositeLayer {
       // - tile must be visible in the current viewport
       // - if all tiles are loaded, only display the tiles from the current z level
       const isVisible = visible && tile.isVisible && (!this.state.isLoaded || tile.z === z);
+
       // cache the rendered layer in the tile
       if (!tile.layer) {
         // I have an error when I try this condition. I think is related to return the same tile.layer
@@ -125,7 +126,13 @@ export default class TileLayer extends CompositeLayer {
           zoom: z
         });
       } else if (tile.layer.props.visible !== isVisible) {
-        tile.layer = tile.layer.clone({ visible: isVisible });
+        tile.layer = tile.layer.clone({
+          visible: isVisible
+        });
+      } else if (tile.layer.props.decodeParams) {
+        tile.layer = tile.layer.clone({
+          decodeParams: this.props.decodeParams
+        });
       }
       return tile.layer;
     });
