@@ -266,18 +266,16 @@ class PluginMapboxGL {
 
   setRender(layerModel) {
     const { mapLayer, render } = layerModel;
-    const { layers: renderLayers } = render;
+    const { layers: renderLayers = [] } = render;
 
-    if (!mapLayer) {
+    if (!mapLayer || !renderLayers.length) {
       return this;
     }
 
     mapLayer.layers.forEach((layer, i) => {
       const { id } = layer;
-      const rl = renderLayers[i];
-      const { minzoom = 0, maxzoom = 24, paint = {}, layout = {}, filter = null } = rl;
-
-      this.map.setLayerZoomRange(id, minzoom, maxzoom);
+      const rl = renderLayers[i] || renderLayers[0] || {}; // take the style for each layer or use the first one for all of them
+      const { paint = {}, layout = {}, filter = null } = rl;
 
       this.map.setFilter(id, filter);
 

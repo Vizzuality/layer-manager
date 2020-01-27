@@ -197,10 +197,13 @@ class LayerManager {
       const { _canceled: canceled } = this.promises[layerModel.id];
       if (!canceled) {
         layerModel.set('mapLayer', layer);
+
         this.plugin.add(layerModel, this.layers);
         this.plugin.setZIndex(layerModel, layerModel.zIndex);
         this.plugin.setOpacity(layerModel, layerModel.opacity);
         this.plugin.setVisibility(layerModel, layerModel.visibility);
+
+        this.plugin.setRender(layerModel);
 
         onAfterAdd(layerModel);
       }

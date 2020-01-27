@@ -3,9 +3,11 @@ import Promise from 'utils/promise';
 import { replace } from 'utils/query';
 import { fetchCartoAnonymous } from 'services/carto-service';
 
+import { getVectorStyleLayers } from 'utils/vector-style-layers';
 import MapboxLayer from './custom-layers/mapbox-layer';
 import TileLayer from './custom-layers/tile-layer';
 import DecodedLayer from './custom-layers/decoded-layer';
+
 
 const getTileData = ({ x, y, z }, url) => {
   const mapSource = url
@@ -33,6 +35,8 @@ const RasterLayer = layerModel => {
   const {
     source = {},
     render = {},
+    minzoom,
+    maxzoom,
     params,
     sqlParams,
     decodeParams,
@@ -53,6 +57,8 @@ const RasterLayer = layerModel => {
       ? render
       : JSON.parse(replace(JSON.stringify(render), params, sqlParams));
 
+  const { layers } = renderParsed;
+
   let layer = {};
 
   // if decoded layer use custom deck layer
@@ -66,8 +72,7 @@ const RasterLayer = layerModel => {
           type: 'background',
           paint: {
             'background-color': 'transparent'
-          },
-          ...renderParsed
+          }
         },
         ...sourceParsed.tiles.map(
           t =>
@@ -98,6 +103,8 @@ const RasterLayer = layerModel => {
                 }
                 return null;
               },
+              minZoom: sourceParsed.minzoom,
+              maxZoom: sourceParsed.maxzoom,
               opacity: layerModel.opacity,
               decodeParams,
               decodeFunction
@@ -114,14 +121,17 @@ const RasterLayer = layerModel => {
         tileSize: 256,
         ...sourceParsed
       },
-      layers: [
-        {
+      minzoom,
+      maxzoom,
+      layers: getVectorStyleLayers(
+        layers.map(l => ({
           id: `${id}-raster`,
           type: 'raster',
           source: id,
-          ...renderParsed
-        }
-      ]
+          ...l
+        })),
+        layerModel
+      )
     };
   }
 
