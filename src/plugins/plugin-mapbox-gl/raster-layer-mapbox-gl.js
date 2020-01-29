@@ -8,7 +8,6 @@ import MapboxLayer from './custom-layers/mapbox-layer';
 import TileLayer from './custom-layers/tile-layer';
 import DecodedLayer from './custom-layers/decoded-layer';
 
-
 const getTileData = ({ x, y, z }, url) => {
   const mapSource = url
     .replace('{z}', z)
@@ -35,8 +34,6 @@ const RasterLayer = layerModel => {
   const {
     source = {},
     render = {},
-    minzoom,
-    maxzoom,
     params,
     sqlParams,
     decodeParams,
@@ -44,6 +41,12 @@ const RasterLayer = layerModel => {
     opacity,
     decodeFunction
   } = layerModel;
+
+  const DEFAULT_RASTER_OPTIONS = {
+    id: `${id}-raster`,
+    type: 'raster',
+    source: id
+  };
 
   const sourceParsed =
     source.parse === false
@@ -57,7 +60,9 @@ const RasterLayer = layerModel => {
       ? render
       : JSON.parse(replace(JSON.stringify(render), params, sqlParams));
 
-  const { layers } = renderParsed;
+  const {
+    layers = [DEFAULT_RASTER_OPTIONS] // Set the default to this to
+  } = renderParsed;
 
   let layer = {};
 
@@ -121,13 +126,9 @@ const RasterLayer = layerModel => {
         tileSize: 256,
         ...sourceParsed
       },
-      minzoom,
-      maxzoom,
       layers: getVectorStyleLayers(
         layers.map(l => ({
-          id: `${id}-raster`,
-          type: 'raster',
-          source: id,
+          ...DEFAULT_RASTER_OPTIONS,
           ...l
         })),
         layerModel

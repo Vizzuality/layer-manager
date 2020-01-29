@@ -49,6 +49,8 @@ const activeLayers = [
     render: {
       layers: [
         {
+          minzoom: 3, // https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#minzoom
+          maxzzom: 12, // https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#maxzoom
           paint: {
             'raster-saturation': -1
           }

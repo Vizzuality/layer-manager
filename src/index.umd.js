@@ -3,13 +3,13 @@
 // compatible with mixed imports (which exist in index.js)
 // This file does away with named imports in favor of a single export default.
 
-import PluginLeaflet from './plugins/plugin-leaflet';
+// import PluginLeaflet from './plugins/plugin-leaflet';
 import PluginMapboxGl from './plugins/plugin-mapbox-gl';
 
 import { replace, substitution, concatenation } from './utils/query';
 import LayerManager from './layer-manager';
 
-LayerManager.PluginLeaflet = PluginLeaflet;
+// LayerManager.PluginLeaflet = PluginLeaflet;
 LayerManager.PluginMapboxGl = PluginMapboxGl;
 LayerManager.replace = replace;
 LayerManager.substitution = substitution;

@@ -1,11 +1,11 @@
 import Promise from 'utils/promise';
 
 import { replace } from 'utils/query';
-import { fetchData } from 'services/cluster-service';
+import { fetchGeojsonData } from 'services/geojson-service';
 import { getVectorStyleLayers } from 'utils/vector-style-layers';
 
 const GeoJsonLayer = layerModel => {
-  const { source = {}, render = {}, params, sqlParams, id, decodeGeoJson } = layerModel;
+  const { source = {}, render = {}, params, sqlParams, id } = layerModel;
 
   const sourceParsed =
     source.parse === false
@@ -29,19 +29,18 @@ const GeoJsonLayer = layerModel => {
     layers: getVectorStyleLayers(layers, layerModel)
   };
 
-  if (decodeGeoJson) {
+  if (source.parse && typeof source.parse === 'function') {
     return new Promise((resolve, reject) => {
-      fetchData(layerModel)
+      fetchGeojsonData(layerModel)
         .then(response => {
-          const features = decodeGeoJson(response);
+          const data = source.parse(response);
+
           const layerWithData = {
             ...layer,
             source: {
-              ...layer.source,
-              data: {
-                type: 'FeatureCollection',
-                features
-              }
+              type: 'geojson',
+              ...sourceParsed,
+              data
             }
           };
           resolve(layerWithData);
