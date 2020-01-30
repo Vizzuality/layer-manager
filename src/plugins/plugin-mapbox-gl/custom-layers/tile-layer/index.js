@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign,no-restricted-properties,class-methods-use-this,no-underscore-dangle */
 import { CompositeLayer } from 'deck.gl';
-
 import TileCache from './utils/tile-cache';
 
 const defaultProps = {
@@ -105,7 +104,7 @@ export default class TileLayer extends CompositeLayer {
   }
 
   renderLayers() {
-    const { visible, renderSubLayers } = this.props;
+    const { visible, opacity, decodeParams, renderSubLayers } = this.props;
     const z = this.getLayerZoomLevel();
 
     return this.state.tiles.map(tile => {
@@ -124,6 +123,7 @@ export default class TileLayer extends CompositeLayer {
           id: `${this.id}-${tile.x}-${tile.y}-${tile.z}`,
           data: tile.data,
           visible: isVisible,
+          opacity,
           tile,
           zoom: z
         });
@@ -131,9 +131,13 @@ export default class TileLayer extends CompositeLayer {
         tile.layer = tile.layer.clone({
           visible: isVisible
         });
+      } else if (tile.layer.props.opacity !== opacity) {
+        tile.layer = tile.layer.clone({
+          opacity
+        });
       } else if (tile.layer.props.decodeParams) {
         tile.layer = tile.layer.clone({
-          decodeParams: this.props.decodeParams
+          decodeParams
         });
       }
       return tile.layer;
