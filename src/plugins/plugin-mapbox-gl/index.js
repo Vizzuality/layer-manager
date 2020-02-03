@@ -81,6 +81,10 @@ class PluginMapboxGL {
         }
       });
     }
+
+    if (this.map.getSource(mapLayer.id)) {
+      this.map.removeSource(mapLayer.id);
+    }
   }
 
   /**
