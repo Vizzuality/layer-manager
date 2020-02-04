@@ -90,7 +90,16 @@ class LayerManager {
 
     layerModel.update(changedProps);
 
-    const { opacity, visibility, zIndex, render, params, sqlParams, decodeParams } = changedProps;
+    const {
+      opacity,
+      visibility,
+      zIndex,
+      source,
+      render,
+      params,
+      sqlParams,
+      decodeParams
+    } = changedProps;
 
     if (typeof opacity !== 'undefined') {
       this.plugin.setOpacity(layerModel, opacity);
@@ -102,6 +111,10 @@ class LayerManager {
 
     if (typeof zIndex !== 'undefined') {
       this.plugin.setZIndex(layerModel, zIndex);
+    }
+
+    if (!isEmpty(source)) {
+      this.plugin.setSource(layerModel);
     }
 
     if (!isEmpty(render)) {

@@ -29,7 +29,10 @@ class Layer extends PureComponent {
     layerManager: PropTypes.shape({
       add: PropTypes.func.isRequired,
       update: PropTypes.func.isRequired,
-      remove: PropTypes.func.isRequired
+      remove: PropTypes.func.isRequired,
+      map: PropTypes.shape({
+        getSource: PropTypes.func
+      })
     })
   };
 
@@ -102,11 +105,19 @@ class Layer extends PureComponent {
 
     // TODO: don't add and remove if provider is geojson
     if (sourceParsed && !isEqual(sourceParsed, prevSourceParsed)) {
-      this.remove();
-      this.add();
+      const { type, data } = sourceParsed;
 
-      // prevent updating layer
-      return;
+      if (
+        type === 'raster' ||
+        type === 'vector' ||
+        (type === 'geojson' && typeof data === 'string')
+      ) {
+        this.remove();
+        this.add();
+
+        // prevent updating layer
+        return;
+      }
     }
 
     const changedProps = {
@@ -118,6 +129,9 @@ class Layer extends PureComponent {
       }),
       ...(zIndex !== prevZIndex && {
         zIndex
+      }),
+      ...(!isEqual(sourceParsed, prevRenderParsed) && {
+        source: sourceParsed
       }),
       ...(!isEqual(renderParsed, prevRenderParsed) && {
         render: renderParsed

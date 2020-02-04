@@ -75,6 +75,10 @@ class PluginMapboxGL {
         }
       });
     }
+
+    if (mapLayer && this.map && this.map.getSource(mapLayer.id)) {
+      this.map.removeSource(mapLayer.id);
+    }
   }
 
   /**
@@ -260,7 +264,14 @@ class PluginMapboxGL {
     }
   }
 
-  setSource() {
+  setSource(layerModel) {
+    const { id, source } = layerModel;
+    const { type, data } = source;
+
+    if (type === 'geojson' && typeof data !== 'string') {
+      const src = this.map.getSource(id);
+      src.setData(data);
+    }
     return this;
   }
 
