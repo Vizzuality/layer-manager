@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Vizzuality/layer-manager.svg?branch=develop)](https://travis-ci.org/Vizzuality/layer-manager)
+
 # Layer Manager
 
 A library to manage the addition, and removal of layers in Leaflet and Cesium maps (Google coming soon). Furthermore it provides methods to set opacity, visibility, events and more.
@@ -65,7 +67,7 @@ layerManager.add([
           ]
         }
       ],
-      params_config: [],	
+      params_config: [],
     },
   }
 ]);
@@ -95,7 +97,7 @@ layerManager.remove(['layerID']);
 ## Plugins
 The plugin is the way of abstract the layer managment from the implementation of the layer in the different type of maps that we will be using.
 
-There are some predefined plugins (LeafletPlugin, CesiumPlugin, MapboxPlugin) and there will be more! 
+There are some predefined plugins (LeafletPlugin, CesiumPlugin, MapboxPlugin) and there will be more!
 
 When you create an instance of the plugin you will receive the `map instance` so you can acces to it in all the methods below. You should also define all the providers and the functions that you are going to use to get the layer in an attribute called `methods`
 
@@ -287,7 +289,7 @@ const activeLayers = [
           ]
         }
       ],
-      params_config: [],	
+      params_config: [],
     },
   }
 ];

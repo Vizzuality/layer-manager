@@ -2,14 +2,12 @@
   "presets": ["env", "react"],
   "plugins": [
     "transform-class-properties",
-    [
-      "transform-object-rest-spread",
+    ["transform-object-rest-spread",
       {
         "useBuiltIns": true
       }
     ],
-    [
-      "module-resolver",
+    ["module-resolver",
       {
         "root": [
           "./src/**"
@@ -18,5 +16,27 @@
       }
     ]
   ],
-  "ignore": ["node_modules"]
+  "ignore": ["node_modules"],
+  "env": {
+    "test": {
+      "presets": ["env", "react"],
+      "plugins": [
+        "transform-class-properties",
+        ["transform-object-rest-spread",
+          {
+            "useBuiltIns": true
+          }
+        ],
+        "transform-es2015-modules-commonjs",
+        ["module-resolver",
+          {
+            "root": [
+              "./src/**"
+            ],
+            "extensions": [".js", ".jsx"]
+          }
+        ]
+      ]
+    }
+  }
 }

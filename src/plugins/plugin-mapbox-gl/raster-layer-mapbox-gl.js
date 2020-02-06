@@ -2,7 +2,7 @@ import Promise from 'utils/promise';
 
 import { replace } from 'utils/query';
 import { MapboxLayer } from '@deck.gl/mapbox';
-
+import { fetchTile } from 'services/carto-service';
 
 import TileLayer from './custom-layers/tile-layer';
 
@@ -14,7 +14,7 @@ const getTileData = ({ x, y, z }, url) => {
 
   return fetch(mapSource)
     .then(response => response.blob())
-    .then((response) => {
+    .then(response => {
       const { type } = response || {};
       if (type !== 'application/xml' && type !== 'text/xml' && type !== 'text/html') {
         const src = URL.createObjectURL(response);
@@ -28,20 +28,13 @@ const getTileData = ({ x, y, z }, url) => {
     });
 };
 
-const RasterLayer = (layerModel) => {
-  const {
-    layerConfig,
-    params,
-    sqlParams,
-    decodeParams,
-    id,
-    opacity,
-    decodeFunction
-  } = layerModel;
+const RasterLayer = layerModel => {
+  const { layerConfig, params, sqlParams, decodeParams, id, opacity, decodeFunction } = layerModel;
 
-  const layerConfigParsed = layerConfig.parse === false
-    ? layerConfig
-    : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
+  const layerConfigParsed =
+    layerConfig.parse === false
+      ? layerConfig
+      : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
   let tileUrl;
 
   const { body, url } = layerConfigParsed || {};
@@ -49,7 +42,8 @@ const RasterLayer = (layerModel) => {
 
   switch (layerModel.provider) {
     case 'gee':
-      tileUrl = url || body.url || `https://api.resourcewatch.org/v1/layer/${id}/tile/gee/{z}/{x}/{y}`;
+      tileUrl =
+        url || body.url || `https://api.resourcewatch.org/v1/layer/${id}/tile/gee/{z}/{x}/{y}`;
       break;
     default:
       tileUrl = url || body.url;
@@ -70,12 +64,12 @@ const RasterLayer = (layerModel) => {
           paint: {
             'background-color': 'transparent'
           },
-          ...maxzoom && {
+          ...(maxzoom && {
             maxzoom
-          },
-          ...minzoom && {
+          }),
+          ...(minzoom && {
             minzoom
-          }
+          })
         },
         new MapboxLayer({
           id: `${id}-raster-decode`,
@@ -96,24 +90,46 @@ const RasterLayer = (layerModel) => {
       source: {
         type: 'raster',
         tiles: [tileUrl],
-        tileSize: 256,
+        tileSize: 256
       },
-      layers: [{
-        id: `${id}-raster`,
-        type: 'raster',
-        source: id,
-        ...maxzoom && {
-          maxzoom
-        },
-        ...minzoom && {
-          minzoom
-        },
-        paint: {
-          ...paint,
-          'raster-opacity': opacity || 1
+      layers: [
+        {
+          id: `${id}-raster`,
+          type: 'raster',
+          source: id,
+          ...(maxzoom && {
+            maxzoom
+          }),
+          ...(minzoom && {
+            minzoom
+          }),
+          paint: {
+            ...paint,
+            'raster-opacity': opacity || 1
+          }
         }
-      }]
+      ]
     };
+  }
+
+  if (layerModel.provider === 'cartodb') {
+    return new Promise((resolve, reject) => {
+      fetchTile(layerModel)
+        .then(response => {
+          tileUrl = `${response.cdn_url.templates.https.url.replace('{s}', 'a')}/${
+            layerConfigParsed.account
+          }/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.png`;
+
+          return resolve({
+            ...layer,
+            source: {
+              ...layer.source,
+              tiles: [tileUrl]
+            }
+          });
+        })
+        .catch(err => reject(err));
+    });
   }
 
   return new Promise((resolve, reject) => {

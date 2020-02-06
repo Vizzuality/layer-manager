@@ -7,22 +7,20 @@ import UTFGridLayer from './utf-grid-layer-leaflet';
 const { L } = typeof window !== 'undefined' ? window : {};
 const eval2 = eval;
 
-const EsriLayer = (layerModel) => {
+const EsriLayer = layerModel => {
   if (!L) throw new Error('Leaflet must be defined.');
   if (!L.esri) {
-    throw new Error(
-      'To support this layer you should add esri library for Leaflet.'
-    );
+    throw new Error('To support this layer you should add esri library for Leaflet.');
   }
 
   // Preparing layerConfig
   const { layerConfig, interactivity, params, sqlParams } = layerModel;
-  const layerConfigParsed = layerConfig.parse === false
-    ? layerConfig
-    : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
+  const layerConfigParsed =
+    layerConfig.parse === false
+      ? layerConfig
+      : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
 
-  const bodyStringified = JSON
-    .stringify(layerConfigParsed.body || {})
+  const bodyStringified = JSON.stringify(layerConfigParsed.body || {})
     .replace(/"mosaic-rule":/g, '"mosaicRule":')
     .replace(/"mosaic_rule":/g, '"mosaicRule":')
     .replace(/"use-cors":/g, '"useCors":')
@@ -60,7 +58,7 @@ const EsriLayer = (layerModel) => {
     }
 
     if (!layer.setZIndex) {
-      layer.setZIndex = (zIndex) => {
+      layer.setZIndex = zIndex => {
         if (layer._currentImage) {
           layer._currentImage._image.style.zIndex = zIndex;
         }
@@ -73,8 +71,8 @@ const EsriLayer = (layerModel) => {
 
       const LayerGroup = L.LayerGroup.extend({
         group: true,
-        setOpacity: (opacity) => {
-          layerModel.mapLayer.getLayers().forEach((l) => {
+        setOpacity: opacity => {
+          layerModel.mapLayer.getLayers().forEach(l => {
             l.setOpacity(opacity);
           });
         }
