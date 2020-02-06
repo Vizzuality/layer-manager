@@ -2,6 +2,7 @@ import Promise from 'utils/promise';
 
 import { replace } from 'utils/query';
 import { MapboxLayer } from '@deck.gl/mapbox';
+import { fetchTile } from 'services/carto-service';
 
 import TileLayer from './custom-layers/tile-layer';
 
@@ -109,6 +110,26 @@ const RasterLayer = layerModel => {
         }
       ]
     };
+  }
+
+  if (layerModel.provider === 'cartodb') {
+    return new Promise((resolve, reject) => {
+      fetchTile(layerModel)
+        .then(response => {
+          tileUrl = `${response.cdn_url.templates.https.url.replace('{s}', 'a')}/${
+            layerConfigParsed.account
+          }/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.png`;
+
+          return resolve({
+            ...layer,
+            source: {
+              ...layer.source,
+              tiles: [tileUrl]
+            }
+          });
+        })
+        .catch(err => reject(err));
+    });
   }
 
   return new Promise((resolve, reject) => {
