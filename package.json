@@ -1,6 +1,6 @@
 {
   "name": "layer-manager",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "A library to get a layer depending on provider and layer spec",
   "repository": {
     "type": "git",
