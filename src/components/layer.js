@@ -10,10 +10,10 @@ class Layer extends PureComponent {
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 
     source: PropTypes.shape({
-      parse: PropTypes.bool
+      parse: PropTypes.oneOfType([PropTypes.bool, PropTypes.func])
     }),
     render: PropTypes.shape({
-      parse: PropTypes.bool
+      parse: PropTypes.oneOfType([PropTypes.bool, PropTypes.func])
     }),
 
     params: PropTypes.shape({}),
