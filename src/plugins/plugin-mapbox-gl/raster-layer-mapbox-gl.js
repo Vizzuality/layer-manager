@@ -1,6 +1,5 @@
 import Promise from 'utils/promise';
 
-import { replace } from 'utils/query';
 import { fetchCartoAnonymous } from 'services/carto-service';
 
 import { getVectorStyleLayers } from 'utils/vector-style-layers';
@@ -31,16 +30,7 @@ const getTileData = ({ x, y, z }, url) => {
 };
 
 const RasterLayer = layerModel => {
-  const {
-    source = {},
-    render = {},
-    params,
-    sqlParams,
-    decodeParams,
-    id,
-    opacity,
-    decodeFunction
-  } = layerModel;
+  const { source = {}, render = {}, decodeParams, id, opacity, decodeFunction } = layerModel;
 
   const DEFAULT_RASTER_OPTIONS = {
     id: `${id}-raster`,
@@ -48,21 +38,11 @@ const RasterLayer = layerModel => {
     source: id
   };
 
-  const sourceParsed =
-    source.parse === false
-      ? source
-      : JSON.parse(replace(JSON.stringify(source), params, sqlParams));
-
-  const { provider } = sourceParsed;
-
-  const renderParsed =
-    render.parse === false
-      ? render
-      : JSON.parse(replace(JSON.stringify(render), params, sqlParams));
+  const { provider } = source;
 
   const {
     layers = [DEFAULT_RASTER_OPTIONS] // Set the default to this to
-  } = renderParsed;
+  } = render;
 
   let layer = {};
 
@@ -79,7 +59,7 @@ const RasterLayer = layerModel => {
             'background-color': 'transparent'
           }
         },
-        ...sourceParsed.tiles.map(
+        ...source.tiles.map(
           t =>
             new MapboxLayer({
               id: `${id}-raster-decode`,
@@ -108,8 +88,8 @@ const RasterLayer = layerModel => {
                 }
                 return null;
               },
-              minZoom: sourceParsed.minzoom,
-              maxZoom: sourceParsed.maxzoom,
+              minZoom: source.minzoom,
+              maxZoom: source.maxzoom,
               opacity: layerModel.opacity,
               decodeParams,
               decodeFunction
@@ -124,7 +104,7 @@ const RasterLayer = layerModel => {
       source: {
         type: 'raster',
         tileSize: 256,
-        ...sourceParsed
+        ...source
       },
       layers: getVectorStyleLayers(
         layers.map(l => ({

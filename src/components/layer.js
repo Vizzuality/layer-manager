@@ -152,7 +152,27 @@ class Layer extends PureComponent {
 
   add = () => {
     const { layerManager, onAfterAdd, ...props } = this.props;
-    layerManager.add(props, {}, onAfterAdd);
+    const { source, render, params, sqlParams } = props;
+
+    const sourceParsed =
+      source.parse === false
+        ? source
+        : JSON.parse(replace(JSON.stringify(source), params, sqlParams));
+
+    const renderParsed =
+      render.parse === false
+        ? render
+        : JSON.parse(replace(JSON.stringify(render), params, sqlParams));
+
+    layerManager.add(
+      {
+        ...props,
+        source: sourceParsed,
+        render: renderParsed
+      },
+      {},
+      onAfterAdd
+    );
   };
 
   update = changedProps => {

@@ -1,31 +1,20 @@
 import Promise from 'utils/promise';
 
-import { replace } from 'utils/query';
 import { fetchGeojsonData } from 'services/geojson-service';
 import { getVectorStyleLayers } from 'utils/vector-style-layers';
 
 const GeoJsonLayer = layerModel => {
-  const { source = {}, render = {}, params, sqlParams, id } = layerModel;
+  const { source = {}, render = {}, id } = layerModel;
 
-  const sourceParsed =
-    source.parse === false
-      ? source
-      : JSON.parse(replace(JSON.stringify(source), params, sqlParams));
-
-  const renderParsed =
-    render.parse === false
-      ? source
-      : JSON.parse(replace(JSON.stringify(render), params, sqlParams));
-
-  const { layers } = renderParsed;
+  const { layers } = render;
 
   const layer = {
     id,
     source: {
       type: 'geojson',
-      ...sourceParsed
+      ...source
     },
-    ...renderParsed,
+    ...render,
     layers: getVectorStyleLayers(layers, layerModel)
   };
 
@@ -39,7 +28,7 @@ const GeoJsonLayer = layerModel => {
             ...layer,
             source: {
               type: 'geojson',
-              ...sourceParsed,
+              ...source,
               data
             }
           };

@@ -76,7 +76,7 @@ class PluginMapboxGL {
       });
     }
 
-    if (mapLayer && this.map && this.map.getSource(mapLayer.id)) {
+    if (mapLayer && !!this.map && this.map.getSource(mapLayer.id)) {
       this.map.removeSource(mapLayer.id);
     }
   }
@@ -98,7 +98,12 @@ class PluginMapboxGL {
 
   getLayer(layerModel) {
     const { mapLayer } = layerModel;
-    return this.map.getSource(mapLayer.id);
+
+    if (this.map) {
+      return this.map.getSource(mapLayer.id);
+    }
+
+    return null;
   }
 
   /**
@@ -268,7 +273,7 @@ class PluginMapboxGL {
     const { id, source } = layerModel;
     const { type, data } = source;
 
-    if (type === 'geojson' && typeof data !== 'string') {
+    if (this.map && type === 'geojson' && typeof data !== 'string') {
       const src = this.map.getSource(id);
       src.setData(data);
     }
@@ -328,6 +333,10 @@ class PluginMapboxGL {
     }
 
     return this;
+  }
+
+  unmount() {
+    this.map = null;
   }
 }
 

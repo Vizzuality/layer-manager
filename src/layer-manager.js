@@ -231,6 +231,11 @@ class LayerManager {
       this.promises[layerModelId].cancel();
     }
   }
+
+  unmount() {
+    this.map = null;
+    this.plugin.unmount();
+  }
 }
 
 export default LayerManager;

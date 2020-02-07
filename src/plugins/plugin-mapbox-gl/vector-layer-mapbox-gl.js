@@ -1,33 +1,22 @@
 import Promise from 'utils/promise';
 
-import { replace } from 'utils/query';
 import { fetchCartoAnonymous } from 'services/carto-service';
 import { getVectorStyleLayers } from 'utils/vector-style-layers';
 
 const VectorLayer = layerModel => {
-  const { source = {}, render = {}, params, sqlParams, id } = layerModel;
+  const { source = {}, render = {}, id } = layerModel;
 
-  const sourceParsed =
-    source.parse === false
-      ? source
-      : JSON.parse(replace(JSON.stringify(source), params, sqlParams));
+  const { provider } = source;
 
-  const { provider } = sourceParsed;
-
-  const renderParsed =
-    render.parse === false
-      ? source
-      : JSON.parse(replace(JSON.stringify(render), params, sqlParams));
-
-  const { layers } = renderParsed;
+  const { layers } = render;
 
   const layer = {
     id,
     source: {
       type: 'vector',
-      ...sourceParsed
+      ...source
     },
-    ...renderParsed,
+    ...render,
     layers: getVectorStyleLayers(layers, layerModel)
   };
 
