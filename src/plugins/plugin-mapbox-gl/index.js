@@ -82,7 +82,7 @@ class PluginMapboxGL {
       });
     }
 
-    if (this.map.getSource(mapLayer.id)) {
+    if (this.map && this.map.getSource(mapLayer.id)) {
       this.map.removeSource(mapLayer.id);
     }
   }
