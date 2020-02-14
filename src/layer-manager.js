@@ -11,7 +11,8 @@ function checkPluginProperties(plugin) {
       'setVisibility',
       'setOpacity',
       'setZIndex',
-      'setLayerConfig',
+      'setSource',
+      'setRender',
       'setParams',
       'setSQLParams',
       'setDecodeParams',
@@ -58,7 +59,8 @@ class LayerManager {
       visibility: true,
       zIndex: 0,
       interactivity: null
-    }
+    },
+    onAfterAdd
   ) {
     if (typeof layer === 'undefined') {
       console.error('layer is required');
@@ -73,7 +75,7 @@ class LayerManager {
     }
     this.layers.push(layerModel);
 
-    this.requestLayer(layerModel);
+    this.requestLayer(layerModel, onAfterAdd);
 
     return this.layers;
   }
@@ -88,16 +90,43 @@ class LayerManager {
 
     layerModel.update(changedProps);
 
-    const { opacity, visibility, zIndex, decodeParams } = changedProps;
+    const {
+      opacity,
+      visibility,
+      zIndex,
+      source,
+      render,
+      params,
+      sqlParams,
+      decodeParams
+    } = changedProps;
 
     if (typeof opacity !== 'undefined') {
       this.plugin.setOpacity(layerModel, opacity);
     }
+
     if (typeof visibility !== 'undefined') {
       this.plugin.setVisibility(layerModel, visibility);
     }
+
     if (typeof zIndex !== 'undefined') {
       this.plugin.setZIndex(layerModel, zIndex);
+    }
+
+    if (!isEmpty(source)) {
+      this.plugin.setSource(layerModel);
+    }
+
+    if (!isEmpty(render)) {
+      this.plugin.setRender(layerModel);
+    }
+
+    if (!isEmpty(params)) {
+      this.plugin.setParams(layerModel);
+    }
+
+    if (!isEmpty(sqlParams)) {
+      this.plugin.setSqlParams(layerModel);
     }
 
     if (!isEmpty(decodeParams)) {
@@ -161,10 +190,9 @@ class LayerManager {
     this.plugin.setZIndex(layerModel, zIndex);
   }
 
-  requestLayer(layerModel) {
-    const { layerType, provider } = layerModel;
-    const method =
-      this.plugin.getLayerByType(layerType) || this.plugin.getLayerByProvider(provider, layerModel);
+  requestLayer(layerModel, onAfterAdd) {
+    const { type, provider } = layerModel;
+    const method = this.plugin.getLayerByType(type);
 
     if (!method) {
       this.promises[layerModel.id] = Promise.reject(
@@ -182,10 +210,15 @@ class LayerManager {
       const { _canceled: canceled } = this.promises[layerModel.id];
       if (!canceled) {
         layerModel.set('mapLayer', layer);
+
         this.plugin.add(layerModel, this.layers);
         this.plugin.setZIndex(layerModel, layerModel.zIndex);
         this.plugin.setOpacity(layerModel, layerModel.opacity);
         this.plugin.setVisibility(layerModel, layerModel.visibility);
+
+        this.plugin.setRender(layerModel);
+
+        onAfterAdd(layerModel);
       }
     });
 
@@ -197,6 +230,11 @@ class LayerManager {
     if (this.promises[layerModelId] && this.promises[layerModelId].cancel) {
       this.promises[layerModelId].cancel();
     }
+  }
+
+  unmount() {
+    this.map = null;
+    this.plugin.unmount();
   }
 }
 

@@ -1,4 +1,4 @@
-import { fetchTile } from 'services/carto-service';
+import { fetchCartoAnonymous } from 'services/carto-service';
 import { replace } from 'utils/query';
 
 const { L } = typeof window !== 'undefined' ? window : {};
@@ -13,7 +13,7 @@ const CartoLayer = layerModel => {
       : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
 
   return new Promise((resolve, reject) => {
-    fetchTile(layerModel)
+    fetchCartoAnonymous(layerModel)
       .then(response => {
         const tileUrl = `${response.cdn_url.templates.https.url}/${layerConfigParsed.account}/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.png`;
         const layer = L.tileLayer(tileUrl);

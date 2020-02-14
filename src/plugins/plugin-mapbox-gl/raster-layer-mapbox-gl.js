@@ -1,10 +1,11 @@
 import Promise from 'utils/promise';
 
-import { replace } from 'utils/query';
-import { MapboxLayer } from '@deck.gl/mapbox';
-import { fetchTile } from 'services/carto-service';
+import { fetchCartoAnonymous } from 'services/carto-service';
 
+import { getVectorStyleLayers } from 'utils/vector-style-layers';
+import MapboxLayer from './custom-layers/mapbox-layer';
 import TileLayer from './custom-layers/tile-layer';
+import DecodedLayer from './custom-layers/decoded-layer';
 
 const getTileData = ({ x, y, z }, url) => {
   const mapSource = url
@@ -29,26 +30,19 @@ const getTileData = ({ x, y, z }, url) => {
 };
 
 const RasterLayer = layerModel => {
-  const { layerConfig, params, sqlParams, decodeParams, id, opacity, decodeFunction } = layerModel;
+  const { source = {}, render = {}, decodeParams, id, opacity, decodeFunction } = layerModel;
 
-  const layerConfigParsed =
-    layerConfig.parse === false
-      ? layerConfig
-      : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
-  let tileUrl;
+  const DEFAULT_RASTER_OPTIONS = {
+    id: `${id}-raster`,
+    type: 'raster',
+    source: id
+  };
 
-  const { body, url } = layerConfigParsed || {};
-  const { paint, minzoom, maxzoom } = body || {};
+  const { provider } = source;
 
-  switch (layerModel.provider) {
-    case 'gee':
-      tileUrl =
-        url || body.url || `https://api.resourcewatch.org/v1/layer/${id}/tile/gee/{z}/{x}/{y}`;
-      break;
-    default:
-      tileUrl = url || body.url;
-      break;
-  }
+  const {
+    layers = [DEFAULT_RASTER_OPTIONS] // Set the default to this to
+  } = render;
 
   let layer = {};
 
@@ -63,24 +57,44 @@ const RasterLayer = layerModel => {
           type: 'background',
           paint: {
             'background-color': 'transparent'
-          },
-          ...(maxzoom && {
-            maxzoom
-          }),
-          ...(minzoom && {
-            minzoom
-          })
+          }
         },
-        new MapboxLayer({
-          id: `${id}-raster-decode`,
-          type: TileLayer,
-          minZoom: minzoom,
-          maxZoom: maxzoom,
-          getTileData: e => getTileData(e, url || body.url),
-          opacity: layerModel.opacity,
-          decodeParams,
-          decodeFunction
-        })
+        ...source.tiles.map(
+          t =>
+            new MapboxLayer({
+              id: `${id}-raster-decode`,
+              type: TileLayer,
+              getTileData: e => getTileData(e, t),
+              renderSubLayers: ({
+                id: subLayerId,
+                data,
+                tile,
+                visible,
+                zoom,
+                decodeParams: decodeParamsSub,
+                decodeFunction: decodeFunctionSub
+              }) => {
+                if (data && data.src) {
+                  return new DecodedLayer({
+                    id: subLayerId,
+                    image: data.src,
+                    bounds: tile.bbox,
+                    visible,
+                    zoom,
+                    decodeParams: decodeParamsSub,
+                    decodeFunction: decodeFunctionSub,
+                    opacity
+                  });
+                }
+                return null;
+              },
+              minZoom: source.minzoom,
+              maxZoom: source.maxzoom,
+              opacity: layerModel.opacity,
+              decodeParams,
+              decodeFunction
+            })
+        )
       ]
     };
   } else {
@@ -89,41 +103,32 @@ const RasterLayer = layerModel => {
       type: 'raster',
       source: {
         type: 'raster',
-        tiles: [tileUrl],
-        tileSize: 256
+        tileSize: 256,
+        ...source
       },
-      layers: [
-        {
-          id: `${id}-raster`,
-          type: 'raster',
-          source: id,
-          ...(maxzoom && {
-            maxzoom
-          }),
-          ...(minzoom && {
-            minzoom
-          }),
-          paint: {
-            ...paint,
-            'raster-opacity': opacity || 1
-          }
-        }
-      ]
+      layers: getVectorStyleLayers(
+        layers.map(l => ({
+          ...DEFAULT_RASTER_OPTIONS,
+          ...l
+        })),
+        layerModel
+      )
     };
   }
 
-  if (layerModel.provider === 'cartodb') {
+  if (provider && (provider.type === 'cartodb' || provider.type === 'carto')) {
     return new Promise((resolve, reject) => {
-      fetchTile(layerModel)
+      fetchCartoAnonymous(layerModel)
         .then(response => {
-          tileUrl = `${response.cdn_url.templates.https.url.replace('{s}', 'a')}/${
-            layerConfigParsed.account
+          const tileUrl = `${response.cdn_url.templates.https.url.replace('{s}', 'a')}/${
+            provider.options.account
           }/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.png`;
 
           return resolve({
             ...layer,
             source: {
-              ...layer.source,
+              type: 'raster',
+              tileSize: 256,
               tiles: [tileUrl]
             }
           });

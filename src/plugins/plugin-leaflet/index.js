@@ -76,6 +76,14 @@ class PluginLeaflet {
   }
 
   /**
+   * Get method by type
+   * @param {String} type
+   */
+  getLayerByType(type) {
+    return this.type[type];
+  }
+
+  /**
    * A namespace to set z-index
    * @param {Object} layerModel
    * @param {Number} zIndex
@@ -154,6 +162,14 @@ class PluginLeaflet {
 
     return this;
   };
+
+  setSource() {
+    return this;
+  }
+
+  setRender() {
+    return this;
+  }
 
   setParams(layerModel) {
     this.remove(layerModel);

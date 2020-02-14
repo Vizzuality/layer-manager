@@ -1,76 +1,37 @@
 import Promise from 'utils/promise';
 
-import { replace } from 'utils/query';
-import { fetchTile } from 'services/carto-service';
+import { fetchCartoAnonymous } from 'services/carto-service';
 import { getVectorStyleLayers } from 'utils/vector-style-layers';
 
 const VectorLayer = layerModel => {
-  const { layerConfig, params, sqlParams, id } = layerModel;
+  const { source = {}, render = {}, id } = layerModel;
 
-  const layerConfigParsed =
-    layerConfig.parse === false
-      ? layerConfig
-      : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
+  const { provider } = source;
 
-  const { body, url } = layerConfigParsed || {};
-  const { vectorLayers } = body || {};
+  const { layers } = render;
 
   const layer = {
     id,
     source: {
       type: 'vector',
-      ...((url || (body && body.url)) && {
-        url: layerConfigParsed.url || layerConfigParsed.body.url
-      })
+      ...source
     },
-    layers: vectorLayers
-      ? getVectorStyleLayers(vectorLayers, layerModel)
-      : [
-          {
-            id: `${id}-fill-0`,
-            source: id,
-            type: 'fill',
-            'source-layer': 'layer0',
-            paint: {
-              'fill-opacity': layerModel.opacity * 0.5 || 0.5,
-              'fill-color': '#f69'
-            }
-          },
-          {
-            id: `${id}-line-0`,
-            source: id,
-            type: 'line',
-            'source-layer': 'layer0',
-            paint: {
-              'line-opacity': layerModel.opacity || 1,
-              'line-color': '#f69'
-            }
-          },
-          {
-            id: `${id}-circle-0`,
-            source: id,
-            type: 'circle',
-            'source-layer': 'layer0',
-            paint: {
-              'circle-opacity': layerModel.opacity || 1,
-              'circle-color': '#f69'
-            }
-          }
-        ]
+    ...render,
+    layers: getVectorStyleLayers(layers, layerModel)
   };
 
-  if (layerModel.provider === 'cartodb') {
+  if (provider && (provider.type === 'cartodb' || provider.type === 'carto')) {
     return new Promise((resolve, reject) => {
-      fetchTile(layerModel)
+      fetchCartoAnonymous(layerModel)
         .then(response => {
           const tileUrl = `${response.cdn_url.templates.https.url.replace('{s}', 'a')}/${
-            layerConfigParsed.account
+            provider.options.account
           }/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.mvt`;
 
           return resolve({
             ...layer,
             source: {
-              ...layer.source,
+              type: 'vector',
               tiles: [tileUrl]
             }
           });
