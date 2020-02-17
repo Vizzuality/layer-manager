@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import { getParams } from './utils';
+
 // Components
 import Map from 'components/map';
 import Sidebar from 'components/sidebar';
@@ -17,10 +19,10 @@ import {
   Legend,
   LegendListItem,
   LegendItemTypes,
+  LegendItemTimeStep,
   LegendItemToolbar,
   LegendItemButtonOpacity,
-  LegendItemButtonVisibility,
-  LegendItemButtonRemove
+  LegendItemButtonVisibility
 } from 'vizzuality-components';
 
 // DATA
@@ -31,19 +33,38 @@ import './App.scss';
 function App() {
   const [layers, setLayers] = useState(DEFAULT_LAYERS);
   const [layersJson, setLayersJson] = useState(JSON.stringify(DEFAULT_LAYERS, null, 2));
+  const [layersSettings, setLayersSettings] = useState({});
 
   const layerGroups = layers.map(l => {
-    const { id } = l;
+    const { id, paramsConfig, sqlConfig, decodeConfig, timelineConfig } = l;
+    const lSettings = layersSettings[id] || {};
+
+    const params = (!!paramsConfig) && getParams(paramsConfig, lSettings.params);
+    const sqlParams = (!!sqlConfig) && getParams(sqlConfig, lSettings.sqlParams);
+    const decodeParams = (!!decodeConfig) && getParams(decodeConfig, { ...timelineConfig, ...lSettings.decodeParams });
+    const timelineParams = (!!timelineConfig) && {
+      ...timelineConfig,
+      ...getParams(paramsConfig, lSettings.params),
+      ...getParams(decodeConfig, lSettings.decodeParams)
+
+    }
 
     return {
+      id,
       slug: id,
       dataset: id,
       layers: [
         {
           active: true,
-          ...l
+          ...l,
+          ...lSettings,
+          params,
+          sqlParams,
+          decodeParams,
+          timelineParams
         }
-      ]
+      ],
+      ...lSettings
     };
   });
 
@@ -57,18 +78,54 @@ function App() {
       // do nothing
     }
   };
-  const onChangeOrder = (...props) => {
-    console.log('onChangeOrder', props);
+
+  const onChangeOrder = (ids) => {
+    console.log('onChangeOrder', ids);
   };
-  const onChangeVisibility = (...props) => {
-    console.log('onChangeVisibility', props);
+
+  const onChangeVisibility = (l, visibility) => {
+    setLayersSettings({
+      ...layersSettings,
+      [l.id]: {
+        ...layersSettings[l.id],
+        visibility
+      }
+    });
   };
-  const onChangeOpacity = (...props) => {
-    console.log('onChangeOpacity', props);
+
+  const onChangeOpacity = (l, opacity) => {
+    setLayersSettings({
+      ...layersSettings,
+      [l.id]: {
+        ...layersSettings[l.id],
+        opacity
+      }
+    });
   };
-  const onRemoveLayer = (...props) => {
-    console.log('onRemoveLayer', props);
-  };
+
+  const onChangeLayerDate = (dates, layer) => {
+    const { id, decodeConfig } = layer;
+
+    setLayersSettings({
+      ...layersSettings,
+      [id]: {
+        ...layersSettings[id],
+        ...decodeConfig && {
+          decodeParams: {
+            startDate: dates[0],
+            endDate: dates[1],
+            trimEndDate: dates[2]
+          }
+        },
+        ...!decodeConfig && {
+          params: {
+            startDate: dates[0],
+            endDate: dates[1]
+          }
+        }
+      }
+    });
+  }
 
   return (
     <div className="c-app">
@@ -99,15 +156,46 @@ function App() {
           >
             {map => (
               <LayerManager map={map} plugin={PluginMapboxGl}>
-                {layers.map(layer => (
-                  <Layer key={layer.id} {...layer} {...layer.config} />
-                ))}
+                {layers.map(layer => {
+                  const { id, paramsConfig, sqlConfig, decodeConfig, timelineConfig, decodeFunction } = layer;
+                  const lSettings = layersSettings[id] || {};
+
+                  const l = {
+                    ...layer,
+                    ...layer.config,
+                    ...lSettings,
+                    ...(!!paramsConfig) && {
+                      params: getParams(paramsConfig, { ...lSettings.params })
+                    },
+
+                    ...(!!sqlConfig) && {
+                      sqlParams: getParams(sqlConfig, { ...lSettings.sqlParams })
+                    },
+
+                    ...(!!decodeConfig) && {
+                      decodeParams: getParams(decodeConfig, { ...timelineConfig, ...lSettings.decodeParams }),
+                      decodeFunction
+                    }
+                  };
+
+                  return (
+                    <Layer
+                      key={layer.id}
+                      {...l}
+                    />
+                  )
+                })}
               </LayerManager>
             )}
           </Map>
 
           <div className="c-legend">
-            <Legend maxHeight={'65vh'} collapsable={false} onChangeOrder={onChangeOrder}>
+            <Legend
+              maxHeight={'65vh'}
+              collapsable={false}
+              sortable={false}
+              onChangeOrder={onChangeOrder}
+            >
               {layerGroups.map((layerGroup, i) => {
                 return (
                   <LegendListItem
@@ -125,18 +213,27 @@ function App() {
                           }}
                         />
                         <LegendItemButtonVisibility />
-                        <LegendItemButtonRemove />
                       </LegendItemToolbar>
                     }
-                    onChangeVisibility={(l, visibility) =>
-                      onChangeVisibility(l, visibility, layerGroup.slug)
-                    }
-                    onChangeOpacity={(l, opacity) => onChangeOpacity(l, opacity, layerGroup.slug)}
-                    onRemoveLayer={l => {
-                      onRemoveLayer(l);
-                    }}
+                    onChangeVisibility={onChangeVisibility}
+                    onChangeOpacity={onChangeOpacity}
                   >
                     <LegendItemTypes />
+
+                    <LegendItemTimeStep
+                      defaultStyles={{
+                        handleStyle: {
+                          backgroundColor: 'white',
+                          borderRadius: '50%',
+                          boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.29)',
+                          border: '0px',
+                          zIndex: 2
+                        },
+                        railStyle: { backgroundColor: '#d6d6d9' },
+                        dotStyle: { visibility: 'hidden', border: '0px' }
+                      }}
+                      handleChange={onChangeLayerDate}
+                    />
                   </LegendListItem>
                 );
               })}

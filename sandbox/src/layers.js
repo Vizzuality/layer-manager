@@ -69,10 +69,6 @@ export default [
         }
       ]
     },
-    decodeParams: {
-      startYear: 2001,
-      endYear: 2018
-    },
     decodeFunction: `
       // values for creating power scale, domain (input), and range (output)
       float domainMin = 0.;
