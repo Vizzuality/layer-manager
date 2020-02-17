@@ -6429,16 +6429,15 @@ layer-manager@^1.10.0:
     supercluster "^4.1.1"
     wri-json-api-serializer "^1.0.1"
 
-layer-manager@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/layer-manager/-/layer-manager-2.0.1.tgz#c1f067533c95465d2edab8b6e35591c7c30116c1"
-  integrity sha512-+6BggiEsPqQcEv0b/XxR7xh6ALWCva0Tz/7gJGdwoquXGfSIvUWTA0JwFYWmrfI139s/s6mkhBlR/ZuCMyBO1A==
+layer-manager@^3.0.0-beta.9:
+  version "3.0.0-beta.9"
+  resolved "https://registry.yarnpkg.com/layer-manager/-/layer-manager-3.0.0-beta.9.tgz#2999fb6720413e5b01e65fb262b3678bd6cc1d66"
+  integrity sha512-gsXNqjkNKT3BAOm9/usJrFmJwSpB0Nd7hUFqYKhnmQmdJGB5qpjL3MUmoIS9EWfISgi6HSov9DZSAfwECEDzvQ==
   dependencies:
-    axios "^0.18.0"
-    lodash "^4.17.11"
-    prop-types "^15.6.2"
+    axios "^0.19.0"
+    lodash "^4.17.15"
+    prop-types "^15.7.2"
     supercluster "^4.1.1"
-    wri-json-api-serializer "^1.0.1"
 
 lazy-cache@^0.2.3:
   version "0.2.7"
