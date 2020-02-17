@@ -288,21 +288,26 @@ class PluginMapboxGL {
       return this;
     }
 
-    mapLayer.layers.forEach((layer, i) => {
-      const { id } = layer;
-      const rl = renderLayers[i] || renderLayers[0] || {}; // take the style for each layer or use the first one for all of them
-      const { paint = {}, layout = {}, filter = null } = rl;
+    try {
+      mapLayer.layers.forEach((layer, i) => {
+        const { id } = layer;
+        const rl = renderLayers[i] || renderLayers[0] || {}; // take the style for each layer or use the first one for all of them
+        const { paint = {}, layout = {}, filter = null } = rl;
 
-      this.map.setFilter(id, filter);
+        this.map.setFilter(id, filter);
 
-      Object.keys(paint).forEach(p => {
-        this.map.setPaintProperty(id, p, paint[p]);
+        Object.keys(paint).forEach(p => {
+          // console.log(id, p, paint[p]);
+          this.map.setPaintProperty(id, p, paint[p]);
+        });
+
+        Object.keys(layout).forEach(l => {
+          this.map.setLayoutProperty(id, l, layout[l]);
+        });
       });
-
-      Object.keys(layout).forEach(l => {
-        this.map.setLayoutProperty(id, l, layout[l]);
-      });
-    });
+    } catch (error) {
+      console.error(error);
+    }
 
     return this;
   }
