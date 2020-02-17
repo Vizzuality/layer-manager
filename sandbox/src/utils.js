@@ -55,12 +55,7 @@ export const getParams = (config = [], params = {}) => {
     ...params
   };
 
-  const {
-    startDate,
-    endDate,
-    trimEndDate,
-    maxAbsoluteDate
-  } = newParams;
+  const { startDate, endDate, trimEndDate, maxAbsoluteDate } = newParams;
 
   const start = startDate;
   const end = endDate > maxAbsoluteDate ? maxAbsoluteDate : endDate;
@@ -85,5 +80,4 @@ export const getParams = (config = [], params = {}) => {
     }),
     ...getDayRange(newParams)
   };
-}
-;
+};

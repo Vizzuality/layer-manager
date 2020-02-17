@@ -39,15 +39,15 @@ function App() {
     const { id, paramsConfig, sqlConfig, decodeConfig, timelineConfig } = l;
     const lSettings = layersSettings[id] || {};
 
-    const params = (!!paramsConfig) && getParams(paramsConfig, lSettings.params);
-    const sqlParams = (!!sqlConfig) && getParams(sqlConfig, lSettings.sqlParams);
-    const decodeParams = (!!decodeConfig) && getParams(decodeConfig, { ...timelineConfig, ...lSettings.decodeParams });
-    const timelineParams = (!!timelineConfig) && {
+    const params = !!paramsConfig && getParams(paramsConfig, lSettings.params);
+    const sqlParams = !!sqlConfig && getParams(sqlConfig, lSettings.sqlParams);
+    const decodeParams =
+      !!decodeConfig && getParams(decodeConfig, { ...timelineConfig, ...lSettings.decodeParams });
+    const timelineParams = !!timelineConfig && {
       ...timelineConfig,
       ...getParams(paramsConfig, lSettings.params),
       ...getParams(decodeConfig, lSettings.decodeParams)
-
-    }
+    };
 
     return {
       id,
@@ -79,7 +79,7 @@ function App() {
     }
   };
 
-  const onChangeOrder = (ids) => {
+  const onChangeOrder = ids => {
     console.log('onChangeOrder', ids);
   };
 
@@ -110,22 +110,22 @@ function App() {
       ...layersSettings,
       [id]: {
         ...layersSettings[id],
-        ...decodeConfig && {
+        ...(decodeConfig && {
           decodeParams: {
             startDate: dates[0],
             endDate: dates[1],
             trimEndDate: dates[2]
           }
-        },
-        ...!decodeConfig && {
+        }),
+        ...(!decodeConfig && {
           params: {
             startDate: dates[0],
             endDate: dates[1]
           }
-        }
+        })
       }
     });
-  }
+  };
 
   return (
     <div className="c-app">
@@ -157,33 +157,38 @@ function App() {
             {map => (
               <LayerManager map={map} plugin={PluginMapboxGl}>
                 {layers.map(layer => {
-                  const { id, paramsConfig, sqlConfig, decodeConfig, timelineConfig, decodeFunction } = layer;
+                  const {
+                    id,
+                    paramsConfig,
+                    sqlConfig,
+                    decodeConfig,
+                    timelineConfig,
+                    decodeFunction
+                  } = layer;
                   const lSettings = layersSettings[id] || {};
 
                   const l = {
                     ...layer,
                     ...layer.config,
                     ...lSettings,
-                    ...(!!paramsConfig) && {
+                    ...(!!paramsConfig && {
                       params: getParams(paramsConfig, { ...lSettings.params })
-                    },
+                    }),
 
-                    ...(!!sqlConfig) && {
+                    ...(!!sqlConfig && {
                       sqlParams: getParams(sqlConfig, { ...lSettings.sqlParams })
-                    },
+                    }),
 
-                    ...(!!decodeConfig) && {
-                      decodeParams: getParams(decodeConfig, { ...timelineConfig, ...lSettings.decodeParams }),
+                    ...(!!decodeConfig && {
+                      decodeParams: getParams(decodeConfig, {
+                        ...timelineConfig,
+                        ...lSettings.decodeParams
+                      }),
                       decodeFunction
-                    }
+                    })
                   };
 
-                  return (
-                    <Layer
-                      key={layer.id}
-                      {...l}
-                    />
-                  )
+                  return <Layer key={layer.id} {...l} />;
                 })}
               </LayerManager>
             )}
