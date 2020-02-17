@@ -71,6 +71,7 @@ class Layer extends PureComponent {
     } = prevProps;
 
     const {
+      type,
       source,
       render,
       params,
@@ -105,13 +106,23 @@ class Layer extends PureComponent {
 
     // TODO: don't add and remove if provider is geojson
     if (sourceParsed && !isEqual(sourceParsed, prevSourceParsed)) {
-      const { type, data } = sourceParsed;
+      const { type: sourceType, data } = sourceParsed;
+      const t = sourceType || type;
 
-      if (
-        type === 'raster' ||
-        type === 'vector' ||
-        (type === 'geojson' && typeof data === 'string')
-      ) {
+      if (t === 'raster' || t === 'vector' || (t === 'geojson' && typeof data === 'string')) {
+        this.remove();
+        this.add();
+
+        // prevent updating layer
+        return;
+      }
+    }
+
+    if (renderParsed && !isEqual(renderParsed, prevRenderParsed)) {
+      const { layers = [] } = renderParsed;
+      const { layers: prevLayers = [] } = prevRenderParsed;
+
+      if (layers.length !== prevLayers.length) {
         this.remove();
         this.add();
 

@@ -38,6 +38,7 @@ const activeLayers = [
 		id: 'gain',
 		type: 'raster',
 		source: {
+      type: 'raster',
 			tiles: ['http://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png'],
 			minzoom: 3,
 			maxzoom: 12
@@ -60,6 +61,7 @@ const activeLayers = [
 		id: 'loss',
 		type: 'raster',
 		source: {
+      type: 'raster',
 			tiles: [
 				`https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png`
 			],
