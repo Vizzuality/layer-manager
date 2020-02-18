@@ -238,7 +238,7 @@ Given this layer object
         "layers": [
           {
             "options": {
-              "sql": `WITH a AS (SELECT cartodb_id, the_geom_webmercator, uuid, iso3 FROM all_geometry {{where}}) SELECT a.the_geom_webmercator, a.cartodb_id, b.uuid, b.timeinterval as year, b.species, b.scenario, b.probabilityemca FROM {iso3}_zonal_spp_uuid as b INNER JOIN a ON b.uuid = a.uuid {{where2}}`
+              "sql": "WITH a AS (SELECT cartodb_id, the_geom_webmercator, uuid, iso3 FROM all_geometry {{where}}) SELECT a.the_geom_webmercator, a.cartodb_id, b.uuid, b.timeinterval as year, b.species, b.scenario, b.probabilityemca FROM {iso3}_zonal_spp_uuid as b INNER JOIN a ON b.uuid = a.uuid {{where2}}"
             },
             "type": "cartodb"
           }
@@ -249,7 +249,7 @@ Given this layer object
   "render": {
     "layers": [
       {
-        "filter": ["==", "year", `{year}`],
+        "filter": ["==", "year", "{year}"],
         "paint": {
           "fill-color": [
             "interpolate",
@@ -287,7 +287,7 @@ You will have this result
         "layers": [
           {
             "options": {
-              "sql": `WITH a AS (SELECT cartodb_id, the_geom_webmercator, uuid, iso3 FROM all_geometry WHERE iso3 = 'SWE') SELECT a.the_geom_webmercator, a.cartodb_id, b.uuid, b.timeinterval as year, b.species, b.scenario, b.probabilityemca FROM swe_zonal_spp_uuid as b INNER JOIN a ON b.uuid = a.uuid WHERE species = 'Picea glauca' AND scenario = 'rcp45'`
+              "sql": "WITH a AS (SELECT cartodb_id, the_geom_webmercator, uuid, iso3 FROM all_geometry WHERE iso3 = 'SWE') SELECT a.the_geom_webmercator, a.cartodb_id, b.uuid, b.timeinterval as year, b.species, b.scenario, b.probabilityemca FROM swe_zonal_spp_uuid as b INNER JOIN a ON b.uuid = a.uuid WHERE species = 'Picea glauca' AND scenario = 'rcp45'"
             },
             "type": "cartodb"
           }
@@ -551,7 +551,7 @@ const activeLayers = [
           layers: [
             {
               options: {
-                sql: `WITH a AS (SELECT cartodb_id, the_geom_webmercator, uuid, iso3 FROM all_geometry {{where}}) SELECT a.the_geom_webmercator, a.cartodb_id, b.uuid, b.timeinterval as year, b.species, b.scenario, b.probabilityemca FROM {iso3}_zonal_spp_uuid as b INNER JOIN a ON b.uuid = a.uuid {{where2}}`
+                sql: "WITH a AS (SELECT cartodb_id, the_geom_webmercator, uuid, iso3 FROM all_geometry {{where}}) SELECT a.the_geom_webmercator, a.cartodb_id, b.uuid, b.timeinterval as year, b.species, b.scenario, b.probabilityemca FROM {iso3}_zonal_spp_uuid as b INNER JOIN a ON b.uuid = a.uuid {{where2}}"
               },
               type: 'cartodb'
             }
@@ -562,7 +562,7 @@ const activeLayers = [
     render: {
       layers: [
         {
-          filter: ['==', 'year', `{year}`],
+          filter: ['==', 'year', "{year}"],
           paint: {
             'fill-color': [
               'interpolate',
