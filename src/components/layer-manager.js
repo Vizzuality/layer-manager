@@ -6,17 +6,19 @@ class LayerManager extends PureComponent {
   static propTypes = {
     map: PropTypes.shape({}).isRequired,
     plugin: PropTypes.func.isRequired,
+    providers: PropTypes.shape({}),
     children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node])
   };
 
   static defaultProps = {
-    children: []
+    children: [],
+    providers: {}
   };
 
   constructor(props) {
     super(props);
-    const { map, plugin } = props;
-    this.layerManager = new Manager(map, plugin);
+    const { map, plugin, providers } = props;
+    this.layerManager = new Manager(map, plugin, providers);
   }
 
   componentWillUnmount() {

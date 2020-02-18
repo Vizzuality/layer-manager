@@ -1,11 +1,10 @@
 import Promise from 'utils/promise';
 
-import { fetchGeojsonData } from 'services/geojson-service';
 import { getVectorStyleLayers } from 'utils/vector-style-layers';
 
-const GeoJsonLayer = layerModel => {
+const GeoJsonLayer = (layerModel, providers) => {
   const { source = {}, render = {}, id } = layerModel;
-
+  const { provider } = source;
   const { layers } = render;
 
   const layer = {
@@ -18,23 +17,19 @@ const GeoJsonLayer = layerModel => {
     layers: getVectorStyleLayers(layers, layerModel)
   };
 
-  if (source.parse && typeof source.parse === 'function') {
-    return new Promise((resolve, reject) => {
-      fetchGeojsonData(layerModel)
-        .then(response => {
-          const data = source.parse(response);
+  if (provider) {
+    const method = providers[provider.type];
 
-          const layerWithData = {
-            ...layer,
-            source: {
-              type: 'geojson',
-              ...source,
-              data
-            }
-          };
-          resolve(layerWithData);
-        })
-        .catch(err => reject(err));
+    return new Promise((resolve, reject) => {
+      if (!method) {
+        reject(
+          new Error(
+            `${provider.type} provider is not supported. Try to add it to the providers method when you initialize layer-manager`
+          )
+        );
+      }
+
+      method.call(this, provider, layer, layerModel, resolve, reject);
     });
   }
 

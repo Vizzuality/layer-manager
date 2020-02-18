@@ -1,7 +1,5 @@
 import Promise from 'utils/promise';
 
-import { fetchCartoAnonymous } from 'services/carto-service';
-
 import { getVectorStyleLayers } from 'utils/vector-style-layers';
 import MapboxLayer from './custom-layers/mapbox-layer';
 import TileLayer from './custom-layers/tile-layer';
@@ -29,7 +27,7 @@ const getTileData = ({ x, y, z }, url) => {
     });
 };
 
-const RasterLayer = layerModel => {
+const RasterLayer = (layerModel, providers) => {
   const { source = {}, render = {}, decodeParams, id, opacity, decodeFunction } = layerModel;
 
   const DEFAULT_RASTER_OPTIONS = {
@@ -116,24 +114,19 @@ const RasterLayer = layerModel => {
     };
   }
 
-  if (provider && (provider.type === 'cartodb' || provider.type === 'carto')) {
-    return new Promise((resolve, reject) => {
-      fetchCartoAnonymous(layerModel)
-        .then(response => {
-          const tileUrl = `${response.cdn_url.templates.https.url.replace('{s}', 'a')}/${
-            provider.options.account
-          }/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.png`;
+  if (provider) {
+    const method = providers[provider.type];
 
-          return resolve({
-            ...layer,
-            source: {
-              type: 'raster',
-              tileSize: 256,
-              tiles: [tileUrl]
-            }
-          });
-        })
-        .catch(err => reject(err));
+    return new Promise((resolve, reject) => {
+      if (!method) {
+        reject(
+          new Error(
+            `${provider.type} provider is not supported. Try to add it to the providers method when you initialize layer-manager`
+          )
+        );
+      }
+
+      method.call(this, provider, layer, layerModel, resolve, reject);
     });
   }
 

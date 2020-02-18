@@ -32,6 +32,9 @@ An instance of the map.
 
 A plugin to handle all the layer functionalities depending on the map tech. Layer Manager provides you the Mapbox one, if you want to use Leaflet, GoogleMaps or any other map tech you should provide it with the correct specification.
 
+#### `providers - (required)`
+An object with the provider type as a key. Each key should be a function where you need to set the layerModel request and use `CancelToken` from axios.
+
 ### Layer
 
 #### `id - (required) - (string|number)`
@@ -53,6 +56,16 @@ Example:
   "type": "raster",
   "tiles": ["http://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png"]
 }
+```
+
+If you define a provider (remember to set the providers at LayerManager initialization) it will call the provider method and you will need to resolve the Promise.
+
+if you need to make a request inside your custom provider use
+
+```js
+import { fetch } from 'utils/request'
+
+fetch(type, url, options, layerModel)
 ```
 
 #### `render - (optional) - (object)`

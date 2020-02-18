@@ -2,6 +2,7 @@ import isEmpty from 'lodash/isEmpty';
 import Promise from 'utils/promise';
 
 import LayerModel from './layer-model';
+import DEFAULT_PROVIDERS from './providers';
 
 function checkPluginProperties(plugin) {
   if (plugin) {
@@ -35,8 +36,9 @@ function checkPluginProperties(plugin) {
 }
 
 class LayerManager {
-  constructor(map, Plugin) {
+  constructor(map, Plugin, Providers) {
     this.map = map;
+    this.providers = { ...DEFAULT_PROVIDERS, ...Providers };
     this.layers = [];
     this.promises = {};
     this.options = {
@@ -191,12 +193,12 @@ class LayerManager {
   }
 
   requestLayer(layerModel, onAfterAdd) {
-    const { type, provider } = layerModel;
+    const { type } = layerModel;
     const method = this.plugin.getLayerByType(type);
 
     if (!method) {
       this.promises[layerModel.id] = Promise.reject(
-        new Error(`${provider} provider is not yet supported.`)
+        new Error(`${type} type is not yet supported.`)
       );
       return false;
     }
@@ -206,7 +208,7 @@ class LayerManager {
 
     // every request method returns a promise that we store in the array
     // to control when all layers are fetched.
-    this.promises[layerModel.id] = method.call(this, layerModel).then(layer => {
+    this.promises[layerModel.id] = method.call(this, layerModel, this.providers).then(layer => {
       const { _canceled: canceled } = this.promises[layerModel.id];
       if (!canceled) {
         layerModel.set('mapLayer', layer);

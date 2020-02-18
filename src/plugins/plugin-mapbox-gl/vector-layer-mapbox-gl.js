@@ -1,9 +1,8 @@
 import Promise from 'utils/promise';
 
-import { fetchCartoAnonymous } from 'services/carto-service';
 import { getVectorStyleLayers } from 'utils/vector-style-layers';
 
-const VectorLayer = layerModel => {
+const VectorLayer = (layerModel, providers) => {
   const { source = {}, render = {}, id } = layerModel;
 
   const { provider } = source;
@@ -20,23 +19,19 @@ const VectorLayer = layerModel => {
     layers: getVectorStyleLayers(layers, layerModel)
   };
 
-  if (provider && (provider.type === 'cartodb' || provider.type === 'carto')) {
-    return new Promise((resolve, reject) => {
-      fetchCartoAnonymous(layerModel)
-        .then(response => {
-          const tileUrl = `${response.cdn_url.templates.https.url.replace('{s}', 'a')}/${
-            provider.options.account
-          }/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.mvt`;
+  if (provider) {
+    const method = providers[provider.type];
 
-          return resolve({
-            ...layer,
-            source: {
-              type: 'vector',
-              tiles: [tileUrl]
-            }
-          });
-        })
-        .catch(err => reject(err));
+    return new Promise((resolve, reject) => {
+      if (!method) {
+        reject(
+          new Error(
+            `${provider.type} provider is not supported. Try to add it to the providers method when you initialize layer-manager`
+          )
+        );
+      }
+
+      method.call(this, provider, layer, layerModel, resolve, reject);
     });
   }
 
