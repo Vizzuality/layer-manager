@@ -235,7 +235,6 @@ Given this layer object
       "type": "carto",
       "options": {
         "account": "simbiotica",
-        // api_key: 'añsdlkjfñaklsjdfklñajsdfñlkadjsf',
         "layers": [
           {
             "options": {
@@ -285,7 +284,6 @@ You will have this result
       "type": "carto",
       "options": {
         "account": "simbiotica",
-        // api_key: 'añsdlkjfñaklsjdfklñajsdfñlkadjsf',
         "layers": [
           {
             "options": {
@@ -331,11 +329,11 @@ These `decodeParams` will be sent to the `decodeFunction`.
 
 Example:
 
-```js
+```json
 {
-  decodeParams: {
-    startYear: 2001,
-    endYear: 2018
+  "decodeParams": {
+    "startYear": 2001,
+    "endYear": 2018
   }
 }
 ```
