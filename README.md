@@ -63,7 +63,7 @@ If you define a provider (remember to set the providers at LayerManager initiali
 if you need to make a request inside your custom provider use
 
 ```js
-import { fetch } from 'utils/request'
+import { fetch } from 'layer-manager';
 
 fetch(type, url, options, layerModel)
 ```

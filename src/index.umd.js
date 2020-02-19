@@ -5,13 +5,16 @@
 
 import PluginMapboxGl from './plugins/plugin-mapbox-gl';
 
-import { replace, substitution, concatenation } from './utils/query';
 import LayerManager from './layer-manager';
+
+import { replace, substitution, concatenation } from './utils/query';
+import { fetch } from './utils/request';
 
 // LayerManager.PluginLeaflet = PluginLeaflet;
 LayerManager.PluginMapboxGl = PluginMapboxGl;
 LayerManager.replace = replace;
 LayerManager.substitution = substitution;
 LayerManager.concatenation = concatenation;
+LayerManager.fetch = fetch;
 
 export default LayerManager;
