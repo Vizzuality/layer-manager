@@ -2,7 +2,11 @@
 
 # Layer Manager
 
-A library to manage the addition, and removal of layers in Mapbox. Furthermore it provides methods to set opacity, visibility and zIndex.
+A library for people that are tired of handling layers on maps. Do you want to change zIndexes? Do you want to change live colors? What about bugs like duplicates layers that stay there forever? Say good bye to chaos...
+
+This library will help you to manage the addition and removal of layers. It also provides methods to set opacity, visibility and zIndex.
+
+We currently only supports Mapbox spec. Leaflet or Google Maps are our next steps.
 
 ## :bomb: Install
 
@@ -10,9 +14,10 @@ Using npm:
 
 `npm install layer-manager`
 
-or using git:
+Using yarn:
 
-`npm install vizzuality/layer-manager`
+`yarn add layer-manager`
+
 
 ## :heavy_exclamation_mark: Requirements
 
@@ -33,7 +38,9 @@ An instance of the map.
 
 #### `plugin - (required)`
 
-A plugin to handle all the layer functionalities depending on the map tech. Layer Manager provides you the Mapbox one, if you want to use Leaflet, GoogleMaps or any other map tech you should provide it with the correct specification.
+A plugin to handle all the layer functionalities depending on the map tech. Layer Manager provides you with the Mapbox one, if you want to use Leaflet, GoogleMaps or any other map tech you should provide it with the correct specification.
+
+How could you create your own plugin? => Cooming soon (next episode)
 
 #### `providers - (required)`
 An object with the provider type as a key. Each key should be a function.
@@ -77,6 +84,14 @@ A unique value.
 #### `type - (required) - (string)`
 
 One of these values. ['raster', 'vector', 'geojson'].
+
+#### `opacity - (optional) - (number)`
+
+A number between 0 and 1. Default: 1
+
+#### `visibility - (optional) - (boolean)`
+
+A boolean to set the visibility of the layer. Changing visibility won't remove the layer from the map, it will only hide it. Default: true
 
 #### `source - (required) - (object)`
 
@@ -250,7 +265,7 @@ You will have this result
 
 An object that we will use to substitute all the concurrences of each key with its respective value, but in sql format.
 
-The name of the keys is very important at this point. Depending on the name the replacement will be different. You can use several where or and by adding a number behind. Check the example.
+The name of the keys is very important. Depending on the name the replacement will be different. You can use several `where` or `and` by adding a number after. Check the example.
 
 -   `where`: `WHERE` statment wil be used for the substitution.
 -   `and`: `AND` statment wil be used for the substitution.
