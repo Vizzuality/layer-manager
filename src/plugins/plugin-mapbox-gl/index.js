@@ -51,7 +51,7 @@ class PluginMapboxGL {
         const { metadata = {} } = l;
         const nextLayerId = metadata.position === 'top' ? null : this.getNextLayerId(layerModel);
 
-        if (!this.map.getLayer(l.id)) {
+        if (this.map && !this.map.getLayer(l.id)) {
           this.map.addLayer(l, nextLayerId);
         }
 
