@@ -20,6 +20,9 @@ or using git:
 
 You should also install this packages versions to have everything working `deck.gl@7.3.6`, `luma.gl@7.3.2` and `viewport-mercator-project@6.1.1`
 
+
+
+
 ## :clipboard: Docs
 
 ### LayerManager
@@ -33,7 +36,37 @@ An instance of the map.
 A plugin to handle all the layer functionalities depending on the map tech. Layer Manager provides you the Mapbox one, if you want to use Leaflet, GoogleMaps or any other map tech you should provide it with the correct specification.
 
 #### `providers - (required)`
-An object with the provider type as a key. Each key should be a function where you need to set the layerModel request and use `CancelToken` from axios.
+An object with the provider type as a key. Each key should be a function.
+
+Each function will receive the following props:
+- `provider - (object)`
+  - free object where you can define each provider as you want
+- `layer - (object)`
+  - Current layer transformed and ready to resolve
+- `layerModel - (object)`
+  - Current layer
+- `resolve - (function)`
+  - resolve function from the Promise. You must resolve always with the layer transformed and ready for use
+- `reject - (function)`
+  - reject function from the Promise.
+
+
+
+If you need to fetch something you will need to call exported `fetch` function. It's a little wrapper around axios and adds a `CancelToken` from axios that will cancel requests to prevent duplicate layers and bugs.
+
+You need to send the following params
+- `type - (required) - (string)`
+  - get or post
+- `url - (required) - (string)`
+  - url where you want to get the data
+- `options - (required) - (object)`
+  - axios options
+- `layerModel - (required) - (object)`
+  - It will be used for saving the request and apply cancelation
+
+
+
+
 
 ### Layer
 
@@ -67,6 +100,8 @@ import { fetch } from 'layer-manager';
 
 fetch(type, url, options, layerModel)
 ```
+
+After you fetch you need to resolve or reject the promise
 
 #### `render - (optional) - (object)`
 
