@@ -273,7 +273,7 @@ class PluginMapboxGL {
     const { id, source } = layerModel;
     const { type, data } = source;
 
-    if (this.map && type === 'geojson' && typeof data !== 'string') {
+    if (this.map && type === 'geojson' && !!data && typeof data !== 'string') {
       const src = this.map.getSource(id);
       src.setData(data);
     }
