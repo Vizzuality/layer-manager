@@ -153,5 +153,55 @@ export default [
       type: 'basic',
       items: [{ name: 'Protected areas', color: '#5ca2d1' }]
     }
+  },
+
+  // CUSTOM PROVIDER
+  {
+    id: 'mongabay-stories',
+    name: 'Mongabay stories',
+    config: {
+      type: 'geojson',
+      source: {
+        type: 'geojson',
+        data: 'https://wri-01.carto.com/api/v2/sql?q=SELECT%20*%20FROM%20mongabay&format=geojson',
+        // provider: {
+        //   type: 'carto-sql-points',
+        //   url: 'https://wri-01.carto.com/api/v2/sql?q=SELECT%20*%20FROM%20mongabay&format=geojson',
+        //   options: {}
+        // }
+      },
+      render: {
+        metadata: {
+          position: 'top'
+        },
+        layers: [
+          {
+            type: 'circle',
+            paint: {
+              'circle-color': [
+                'interpolate',
+                ['exponential', 0.5],
+                ['zoom'],
+                3,
+                '#e2714b',
+                6,
+                '#eee695'
+              ],
+              'circle-stroke-width': 1
+            },
+
+            // It will put the layer on the top
+            metadata: {
+              position: 'top'
+            }
+          }
+        ]
+      }
+    },
+    paramsConfig: [],
+    legendConfig: {
+      type: 'basic',
+      items: [{ name: 'Mongabay stories', color: '#FFCC00' }]
+    }
   }
 ];
