@@ -163,7 +163,10 @@ export default [
       type: 'geojson',
       source: {
         type: 'geojson',
-        data: 'https://wri-01.carto.com/api/v2/sql?q=SELECT%20*%20FROM%20mongabay&format=geojson'
+        data: 'https://wri-01.carto.com/api/v2/sql?q=SELECT%20*%20FROM%20mongabay&format=geojson',
+        cluster: true,
+        clusterMaxZoom: 14,
+        clusterRadius: 45
         // provider: {
         //   type: 'carto-sql-points',
         //   url: 'https://wri-01.carto.com/api/v2/sql?q=SELECT%20*%20FROM%20mongabay&format=geojson',
@@ -176,23 +179,45 @@ export default [
         },
         layers: [
           {
-            type: 'circle',
-            paint: {
-              'circle-color': [
-                'interpolate',
-                ['exponential', 0.5],
-                ['zoom'],
-                3,
-                '#e2714b',
-                6,
-                '#eee695'
-              ],
-              'circle-stroke-width': 1
-            },
-
-            // It will put the layer on the top
+            id: 'media-clusters',
             metadata: {
               position: 'top'
+            },
+            type: 'circle',
+            filter: ['has', 'point_count'],
+            paint: {
+              'circle-color': '#FFF',
+              'circle-stroke-width': 2,
+              'circle-stroke-color': '#CCC',
+              'circle-radius': 12
+            }
+          },
+          {
+            id: 'media-cluster-count',
+            metadata: {
+              position: 'top'
+            },
+            type: 'symbol',
+            filter: ['has', 'point_count'],
+            layout: {
+              'text-allow-overlap': true,
+              'text-ignore-placement': true,
+              'text-field': '{point_count_abbreviated}',
+              'text-size': 12
+            }
+          },
+          {
+            id: 'media',
+            metadata: {
+              position: 'top'
+            },
+            type: 'circle',
+            filter: ['!', ['has', 'point_count']],
+            paint: {
+              'circle-color': '#FFCC00',
+              'circle-stroke-width': 1,
+              'circle-stroke-color': '#333',
+              'circle-radius': 5
             }
           }
         ]

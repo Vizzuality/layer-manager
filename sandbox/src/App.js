@@ -155,6 +155,9 @@ function App() {
             mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
             // mapStyle="mapbox://styles/layer-manager/ck07vfinn01xm1co324q5vcdl"
             minZoom={2}
+            mapOptions={{
+              fadeDuration: 0
+            }}
           >
             {map => (
               <LayerManager
