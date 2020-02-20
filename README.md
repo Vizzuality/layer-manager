@@ -74,23 +74,23 @@ You need to send the following params
 
 ### Layer
 
-### `id - (required) - (string|number)`
+#### `id - (required) - (string|number)`
 
 A unique value.
 
-### `type - (required) - (string)`
+#### `type - (required) - (string)`
 
 One of these values. ['raster', 'vector', 'geojson'].
 
-### `opacity - (optional) - (number)`
+#### `opacity - (optional) - (number)`
 
 A number between 0 and 1. Default: 1
 
-### `visibility - (optional) - (boolean)`
+#### `visibility - (optional) - (boolean)`
 
 A boolean to set the visibility of the layer. Changing visibility won't remove the layer from the map, it will only hide it. Default: true
 
-### `source - (required) - (object)`
+#### `source - (required) - (object)`
 
 An object defining how you are going to get the layer data. Only raster, vector and geojson are supported. Check this link https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/
 
@@ -115,7 +115,7 @@ fetch(type, url, options, layerModel)
 
 After you fetch you need to resolve or reject the promise
 
-### `render - (optional) - (object)`
+#### `render - (optional) - (object)`
 
 An object defining how you are going to display the layer data. To define layer styles you must provide a `layers` array attribute containing all the styles. Those styles follow the Mapbox style spec https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/
 
@@ -145,7 +145,7 @@ Example:
 ```
 
 <!-- TODO: explain filters and layout properties -->
-### `params - (optional) - (object)`
+#### `params - (optional) - (object)`
 
 An object that we will use to substitute all the concurrences of each key with its respective value inside `render` and `source`.
 
@@ -260,7 +260,7 @@ Pay atention to the colors inside `render.layers` and the `params`object.
 }
 ```
 
-### `sqlParams - (optional) - (object)`
+#### `sqlParams - (optional) - (object)`
 
 An object that we will use to substitute all the concurrences of each key with its respective value, but in **sql format**.
 
@@ -383,7 +383,7 @@ You will have this result
 }
 ```
 
-### `decodeParams - (optional) - (object)`
+#### `decodeParams - (optional) - (object)`
 
 An object that we will use as properties to decode the raster tile images of a layer. The must be numbers, no strings allowed.
 
@@ -402,7 +402,7 @@ Example:
 }
 ```
 
-### `decodeFunction - (optional) - (string)`
+#### `decodeFunction - (optional) - (string)`
 
 A shader that defines how to decode each of the images tiles that comes to a raster layer.
 
