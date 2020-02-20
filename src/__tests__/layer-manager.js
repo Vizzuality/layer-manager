@@ -2,11 +2,12 @@ import LayerManger from 'index';
 import LayerModel from 'layer-model';
 
 function TestPlugin() {}
-TestPlugin.prototype.setLayerConfig = () => {};
 TestPlugin.prototype.setParams = () => {};
 TestPlugin.prototype.setSQLParams = () => {};
 TestPlugin.prototype.add = jest.fn();
 TestPlugin.prototype.remove = jest.fn();
+TestPlugin.prototype.setSource = jest.fn();
+TestPlugin.prototype.setRender = jest.fn();
 TestPlugin.prototype.setVisibility = jest.fn();
 TestPlugin.prototype.setOpacity = jest.fn();
 TestPlugin.prototype.setZIndex = jest.fn();
@@ -29,6 +30,8 @@ describe('Core layer manager', () => {
   beforeEach(() => {
     TestPlugin.prototype.add.mockClear();
     TestPlugin.prototype.remove.mockClear();
+    TestPlugin.prototype.setSource.mockClear();
+    TestPlugin.prototype.setRender.mockClear();
     TestPlugin.prototype.setVisibility.mockClear();
     TestPlugin.prototype.setOpacity.mockClear();
     TestPlugin.prototype.setZIndex.mockClear();
@@ -49,6 +52,8 @@ describe('Core layer manager', () => {
       zIndex: 0,
       opacity: 1,
       id: layer.id,
+      source: {},
+      render: {},
       visibility: true,
       interactivity: null,
       changedAttributes: {}
@@ -61,6 +66,8 @@ describe('Core layer manager', () => {
       visibility: false,
       zIndex: 22,
       interactivity: true,
+      source: {},
+      render: {},
       extra: 'wait what?' // is this expected behaviour?
     };
     const layer = { id: 'layer_1' };
@@ -172,14 +179,19 @@ describe('Core layer manager', () => {
   });
 
   it('successfully resolves request with a mapLayer and adds it using plugin', async () => {
-    const newLayer = { id: 'layer_2' };
+    const newLayer = {
+      id: 'layer_2',
+      type: 'vector',
+      source: {},
+      render: {}
+    };
     layerManager.add(newLayer);
     const layer = layerManager.layers[1];
-    layer.layerType = 'success';
+    layer.type = 'success';
 
     expect(layer.mapLayer).toBeUndefined();
 
-    layerManager.requestLayer(layer);
+    layerManager.requestLayer(layer, () => {});
 
     // we need to await the promise before doing assertions within a callback.
     await layerManager.promises[layer.id];

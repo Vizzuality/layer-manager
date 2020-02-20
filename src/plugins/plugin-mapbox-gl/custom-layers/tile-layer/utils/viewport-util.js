@@ -19,7 +19,19 @@ function getBoundingBox(viewport) {
 }
 
 function pixelsToTileIndex(a) {
-  return Math.floor(a / TILE_SIZE);
+  return a / TILE_SIZE;
+}
+
+/**
+ * Calculates and returns a new tile index {x, y, z}, with z being the given adjustedZ.
+ */
+function getAdjustedTileIndex({ x, y, z }, adjustedZ) {
+  const m = 2 ** (z - adjustedZ);
+  return {
+    x: Math.floor(x / m),
+    y: Math.floor(y / m),
+    z: adjustedZ
+  };
 }
 
 /**
@@ -33,6 +45,7 @@ export function getTileIndices(viewport, maxZoom, minZoom) {
     return [];
   }
 
+  // eslint-disable-next-line no-param-reassign
   viewport = new viewport.constructor({
     ...viewport,
     zoom: z - 1
@@ -40,13 +53,18 @@ export function getTileIndices(viewport, maxZoom, minZoom) {
 
   const bbox = getBoundingBox(viewport);
 
-  const [minX, minY] = lngLatToWorld([bbox[0], bbox[3]], viewport.scale).map(pixelsToTileIndex);
-  const [maxX, maxY] = lngLatToWorld([bbox[2], bbox[1]], viewport.scale).map(pixelsToTileIndex);
+  let [minX, minY] = lngLatToWorld([bbox[0], bbox[3]], viewport.scale).map(pixelsToTileIndex);
+  let [maxX, maxY] = lngLatToWorld([bbox[2], bbox[1]], viewport.scale).map(pixelsToTileIndex);
+
+  minX = Math.floor(minX);
+  maxX = Math.ceil(maxX);
+  minY = Math.floor(minY);
+  maxY = Math.ceil(maxY);
 
   const indices = [];
 
-  for (let x = minX; x <= maxX; x++) {
-    for (let y = minY; y <= maxY; y++) {
+  for (let x = minX; x < maxX; x++) {
+    for (let y = minY; y < maxY; y++) {
       if (maxZoom && z > maxZoom) {
         indices.push(getAdjustedTileIndex({ x, y, z }, maxZoom));
       } else {
@@ -54,17 +72,6 @@ export function getTileIndices(viewport, maxZoom, minZoom) {
       }
     }
   }
-  return indices;
-}
 
-/**
- * Calculates and returns a new tile index {x, y, z}, with z being the given adjustedZ.
- */
-function getAdjustedTileIndex({ x, y, z }, adjustedZ) {
-  const m = Math.pow(2, z - adjustedZ);
-  return {
-    x: Math.floor(x / m),
-    y: Math.floor(y / m),
-    z: adjustedZ
-  };
+  return indices;
 }

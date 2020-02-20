@@ -5,6 +5,10 @@ class LayerModel {
 
   visibility = true;
 
+  source = {};
+
+  render = {};
+
   constructor(layerSpec = {}) {
     Object.assign(this, layerSpec, { changedAttributes: {} });
   }

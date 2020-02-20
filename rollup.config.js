@@ -25,7 +25,10 @@ const globals = {
   '@deck.gl/mapbox': '@deck.gl/mapbox',
   '@loaders.gl/core': '@loaders.gl/core',
   '@loaders.gl/images': '@loaders.gl/images',
+  '@luma.gl/core': '@luma.gl/core',
   '@luma.gl/constants': '@luma.gl/constants',
+  earcut: 'earcut',
+  '@mapbox/tiny-sdf': '@mapbox/tiny-sdf',
   'deck.gl': 'deck.gl',
   'luma.gl': 'luma.gl',
   'viewport-mercator-project': 'viewport-mercator-project'
@@ -41,13 +44,11 @@ const babelOptions = () => ({
     [
       'module-resolver',
       {
-        root: [
-          './src/**'
-        ],
+        root: ['./src/**'],
         extensions: ['.js', '.jsx']
       }
     ]
-  ],
+  ]
 });
 
 export default [
@@ -55,7 +56,7 @@ export default [
     input: 'src/index.js',
     output: {
       file: pkg.module,
-      format: 'es',
+      format: 'es'
     },
     external,
     plugins: [babel(babelOptions()), resolve()]
@@ -66,7 +67,7 @@ export default [
       name,
       file: `${path}.js`,
       format: 'umd',
-      globals,
+      globals
     },
     external,
     plugins: [babel(babelOptions()), resolve(), commonjs()]
@@ -77,7 +78,7 @@ export default [
       name,
       file: `${path}.min.js`,
       format: 'umd',
-      globals,
+      globals
     },
     external,
     plugins: [babel(babelOptions()), resolve(), commonjs(), terser(terserOptions)]
@@ -87,7 +88,7 @@ export default [
     input: 'src/components/index.js',
     output: {
       file: 'dist/components/index.esm.js',
-      format: 'esm',
+      format: 'esm'
     },
     external,
     plugins: [babel(babelOptions()), resolve()]
@@ -98,7 +99,7 @@ export default [
       name,
       file: 'dist/components/index.js',
       format: 'umd',
-      globals,
+      globals
     },
     external,
     plugins: [babel(babelOptions()), resolve(), commonjs()]

@@ -4,6 +4,7 @@ import sortBy from 'lodash/sortBy';
 import rasterLayer from './raster-layer-mapbox-gl';
 import vectorLayer from './vector-layer-mapbox-gl';
 import geoJsonLayer from './geojson-layer-mapbox-gl';
+import videoLayer from './video-layer-mapbox-gl';
 
 class PluginMapboxGL {
   constructor(map, options) {
@@ -18,18 +19,11 @@ class PluginMapboxGL {
     });
   }
 
-  provider = {
-    leaflet: rasterLayer,
-    gee: rasterLayer,
-    cartodb: vectorLayer,
-    mapbox: vectorLayer,
-    geojson: geoJsonLayer
-  };
-
   type = {
     raster: rasterLayer,
     vector: vectorLayer,
-    geojson: geoJsonLayer
+    geojson: geoJsonLayer,
+    video: videoLayer
   };
 
   /**
@@ -82,21 +76,9 @@ class PluginMapboxGL {
       });
     }
 
-    if (this.map && this.map.getSource(mapLayer.id)) {
+    if (mapLayer && !!this.map && this.map.getSource(mapLayer.id)) {
       this.map.removeSource(mapLayer.id);
     }
-  }
-
-  /**
-   * Get method by provider
-   * @param {String} provider
-   */
-  getLayerByProvider(provider, layerModel) {
-    // required to maintain current layerSpec without creating a breaking change
-    if (provider === 'leaflet' && layerModel.layerConfig.type === 'cluster') {
-      return this.provider.geojson;
-    }
-    return this.provider[provider];
   }
 
   /**
@@ -112,6 +94,16 @@ class PluginMapboxGL {
    */
   getLayersOnMap() {
     return this.map.getStyle().layers;
+  }
+
+  getLayer(layerModel) {
+    const { mapLayer } = layerModel;
+
+    if (this.map) {
+      return this.map.getSource(mapLayer.id);
+    }
+
+    return null;
   }
 
   /**
@@ -232,9 +224,8 @@ class PluginMapboxGL {
       circle: ['circle', 'circle-stroke']
     };
 
-    const { layerConfig, mapLayer, decodeFunction } = layerModel;
-    const { body } = layerConfig;
-    const { vectorLayers = [] } = body;
+    const { render, mapLayer, decodeFunction } = layerModel;
+    const { layers = [] } = render;
 
     if (mapLayer.layers && !decodeFunction) {
       mapLayer.layers.forEach(l => {
@@ -243,7 +234,7 @@ class PluginMapboxGL {
 
         // Select the paint property from the original layer
         const { paint = {} } =
-          vectorLayers.find((v, i) => (v.id || `${l.source}-${v.type}-${i}`) === l.id) || {};
+          layers.find((v, i) => (v.id || `${l.source}-${v.type}-${i}`) === l.id) || {};
 
         // Loop each style name and check if there is an opacity in the original layer
         paintStyleNames.forEach(name => {
@@ -278,16 +269,55 @@ class PluginMapboxGL {
     }
   }
 
-  setParams(layerModel) {
-    this.remove(layerModel);
+  setSource(layerModel) {
+    const { id, source } = layerModel;
+    const { type, data } = source;
+
+    if (this.map && type === 'geojson' && !!data && typeof data !== 'string') {
+      const src = this.map.getSource(id);
+      src.setData(data);
+    }
+    return this;
   }
 
-  setSQLParams(layerModel) {
-    this.remove(layerModel);
+  setRender(layerModel) {
+    const { mapLayer, render } = layerModel;
+    const { layers: renderLayers = [] } = render;
+
+    if (!mapLayer || !renderLayers.length) {
+      return this;
+    }
+
+    try {
+      mapLayer.layers.forEach((layer, i) => {
+        const { id } = layer;
+        const rl = renderLayers[i] || renderLayers[0] || {}; // take the style for each layer or use the first one for all of them
+        const { paint = {}, layout = {}, filter = null } = rl;
+
+        this.map.setFilter(id, filter);
+
+        Object.keys(paint).forEach(p => {
+          // console.log(id, p, paint[p]);
+          this.map.setPaintProperty(id, p, paint[p]);
+        });
+
+        Object.keys(layout).forEach(l => {
+          this.map.setLayoutProperty(id, l, layout[l]);
+        });
+      });
+    } catch (error) {
+      console.error(error);
+    }
+
+    return this;
   }
 
-  setLayerConfig(layerModel) {
-    this.remove(layerModel);
+  setParams() {
+    return this;
+  }
+
+  setSQLParams() {
+    return this;
   }
 
   setDecodeParams(layerModel) {

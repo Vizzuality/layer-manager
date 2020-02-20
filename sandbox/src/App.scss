@@ -1,0 +1,30 @@
+@import '~vizzuality-components/dist/bundle';
+
+.c-app {
+  width: 100%;
+  height: 100vh;
+}
+
+.c-main {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.c-map-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.c-legend {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+
+  .vizzuality__c-legend-item h3 {
+    font-size: 12px;
+    letter-spacing: 1px;
+    margin: 3px 0;
+  }
+}

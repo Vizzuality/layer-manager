@@ -3,17 +3,18 @@
 // compatible with mixed imports (which exist in index.js)
 // This file does away with named imports in favor of a single export default.
 
-import PluginLeaflet from './plugins/plugin-leaflet';
 import PluginMapboxGl from './plugins/plugin-mapbox-gl';
-import PluginCesium from './plugins/plugin-cesium';
-import { replace, substitution, concatenation } from './utils/query';
+
 import LayerManager from './layer-manager';
 
-LayerManager.PluginLeaflet = PluginLeaflet;
-LayerManager.PluginCesium = PluginCesium;
+import { replace, substitution, concatenation } from './utils/query';
+import { fetch } from './utils/request';
+
+// LayerManager.PluginLeaflet = PluginLeaflet;
 LayerManager.PluginMapboxGl = PluginMapboxGl;
 LayerManager.replace = replace;
 LayerManager.substitution = substitution;
 LayerManager.concatenation = concatenation;
+LayerManager.fetch = fetch;
 
 export default LayerManager;

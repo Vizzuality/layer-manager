@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Copyright (c) 2015 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,28 +19,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-/* eslint-disable no-underscore-dangle,no-param-reassign,prefer-destructuring,class-methods-use-this */
-/* global Image, HTMLCanvasElement */
+/* global HTMLVideoElement */
 import GL from '@luma.gl/constants';
 import { Layer } from '@deck.gl/core';
-import { Model, Geometry, Texture2D, fp64 } from 'luma.gl';
-import { loadImage } from '@loaders.gl/images';
-import vs from './bitmap-layer-vertex';
-import shaderTemplate from './bitmap-layer-fragment';
+import { Model, Geometry, Texture2D } from '@luma.gl/core';
 
-const { fp64LowPart } = fp64;
+import vs from './bitmap-layer-vertex';
+import fs from './bitmap-layer-fragment';
 
 const DEFAULT_TEXTURE_PARAMETERS = {
-  [GL.TEXTURE_MIN_FILTER]: GL.NEAREST,
-  [GL.TEXTURE_MAG_FILTER]: GL.NEAREST,
+  [GL.TEXTURE_MIN_FILTER]: GL.LINEAR,
+  [GL.TEXTURE_MAG_FILTER]: GL.LINEAR,
   [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
   [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE
 };
 
 const defaultProps = {
-  image: null,
+  image: { type: 'object', value: null, async: true },
   bounds: { type: 'array', value: [1, 0, 0, 1], compare: true },
-  fp64: false,
 
   desaturate: { type: 'number', min: 0, max: 1, value: 0 },
   // More context: because of the blending mode we're using for ground imagery,
@@ -57,17 +54,7 @@ const defaultProps = {
  */
 export default class BitmapLayer extends Layer {
   getShaders() {
-    const projectModule = this.use64bitProjection() ? 'project64' : 'project32';
-    const fs = shaderTemplate
-      .replace(
-        '{decodeParams}',
-        Object.keys(this.props.decodeParams)
-          .map(p => `uniform float ${p};`)
-          .join(' ')
-      )
-      .replace('{decodeFunction}', this.props.decodeFunction || '');
-
-    return { vs, fs, modules: [projectModule, 'picking'] };
+    return super.getShaders({ vs, fs, modules: ['project32', 'picking'] });
   }
 
   initializeState() {
@@ -76,22 +63,22 @@ export default class BitmapLayer extends Layer {
     attributeManager.add({
       positions: {
         size: 3,
+        type: GL.DOUBLE,
+        fp64: this.use64bitPositions(),
         update: this.calculatePositions,
-        value: new Float32Array(12)
-      },
-      positions64xyLow: {
-        size: 3,
-        update: this.calculatePositions64xyLow,
-        value: new Float32Array(12)
+        noAlloc: true
       }
     });
 
-    this.setState({ numInstances: 4 }); // 4 corners
+    this.setState({
+      numInstances: 1,
+      positions: new Float64Array(12)
+    });
   }
 
-  updateState({ props, oldProps }) {
+  updateState({ props, oldProps, changeFlags }) {
     // setup model first
-    if (props.fp64 !== oldProps.fp64) {
+    if (changeFlags.extensionsChanged) {
       const { gl } = this.context;
       if (this.state.model) {
         this.state.model.delete();
@@ -107,11 +94,7 @@ export default class BitmapLayer extends Layer {
     const attributeManager = this.getAttributeManager();
 
     if (props.bounds !== oldProps.bounds) {
-      this.setState({
-        positions: this._getPositionsFromBounds(props.bounds)
-      });
       attributeManager.invalidate('positions');
-      attributeManager.invalidate('positions64xyLow');
     }
   }
 
@@ -123,8 +106,9 @@ export default class BitmapLayer extends Layer {
     }
   }
 
-  _getPositionsFromBounds(bounds) {
-    const positions = new Array(12);
+  calculatePositions(attributes) {
+    const { positions } = this.state;
+    const { bounds } = this.props;
     // bounds as [minX, minY, maxX, maxY]
     if (Number.isFinite(bounds[0])) {
       /*
@@ -158,7 +142,7 @@ export default class BitmapLayer extends Layer {
       }
     }
 
-    return positions;
+    attributes.value = positions;
   }
 
   _getModel(gl) {
@@ -175,7 +159,6 @@ export default class BitmapLayer extends Layer {
       gl,
       Object.assign({}, this.getShaders(), {
         id: this.props.id,
-        shaderCache: this.context.shaderCache,
         geometry: new Geometry({
           drawMode: GL.TRIANGLE_FAN,
           vertexCount: 4,
@@ -188,9 +171,40 @@ export default class BitmapLayer extends Layer {
     );
   }
 
-  draw({ uniforms }) {
+  draw(opts) {
+    const { uniforms } = opts;
     const { bitmapTexture, model } = this.state;
-    const { desaturate, transparentColor, tintColor, zoom, decodeParams, opacity } = this.props;
+    const { image, desaturate, transparentColor, tintColor } = this.props;
+
+    // Update video frame
+    if (
+      bitmapTexture &&
+      image instanceof HTMLVideoElement &&
+      image.readyState > HTMLVideoElement.HAVE_METADATA
+    ) {
+      const sizeChanged =
+        bitmapTexture.width !== image.videoWidth || bitmapTexture.height !== image.videoHeight;
+      if (sizeChanged) {
+        // note clears image and mipmaps when resizing
+        bitmapTexture.resize({ width: image.videoWidth, height: image.videoHeight, mipmaps: true });
+        bitmapTexture.setSubImageData({
+          data: image,
+          parameters: {
+            ...DEFAULT_TEXTURE_PARAMETERS,
+            [GL.UNPACK_FLIP_Y_WEBGL]: true
+          }
+        });
+      } else {
+        bitmapTexture.setSubImageData({
+          data: image,
+          parameters: {
+            [GL.UNPACK_FLIP_Y_WEBGL]: true
+          }
+        });
+      }
+
+      bitmapTexture.generateMipmap();
+    }
 
     // // TODO fix zFighting
     // Render the image
@@ -200,11 +214,8 @@ export default class BitmapLayer extends Layer {
           Object.assign({}, uniforms, {
             bitmapTexture,
             desaturate,
-            transparentColor,
-            tintColor,
-            zoom,
-            ...decodeParams,
-            opacity
+            transparentColor: transparentColor.map(x => x / 255),
+            tintColor: tintColor.slice(0, 3).map(x => x / 255)
           })
         )
         .draw();
@@ -212,14 +223,6 @@ export default class BitmapLayer extends Layer {
   }
 
   loadTexture(image) {
-    if (typeof image === 'string') {
-      image = loadImage(image);
-    }
-    if (image instanceof Promise) {
-      image.then(data => this.loadTexture(data));
-      return;
-    }
-
     const { gl } = this.context;
 
     if (this.state.bitmapTexture) {
@@ -228,37 +231,29 @@ export default class BitmapLayer extends Layer {
 
     if (image instanceof Texture2D) {
       this.setState({ bitmapTexture: image });
-    } else if (
-      // browser object
-      image instanceof Image ||
-      image instanceof HTMLCanvasElement
-    ) {
+    } else if (image instanceof HTMLVideoElement) {
+      // Initialize an empty texture while we wait for the video to load
       this.setState({
         bitmapTexture: new Texture2D(gl, {
-          data: image,
+          width: 1,
+          height: 1,
           parameters: DEFAULT_TEXTURE_PARAMETERS,
+          unpackFlipY: false,
+          pixelStore: {
+            [GL.UNPACK_FLIP_Y_WEBGL]: false
+          },
           mipmaps: false
         })
       });
+    } else if (image) {
+      // Browser object: Image, ImageData, HTMLCanvasElement, ImageBitmap
+      this.setState({
+        bitmapTexture: new Texture2D(gl, {
+          data: image,
+          parameters: DEFAULT_TEXTURE_PARAMETERS
+        })
+      });
     }
-  }
-
-  calculatePositions({ value }) {
-    const { positions } = this.state;
-    value.set(positions);
-  }
-
-  calculatePositions64xyLow(attribute) {
-    const isFP64 = this.use64bitPositions();
-    attribute.constant = !isFP64;
-
-    if (!isFP64) {
-      attribute.value = new Float32Array(4);
-      return;
-    }
-
-    const { value } = attribute;
-    value.set(this.state.positions.map(fp64LowPart));
   }
 }
 

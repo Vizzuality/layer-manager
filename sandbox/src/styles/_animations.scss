@@ -1,0 +1,67 @@
+// SHOW
+@keyframes show {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+// ROTATE
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// DASH
+@keyframes dash {
+  0% {
+    stroke-dashoffset: 10;
+    stroke-dasharray: 220, 0;
+  }
+
+  50% {
+    stroke-dashoffset: 220;
+    stroke-dasharray: 0, 220;
+  }
+
+  100% {
+    stroke-dashoffset: 440;
+    stroke-dasharray: 220, 0;
+  }
+}
+
+// PULSE
+@keyframes pulse {
+  0% {
+    transform: translate(0, -50%) scale(1);
+  }
+
+  50% {
+    transform: translate(5px, -50%) scale(1.2);
+  }
+
+  100% {
+    transform: translate(0, -50%) scale(1);
+  }
+}
+
+// BOUNCE
+@keyframes bounce {
+  0% {
+    transform: translateY(-5px);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+  100% {
+    transform: translateY(-5px);
+  }
+}
