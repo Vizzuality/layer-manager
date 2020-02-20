@@ -68,7 +68,85 @@ You need to send the following params
   - It will be used for saving the request and apply cancelation
 
 
-<!-- EXAMPLE -->
+EXAMPLE:
+```js
+  {
+    id: 'mongabay-stories',
+    name: 'Mongabay stories',
+    type: 'geojson',
+    source: {
+      type: 'geojson',
+      provider: {
+        type: 'mongabay-stories',
+        url: 'https://wri-01.carto.com/api/v2/sql?q=SELECT%20*%20FROM%20mongabay&format=geojson',
+        options: {}
+      }
+    },
+    render: {
+      metadata: {
+        position: 'top'
+      },
+      layers: [
+        {
+          type: 'circle',
+          paint: {
+            'circle-color': [
+              'interpolate',
+              ['exponential', 0.5],
+              ['zoom'],
+              3,
+              '#e2714b',
+              6,
+              '#eee695'
+            ],
+            'circle-stroke-width': 1
+          },
+
+          // It will put the layer on the top
+          metadata: {
+            position: 'top'
+          }
+        }
+      ]
+    }
+  }
+```
+
+```js
+// PROVIDERS functions
+import { fetch } from 'layer-manager';
+
+{
+  'mongabay-stories': (layerModel, layer, resolve, reject) => {
+    const { source } = layerModel;
+    const { provider } = source;
+
+    fetch('get', provider.url, provider.options, layerModel)
+      .then(response => {
+        return resolve({
+          ...layer,
+          source: {
+            ...omit(layer.source, 'provider'),
+            data: {
+              type: 'FeatureCollection',
+              features: response.rows.map(r => ({
+                type: 'Feature',
+                properties: r,
+                geometry: {
+                  type: 'Point',
+                  coordinates: [r.lon, r.lat]
+                }
+              }))
+            }
+          }
+        });
+      })
+      .catch(e => {
+        reject(e);
+      });
+  }
+}
+```
 
 
 
