@@ -25,6 +25,10 @@ class LayerManager extends PureComponent {
     this.layerManager.unmount();
   }
 
+  componentWillUnmount() {
+    this.layerManager.unmount();
+  }
+
   render() {
     const { children } = this.props;
 
