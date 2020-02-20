@@ -31,7 +31,7 @@ const VectorLayer = (layerModel, providers) => {
         );
       }
 
-      method.call(this, provider, layer, layerModel, resolve, reject);
+      method.call(this, layerModel, layer, resolve, reject);
     });
   }
 

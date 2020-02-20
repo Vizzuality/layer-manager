@@ -2,11 +2,9 @@
 
 # Layer Manager
 
-A library for people that are tired of handling layers on maps. Do you want to change zIndexes? Do you want to change live colors? What about bugs like duplicates layers that stay there forever? Say good bye to chaos...
-
 This library will help you to manage the addition and removal of layers. It also provides methods to set opacity, visibility and zIndex.
 
-We currently only supports Mapbox spec. Leaflet or Google Maps are our next steps.
+We currently only supports Mapbox spec. Leaflet or Google Maps Plugin is in our minds.
 
 ## :bomb: Install
 
@@ -40,26 +38,24 @@ An instance of the map.
 
 A plugin to handle all the layer functionalities depending on the map tech. Layer Manager provides you with the Mapbox one, if you want to use Leaflet, GoogleMaps or any other map tech you should provide it with the correct specification.
 
-How could you create your own plugin? => Cooming soon (next episode)
+How could you create your own plugin? => Cooming soon
 
 #### `providers - (required)`
 An object with the provider type as a key. Each key should be a function.
 
 Each function will receive the following props:
-- `provider - (object)`
-  - free object where you can define each provider as you want
-- `layer - (object)`
-  - Current layer transformed and ready to resolve
 - `layerModel - (object)`
-  - Current layer
+  - Current layer model. It contains `source` and `render` already parsed.
+- `layer - (object)`
+  - Current layer spec ready to be consumed.
 - `resolve - (function)`
-  - resolve function from the Promise. You must resolve always with the layer transformed and ready for use
+  - resolve function from the Promise. You must resolve it always with the `layer` transformed
 - `reject - (function)`
   - reject function from the Promise.
 
 
 
-If you need to fetch something you will need to call exported `fetch` function. It's a little wrapper around axios and adds a `CancelToken` from axios that will cancel requests to prevent duplicate layers and bugs.
+If you need to fetch something inside this function you will need to use `fetch` function exported by layer-manager. It's a little wrapper around axios and adds a `CancelToken` from axios that will cancel requests to prevent duplicate layers and bugs.
 
 You need to send the following params
 - `type - (required) - (string)`
@@ -153,7 +149,8 @@ An object that we will use to substitute all the concurrences of each key with i
 
 Example:
 
-Given this layer object
+Given this layer object.
+Pay atention to the colors inside `render.layers` and the `params`object.
 
 ```json
 {
@@ -207,7 +204,7 @@ Given this layer object
 }
 ```
 
-You will have this result
+`{color}` and `{{color}}` will be substituted by '#CCC' before adding thew layer.
 
 ```json
 {
@@ -263,7 +260,7 @@ You will have this result
 
 #### `sqlParams - (optional) - (object)`
 
-An object that we will use to substitute all the concurrences of each key with its respective value, but in sql format.
+An object that we will use to substitute all the concurrences of each key with its respective value, but in **sql format**.
 
 The name of the keys is very important. Depending on the name the replacement will be different. You can use several `where` or `and` by adding a number after. Check the example.
 

@@ -1,8 +1,9 @@
 import { fetch } from 'utils/request';
 
 export default {
-  carto: (provider, layer, layerModel, resolve, reject) => {
-    const { interactivity } = layerModel;
+  carto: (layerModel, layer, resolve, reject) => {
+    const { interactivity, source } = layerModel;
+    const { provider } = source;
 
     const layerTpl = JSON.stringify({
       version: '1.3.0',
