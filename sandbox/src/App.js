@@ -173,23 +173,21 @@ function App() {
                             ...omit(layer.source, 'provider'),
                             data: {
                               type: 'FeatureCollection',
-                              features: response.rows.map(r => (
-                                {
-                                  type: 'Feature',
-                                  properties: r,
-                                  geometry: {
-                                    type: 'Point',
-                                    coordinates: [r.lon, r.lat]
-                                  }
+                              features: response.rows.map(r => ({
+                                type: 'Feature',
+                                properties: r,
+                                geometry: {
+                                  type: 'Point',
+                                  coordinates: [r.lon, r.lat]
                                 }
-                              ))
+                              }))
                             }
                           }
                         });
                       })
                       .catch(e => {
                         reject(e);
-                      })
+                      });
                   }
                 }}
               >

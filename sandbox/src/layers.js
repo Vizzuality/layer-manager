@@ -163,7 +163,7 @@ export default [
       type: 'geojson',
       source: {
         type: 'geojson',
-        data: 'https://wri-01.carto.com/api/v2/sql?q=SELECT%20*%20FROM%20mongabay&format=geojson',
+        data: 'https://wri-01.carto.com/api/v2/sql?q=SELECT%20*%20FROM%20mongabay&format=geojson'
         // provider: {
         //   type: 'carto-sql-points',
         //   url: 'https://wri-01.carto.com/api/v2/sql?q=SELECT%20*%20FROM%20mongabay&format=geojson',
