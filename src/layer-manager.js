@@ -220,7 +220,7 @@ class LayerManager {
 
         this.plugin.setRender(layerModel);
 
-        onAfterAdd(layerModel);
+        onAfterAdd(layerModel, this.map);
       }
     });
 
