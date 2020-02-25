@@ -223,7 +223,9 @@ function App() {
                         ...lSettings.decodeParams
                       }),
                       decodeFunction
-                    })
+                    }),
+
+                    onAfterAdd: layer.onAfterAdd
                   };
 
                   return <Layer key={layer.id} {...l} />;
