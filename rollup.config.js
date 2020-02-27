@@ -18,6 +18,7 @@ const globals = {
   'lodash/isEmpty': 'isEmpty',
   'lodash/isEqual': 'isEqual',
   'lodash/sortBy': 'sortBy',
+  'lodash/isObject': 'isObject',
   'prop-types': 'PropTypes',
   'react-dom': 'ReactDOM',
   react: 'React',

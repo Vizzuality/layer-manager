@@ -1,4 +1,5 @@
 import compact from 'lodash/compact';
+import isObject from 'lodash/isObject';
 
 /**
  * Params should have this format => { key:'xxx', key2:'xxx' }
@@ -9,6 +10,16 @@ import compact from 'lodash/compact';
 export const substitution = (originalStr, params = {}) => {
   let str = originalStr;
   Object.keys(params).forEach(key => {
+    if (Array.isArray(params[key]) || isObject(params[key])) {
+      str = str
+        .replace(new RegExp(`"{{${key}}}"`, 'g'), JSON.stringify(params[key]))
+        .replace(new RegExp(`'{{${key}}}'`, 'g'), JSON.stringify(params[key]))
+        .replace(new RegExp(`\`{{${key}}}\``, 'g'), JSON.stringify(params[key]))
+        .replace(new RegExp(`"{${key}}"`, 'g'), JSON.stringify(params[key]))
+        .replace(new RegExp(`'{${key}}'`, 'g'), JSON.stringify(params[key]))
+        .replace(new RegExp(`\`{${key}}\``, 'g'), JSON.stringify(params[key]));
+    }
+
     if (typeof params[key] === 'number' || typeof params[key] === 'boolean') {
       str = str
         .replace(new RegExp(`"{{${key}}}"`, 'g'), params[key])
