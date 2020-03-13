@@ -111,20 +111,18 @@ export default [
         type: 'vector',
         provider: {
           type: 'carto',
-          options: {
-            account: 'wri-01',
-            layers: [
-              {
-                options: {
-                  cartocss:
-                    '#wdpa_protected_areas {  polygon-opacity: 1.0; polygon-fill: #704489 }',
-                  cartocss_version: '2.3.0',
-                  sql: 'SELECT * FROM wdpa_protected_areas'
-                },
-                type: 'mapnik'
-              }
-            ]
-          }
+          account: 'wri-01',
+          layers: [
+            {
+              options: {
+                cartocss:
+                  '#wdpa_protected_areas {  polygon-opacity: 1.0; polygon-fill: #704489 }',
+                cartocss_version: '2.3.0',
+                sql: 'SELECT * FROM wdpa_protected_areas'
+              },
+              type: 'mapnik'
+            }
+          ]
         }
       },
       render: {
@@ -167,11 +165,6 @@ export default [
         cluster: true,
         clusterMaxZoom: 14,
         clusterRadius: 45
-        // provider: {
-        //   type: 'carto-sql-points',
-        //   url: 'https://wri-01.carto.com/api/v2/sql?q=SELECT%20*%20FROM%20mongabay&format=geojson',
-        //   options: {}
-        // }
       },
       render: {
         metadata: {

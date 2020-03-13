@@ -629,20 +629,18 @@ const activeLayers = [
       type: 'vector',
       provider: {
         type: 'carto',
-        options: {
-          account: 'wri-01',
-          layers: [
-            {
-              options: {
-                cartocss:
-                  '#wdpa_protected_areas {  polygon-opacity: 1.0; polygon-fill: #704489 }',
-                cartocss_version: '2.3.0',
-                sql: 'SELECT * FROM wdpa_protected_areas'
-              },
-              type: 'cartodb'
-            }
-          ]
-        }
+        account: 'wri-01',
+        layers: [
+          {
+            options: {
+              cartocss:
+                '#wdpa_protected_areas {  polygon-opacity: 1.0; polygon-fill: #704489 }',
+              cartocss_version: '2.3.0',
+              sql: 'SELECT * FROM wdpa_protected_areas'
+            },
+            type: 'cartodb'
+          }
+        ]
       }
     },
     render: {
@@ -689,18 +687,16 @@ const activeLayers = [
       type: 'vector',
       provider: {
         type: 'carto',
-        options: {
-          account: 'simbiotica',
-          // api_key: 'añsdlkjfñaklsjdfklñajsdfñlkadjsf',
-          layers: [
-            {
-              options: {
-                sql: "WITH a AS (SELECT cartodb_id, the_geom_webmercator, uuid, iso3 FROM all_geometry {{where}}) SELECT a.the_geom_webmercator, a.cartodb_id, b.uuid, b.timeinterval as year, b.species, b.scenario, b.probabilityemca FROM {iso3}_zonal_spp_uuid as b INNER JOIN a ON b.uuid = a.uuid {{where2}}"
-              },
-              type: 'cartodb'
-            }
-          ]
-        }
+        account: 'simbiotica',
+        // api_key: 'añsdlkjfñaklsjdfklñajsdfñlkadjsf',
+        layers: [
+          {
+            options: {
+              sql: "WITH a AS (SELECT cartodb_id, the_geom_webmercator, uuid, iso3 FROM all_geometry {{where}}) SELECT a.the_geom_webmercator, a.cartodb_id, b.uuid, b.timeinterval as year, b.species, b.scenario, b.probabilityemca FROM {iso3}_zonal_spp_uuid as b INNER JOIN a ON b.uuid = a.uuid {{where2}}"
+            },
+            type: 'cartodb'
+          }
+        ]
       }
     },
     render: {
