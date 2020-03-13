@@ -6429,10 +6429,10 @@ layer-manager@^1.10.0:
     supercluster "^4.1.1"
     wri-json-api-serializer "^1.0.1"
 
-layer-manager@^3.0.0-alpha.3:
-  version "3.0.0-alpha.3"
-  resolved "https://registry.yarnpkg.com/layer-manager/-/layer-manager-3.0.0-alpha.3.tgz#95aee724eb3d11b6d53f46c0d21abee8bb19244a"
-  integrity sha512-FxsaImMu5R4sFxR3mwi4VAHvFqS+yevxPoAjOkSqSzPKunCy1nL6SiWnfl08xfN6WnQYfy+tk0LplZH6nUscEw==
+layer-manager@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/layer-manager/-/layer-manager-3.0.2.tgz#ba264a9f1ba6d24f6b6be96283c77346776acc3d"
+  integrity sha512-0jn8Y4xho3lGZbf768PbXYG18fto9JOiQChxOlN62SoPmr7WlJSZTMzc55v2Z+iZ4Tjdkwi6c2H0jrksRHL32g==
   dependencies:
     axios "^0.19.0"
     lodash "^4.17.15"
