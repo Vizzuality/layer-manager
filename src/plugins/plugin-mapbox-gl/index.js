@@ -297,7 +297,6 @@ class PluginMapboxGL {
         this.map.setFilter(id, filter);
 
         Object.keys(paint).forEach(p => {
-          // console.log(id, p, paint[p]);
           this.map.setPaintProperty(id, p, paint[p]);
         });
 

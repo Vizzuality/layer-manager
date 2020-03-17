@@ -172,7 +172,6 @@ function afterRender(deck, map) {
       return true;
     });
     if (layers.length > 0) {
-      console.log('afterRender');
       deck._drawLayers('mapbox-repaint', {
         viewports: [getViewport(deck, map, false)],
         layers,
