@@ -13,9 +13,25 @@ class Layer extends PureComponent {
       parse: PropTypes.bool
     }).isRequired,
 
-    render: PropTypes.shape({
-      parse: PropTypes.bool
-    }),
+    render: (props, propName, componentName) => {
+      const { type } = props;
+
+      if (type === 'vector' && isEmpty(props[propName])) {
+        return new Error(
+          `The prop '${propName}' is marked as required in '${componentName}', but its value is {}`
+        );
+      }
+
+      if (typeof props[propName] !== 'object') {
+        return new Error(
+          `Invalid prop '${propName}' of type '${typeof props[
+            propName
+          ]}' supplied to '${componentName}', expected 'object'.`
+        );
+      }
+
+      return null;
+    },
 
     params: PropTypes.shape({}),
     sqlParams: PropTypes.shape({}),
