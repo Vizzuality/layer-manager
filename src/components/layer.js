@@ -8,12 +8,13 @@ import { replace } from 'utils/query';
 class Layer extends PureComponent {
   static propTypes = {
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-
+    type: PropTypes.oneOf(['raster', 'vector', 'geojson']).isRequired,
     source: PropTypes.shape({
-      parse: PropTypes.oneOfType([PropTypes.bool, PropTypes.func])
-    }),
+      parse: PropTypes.bool
+    }).isRequired,
+
     render: PropTypes.shape({
-      parse: PropTypes.oneOfType([PropTypes.bool, PropTypes.func])
+      parse: PropTypes.bool
     }),
 
     params: PropTypes.shape({}),
@@ -44,9 +45,6 @@ class Layer extends PureComponent {
     visibility: true,
     zIndex: undefined,
 
-    source: {
-      parse: true
-    },
     render: {},
 
     layerManager: null,

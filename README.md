@@ -40,7 +40,7 @@ A plugin to handle all the layer functionalities depending on the map tech. Laye
 
 How could you create your own plugin? => Cooming soon
 
-#### `providers - (required)`
+#### `providers - (optional)`
 An object with the provider type as a key. Each key should be a function.
 
 Each function will receive the following props:
@@ -160,14 +160,6 @@ A unique value.
 
 One of these values. ['raster', 'vector', 'geojson'].
 
-#### `opacity - (optional) - (number)`
-
-A number between 0 and 1. Default: 1
-
-#### `visibility - (optional) - (boolean)`
-
-A boolean to set the visibility of the layer. Changing visibility won't remove the layer from the map, it will only hide it. Default: true
-
 #### `source - (required) - (object)`
 
 An object defining how you are going to get the layer data. Only raster, vector and geojson are supported. Check this link https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/
@@ -221,6 +213,14 @@ Example:
   ]
 }
 ```
+
+#### `opacity - (optional) - (number)`
+
+A number between 0 and 1. Default: 1
+
+#### `visibility - (optional) - (boolean)`
+
+A boolean to set the visibility of the layer. Changing visibility won't remove the layer from the map, it will only hide it. Default: true
 
 <!-- TODO: explain filters and layout properties -->
 #### `params - (optional) - (object)`
