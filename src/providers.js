@@ -1,4 +1,5 @@
 import { fetch } from 'utils/request';
+import omit from 'lodash/omit';
 
 export default {
   carto: (layerModel, layer, resolve, reject) => {
@@ -37,7 +38,7 @@ export default {
         return resolve({
           ...layer,
           source: {
-            ...layer.source,
+            ...omit(layer.source, 'provider'),
             tiles: [tileUrl]
           }
         });

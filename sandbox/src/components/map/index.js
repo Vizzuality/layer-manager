@@ -17,10 +17,12 @@ const DEFAULT_VIEWPORT = {
   zoom: 2,
   lat: 0,
   lng: 0
-}
+};
 
 class Map extends Component {
-  events = {}
+  events = {};
+
+  HOVER = {};
 
   static propTypes = {
     /** A function that returns the map instance */
@@ -31,10 +33,8 @@ class Map extends Component {
 
     /** An object that defines the viewport
      * @see https://uber.github.io/react-map-gl/#/Documentation/api-reference/interactive-map?section=initialization
-    */
-    viewport: PropTypes.shape({
-
-    }),
+     */
+    viewport: PropTypes.shape({}),
 
     /** An object that defines the bounds */
     bounds: PropTypes.shape({
@@ -66,9 +66,15 @@ class Map extends Component {
     /** A function that exposes the viewport */
     onViewportChange: PropTypes.func,
 
+    /** A function that exposes hovering features. */
+    onHover: PropTypes.func,
+
+    /** A function that exposes mouseleave from features. */
+    onMouseLeave: PropTypes.func,
+
     /** A function that exposes the viewport */
     getCursor: PropTypes.func
-  }
+  };
 
   static defaultProps = {
     children: null,
@@ -85,7 +91,7 @@ class Map extends Component {
       if (isDragging) return 'grabbing';
       return 'grab';
     }
-  }
+  };
 
   state = {
     viewport: {
@@ -94,7 +100,7 @@ class Map extends Component {
     },
     flying: false,
     loaded: false
-  }
+  };
 
   componentDidUpdate(prevProps) {
     const { viewport: prevViewport, bounds: prevBounds } = prevProps;
@@ -102,7 +108,8 @@ class Map extends Component {
     const { viewport: stateViewport } = this.state;
 
     if (!isEqual(viewport, prevViewport)) {
-      this.setState({ // eslint-disable-line
+      this.setState({
+        // eslint-disable-line
         viewport: {
           ...stateViewport,
           ...viewport
@@ -126,17 +133,17 @@ class Map extends Component {
     onLoad({
       map: this.map,
       mapContainer: this.mapContainer
-    })
-  }
+    });
+  };
 
   onViewportChange = (v, i) => {
     const { onViewportChange } = this.props;
 
     this.setState({ viewport: v });
     onViewportChange(v);
-  }
+  };
 
-  onResize = (v) => {
+  onResize = v => {
     const { onViewportChange } = this.props;
     const { viewport } = this.state;
     const newViewport = {
@@ -146,7 +153,7 @@ class Map extends Component {
 
     this.setState({ viewport: newViewport });
     onViewportChange(newViewport);
-  }
+  };
 
   onMoveEnd = () => {
     const { onViewportChange } = this.props;
@@ -171,7 +178,57 @@ class Map extends Component {
       this.setState({ viewport: newViewport });
       onViewportChange(newViewport);
     }
-  }
+  };
+
+  onHover = e => {
+    const { onHover } = this.props;
+    const { features } = e;
+    if (features && features.length) {
+      const { id, source, sourceLayer } = features[0];
+
+      if (this.HOVER.id) {
+        this.map.setFeatureState(
+          {
+            ...this.HOVER
+          },
+          { hover: false }
+        );
+      }
+
+      if (id && source) {
+        this.HOVER = {
+          id,
+          source,
+          ...(sourceLayer && { sourceLayer })
+        };
+
+        this.map.setFeatureState(
+          {
+            ...this.HOVER
+          },
+          { hover: true }
+        );
+      }
+    }
+
+    !!onHover && onHover(e);
+  };
+
+  onMouseLeave = e => {
+    const { onMouseLeave } = this.props;
+    if (this.HOVER.id) {
+      this.map.setFeatureState(
+        {
+          ...this.HOVER
+        },
+        { hover: false }
+      );
+    }
+
+    this.HOVER = {};
+
+    !!onMouseLeave && onMouseLeave(e);
+  };
 
   fitBounds = () => {
     const { viewport } = this.state;
@@ -182,10 +239,13 @@ class Map extends Component {
       width: this.mapContainer.offsetWidth,
       height: this.mapContainer.offsetHeight,
       ...viewport
-    }
+    };
 
     const { longitude, latitude, zoom } = new WebMercatorViewport(v).fitBounds(
-      [[bbox[0], bbox[1]], [bbox[2], bbox[3]]],
+      [
+        [bbox[0], bbox[1]],
+        [bbox[2], bbox[3]]
+      ],
       options
     );
 
@@ -196,7 +256,7 @@ class Map extends Component {
       zoom,
       transitionDuration: 2500,
       transitionInterruption: TRANSITION_EVENTS.UPDATE
-    }
+    };
 
     this.setState({
       flying: true,
@@ -210,28 +270,40 @@ class Map extends Component {
   };
 
   render() {
-    const { customClass, children, getCursor, dragPan, dragRotate, scrollZoom, touchZoom, touchRotate, doubleClickZoom, ...mapboxProps } = this.props;
+    const {
+      customClass,
+      children,
+      getCursor,
+      dragPan,
+      dragRotate,
+      scrollZoom,
+      touchZoom,
+      touchRotate,
+      doubleClickZoom,
+      ...mapboxProps
+    } = this.props;
     const { viewport, loaded, flying } = this.state;
 
     return (
       <div
-        ref={r => { this.mapContainer = r}}
+        ref={r => {
+          this.mapContainer = r;
+        }}
         className={classnames({
-          "c-map": true,
+          'c-map': true,
           [customClass]: !!customClass
         })}
       >
         <ReactMapGL
-          ref={map => { this.map = map && map.getMap(); }}
-
+          ref={map => {
+            this.map = map && map.getMap();
+          }}
           // CUSTOM PROPS FROM REACT MAPBOX API
           {...mapboxProps}
-
           // VIEWPORT
           {...viewport}
           width="100%"
           height="100%"
-
           // INTERACTIVE
           dragPan={!flying && dragPan}
           dragRotate={!flying && dragRotate}
@@ -239,13 +311,14 @@ class Map extends Component {
           touchZoom={!flying && touchZoom}
           touchRotate={!flying && touchRotate}
           doubleClickZoom={!flying && doubleClickZoom}
-
           // DEFAULT FUNC IMPLEMENTATIONS
           onViewportChange={this.onViewportChange}
           onResize={this.onResize}
           onLoad={this.onLoad}
           // getCursor={getCursor}
 
+          onHover={this.onHover}
+          onMouseLeave={this.onMouseLeave}
           transitionInterpolator={new FlyToInterpolator()}
           transitionEasing={easeCubic}
         >

@@ -308,6 +308,55 @@ class PluginMapboxGL {
       console.error(error);
     }
 
+    // NOT COMPATIBLE WITH REACT MAP GL
+    // if (true) {
+    //   document.querySelector('.overlays').style = 'pointer-events: none;'
+
+    //   mapLayer.layers.forEach((layer) => {
+    //     const { id, source, 'source-layer': sourceLayer } = layer;
+
+    //     // When the user moves their mouse over the state-fill layer, we'll update the
+    //     // feature state for the feature under the mouse.
+    //     this.map.off('mousemove', id);
+    //     this.map.on('mousemove', id, (e) => {
+    //       const { hoverId } = layerModel;
+
+    //       if (e.features.length > 0) {
+    //         layerModel.set('hoverId', e.features[0].id);
+
+    //         if (hoverId) {
+    //           this.map.setFeatureState({
+    //             source,
+    //             ...sourceLayer && { sourceLayer },
+    //             id: hoverId
+    //           }, { hover: false });
+    //         }
+
+    //         this.map.setFeatureState({
+    //           source,
+    //           ...sourceLayer && { sourceLayer },
+    //           id: e.features[0].id
+    //         }, { hover: true });
+    //       }
+    //     });
+
+    //     // When the mouse leaves the state-fill layer, update the feature state of the
+    //     // previously hovered feature.
+    //     this.map.off('mouseleave', id);
+    //     this.map.on('mouseleave', id, () => {
+    //       const { hoverId } = layerModel;
+
+    //       if (hoverId) {
+    //         this.map.setFeatureState({
+    //           source,
+    //           ...layer['source-layer'] && { 'sourceLayer': layer['source-layer'] },
+    //           id: hoverId
+    //         }, { hover: false });
+    //       }
+    //       layerModel.set('hoverId', null);
+    //     });
+    //   })
+    // }
     return this;
   }
 

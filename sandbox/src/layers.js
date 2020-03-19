@@ -109,14 +109,14 @@ export default [
       type: 'vector',
       source: {
         type: 'vector',
+        promoteId: 'cartodb_id',
         provider: {
           type: 'carto',
           account: 'wri-01',
           layers: [
             {
               options: {
-                cartocss:
-                  '#wdpa_protected_areas {  polygon-opacity: 1.0; polygon-fill: #704489 }',
+                cartocss: '#wdpa_protected_areas {  polygon-opacity: 1.0; polygon-fill: #704489 }',
                 cartocss_version: '2.3.0',
                 sql: 'SELECT * FROM wdpa_protected_areas'
               },
@@ -130,8 +130,18 @@ export default [
           {
             type: 'fill',
             'source-layer': 'layer0',
+            featureState: {},
             paint: {
-              'fill-color': '#5ca2d1',
+              'fill-color': [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                '#000',
+                '#5ca2d1'
+              ],
+              'fill-color-transition': {
+                duration: 300,
+                delay: 0
+              },
               'fill-opacity': 1
             }
           },
@@ -150,6 +160,10 @@ export default [
     legendConfig: {
       type: 'basic',
       items: [{ name: 'Protected areas', color: '#5ca2d1' }]
+    },
+    interactionConfig: {
+      enabled: true,
+      type: 'hover'
     }
   },
 
@@ -161,6 +175,7 @@ export default [
       type: 'geojson',
       source: {
         type: 'geojson',
+        promoteId: 'cartodb_id',
         data: 'https://wri-01.carto.com/api/v2/sql?q=SELECT%20*%20FROM%20mongabay&format=geojson',
         cluster: true,
         clusterMaxZoom: 14,
@@ -181,7 +196,12 @@ export default [
             paint: {
               'circle-color': '#FFF',
               'circle-stroke-width': 2,
-              'circle-stroke-color': '#CCC',
+              'circle-stroke-color': [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                '#000',
+                '#5ca2d1'
+              ],
               'circle-radius': 12
             }
           },
@@ -210,7 +230,7 @@ export default [
               'circle-color': '#FFCC00',
               'circle-stroke-width': 1,
               'circle-stroke-color': '#333',
-              'circle-radius': 5
+              'circle-radius': ['case', ['boolean', ['feature-state', 'hover'], false], 12, 5]
             }
           }
         ]
@@ -220,6 +240,10 @@ export default [
     legendConfig: {
       type: 'basic',
       items: [{ name: 'Mongabay stories', color: '#FFCC00' }]
+    },
+    interactionConfig: {
+      enabled: true,
+      type: 'hover'
     }
   }
 ];

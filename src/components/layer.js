@@ -42,6 +42,7 @@ class Layer extends PureComponent {
     zIndex: PropTypes.number,
 
     onAfterAdd: PropTypes.func,
+    onAfterRemove: PropTypes.func,
 
     layerManager: PropTypes.shape({
       add: PropTypes.func.isRequired,
@@ -65,7 +66,8 @@ class Layer extends PureComponent {
 
     layerManager: null,
 
-    onAfterAdd: () => {}
+    onAfterAdd: () => {},
+    onAfterRemove: () => {}
   };
 
   componentDidMount() {
@@ -207,8 +209,8 @@ class Layer extends PureComponent {
   };
 
   remove = () => {
-    const { layerManager, id } = this.props;
-    layerManager.remove(id);
+    const { layerManager, id, onAfterRemove } = this.props;
+    layerManager.remove(id, onAfterRemove);
   };
 
   render() {
