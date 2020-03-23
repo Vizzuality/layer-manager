@@ -239,7 +239,7 @@ class PluginMapboxGL {
         // Loop each style name and check if there is an opacity in the original layer
         paintStyleNames.forEach(name => {
           const currentProperty = paint[`${name}-opacity`];
-          let paintOpacity = 1;
+          let paintOpacity = 0.99 * layerModel.opacity;
 
           if (currentProperty !== undefined && currentProperty !== null) {
             if (typeof currentProperty === 'number') {
