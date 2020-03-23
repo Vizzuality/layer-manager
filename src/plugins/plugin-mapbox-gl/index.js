@@ -239,8 +239,24 @@ class PluginMapboxGL {
         // Loop each style name and check if there is an opacity in the original layer
         paintStyleNames.forEach(name => {
           const currentProperty = paint[`${name}-opacity`];
-          const paintOpacity = currentProperty !== undefined ? currentProperty : 1;
-          this.map.setPaintProperty(l.id, `${name}-opacity`, paintOpacity * opacity * 0.99);
+          let paintOpacity = 1;
+
+          if (currentProperty !== undefined && currentProperty !== null) {
+            if (typeof currentProperty === 'number') {
+              paintOpacity = currentProperty * layerModel.opacity * 0.99;
+            }
+
+            if (Array.isArray(currentProperty)) {
+              paintOpacity = currentProperty.map(i => {
+                if (typeof i === 'number') {
+                  return i * layerModel.opacity * 0.99;
+                }
+                return i;
+              });
+            }
+          }
+
+          this.map.setPaintProperty(l.id, `${name}-opacity`, paintOpacity);
         });
       });
     }
