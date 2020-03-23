@@ -88,7 +88,7 @@ describe('Core layer manager', () => {
 
   it('removes a layer', () => {
     expect(layerManager.layers.length).toBe(2);
-    layerManager.remove('layer_0');
+    layerManager.remove('layer_0', jest.fn());
     expect(layerManager.requestCancel).toHaveBeenCalled();
     expect(TestPlugin.prototype.remove).toHaveBeenCalled();
     expect(layerManager.layers.length).toBe(1);

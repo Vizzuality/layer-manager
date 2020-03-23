@@ -140,7 +140,7 @@ class LayerManager {
    * Remove a layer giving a Layer ID
    * @param {String} id
    */
-  remove(id) {
+  remove(id, onAfterRemove) {
     const layers = this.layers.slice(0);
 
     this.requestCancel(id);
@@ -152,6 +152,8 @@ class LayerManager {
     }
 
     this.layers = layers.filter(l => l.id !== id);
+
+    onAfterRemove(layerModel);
   }
 
   getLayers() {

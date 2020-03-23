@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import omit from 'lodash/omit';
+import isEmpty from 'lodash/isEmpty';
 
 import { getParams } from './utils';
 
@@ -36,7 +37,9 @@ function App() {
   const [layers, setLayers] = useState(DEFAULT_LAYERS);
   const [layersJson, setLayersJson] = useState(JSON.stringify(DEFAULT_LAYERS, null, 2));
   const [layersSettings, setLayersSettings] = useState({});
+  const [layersInteractiveIds, setLayersInteractiveIds] = useState([]);
 
+  // LEGEND
   const layerGroups = layers.map(l => {
     const { id, paramsConfig, sqlConfig, decodeConfig, timelineConfig } = l;
     const lSettings = layersSettings[id] || {};
@@ -129,6 +132,34 @@ function App() {
     });
   };
 
+  const onAfterAdd = layerModel => {
+    if (!isEmpty(layerModel.interactionConfig)) {
+      layerModel.mapLayer.layers.forEach(l => {
+        const { id } = l;
+
+        if (!layersInteractiveIds.includes(id)) {
+          setLayersInteractiveIds(prevLayersInteractiveIds => [...prevLayersInteractiveIds, id]);
+        }
+      });
+    }
+  };
+
+  const onAfterRemove = layerModel => {
+    if (!isEmpty(layerModel.interactionConfig)) {
+      layerModel.mapLayer.layers.forEach(l => {
+        const { id } = l;
+
+        if (layersInteractiveIds.includes(id)) {
+          setLayersInteractiveIds(prevLayersInteractiveIds => {
+            const arr = prevLayersInteractiveIds.filter(e => e !== id);
+
+            return arr;
+          });
+        }
+      });
+    }
+  };
+
   return (
     <div className="c-app">
       <Icons />
@@ -158,6 +189,7 @@ function App() {
             mapOptions={{
               fadeDuration: 0
             }}
+            interactiveLayerIds={layersInteractiveIds}
           >
             {map => (
               <LayerManager
@@ -203,6 +235,7 @@ function App() {
                     timelineConfig,
                     decodeFunction
                   } = layer;
+
                   const lSettings = layersSettings[id] || {};
 
                   const l = {
@@ -226,7 +259,14 @@ function App() {
                     })
                   };
 
-                  return <Layer key={layer.id} {...l} />;
+                  return (
+                    <Layer
+                      key={layer.id}
+                      {...l}
+                      onAfterAdd={onAfterAdd}
+                      onAfterRemove={onAfterRemove}
+                    />
+                  );
                 })}
               </LayerManager>
             )}
