@@ -26,7 +26,7 @@ export const getVectorStyleLayers = (vectorLayers, layerModel) => {
 
         const opacityPaintStyles = opacityPaintNames.reduce((obj, name) => {
           const currentProperty = paint[`${name}-opacity`];
-          let paintOpacity = 1;
+          let paintOpacity = 0.99 * layerModel.opacity;
 
           if (currentProperty !== undefined && currentProperty !== null) {
             if (typeof currentProperty === 'number') {
@@ -34,11 +34,11 @@ export const getVectorStyleLayers = (vectorLayers, layerModel) => {
             }
 
             if (Array.isArray(currentProperty)) {
-              paintOpacity = currentProperty.map(i => {
-                if (typeof i === 'number') {
-                  return i * layerModel.opacity * 0.99;
+              paintOpacity = currentProperty.map(j => {
+                if (typeof j === 'number') {
+                  return j * layerModel.opacity * 0.99;
                 }
-                return i;
+                return j;
               });
             }
           }
