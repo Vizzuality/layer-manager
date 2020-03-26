@@ -486,6 +486,12 @@ A shader that defines how to decode each of the images tiles that comes to a ras
 
 `decodeParams` must be present.
 
+#### `onAfterAdd` - (optional) - (function)
+A function that will be triggered after you add a layer. It doesn't mean that the layer tiles are loaded, it means that the layer is ready for consumption for things like adding interactivity, reading source, etc...
+
+#### `onAfterRemove` - (optional) - (function)
+A function that will be triggered after you remove a layer.
+
 ## :scissors: Usage
 
 There are two React components that can be used to help with rendering layers via the layer manager. It can be imported and used as follows:
@@ -757,7 +763,7 @@ If your application is small enough and has a couple of layers, you can assume i
 |    v2    |      v3      |
 |----------|:-------------:
 | map |  map|
-| plugin |    plugin  | 
+| plugin |    plugin  |
 | ❌ onLayerLoading | - |
 | - | ✅ providers
 
@@ -777,15 +783,16 @@ The LayerManager component API specification hasn't changed a lot so start with 
 | v2                                                                         | v3                                                                                             |
 | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | id                                                                         | id                                                                                             |
-| ❌ layerConfig                                                               | ✅source                                                                                        |
-| -                                                                          | ✅render                                                                                        |
+| ❌ layerConfig                                                             | ✅source                                                                                       |
+| -                                                                          | ✅render                                                                                       |
 | params                                                                     | params                                                                                         |
 | sqlParams                                                                  | sqlParams                                                                                      |
 | decodeParams                                                               | decodeParams                                                                                   |
 | opacity                                                                    | opacity                                                                                        |
 | visibility                                                                 | visibility                                                                                     |
 | zIndex                                                                     | zIndex                                                                                         |
-| -                                                                          | ✅onAfterAdd                                                                                    |
+| -                                                                          | ✅onAfterAdd                                                                                   |
+| -                                                                          | ✅onAfterRemove                                                                                |
 | layerManager                                                               | layerManager                                                                                   |
 
 
@@ -799,9 +806,9 @@ In terms of the `<Layer />` component, when migrating to version 3:
 * make sure to clean the code from the `layerConfig` prop and then `layerConfig.body` key (`<Layer layerConfig={...} />`)
 * `layerConfig.body` becomes `source` and `render`:
 `layerConfig.body` ➡ `source`, `render`
-  
+
   `<Layer layerConfig={{ body: { ... } }} />`
-    
+
     ➡
 
   `<Layer source={...} render={...} />`
@@ -840,11 +847,11 @@ In terms of the `<Layer />` component, when migrating to version 3:
   ```
 
   ```
-  render: { 
-    layers: <content of v2 vectorLayers> 
+  render: {
+    layers: <content of v2 vectorLayers>
   }
   ```
 * If there is a `provider` key on the `layerConfig` level, it should be moved to the `source` object.
 
 
-That should be it! 
+That should be it!
