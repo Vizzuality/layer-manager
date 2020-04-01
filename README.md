@@ -785,6 +785,7 @@ The LayerManager component API specification hasn't changed a lot so start with 
 | id                                                                         | id                                                                                             |
 | ❌ layerConfig                                                             | ✅source                                                                                       |
 | -                                                                          | ✅render                                                                                       |
+- | ✅ type
 | params                                                                     | params                                                                                         |
 | sqlParams                                                                  | sqlParams                                                                                      |
 | decodeParams                                                               | decodeParams                                                                                   |
