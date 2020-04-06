@@ -498,7 +498,7 @@ There are two React components that can be used to help with rendering layers vi
 
 ```js
 import { LayerManager, Layer } from 'layer-manager/dist/components';
-import { PluginMapbox } from 'layer-manager';
+import { PluginMapboxGl } from 'layer-manager';
 
 // map is a reference to whichever map API you are using
 // For mapbox, we trully recommend `react-map-gl`
@@ -731,11 +731,41 @@ const activeLayers = [
   }
 ];
 
-<LayerManager map={this.map} plugin={PluginMapbox}>
+<LayerManager map={this.map} plugin={PluginMapboxGl}>
   {activeLayers.map(l => (
     <Layer key={l.id} {...l} />
   ))}
 </LayerManager>;
+```
+
+Example of ReatMapGL implementation with mapbox plugin:
+
+```js
+import React, { useState, useRef } from 'react';
+import { LayerManager, Layer } from 'layer-manager/dist/components';
+import { PluginMapboxGl } from 'layer-manager';
+import ReactMapGL from 'react-map-gl';
+
+const [loaded, setLoaded] = useState(false);
+const mapRef = useRef();
+
+export default () => (
+  <ReactMapGL
+    ref={mapRef}
+    width="100%"
+    height="100%"
+    onLoad={() => setLoaded(true)}
+    mapboxApiAccessToken={MAPBOX_TOKEN}
+  >
+    {loaded && mapRef.current && (
+      <LayerManager map={mapRef.current.getMap()} plugin={PluginMapboxGl}>
+        {activeLayers.map(l => (
+          <Layer key={l.id} {...l} />
+        ))}
+      </LayerManager>
+    )}
+  </ReactMapGL>
+);
 ```
 
 # Migration to Layer Manager 3.x
