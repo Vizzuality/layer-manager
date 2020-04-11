@@ -6,6 +6,13 @@ import TileLayer from './custom-layers/tile-layer';
 import DecodedLayer from './custom-layers/decoded-layer';
 
 const getTileData = ({ x, y, z }, url) => {
+  if (url.match(/({s}\.)/i) !== null) {
+    console.error(
+      "Mapbox raster provider doesn't support subdomain templates. " +
+        'If you wish to implement Domain Sharding please provide each subdomain as a separate url within the tiles property. ' +
+        "Example. { tiles: ['a.domain.com/{x}/{y}/{z}.png', 'b.domain.com/{x}/{y}/{z}.png', 'c.domain.com/{x}/{y}/{z}.png'] }"
+    );
+  }
   const mapSource = url
     .replace('{z}', z)
     .replace('{x}', x)
