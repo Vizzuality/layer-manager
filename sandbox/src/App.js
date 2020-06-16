@@ -196,33 +196,46 @@ function App() {
                 map={map}
                 plugin={PluginMapboxGl}
                 providers={{
-                  'carto-sql-points': (layerModel, layer, resolve, reject) => {
-                    const { source } = layerModel;
+                  'carto-skydipper': (layerModel, layer, resolve, reject) => {
+                    const { interactivity, source } = layerModel;
                     const { provider } = source;
 
-                    fetch('get', provider.url, provider.options, layerModel)
+                    const layerTpl = JSON.stringify({
+                      version: '1.3.0',
+                      stat_tag: 'API',
+                      layers: provider.layers.map(l => {
+                        if (!!interactivity && interactivity.length) {
+                          return { ...l, options: { ...l.options, interactivity } };
+                        }
+                        return l;
+                      })
+                    });
+
+                    // https://carto.com/developers/auth-api/guides/how-to-send-API-Keys/
+                    const apiParams = {
+                      stat_tag: 'API',
+                      config: encodeURIComponent(layerTpl),
+                      ...(provider.api_key && { api_key: provider.api_key })
+                    };
+                    const apiParamsString = Object.keys(apiParams)
+                      .map(k => `${k}=${apiParams[k]}`)
+                      .join('&');
+                    const url = `http://35.233.41.65/user/skydipper/api/v1/map/?${apiParamsString}`;
+
+                    fetch('get', url, {}, layerModel)
                       .then(response => {
+                        const ext = layerModel.type === 'vector' ? 'mvt' : 'png';
+                        const tileUrl = `http://35.233.41.65/user/skydipper/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.${ext}`;
+
                         return resolve({
                           ...layer,
                           source: {
                             ...omit(layer.source, 'provider'),
-                            data: {
-                              type: 'FeatureCollection',
-                              features: response.rows.map(r => ({
-                                type: 'Feature',
-                                properties: r,
-                                geometry: {
-                                  type: 'Point',
-                                  coordinates: [r.lon, r.lat]
-                                }
-                              }))
-                            }
+                            tiles: [tileUrl]
                           }
                         });
                       })
-                      .catch(e => {
-                        reject(e);
-                      });
+                      .catch(err => reject(err));
                   }
                 }}
               >
