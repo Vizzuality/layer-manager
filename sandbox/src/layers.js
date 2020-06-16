@@ -16,7 +16,7 @@ export default [
                 sql: 'SELECT * FROM {table_name} WHERE admin_level = {admin_level}'
               }
             }
-          ],
+          ]
         },
         type: 'vector'
       },
@@ -59,7 +59,7 @@ export default [
             }
           }
         ]
-      },
+      }
     },
     params: {
       color6: '#67000D',
