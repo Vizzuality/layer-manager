@@ -35,12 +35,12 @@ class PluginMapboxGL {
     const allLayers = this.getLayers();
 
     if (Array.isArray(images)) {
-      images.forEach(({ id, src }) => {
+      images.forEach(({ id, src, options }) => {
         if (!this.map.hasImage(id)) {
           const img = new Image();
           img.src = src;
           img.onload = () => {
-            this.map.addImage(id, img);
+            this.map.addImage(id, img, options);
           };
         }
       });

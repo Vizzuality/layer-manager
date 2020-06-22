@@ -177,8 +177,8 @@ export default [
     config: {
       type: 'geojson',
       images: [
-        { id: 'lm-marker1', src: MARKER1 },
-        { id: 'lm-marker2', src: MARKER2 }
+        { id: 'lm-marker1', src: MARKER1, options: { sdf: true }},
+        { id: 'lm-marker2', src: MARKER2, options: { sdf: true }}
       ],
       source: {
         type: 'geojson',
@@ -233,11 +233,13 @@ export default [
             },
             type: 'symbol',
             filter: ['!', ['has', 'point_count']],
+            paint: {
+              'icon-color': '#F00'
+            },
             layout: {
               'icon-ignore-placement': true,
               'icon-allow-overlap': true,
-              'icon-image': 'lm-marker1',
-              'icon-size': 0.05
+              'icon-image': 'lm-marker1'
             }
           }
         ]

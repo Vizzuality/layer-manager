@@ -217,7 +217,7 @@ Example:
 ```
 
 #### `images - (optional) - (array)`
-An array defining images that you want to add to the mapbox styles. This array must contain objects with `id` and `src`. After that you can add layers type symbol with your custom icons by using the id you have already defined.
+An array defining images that you want to add to the mapbox styles. This array must contain objects with `id` and `src`. After that you can add layers type symbol with your custom icons by using the id you have already defined. You can also add `options`. It will be used for adding custom options to addImage function from mapbox https://docs.mapbox.com/mapbox-gl-js/api/map/#map#addimage
 
 Example:
 
@@ -226,7 +226,8 @@ Example:
   "images": [
     {
       "id": "marker1",
-      "src": "/static/images/marker1.svg"
+      "src": "/static/images/marker1.svg",
+      "options": {}
     }
   ]
 }
