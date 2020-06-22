@@ -214,6 +214,23 @@ Example:
 }
 ```
 
+#### `images - (optional) - (array)`
+An array defining images that you want to add to the mapbox styles. This array must contain objects with `id` and `src`. After that you can add layers type symbol with your custom icons by using the id you have already defined.
+
+Example:
+
+```json
+{
+  "images": [
+    {
+      "id": "marker1",
+      "src": "/static/images/marker1.svg"
+    }
+  ]
+}
+```
+
+
 #### `opacity - (optional) - (number)`
 
 A number between 0 and 1. Default: 1
@@ -785,6 +802,7 @@ The LayerManager component API specification hasn't changed a lot so start with 
 | id                                                                         | id                                                                                             |
 | ❌ layerConfig                                                             | ✅source                                                                                       |
 | -                                                                          | ✅render                                                                                       |
+| -                                                                          | ✅images                                                                                       |
 | params                                                                     | params                                                                                         |
 | sqlParams                                                                  | sqlParams                                                                                      |
 | decodeParams                                                               | decodeParams                                                                                   |

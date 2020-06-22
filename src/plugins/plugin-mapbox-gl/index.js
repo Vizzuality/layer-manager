@@ -31,8 +31,20 @@ class PluginMapboxGL {
    * @param {Object} layerModel
    */
   add(layerModel) {
-    const { mapLayer } = layerModel;
+    const { images, mapLayer } = layerModel;
     const allLayers = this.getLayers();
+
+    if (Array.isArray(images)) {
+      images.forEach(({ id, src }) => {
+        if (!this.map.hasImage(id)) {
+          const img = new Image();
+          img.src = src;
+          img.onload = () => {
+            this.map.addImage(id, img);
+          };
+        }
+      });
+    }
 
     // add source if it has one
     if (

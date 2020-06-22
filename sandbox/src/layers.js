@@ -1,3 +1,6 @@
+import MARKER1 from 'images/marker1.svg';
+import MARKER2 from 'images/marker2.svg';
+
 export default [
   // RASTER LAYER
   {
@@ -173,6 +176,10 @@ export default [
     name: 'Mongabay stories',
     config: {
       type: 'geojson',
+      images: [
+        { id: 'lm-marker1', src: MARKER1 },
+        { id: 'lm-marker2', src: MARKER2 }
+      ],
       source: {
         type: 'geojson',
         promoteId: 'cartodb_id',
@@ -224,13 +231,13 @@ export default [
             metadata: {
               position: 'top'
             },
-            type: 'circle',
+            type: 'symbol',
             filter: ['!', ['has', 'point_count']],
-            paint: {
-              'circle-color': '#FFCC00',
-              'circle-stroke-width': 1,
-              'circle-stroke-color': '#333',
-              'circle-radius': ['case', ['boolean', ['feature-state', 'hover'], false], 12, 5]
+            layout: {
+              'icon-ignore-placement': true,
+              'icon-allow-overlap': true,
+              'icon-image': 'lm-marker1',
+              'icon-size': 0.05
             }
           }
         ]
