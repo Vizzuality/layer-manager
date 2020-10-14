@@ -1,7 +1,7 @@
-/* eslint-disable */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-param-reassign */
 import { Deck, WebMercatorViewport } from '@deck.gl/core';
-
-let ANIMATION = null;
 
 export function getDeckInstance({ map, gl, deck }) {
   // Only create one deck instance per context
@@ -58,7 +58,9 @@ export function getDeckInstance({ map, gl, deck }) {
   }
   deck.props.userData.mapboxVersion = getMapboxVersion(map);
   map.__deck = deck;
-  map.on('render', () => afterRender(deck, map));
+  map.on('render', () => {
+    if (deck.layerManager) afterRender(deck, map);
+  });
 
   return deck;
 }
@@ -69,12 +71,11 @@ export function addLayer(deck, layer) {
 }
 
 export function removeLayer(deck, layer) {
-  ANIMATION = null;
   deck.props.userData.mapboxLayers.delete(layer);
   updateLayers(deck);
 }
 
-export function updateLayer(deck, layer) {
+export function updateLayer(deck) {
   updateLayers(deck);
 }
 
@@ -86,21 +87,15 @@ export function drawLayer(deck, map, layer) {
     currentViewport = getViewport(deck, map, true);
     deck.props.userData.currentViewport = currentViewport;
   }
-
+  if (!deck.layerManager) {
+    return;
+  }
   deck._drawLayers('mapbox-repaint', {
     viewports: [currentViewport],
     // TODO - accept layerFilter in drawLayers' renderOptions
     layers: getLayers(deck, deckLayer => shouldDrawLayer(layer.id, deckLayer)),
     clearCanvas: false
   });
-
-  // if (ANIMATION) cancelAnimationFrame(ANIMATION);
-
-  // ANIMATION = requestAnimationFrame(() => {
-  //   deck._drawLayers('mapbox-repaint', {
-  //     clearCanvas: false
-  //   });
-  // });
 }
 
 function getViewState(map) {
@@ -136,7 +131,8 @@ function getViewport(deck, map, useMapboxProjection = true) {
         x: 0,
         y: 0,
         width: deck.width,
-        height: deck.height
+        height: deck.height,
+        repeat: true
       },
       getViewState(map),
       useMapboxProjection
@@ -172,6 +168,8 @@ function afterRender(deck, map) {
       return true;
     });
     if (layers.length > 0) {
+      // eslint-disable-next-line no-console
+      console.log('afterRender');
       deck._drawLayers('mapbox-repaint', {
         viewports: [getViewport(deck, map, false)],
         layers,
@@ -191,7 +189,7 @@ function onMapMove(deck, map) {
   // Camera changed, will trigger a map repaint right after this
   // Clear any change flag triggered by setting viewState so that deck does not request
   // a second repaint
-  // deck.needsRedraw({clearRedrawFlags: true});
+  // deck.needsRedraw({ clearRedrawFlags: true });
 }
 
 function getLayers(deck, layerFilter) {
