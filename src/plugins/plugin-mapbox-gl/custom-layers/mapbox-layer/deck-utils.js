@@ -168,8 +168,6 @@ function afterRender(deck, map) {
       return true;
     });
     if (layers.length > 0) {
-      // eslint-disable-next-line no-console
-      console.log('afterRender');
       deck._drawLayers('mapbox-repaint', {
         viewports: [getViewport(deck, map, false)],
         layers,
