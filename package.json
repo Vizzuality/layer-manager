@@ -1,6 +1,6 @@
 {
   "name": "layer-manager",
-  "version": "1.13.2",
+  "version": "1.15.4",
   "description": "A library to get a layer depending on provider and layer spec",
   "repository": {
     "type": "git",
@@ -8,83 +8,76 @@
   },
   "author": "Vizzuality",
   "license": "MIT",
-  "main": "dist/index.js",
-  "module": "lib/index.js",
+  "main": "lib/index.js",
+  "module": "dist/layer-manager.esm.js",
   "scripts": {
     "serve": "http-server . -p 8000 -a 0.0.0.0",
-    "prepublishOnly": "better-npm-run build:prod",
+    "prepublishOnly": "bnr build",
     "lint": "eslint ./src",
-    "test": "mocha --require babel-core/register --require ./test/setup --recursive ./test/specs",
-    "watch": "rollup -c -w",
-    "build": "better-npm-run build:dist",
+    "test": "mocha --require @babel/register --require ./test/setup --recursive ./test/specs",
+    "watch": "bnr watch && bnr babel:watch",
+    "build": "bnr build && bnr babel:build",
     "prettier": "prettier --single-quote --write \"src/**/*.js\""
   },
   "betterScripts": {
-    "build:dist": {
+    "build": {
       "command": "rollup -c",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "watch": {
+      "command": "rollup -c -w && babel src -d lib --watch",
       "env": {
         "BABEL_ENV": "rollup"
       }
     },
-    "build:prod": {
-      "command": "rollup -c",
-      "env": {
-        "BABEL_ENV": "rollup",
-        "NODE_ENV": "production"
-      }
+    "babel:build": {
+      "command": "babel src -d lib"
+    },
+    "babel:watch": {
+      "command": "babel src -d lib --watch"
     }
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.2",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-module-resolver": "^3.1.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "better-npm-run": "^0.1.1",
     "chai": "^4.1.2",
-    "eslint": "4.19.1",
-    "eslint-config-airbnb": "17.0.0",
-    "eslint-config-prettier": "2.9.0",
-    "eslint-config-vizzuality": "^1.1.7",
-    "eslint-import-resolver-babel-module": "^4.0.0",
+    "eslint": "5.7.0",
+    "eslint-config-airbnb": "17.1.0",
+    "eslint-config-vizzuality": "^1.3.0",
+    "eslint-import-resolver-babel-module": "4.0.0",
     "eslint-plugin-babel": "^4.1.2",
-    "eslint-plugin-import": "2.13.0",
+    "eslint-plugin-import": "2.14.0",
     "eslint-plugin-jsx-a11y": "6.1.1",
-    "eslint-plugin-prettier": "2.6.2",
-    "eslint-plugin-react": "7.10.0",
+    "eslint-plugin-react": "7.11.0",
     "jsdom": "^11.6.2",
     "mocha": "^5.0.4",
-    "prettier": "^0.11.0",
     "react": "16.3.2",
     "react-dom": "16.3.2",
     "rollup": "^0.66.2",
-    "rollup-plugin-babel": "3",
+    "rollup-plugin-babel": "3.0.7",
     "rollup-plugin-commonjs": "^9.1.8",
     "rollup-plugin-node-resolve": "^3.3.0",
-    "rollup-plugin-uglify": "^6.0.0"
+    "rollup-plugin-uglify": "^6.0.0",
+    "uglify-es": "^3.3.9"
   },
   "dependencies": {
-    "bluebird": "^3.5.2",
-    "lodash": "^4.17.10",
+    "axios": "^0.18.0",
+    "lodash": "^4.17.11",
     "prop-types": "^15.6.2",
-    "reselect": "^3.0.1",
     "supercluster": "^4.1.1",
     "wri-json-api-serializer": "^1.0.1"
   },
   "peerDependencies": {
-    "react": "^15.0.0 || ^16.0.0"
-  },
-  "engines": {
-    "node": ">=8.x.x"
-  },
-  "auto-changelog": {
-    "output": "CHANGELOG.md",
-    "template": "keepachangelog",
-    "commitLimit": false
+    "react": "^16.3.2"
   }
 }

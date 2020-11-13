@@ -1,35 +1,22 @@
 {
-  "presets": [
+  "presets": ["env", "react"],
+  "plugins": [
+    "transform-class-properties",
     [
-      "env",
+      "transform-object-rest-spread",
       {
-        "modules": false
+        "useBuiltIns": true
       }
     ],
-    "react"
-  ],
-  "plugins": [
-    "transform-runtime",
-    "transform-object-rest-spread",
-    ["transform-class-properties", { "spec": true }],
     [
       "module-resolver",
       {
-        "root": ".",
-        "alias": {
-          "components": "./src/components",
-          "lib": "./src/lib",
-          "plugins": "./src/plugins",
-          "services": "./src/services",
-          "utils": "./src/utils"
-        },
+        "root": [
+          "./src/**"
+        ],
         "extensions": [".js", ".jsx"]
       }
     ]
   ],
-  "env": {
-    "rollup": {
-      "plugins": ["external-helpers"]
-    }
-  }
+  "ignore": ["node_modules"]
 }

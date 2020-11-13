@@ -3,27 +3,24 @@ import PropTypes from 'prop-types';
 import Manager from '../layer-manager';
 import Layer from './layer';
 
-// Isomorphic support
-const { L } = typeof window !== 'undefined'
-  ? window
-  : { L: { Map: () => {} }};
-
 class LayerManager extends PureComponent {
   static propTypes = {
-    map: PropTypes.instanceOf(L.Map).isRequired,
+    map: PropTypes.object.isRequired,
     plugin: PropTypes.func.isRequired,
     layersSpec: PropTypes.arrayOf(PropTypes.object),
     children: PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.node),
       PropTypes.node
     ]),
-    onLayerLoading: PropTypes.func
+    onLayerLoading: PropTypes.func,
+    onReady: PropTypes.func
   };
 
   static defaultProps = {
     children: [],
     layersSpec: [],
-    onLayerLoading: () => null
+    onLayerLoading: null,
+    onReady: null
   };
 
   constructor(props) {
@@ -33,19 +30,21 @@ class LayerManager extends PureComponent {
   }
 
   componentDidMount() {
-    const { onLayerLoading } = this.props;
-    if (this.layerManager.layers && this.layerManager.layers.length) {
-      onLayerLoading(true);
-      this.layerManager.renderLayers().then(() => onLayerLoading(false));
-    }
+    this.onRenderLayers();
   }
 
-
   componentDidUpdate() {
-    const { onLayerLoading } = this.props;
+    this.onRenderLayers();
+  }
+
+  onRenderLayers = () => {
+    const { onLayerLoading, onReady } = this.props;
     if (this.layerManager.layers && this.layerManager.layers.length) {
-      onLayerLoading(true);
-      this.layerManager.renderLayers().then(() => onLayerLoading(false));
+      if (onLayerLoading) onLayerLoading(true);
+      this.layerManager.renderLayers().then((layers) => {
+        if (onReady) onReady(layers);
+        if (onLayerLoading) onLayerLoading(false);
+      });
     }
   }
 
@@ -55,9 +54,8 @@ class LayerManager extends PureComponent {
     if (children && Children.count(children)) {
       return Children.map(
         children,
-        (child, i) =>
-          child &&
-            cloneElement(child, {
+        (child, i) => child
+            && cloneElement(child, {
               layerManager: this.layerManager,
               zIndex: child.props.zIndex || 1000 - i
             })

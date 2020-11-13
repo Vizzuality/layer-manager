@@ -1,19 +1,24 @@
-import Promise from 'bluebird';
+import { CancelToken } from 'axios';
 import { get } from 'lib/request';
 
-export const fetchData = layerModel => {
-  const { layerConfig } = layerModel;
-  const { layerRequest } = layerModel;
+export const fetchData = (layerModel) => {
+  const { layerConfig, layerRequest } = layerModel;
   const { url } = layerConfig.body;
 
-  if (layerRequest && layerRequest instanceof Promise) layerRequest.cancel();
+  if (layerRequest) {
+    layerRequest.cancel('Operation canceled by the user.');
+  }
 
-  const newLayerRequest = get(url).then(res => {
+  const layerRequestSource = CancelToken.source();
+  layerModel.set('layerRequest', layerRequestSource);
+
+  const newLayerRequest = get(url, { cancelToken: layerRequestSource.token }).then((res) => {
     if (res.status > 400) {
       console.error(res);
       return false;
     }
-    return JSON.parse(res.response);
+
+    return res.data;
   });
 
   return newLayerRequest;
