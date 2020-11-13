@@ -1,13 +1,14 @@
 import UTFGridLayer from './utf-grid-layer-leaflet';
 
 const { L } = typeof window !== 'undefined' ? window : {};
+const defaultHost = 'https://api.resourcewatch.org/v1';
 
 const NEXGDDPLayer = (layerModel) => {
   const { id, layerConfig, interactivity } = layerModel;
-  const { period } = layerConfig;
+  const { period, tileHost } = layerConfig;
   const year = (period || {}).value || '1971-01-01';
   const dateString = new Date(year).toISOString();
-  const tileUrl = `https://api.resourcewatch.org/v1/layer/${id}/tile/nexgddp/{z}/{x}/{y}?year=${dateString}`;
+  const tileUrl = `${tileHost || defaultHost}/layer/${id}/tile/nexgddp/{z}/{x}/{y}?year=${dateString}`;
 
   let layer = L.tileLayer(tileUrl, layerConfig.body);
 

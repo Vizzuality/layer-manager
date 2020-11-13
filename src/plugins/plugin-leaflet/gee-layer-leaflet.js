@@ -16,10 +16,13 @@ const GEELayer = (layerModel) => {
     sqlParams,
     decodeParams
   } = layerModel;
-  const tileUrl = `https://api.resourcewatch.org/v1/layer/${id}/tile/gee/{z}/{x}/{y}`;
+  // Backward compatibility
+  const defaultHost = 'https://api.resourcewatch.org/v1';
   const layerConfigParsed = layerConfig.parse === false
     ? layerConfig
     : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
+  const { tileHost } = layerConfigParsed;
+  const tileUrl = `${tileHost || defaultHost}/layer/${id}/tile/gee/{z}/{x}/{y}`;
   let layer;
 
   switch (layerConfigParsed.type) {
