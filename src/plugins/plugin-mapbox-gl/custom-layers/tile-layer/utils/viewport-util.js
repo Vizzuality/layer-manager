@@ -12,11 +12,11 @@ function lngLatToWorld([lng, lat], scale) {
     return console.error('lngLatToWorld: lng, lat or scale are not correct values');
   }
 
-  const s = (TILE_SIZE * 2) * scale;
+  const s = TILE_SIZE * 2 * scale;
   const lambda2 = lng * DEGREES_TO_RADIANS;
   const phi2 = lat * DEGREES_TO_RADIANS;
-  const x = s * (lambda2 + PI) / (2 * PI);
-  const y = s * (PI - Math.log(Math.tan(PI_4 + phi2 * 0.5))) / (2 * PI);
+  const x = (s * (lambda2 + PI)) / (2 * PI);
+  const y = (s * (PI - Math.log(Math.tan(PI_4 + phi2 * 0.5)))) / (2 * PI);
   return [x, y];
 }
 function getBoundingBox(viewport) {

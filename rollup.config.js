@@ -32,7 +32,7 @@ const globals = {
   earcut: 'earcut',
   '@mapbox/tiny-sdf': '@mapbox/tiny-sdf',
   'deck.gl': 'deck.gl',
-  'luma.gl': 'luma.gl',
+  'luma.gl': 'luma.gl'
 };
 const external = Object.keys(globals);
 const babelOptions = () => ({
