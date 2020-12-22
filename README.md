@@ -24,7 +24,6 @@ Using yarn:
 You should also install these packages versions to have everything working
 - `deck.gl@7.3.6`
 - `luma.gl@7.3.2`
-- `viewport-mercator-project@6.1.1`
 - `axios`
 
 

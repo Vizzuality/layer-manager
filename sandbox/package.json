@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@math.gl/web-mercator": "^3.3.2",
     "classnames": "^2.2.6",
     "d3-ease": "^1.0.5",
     "deck.gl": "7.3.6",
@@ -19,7 +20,6 @@
     "react-dom": "^16.9.0",
     "react-map-gl": "^5.2.3",
     "react-scripts": "3.1.1",
-    "viewport-mercator-project": "6.1.1",
     "vizzuality-components": "^3.0.0-beta.9"
   },
   "scripts": {
