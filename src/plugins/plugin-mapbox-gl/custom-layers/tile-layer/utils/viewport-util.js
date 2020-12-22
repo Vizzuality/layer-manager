@@ -1,7 +1,24 @@
-import { lngLatToWorld } from 'viewport-mercator-project';
-
 const TILE_SIZE = 256;
+const { PI } = Math;
+const PI_4 = PI / 4;
+const DEGREES_TO_RADIANS = PI / 180;
 
+function lngLatToWorld([lng, lat], scale) {
+  if (
+    !Number.isFinite(lng) ||
+    !Number.isFinite(scale) ||
+    !(Number.isFinite(lat) && lat >= -90 && lat <= 90)
+  ) {
+    return console.error('lngLatToWorld: lng, lat or scale are not correct values');
+  }
+
+  const s = (TILE_SIZE * 2) * scale;
+  const lambda2 = lng * DEGREES_TO_RADIANS;
+  const phi2 = lat * DEGREES_TO_RADIANS;
+  const x = s * (lambda2 + PI) / (2 * PI);
+  const y = s * (PI - Math.log(Math.tan(PI_4 + phi2 * 0.5))) / (2 * PI);
+  return [x, y];
+}
 function getBoundingBox(viewport) {
   const corners = [
     viewport.unproject([0, 0]),
