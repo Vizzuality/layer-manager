@@ -1,0 +1,26 @@
+{
+  "name": "@vizzuality/layer-manager",
+  "version": "4.0.0-alpha",
+  "main": "index.js",
+  "module": "layer-manager.esm.js",
+  "license": "MIT",
+  "private": true,
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "dependencies": {
+    "lodash": "^4.17.20"
+  },
+  "scripts": {
+    "build": "bnr build"
+  },
+  "betterScripts": {
+    "build": {
+      "command": "rollup -c",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+}

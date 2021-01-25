@@ -1,6 +1,6 @@
 {
   "name": "layer-manager",
-  "version": "3.0.8",
+  "version": "4.0.0-alpha",
   "description": "A library to get a layer depending on provider and layer spec",
   "repository": {
     "type": "git",
@@ -10,18 +10,25 @@
   "license": "MIT",
   "main": "lib/index.js",
   "module": "dist/layer-manager.esm.js",
+  "private": true,
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
     "serve": "http-server . -p 8000 -a 0.0.0.0",
     "prepublishOnly": "bnr build",
     "lint": "eslint -c .eslintrc.json --ext .jsx,.js --fix",
     "test": "jest --config ./jest.config.js --colors",
     "watch": "bnr watch && bnr babel:watch",
-    "build": "bnr build && bnr babel:build",
+    "build": "lerna run build",
     "prettier": "prettier --single-quote --write \"src/**/*.js\"",
-    "start:sandbox": "cd sandbox && yarn start",
-    "build:sandbox": "cd sandbox && yarn build",
+    "start:sandbox": "lerna run start --scope @vizzuality/layer-manager-sandbox",
+    "build:sandbox": "cd src/applications/sandbox && yarn build",
     "test:sandbox": "cd sandbox && yarn test",
-    "deploy:sandbox": "cd sandbox && yarn deploy"
+    "deploy:sandbox": "cd sandbox && yarn deploy",
+    "build:plugin-mapbox-gl": "lerna run build --scope @vizzuality/layer-manager-plugin-mapbox-gl",
+    "build:provider-carto": "lerna run build --scope @vizzuality/layer-manager-provider-carto",
+    "build:utils": "lerna run build --scope @vizzuality/layer-manager-utils"
   },
   "betterScripts": {
     "build": {
@@ -55,6 +62,12 @@
       "git add"
     ]
   },
+  "workspaces": [
+    "src/packages/*",
+    "src/packages/*/*",
+    "src/applications/*",
+    "src/applications/*/*"
+  ],
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
@@ -81,6 +94,7 @@
     "eslint-plugin-react": "^7.14.3",
     "husky": "^3.0.5",
     "jest": "^23.6.0",
+    "lerna": "^3.22.1",
     "lint-staged": "^9.2.5",
     "luma.gl": "7.3.2",
     "prettier": "^1.18.2",
@@ -94,7 +108,7 @@
   },
   "dependencies": {
     "axios": "^0.19.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "prop-types": "^15.7.2",
     "supercluster": "^4.1.1"
   },

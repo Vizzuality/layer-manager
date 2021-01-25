@@ -1,0 +1,26 @@
+{
+  "name": "@vizzuality/layer-manager-plugin-mapbox-gl",
+  "version": "1.0.0-alpha",
+  "main": "index.js",
+  "license": "MIT",
+  "private": false,
+  "module": "./dist/layer-manager-plugin-mapbox-gl.esm.js",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "scripts": {
+    "build": "bnr build"
+  },
+  "betterScripts": {
+    "build": {
+      "command": "rollup -c",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  },
+  "dependencies": {
+    "@vizzuality/layer-manager-utils": "^1.0.0-alpha"
+  }
+}
