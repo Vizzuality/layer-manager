@@ -1,0 +1,26 @@
+{
+  "name": "@vizzuality/layer-manager-components-react",
+  "version": "1.0.0-alpha",
+  "main": "src/index.js",
+  "module": "dist/index.js",
+  "license": "MIT",
+  "private": false,
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "scripts": {
+    "build": "bnr build"
+  },
+  "betterScripts": {
+    "build": {
+      "command": "rollup -c",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  },
+  "dependencies": {
+    "@vizzuality/layer-manager": "^4.0.0-alpha"
+  }
+}

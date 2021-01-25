@@ -1,0 +1,26 @@
+{
+  "name": "@vizzuality/layer-manager-provider-carto",
+  "version": "1.0.0-alpha",
+  "license": "MIT",
+  "private": true,
+  "main": "index.js",
+  "module": "./dist/layer-manager-provider-carto.esm.js",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "dependencies": {
+    "@vizzuality/layer-manager-utils": "^1.0.0-alpha"
+  },
+  "scripts": {
+    "build": "bnr build"
+  },
+  "betterScripts": {
+    "build": {
+      "command": "rollup -c",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+}

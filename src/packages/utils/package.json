@@ -1,0 +1,22 @@
+{
+  "name": "@vizzuality/layer-manager-utils",
+  "version": "1.0.0-alpha",
+  "license": "MIT",
+  "private": true,
+  "main": "index.js",
+  "module": "dist/layer-manager-utils.esm.js",
+  "dependencies": {
+    "axios": "^0.21.1"
+  },
+  "scripts": {
+    "build": "bnr build"
+  },
+  "betterScripts": {
+    "build": {
+      "command": "rollup -c",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+}
