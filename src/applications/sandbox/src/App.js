@@ -18,6 +18,7 @@ import 'ace-builds/src-noconflict/theme-github';
 import { LayerManager, Layer } from '@vizzuality/layer-manager-components-react';
 import PluginMapboxGl from '@vizzuality/layer-manager-plugin-mapbox-gl';
 import { fetch } from '@vizzuality/layer-manager-utils';
+import CARTO_PROVIDER from '@vizzuality/layer-manager-provider-carto';
 
 // Legend
 import {
@@ -88,8 +89,8 @@ function App() {
     }
   };
 
-  const onChangeOrder = ids => {
-    console.log('onChangeOrder', ids);
+  const onChangeOrder = () => {
+    // console.info('onChangeOrder', ids);
   };
 
   const onChangeVisibility = (l, visibility) => {
@@ -200,6 +201,7 @@ function App() {
                 map={map}
                 plugin={PluginMapboxGl}
                 providers={{
+                  ...CARTO_PROVIDER,
                   'carto-sql-points': (layerModel, layer, resolve, reject) => {
                     const { source } = layerModel;
                     const { provider } = source;
