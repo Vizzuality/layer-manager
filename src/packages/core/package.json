@@ -13,7 +13,8 @@
     "lodash": "^4.17.20"
   },
   "scripts": {
-    "build": "bnr build"
+    "build": "bnr build",
+    "watch": "rollup --config rollup.config.js --watch"
   },
   "betterScripts": {
     "build": {

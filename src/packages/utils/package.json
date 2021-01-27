@@ -9,7 +9,8 @@
     "axios": "^0.21.1"
   },
   "scripts": {
-    "build": "bnr build"
+    "build": "bnr build",
+    "watch": "rollup --config rollup.config.js --watch"
   },
   "betterScripts": {
     "build": {
