@@ -1,7 +1,7 @@
 import isEmpty from 'lodash/isEmpty';
 import { CancelablePromise } from '@vizzuality/layer-manager-utils';
+
 import LayerModel from './layer-model';
-// import DEFAULT_PROVIDERS from './providers';
 
 function checkPluginProperties(plugin) {
   if (plugin) {
@@ -37,7 +37,7 @@ function checkPluginProperties(plugin) {
 class LayerManager {
   constructor(map, Plugin, Providers) {
     this.map = map;
-    this.providers = { ...Providers };
+    this.providers = Providers;
     this.layers = [];
     this.promises = {};
     this.options = {
