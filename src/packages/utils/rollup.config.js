@@ -31,7 +31,8 @@ export default [
     input: './index.js',
     output: {
       file: pkg.module,
-      format: 'es'
+      format: 'es',
+      globals
     },
     external,
     plugins: [babel(babelOptions()), resolve(), commonjs()]

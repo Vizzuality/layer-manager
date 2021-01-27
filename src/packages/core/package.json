@@ -2,7 +2,7 @@
   "name": "@vizzuality/layer-manager",
   "version": "4.0.0-alpha",
   "main": "index.js",
-  "module": "layer-manager.esm.js",
+  "module": "dist/layer-manager.esm.js",
   "license": "MIT",
   "private": true,
   "publishConfig": {

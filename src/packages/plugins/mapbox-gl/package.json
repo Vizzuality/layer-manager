@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "private": false,
-  "module": "./dist/layer-manager-plugin-mapbox-gl.esm.js",
+  "module": "dist/layer-manager-plugin-mapbox-gl.esm.js",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"

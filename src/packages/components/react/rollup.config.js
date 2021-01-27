@@ -8,7 +8,9 @@ const globals = {
   'prop-types': 'PropTypes',
   axios: 'axios',
   'lodash/isEmpty': 'isEmpty',
-  'lodash/isEqual': 'isEqual'
+  'lodash/isEqual': 'isEqual',
+  '@vizzuality/layer-manager': '@vizzuality/layer-manager',
+  '@vizzuality/layer-manager-utils': '@vizzuality/layer-manager-utils'
 };
 const external = Object.keys(globals);
 const babelOptions = () => ({
@@ -30,10 +32,11 @@ const babelOptions = () => ({
 
 export default [
   {
-    input: './src/index.js',
+    input: './index.js',
     output: {
       file: pkg.module,
-      format: 'es'
+      format: 'es',
+      globals
     },
     external,
     plugins: [babel(babelOptions()), resolve(), commonjs()]

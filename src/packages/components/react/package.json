@@ -1,7 +1,7 @@
 {
   "name": "@vizzuality/layer-manager-components-react",
   "version": "1.0.0-alpha",
-  "main": "src/index.js",
+  "main": "index.js",
   "module": "dist/index.js",
   "license": "MIT",
   "private": false,

@@ -4,7 +4,7 @@
   "license": "MIT",
   "private": true,
   "main": "index.js",
-  "module": "./dist/layer-manager-provider-carto.esm.js",
+  "module": "dist/layer-manager-provider-carto.esm.js",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
