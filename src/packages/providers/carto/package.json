@@ -13,7 +13,8 @@
     "@vizzuality/layer-manager-utils": "^1.0.0-alpha"
   },
   "scripts": {
-    "build": "bnr build"
+    "build": "bnr build",
+    "watch": "rollup --config rollup.config.js --watch"
   },
   "betterScripts": {
     "build": {

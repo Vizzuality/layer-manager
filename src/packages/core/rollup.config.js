@@ -32,7 +32,7 @@ export default [
   {
     input: './index.js',
     output: {
-      file: `./dist/${pkg.module}`,
+      file: pkg.module,
       format: 'es',
       globals
     },

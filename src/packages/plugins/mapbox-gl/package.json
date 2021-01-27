@@ -10,7 +10,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "bnr build"
+    "build": "bnr build",
+    "watch": "rollup --config rollup.config.js --watch"
   },
   "betterScripts": {
     "build": {
