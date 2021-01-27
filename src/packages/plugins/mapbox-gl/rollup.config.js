@@ -11,7 +11,8 @@ const globals = {
   '@luma.gl/core': '@luma.gl/core',
   '@luma.gl/constants': '@luma.gl/constants',
   'luma.gl': 'luma.gl',
-  '@loaders.gl/images': '@loaders.gl/images'
+  '@loaders.gl/images': '@loaders.gl/images',
+  '@vizzuality/layer-manager-utils': '@vizzuality/layer-manager-utils'
 };
 const external = Object.keys(globals);
 const babelOptions = () => ({
@@ -36,7 +37,8 @@ export default [
     input: './index.js',
     output: {
       file: pkg.module,
-      format: 'es'
+      format: 'es',
+      globals
     },
     external,
     plugins: [babel(babelOptions()), resolve(), commonjs()]

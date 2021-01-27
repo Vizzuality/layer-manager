@@ -5,7 +5,8 @@ import pkg from './package.json';
 
 const globals = {
   axios: 'axios',
-  'lodash/omit': 'omit'
+  'lodash/omit': 'omit',
+  '@vizzuality/layer-manager-utils': '@vizzuality/layer-manager-utils'
 };
 const external = Object.keys(globals);
 const babelOptions = () => ({
@@ -30,7 +31,8 @@ export default [
     input: './index.js',
     output: {
       file: pkg.module,
-      format: 'es'
+      format: 'es',
+      globals
     },
     external,
     plugins: [babel(babelOptions()), resolve(), commonjs()]

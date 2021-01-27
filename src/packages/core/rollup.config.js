@@ -6,7 +6,9 @@ import pkg from './package.json';
 const globals = {
   axios: 'axios',
   'lodash/isEmpty': 'isEmpty',
-  'lodash/isEqual': 'isEqual'
+  'lodash/isEqual': 'isEqual',
+  '@vizzuality/layer-manager-provider-carto': '@vizzuality/layer-manager-provider-carto',
+  '@vizzuality/layer-manager-utils': '@vizzuality/layer-manager-provider-carto'
 };
 const external = Object.keys(globals);
 const babelOptions = () => ({
@@ -31,7 +33,8 @@ export default [
     input: './index.js',
     output: {
       file: `./dist/${pkg.module}`,
-      format: 'es'
+      format: 'es',
+      globals
     },
     external,
     plugins: [babel(babelOptions()), resolve(), commonjs()]
