@@ -1,6 +1,6 @@
 {
   "name": "@vizzuality/layer-manager-plugin-mapbox-gl",
-  "version": "1.0.1-alpha",
+  "version": "1.0.2-alpha.0",
   "keywords": [
     "layer-manager",
     "plugins",
@@ -32,7 +32,7 @@
     }
   },
   "dependencies": {
-    "@vizzuality/layer-manager-utils": "1.0.4-alpha"
+    "@vizzuality/layer-manager-utils": "^1.0.5-alpha.0"
   },
   "peerDependencies": {
     "deck.gl": "7.3.6",

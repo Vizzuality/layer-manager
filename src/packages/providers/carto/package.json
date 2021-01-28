@@ -1,6 +1,6 @@
 {
   "name": "@vizzuality/layer-manager-provider-carto",
-  "version": "1.0.4-alpha",
+  "version": "1.0.5-alpha.0",
   "keywords": [
     "layer-manager",
     "providers",
@@ -18,7 +18,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@vizzuality/layer-manager-utils": "1.0.4-alpha"
+    "@vizzuality/layer-manager-utils": "^1.0.5-alpha.0"
   },
   "scripts": {
     "publish-alpha": "npm publish --tag=alpha",

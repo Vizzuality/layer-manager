@@ -1,6 +1,6 @@
 {
   "name": "@vizzuality/layer-manager-components-react",
-  "version": "1.0.0-alpha",
+  "version": "1.0.1-alpha.0",
   "keywords": [
     "layer-manager",
     "react",
@@ -32,8 +32,8 @@
     }
   },
   "dependencies": {
-    "@vizzuality/layer-manager": "^4.0.0-alpha",
-    "@vizzuality/layer-manager-utils": "^1.0.4-alpha",
+    "@vizzuality/layer-manager": "^4.0.1-alpha.0",
+    "@vizzuality/layer-manager-utils": "^1.0.5-alpha.0",
     "prop-types": "^15.7.2"
   },
   "peerDependencies": {
