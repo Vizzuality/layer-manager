@@ -1,15 +1,25 @@
 {
   "name": "@vizzuality/layer-manager-components-react",
-  "version": "1.0.0-alpha",
-  "main": "index.js",
-  "module": "dist/index.js",
+  "version": "1.0.1-alpha.0",
+  "keywords": [
+    "layer-manager",
+    "react",
+    "components"
+  ],
   "license": "MIT",
   "private": false,
+  "main": "lib/index.js",
+  "files": [
+    "lib",
+    "src"
+  ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
   "scripts": {
+    "publish-alpha": "npm publish --tag=alpha",
+    "prepare": "lerna run build --scope @vizzuality/layer-manager-components-react",
     "build": "bnr build",
     "watch": "rollup --config rollup.config.js --watch"
   },
@@ -22,6 +32,14 @@
     }
   },
   "dependencies": {
-    "@vizzuality/layer-manager": "^4.0.0-alpha"
-  }
+    "@vizzuality/layer-manager": "^4.0.1-alpha.0",
+    "@vizzuality/layer-manager-utils": "^1.0.5-alpha.0",
+    "prop-types": "^15.7.2"
+  },
+  "peerDependencies": {
+    "lodash": "^4.17.20",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  },
+  "gitHead": "c9d9936fbcdb2aabdc9bca8a046f5486c18a1ce0"
 }

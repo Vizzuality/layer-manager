@@ -1,15 +1,25 @@
 {
   "name": "@vizzuality/layer-manager-plugin-mapbox-gl",
-  "version": "1.0.0-alpha",
-  "main": "index.js",
+  "version": "1.0.2-alpha.0",
+  "keywords": [
+    "layer-manager",
+    "plugins",
+    "mapbox-gl"
+  ],
   "license": "MIT",
   "private": false,
-  "module": "dist/layer-manager-plugin-mapbox-gl.esm.js",
+  "main": "lib/index.js",
+  "files": [
+    "lib",
+    "src"
+  ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
   "scripts": {
+    "publish-alpha": "npm publish --tag=alpha",
+    "prepare": "lerna run build --scope @vizzuality/layer-manager-plugin-mapbox-gl",
     "build": "bnr build",
     "watch": "rollup --config rollup.config.js --watch"
   },
@@ -22,6 +32,12 @@
     }
   },
   "dependencies": {
-    "@vizzuality/layer-manager-utils": "^1.0.0-alpha"
-  }
+    "@vizzuality/layer-manager-utils": "^1.0.5-alpha.0"
+  },
+  "peerDependencies": {
+    "deck.gl": "7.3.6",
+    "lodash": "^4.17.20",
+    "luma.gl": "7.3.2"
+  },
+  "gitHead": "c9d9936fbcdb2aabdc9bca8a046f5486c18a1ce0"
 }

@@ -1,4 +1,4 @@
-# Core – Layer Manager
+# CARTO Provider – Layer Manager
 
 ## Requirements
 Install the next peer dependencies: 
@@ -10,12 +10,12 @@ yarn add lodash
 npm install lodash
 ```
 
+
 ## Installation
 ```sh
 # with Yarn
-yarn add @vizzuality/layer-manager
+yarn add @vizzuality/layer-manager-provider-carto
 
 # with NPM
-npm install @vizzuality/layer-manager
+npm install @vizzuality/layer-manager-provider-carto
 ```
-

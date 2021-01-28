@@ -1,10 +1,10 @@
 {
   "name": "@vizzuality/layer-manager-sandbox",
-  "version": "0.1.0",
+  "version": "0.1.1-alpha.0",
   "private": true,
   "dependencies": {
     "@math.gl/web-mercator": "^3.3.2",
-    "@vizzuality/layer-manager-components-react": "^1.0.0-alpha",
+    "@vizzuality/layer-manager-components-react": "^1.0.1-alpha.0",
     "@vizzuality/layer-manager-plugin-mapbox-gl": "^1.0.0-alpha",
     "@vizzuality/layer-manager-utils": "^1.0.0-alpha",
     "classnames": "^2.2.6",
