@@ -14,7 +14,6 @@
   },
   "scripts": {
     "serve": "http-server . -p 8000 -a 0.0.0.0",
-    "prepublishOnly": "bnr build",
     "lint": "eslint -c .eslintrc.json --ext .jsx,.js --fix",
     "test": "jest --config ./jest.config.js --colors",
     "watch": "bnr watch && bnr babel:watch",

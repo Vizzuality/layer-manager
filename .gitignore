@@ -19,7 +19,7 @@
 # Compiled assets
 **/dist
 **/build
-/lib
+**/lib
 
 # env varibles
 **/.env
