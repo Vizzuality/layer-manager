@@ -20,7 +20,6 @@
     "axios": "^0.21.1"
   },
   "scripts": {
-    "publish-alpha": "npm publish --tag=alpha",
     "prepare": "lerna run build --scope @vizzuality/layer-manager-utils",
     "build": "bnr build",
     "watch": "rollup --config rollup.config.js --watch"

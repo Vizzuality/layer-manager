@@ -16,7 +16,6 @@
     "access": "public"
   },
   "scripts": {
-    "publish-alpha": "npm publish --tag=alpha",
     "prepare": "lerna run build --scope @vizzuality/layer-manager",
     "build": "bnr build",
     "watch": "rollup --config rollup.config.js --watch"

@@ -21,7 +21,6 @@
     "@vizzuality/layer-manager-utils": "^1.0.5-alpha.0"
   },
   "scripts": {
-    "publish-alpha": "npm publish --tag=alpha",
     "prepare": "lerna run build --scope @vizzuality/layer-manager-provider-carto",
     "build": "bnr build",
     "watch": "rollup --config rollup.config.js --watch"
