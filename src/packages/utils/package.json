@@ -1,14 +1,27 @@
 {
   "name": "@vizzuality/layer-manager-utils",
-  "version": "1.0.0-alpha",
+  "version": "1.0.4-alpha",
+  "keywords": [
+    "layer-manager",
+    "utils"
+  ],
   "license": "MIT",
-  "private": true,
-  "main": "index.js",
-  "module": "dist/layer-manager-utils.esm.js",
+  "private": false,
+  "main": "lib/index.js",
+  "files": [
+    "lib",
+    "src"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
   "dependencies": {
     "axios": "^0.21.1"
   },
   "scripts": {
+    "publish-alpha": "npm publish --tag=alpha",
+    "prepare": "lerna run build --scope @vizzuality/layer-manager-utils",
     "build": "bnr build",
     "watch": "rollup --config rollup.config.js --watch"
   },
@@ -19,5 +32,8 @@
         "NODE_ENV": "production"
       }
     }
+  },
+  "peerDependencies": {
+    "lodash": "^4.17.20"
   }
 }

@@ -2940,6 +2940,13 @@
     lodash.unescape "4.0.1"
     semver "5.5.0"
 
+"@vizzuality/layer-manager-utils@^1.0.0-alpha":
+  version "1.0.0-alpha"
+  resolved "https://registry.yarnpkg.com/@vizzuality/layer-manager-utils/-/layer-manager-utils-1.0.0-alpha.tgz#5680897424138c256532665d74e86490b454f432"
+  integrity sha512-nASLyrGtpAg7gIR5CNKIfi+FEbSTdxGHJC0nAdqZ574MXOPt3e2rZ5pf3luOkYfnABSUCvp03Y8wgDwSPcb+fw==
+  dependencies:
+    axios "^0.21.1"
+
 "@webassemblyjs/ast@1.8.5":
   version "1.8.5"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.8.5.tgz#51b1c5fe6576a34953bf4b253df9f0d490d9e359"
