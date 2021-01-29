@@ -1,6 +1,7 @@
 {
   "name": "@vizzuality/layer-manager-components-react",
   "version": "1.0.1-alpha.0",
+  "author": "Vizzuality <hello@vizzuality.com>",
   "keywords": [
     "layer-manager",
     "react",

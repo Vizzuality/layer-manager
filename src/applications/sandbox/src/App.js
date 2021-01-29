@@ -10,14 +10,9 @@ import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-json';
 import 'ace-builds/src-noconflict/theme-github';
 
-// Before
-// import { LayerManager, Layer } from 'layer-manager/dist/components';
-// import { PluginMapboxGl, fetch } from 'layer-manager';
-
-// After
 import { LayerManager, Layer } from '@vizzuality/layer-manager-components-react';
-import PluginMapboxGl from '@vizzuality/layer-manager-plugin-mapbox-gl';
 import { fetch } from '@vizzuality/layer-manager-utils';
+import PluginMapboxGl from '@vizzuality/layer-manager-plugin-mapbox-gl';
 import CARTO_PROVIDER from '@vizzuality/layer-manager-provider-carto';
 
 // Legend

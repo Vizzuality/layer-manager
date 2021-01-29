@@ -1,12 +1,13 @@
 {
   "name": "@vizzuality/layer-manager-sandbox",
   "version": "0.1.1-alpha.0",
+  "author": "Vizzuality <hello@vizzuality.com>",
   "private": true,
   "dependencies": {
     "@math.gl/web-mercator": "^3.3.2",
     "@vizzuality/layer-manager-components-react": "^1.0.1-alpha.0",
-    "@vizzuality/layer-manager-plugin-mapbox-gl": "^1.0.0-alpha",
-    "@vizzuality/layer-manager-utils": "^1.0.0-alpha",
+    "@vizzuality/layer-manager-plugin-mapbox-gl": "^1.0.2-alpha.0",
+    "@vizzuality/layer-manager-utils": "^1.0.5-alpha.0",
     "classnames": "^2.2.6",
     "d3-ease": "^1.0.5",
     "deck.gl": "7.3.6",
@@ -17,6 +18,7 @@
     "mapbox-gl": "^1.8.1",
     "moment": "^2.24.0",
     "node-sass": "^4.12.0",
+    "prop-types": "^15.7.2",
     "react": "^16.9.0",
     "react-ace": "^8.0.0",
     "react-dom": "^16.9.0",
