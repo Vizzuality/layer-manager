@@ -1,6 +1,7 @@
 {
   "name": "@vizzuality/layer-manager-plugin-mapbox-gl",
   "version": "1.0.2-alpha.0",
+  "author": "Vizzuality <hello@vizzuality.com>",
   "keywords": [
     "layer-manager",
     "plugins",

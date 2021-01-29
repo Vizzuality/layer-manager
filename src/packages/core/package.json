@@ -1,6 +1,7 @@
 {
   "name": "@vizzuality/layer-manager",
   "version": "4.0.1-alpha.0",
+  "author": "Vizzuality <hello@vizzuality.com>",
   "keywords": [
     "layer-manager"
   ],

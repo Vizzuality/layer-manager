@@ -1,6 +1,7 @@
 {
   "name": "@vizzuality/layer-manager-provider-carto",
   "version": "1.0.5-alpha.0",
+  "author": "Vizzuality <hello@vizzuality.com>",
   "keywords": [
     "layer-manager",
     "providers",

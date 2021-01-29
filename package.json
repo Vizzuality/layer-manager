@@ -2,25 +2,23 @@
   "name": "@vizzuality/layer-manager-monorepo",
   "version": "4.0.0-alpha",
   "description": "Vizzuality's Layer Manager monorepo",
+  "author": "Vizzuality <hello@vizzuality.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/Vizzuality/layer-manager.git"
   },
-  "author": "Vizzuality",
   "license": "MIT",
   "private": true,
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "serve": "http-server . -p 8000 -a 0.0.0.0",
     "lint": "eslint -c .eslintrc.json --ext .jsx,.js --fix",
     "test": "jest --config ./jest.config.js --colors",
-    "watch": "bnr watch && bnr babel:watch",
     "build": "lerna run build",
     "prettier": "prettier --single-quote --write \"src/**/*.js\"",
     "start:sandbox": "lerna run start --scope @vizzuality/layer-manager-sandbox",
-    "build:sandbox": "cd src/applications/sandbox && yarn build",
+    "build:sandbox": "lerna run build --scope @vizzuality/layer-manager-sandbox",
     "test:sandbox": "cd sandbox && yarn test",
     "deploy:sandbox": "cd sandbox && yarn deploy",
     "watch:core": "lerna run watch --scope @vizzuality/layer-manager",
@@ -34,26 +32,7 @@
     "watch:components-react": "lerna run watch --scope @vizzuality/layer-manager-components-react",
     "build:components-react": "lerna run build --scope @vizzuality/layer-manager-components-react"
   },
-  "betterScripts": {
-    "build": {
-      "command": "rollup -c",
-      "env": {
-        "NODE_ENV": "production"
-      }
-    },
-    "watch": {
-      "command": "rollup -c -w && babel src -d lib --watch",
-      "env": {
-        "BABEL_ENV": "rollup"
-      }
-    },
-    "babel:build": {
-      "command": "babel src -d lib"
-    },
-    "babel:watch": {
-      "command": "babel src -d lib --watch"
-    }
-  },
+  "betterScripts": {},
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
@@ -84,7 +63,6 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "better-npm-run": "^0.1.1",
-    "deck.gl": "7.3.6",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-prettier": "^6.3.0",
@@ -100,10 +78,7 @@
     "jest": "^23.6.0",
     "lerna": "^3.22.1",
     "lint-staged": "^9.2.5",
-    "luma.gl": "7.3.2",
     "prettier": "^1.18.2",
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0",
     "rollup": "^0.66.2",
     "rollup-plugin-babel": "3.0.7",
     "rollup-plugin-commonjs": "^9.1.8",
@@ -112,11 +87,6 @@
   },
   "dependencies": {
     "axios": "^0.19.0",
-    "lodash": "^4.17.20",
-    "prop-types": "^15.7.2",
-    "supercluster": "^4.1.1"
-  },
-  "peerDependencies": {
-    "react": "^16.3.2"
+    "lodash": "^4.17.20"
   }
 }
