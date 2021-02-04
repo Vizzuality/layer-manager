@@ -6,7 +6,6 @@ import pkg from './package.json';
 
 const globals = {
   axios: 'axios',
-  'lodash/sortBy': 'sortBy',
   '@deck.gl/core': '@deck.gl/core',
   'deck.gl': 'deck.gl',
   '@luma.gl/core': '@luma.gl/core',

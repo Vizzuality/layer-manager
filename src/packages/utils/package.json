@@ -9,6 +9,7 @@
   "license": "MIT",
   "private": false,
   "main": "lib/index.js",
+  "module": "dist/index.js",
   "files": [
     "lib",
     "src"

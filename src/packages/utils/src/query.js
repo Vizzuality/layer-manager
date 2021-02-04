@@ -1,6 +1,3 @@
-import compact from 'lodash/compact';
-import isPlainObject from 'lodash/isPlainObject';
-
 /**
  * Params should have this format => { key:'xxx', key2:'xxx' }
  * Keys to search should be in this format {{key}}
@@ -10,7 +7,16 @@ import isPlainObject from 'lodash/isPlainObject';
 export const substitution = (originalStr, params = {}) => {
   let str = originalStr;
   Object.keys(params).forEach(key => {
-    if (Array.isArray(params[key]) || isPlainObject(params[key])) {
+    // We need to test that this is true only for plain objects
+
+    const isObject =
+      params[key] != null &&
+      typeof params[key] === 'object' &&
+      Object.prototype.toString.call(params[key]) === '[object Object]';
+
+    console.info(params[key], isObject);
+
+    if (Array.isArray(params[key]) || isObject) {
       str = str
         .replace(new RegExp(`"{{${key}}}"`, 'g'), JSON.stringify(params[key]))
         .replace(new RegExp(`'{{${key}}}'`, 'g'), JSON.stringify(params[key]))
@@ -48,8 +54,8 @@ export const concatenation = (originalStr, params = {}) => {
   let sql;
 
   Object.keys(params).forEach(key => {
-    sql = `${compact(
-      Object.keys(params[key]).map(k => {
+    sql = `${Object.keys(params[key])
+      .map(k => {
         const value = params[key][k];
 
         if (Array.isArray(value) && !!value.length) {
@@ -63,7 +69,8 @@ export const concatenation = (originalStr, params = {}) => {
 
         return null;
       })
-    ).join(' AND ')}`;
+      .filter(v => !!v)
+      .join(' AND ')}`;
 
     if (sql && key.startsWith('where')) sql = `WHERE ${sql}`;
     else if (sql && key.startsWith('and')) sql = `AND ${sql}`;

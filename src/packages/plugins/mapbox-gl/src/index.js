@@ -1,6 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-import sortBy from 'lodash/sortBy';
-
 import rasterLayer from './raster-layer-mapbox-gl';
 import vectorLayer from './vector-layer-mapbox-gl';
 import geoJsonLayer from './geojson-layer-mapbox-gl';
@@ -124,7 +122,16 @@ class PluginMapboxGL {
   getLayers() {
     const { getLayers } = this.options;
     const layers = getLayers();
-    return sortBy(layers, l => l.decodeFunction);
+
+    return layers.sort((a, b) => {
+      if (
+        Object.prototype.hasOwnProperty.call(a, 'decodeFunction') &&
+        !Object.prototype.hasOwnProperty.call(b, 'decodeFunction')
+      )
+        return -1;
+
+      return 1;
+    });
   }
 
   /**
@@ -149,7 +156,11 @@ class PluginMapboxGL {
       );
 
     // make sure layers are sorted by zIndex
-    const sortedLayers = sortBy(allLayers, l => l.zIndex);
+    const sortedLayers = allLayers.sort((a, b) => {
+      if (a.zIndex > b.zIndex) return 1;
+
+      return -1;
+    });
 
     // get the layer with zIndex greater than current layer from all layers
     const nextLayer = sortedLayers.find(

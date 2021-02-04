@@ -6,6 +6,7 @@
     "layer-manager"
   ],
   "main": "lib/index.js",
+  "module": "dist/index.js",
   "license": "MIT",
   "private": false,
   "files": [

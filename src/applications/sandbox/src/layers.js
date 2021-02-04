@@ -1,7 +1,7 @@
 import MARKER1 from 'images/marker1.svg';
 import MARKER2 from 'images/marker2.svg';
 
-export default [
+const LAYERS = [
   // RASTER LAYER
   {
     id: 'gain',
@@ -256,3 +256,5 @@ export default [
     }
   }
 ];
+
+export default LAYERS;

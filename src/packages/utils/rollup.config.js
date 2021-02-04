@@ -5,9 +5,7 @@ import { terser } from 'rollup-plugin-terser';
 import pkg from './package.json';
 
 const globals = {
-  axios: 'axios',
-  'lodash/isPlainObject': 'isPlainObject',
-  'lodash/compact': 'compact'
+  axios: 'axios'
 };
 const external = Object.keys(globals);
 const babelOptions = () => ({
