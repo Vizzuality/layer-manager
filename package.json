@@ -39,7 +39,7 @@
     }
   },
   "lint-staged": {
-    "src/packages/*.{js,jsx}": [
+    "*.{js,jsx}": [
       "prettier --config .prettierrc --write",
       "eslint -c .eslintrc.json --ext .jsx,.js --fix",
       "git add"
