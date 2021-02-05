@@ -23,16 +23,8 @@
   },
   "scripts": {
     "prepare": "lerna run build --scope @vizzuality/layer-manager-utils",
-    "build": "bnr build",
+    "build": "NODE_ENV=production rollup -c",
     "watch": "rollup --config rollup.config.js --watch"
-  },
-  "betterScripts": {
-    "build": {
-      "command": "rollup -c",
-      "env": {
-        "NODE_ENV": "production"
-      }
-    }
   },
   "peerDependencies": {
   },

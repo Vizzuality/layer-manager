@@ -32,7 +32,6 @@
     "watch:components-react": "lerna run watch --scope @vizzuality/layer-manager-components-react",
     "build:components-react": "lerna run build --scope @vizzuality/layer-manager-components-react"
   },
-  "betterScripts": {},
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
@@ -62,7 +61,6 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
-    "better-npm-run": "^0.1.1",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-prettier": "^6.3.0",

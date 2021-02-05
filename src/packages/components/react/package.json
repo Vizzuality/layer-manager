@@ -21,16 +21,8 @@
   },
   "scripts": {
     "prepare": "lerna run build --scope @vizzuality/layer-manager-components-react",
-    "build": "bnr build",
+    "build": "NODE_ENV=production rollup -c",
     "watch": "rollup --config rollup.config.js --watch"
-  },
-  "betterScripts": {
-    "build": {
-      "command": "rollup -c",
-      "env": {
-        "NODE_ENV": "production"
-      }
-    }
   },
   "dependencies": {
     "@vizzuality/layer-manager": "^4.0.1-alpha.0",
