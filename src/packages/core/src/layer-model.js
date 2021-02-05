@@ -1,4 +1,4 @@
-import isEqual from 'lodash/isEqual';
+import isEqual from 'fast-deep-equal';
 
 class LayerModel {
   opacity = 1;

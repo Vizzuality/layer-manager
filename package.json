@@ -39,7 +39,7 @@
     }
   },
   "lint-staged": {
-    "*.{js,jsx}": [
+    "src/packages/*.{js,jsx}": [
       "prettier --config .prettierrc --write",
       "eslint -c .eslintrc.json --ext .jsx,.js --fix",
       "git add"
@@ -87,6 +87,6 @@
   },
   "dependencies": {
     "axios": "^0.19.0",
-    "lodash": "^4.17.20"
+    "fast-deep-equal": "^3.1.3"
   }
 }

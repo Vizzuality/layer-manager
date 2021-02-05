@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
-import isEqual from 'lodash/isEqual';
+import isEqual from 'fast-deep-equal/react';
 import isEmpty from 'lodash/isEmpty';
 
 import ReactMapGL, { FlyToInterpolator, TRANSITION_EVENTS } from 'react-map-gl';
