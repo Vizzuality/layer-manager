@@ -1,6 +1,4 @@
-import { fetch } from '@vizzuality/layer-manager-utils';
-
-import omit from 'lodash/omit';
+import { fetch, omit } from '@vizzuality/layer-manager-utils';
 
 export default {
   carto: (layerModel, layer, resolve, reject) => {
@@ -39,7 +37,7 @@ export default {
         return resolve({
           ...layer,
           source: {
-            ...omit(layer.source, 'provider'),
+            ...omit('provider', layer.source),
             tiles: [tileUrl]
           }
         });

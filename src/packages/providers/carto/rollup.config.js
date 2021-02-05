@@ -6,7 +6,6 @@ import pkg from './package.json';
 
 const globals = {
   axios: 'axios',
-  'lodash/omit': 'omit',
   '@vizzuality/layer-manager-utils': '@vizzuality/layer-manager-utils'
 };
 const external = Object.keys(globals);

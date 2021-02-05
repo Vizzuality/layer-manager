@@ -8,7 +8,6 @@ const globals = {
   react: 'React',
   'prop-types': 'PropTypes',
   axios: 'axios',
-  'lodash/isEmpty': 'isEmpty',
   'lodash/isEqual': 'isEqual',
   '@vizzuality/layer-manager': '@vizzuality/layer-manager',
   '@vizzuality/layer-manager-utils': '@vizzuality/layer-manager-utils'

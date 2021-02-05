@@ -1,13 +1,13 @@
 # Mapbox GL Plugin – Layer Manager
 
 ## Requirements
-Install the next peer dependencies: 
+Install the next peer dependencies:
 ```sh
 # with Yarn
-yarn add deck.gl@7.3.6 luma.gl@7.3.2 lodash
+yarn add deck.gl@7.3.6 luma.gl@7.3.2
 
 # with NPM
-npm install deck.gl@7.3.6 luma.gl@7.3.2 lodash
+npm install deck.gl@7.3.6 luma.gl@7.3.2
 ```
 
 

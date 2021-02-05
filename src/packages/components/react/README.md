@@ -2,13 +2,13 @@
 # React Components – Layer Manager
 
 ## Requirements
-Install the next peer dependencies: 
+Install the next peer dependencies:
 ```sh
 # with Yarn
-yarn add react react-dom lodash
+yarn add react react-dom
 
 # with NPM
-npm install react react-dom lodash
+npm install react react-dom
 ```
 
 ## Installation

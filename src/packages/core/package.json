@@ -31,7 +31,6 @@
     }
   },
   "peerDependencies": {
-    "lodash": "^4.17.20"
   },
   "gitHead": "c9d9936fbcdb2aabdc9bca8a046f5486c18a1ce0"
 }

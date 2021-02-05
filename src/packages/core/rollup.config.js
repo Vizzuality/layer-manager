@@ -6,7 +6,6 @@ import pkg from './package.json';
 
 const globals = {
   axios: 'axios',
-  'lodash/isEmpty': 'isEmpty',
   'lodash/isEqual': 'isEqual',
   '@vizzuality/layer-manager-provider-carto': '@vizzuality/layer-manager-provider-carto',
   '@vizzuality/layer-manager-utils': '@vizzuality/layer-manager-provider-carto'

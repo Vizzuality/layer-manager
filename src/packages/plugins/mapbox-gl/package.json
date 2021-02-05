@@ -37,7 +37,6 @@
   },
   "peerDependencies": {
     "deck.gl": "7.3.6",
-    "lodash": "^4.17.20",
     "luma.gl": "7.3.2"
   },
   "gitHead": "c9d9936fbcdb2aabdc9bca8a046f5486c18a1ce0"
