@@ -16,6 +16,7 @@ function checkPluginProperties(plugin) {
       'setParams',
       'setSQLParams',
       'setDecodeParams',
+      'setDeck',
       'getLayerByType'
     ];
 
@@ -99,7 +100,8 @@ class LayerManager {
       render,
       params,
       sqlParams,
-      decodeParams
+      decodeParams,
+      deck
     } = changedProps;
 
     if (typeof opacity !== 'undefined') {
@@ -132,6 +134,10 @@ class LayerManager {
 
     if (!isEmpty(decodeParams)) {
       this.plugin.setDecodeParams(layerModel);
+    }
+
+    if (!isEmpty(deck)) {
+      this.plugin.setDeck(layerModel);
     }
   }
 

@@ -9,6 +9,8 @@ class LayerModel {
 
   render = {};
 
+  deck = [];
+
   constructor(layerSpec = {}) {
     Object.assign(this, layerSpec, { changedAttributes: {} });
   }

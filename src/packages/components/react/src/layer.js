@@ -33,6 +33,8 @@ class Layer extends PureComponent {
       return null;
     },
 
+    deck: PropTypes.arrayOf(PropTypes.shape({})),
+
     params: PropTypes.shape({}),
     sqlParams: PropTypes.shape({}),
     decodeParams: PropTypes.shape({}),
@@ -64,6 +66,8 @@ class Layer extends PureComponent {
 
     render: {},
 
+    deck: [],
+
     layerManager: null,
 
     onAfterAdd: () => {},
@@ -78,6 +82,7 @@ class Layer extends PureComponent {
     const {
       source: prevSource,
       render: prevRender,
+      deck: prevDeck,
       params: prevParams,
       sqlParams: prevSqlParams,
       decodeParams: prevDecodeParams,
@@ -90,6 +95,7 @@ class Layer extends PureComponent {
       type,
       source,
       render,
+      deck,
       params,
       sqlParams,
       decodeParams,
@@ -165,6 +171,9 @@ class Layer extends PureComponent {
       }),
       ...(!isEqual(decodeParams, prevDecodeParams) && {
         decodeParams
+      }),
+      ...(!isEqual(deck, prevDeck) && {
+        deck
       })
     };
 

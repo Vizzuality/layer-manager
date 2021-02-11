@@ -1,7 +1,50 @@
 import MARKER1 from 'images/marker1.svg';
 import MARKER2 from 'images/marker2.svg';
 
-export default [
+import { ScatterplotLayer } from '@deck.gl/layers';
+
+const LAYERS = [
+  {
+    id: 'deck-testing',
+    name: 'Deck testing',
+    config: {
+      type: 'deck',
+      source: {
+        parse: false
+      },
+      render: {
+        parse: false
+      },
+      deck: [
+        {
+          id: 'scatterplot-layer',
+          type: ScatterplotLayer,
+          data: [
+            {
+              name: 'Colma (COLM)',
+              code: 'CM',
+              address: '365 D Street, Colma CA 94014',
+              exits: 4214,
+              coordinates: [-122.466233, 37.684638]
+            }
+          ],
+          pickable: true,
+          opacity: 0.8,
+          stroked: true,
+          filled: true,
+          radiusScale: 6,
+          radiusMinPixels: 1,
+          radiusMaxPixels: 100,
+          lineWidthMinPixels: 1,
+          getPosition: d => d.coordinates,
+          getRadius: d => Math.sqrt(d.exits),
+          getFillColor: () => [255, 140, 0],
+          getLineColor: () => [0, 0, 0]
+        }
+      ]
+    },
+    legendConfig: {}
+  },
   // RASTER LAYER
   {
     id: 'gain',
@@ -256,3 +299,5 @@ export default [
     }
   }
 ];
+
+export default LAYERS;

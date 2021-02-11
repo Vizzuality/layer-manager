@@ -5,6 +5,7 @@ import rasterLayer from './raster-layer-mapbox-gl';
 import vectorLayer from './vector-layer-mapbox-gl';
 import geoJsonLayer from './geojson-layer-mapbox-gl';
 import videoLayer from './video-layer-mapbox-gl';
+import deckLayer from './deck-layer-mapbox-gl';
 
 class PluginMapboxGL {
   constructor(map, options) {
@@ -23,7 +24,8 @@ class PluginMapboxGL {
     raster: rasterLayer,
     vector: vectorLayer,
     geojson: geoJsonLayer,
-    video: videoLayer
+    video: videoLayer,
+    deck: deckLayer
   };
 
   /**
@@ -283,9 +285,9 @@ class PluginMapboxGL {
       circle: ['circle', 'circle-stroke']
     };
 
-    const { mapLayer, decodeFunction } = layerModel;
+    const { type, mapLayer, decodeFunction } = layerModel;
 
-    if (mapLayer.layers && !decodeFunction) {
+    if (mapLayer.layers && !decodeFunction && type !== 'deck') {
       mapLayer.layers.forEach(l => {
         // Select the style to change depending on the type of layer
         const paintStyleNames = PAINT_STYLE_NAMES[l.type] || [l.type];
@@ -449,6 +451,10 @@ class PluginMapboxGL {
       );
     }
 
+    return this;
+  }
+
+  setDeck() {
     return this;
   }
 
