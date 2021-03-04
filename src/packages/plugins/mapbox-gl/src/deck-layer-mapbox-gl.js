@@ -2,7 +2,7 @@ import { CancelablePromise } from '@vizzuality/layer-manager-utils';
 import MapboxLayer from './custom-layers/mapbox-layer';
 
 const DeckLayer = layerModel => {
-  const { deck = [], id } = layerModel;
+  const { deck = [], id, zIndex } = layerModel;
 
   let layer = {};
 
@@ -19,7 +19,10 @@ const DeckLayer = layerModel => {
           'background-color': 'transparent'
         }
       },
-      ...deck.map(d => new MapboxLayer(d))
+      ...deck.map(d => new MapboxLayer({
+        ...d,
+        getPolygonOffset: () => [0, -zIndex],
+      }))
     ]
   };
 
