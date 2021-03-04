@@ -155,31 +155,6 @@ class Map extends Component {
     onViewportChange(newViewport);
   };
 
-  onMoveEnd = () => {
-    const { onViewportChange } = this.props;
-    const { viewport } = this.state;
-
-    if (this.map) {
-      const bearing = this.map.getBearing();
-      const pitch = this.map.getPitch();
-      const zoom = this.map.getZoom();
-      const { lng, lat } = this.map.getCenter();
-
-      const newViewport = {
-        ...viewport,
-        bearing,
-        pitch,
-        zoom,
-        latitude: lat,
-        longitude: lng
-      };
-
-      // Publish new viewport and save it into the state
-      this.setState({ viewport: newViewport });
-      onViewportChange(newViewport);
-    }
-  };
-
   onHover = e => {
     const { onHover } = this.props;
     const { features } = e;
