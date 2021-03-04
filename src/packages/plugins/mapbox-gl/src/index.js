@@ -203,7 +203,7 @@ class PluginMapboxGL {
     });
 
     // set for all decode layers that don't exist inside mapStyle()
-    const decodeLayers = allLayers.filter(l => !!l.decodeFunction);
+    const decodeLayers = allLayers.filter(l => !!l.decodeFunction || l.type === 'deck');
 
     if (decodeLayers && this.map) {
       decodeLayers.forEach(layerModel => {
@@ -211,15 +211,16 @@ class PluginMapboxGL {
 
         if (mapLayer) {
           const { layers } = mapLayer;
-          const parentLayer = layers[0];
-          const childLayer = layers[1];
+          const [parentLayer, ...childLayers] = layers;
 
           const parentLayerOnMap = layersOnMap.find(ly => ly.id === parentLayer.id);
-          const childLayerOnMap = this.map.getLayer(childLayer.id);
+          childLayers.forEach(childLayer => {
+            const childLayerOnMap = this.map.getLayer(childLayer.id);
 
-          if (parentLayerOnMap && childLayerOnMap) {
-            this.map.moveLayer(childLayer.id, parentLayer.id);
-          }
+            if (parentLayerOnMap && childLayerOnMap) {
+              this.map.moveLayer(childLayer.id, parentLayer.id);
+            }
+          });
         }
       });
     }

@@ -1,9 +1,62 @@
 import MARKER1 from 'images/marker1.svg';
 import MARKER2 from 'images/marker2.svg';
 
-import { ScatterplotLayer } from '@deck.gl/layers';
+import { ScatterplotLayer, ArcLayer } from '@deck.gl/layers';
 
 const LAYERS = [
+  {
+    id: 'deck-arc-testing',
+    name: 'Deck Arc testing',
+    config: {
+      type: 'deck',
+      source: {
+        parse: false
+      },
+      render: {
+        parse: false
+      },
+      deck: [
+        {
+          id: 'arc-layer',
+          type: ArcLayer,
+          data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart-segments.json',
+          /* props from ArcLayer class */
+
+          // getHeight: 1,
+          getSourceColor: d => [Math.sqrt(d.inbound), 140, 0],
+          getSourcePosition: d => [
+            ...d.from.coordinates,
+            10
+          ],
+          getTargetColor: d => [Math.sqrt(d.outbound), 140, 0],
+          getTargetPosition: d => [
+            ...d.to.coordinates,
+            10
+          ],
+          // getTilt: 0,
+          getWidth: 12,
+          // greatCircle: false,
+          // widthMaxPixels: Number.MAX_SAFE_INTEGER,
+          // widthMinPixels: 0,
+          // widthScale: 1,
+          // widthUnits: 'pixels',
+
+          /* props inherited from Layer class */
+
+          // autoHighlight: false,
+          // coordinateOrigin: [0, 0, 0],
+          // coordinateSystem: COORDINATE_SYSTEM.LNGLAT,
+          // highlightColor: [0, 0, 128, 128],
+          // modelMatrix: null,
+          // opacity: 1,
+          pickable: true,
+          // visible: true,
+          // wrapLongitude: false,
+        }
+      ]
+    },
+    legendConfig: {}
+  },
   {
     id: 'deck-testing',
     name: 'Deck testing',
@@ -32,11 +85,14 @@ const LAYERS = [
           opacity: 0.8,
           stroked: true,
           filled: true,
-          radiusScale: 6,
+          radiusScale: 100,
           radiusMinPixels: 1,
           radiusMaxPixels: 100,
           lineWidthMinPixels: 1,
-          getPosition: d => d.coordinates,
+          getPosition: d => [
+            ...d.coordinates,
+            50
+          ],
           getRadius: d => Math.sqrt(d.exits),
           getFillColor: () => [255, 140, 0],
           getLineColor: () => [0, 0, 0]
@@ -45,6 +101,7 @@ const LAYERS = [
     },
     legendConfig: {}
   },
+
   // RASTER LAYER
   {
     id: 'gain',
@@ -297,7 +354,7 @@ const LAYERS = [
       enabled: true,
       type: 'hover'
     }
-  }
+  },
 ];
 
 export default LAYERS;
