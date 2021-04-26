@@ -7,10 +7,10 @@
     "@math.gl/web-mercator": "^3.3.2",
     "@vizzuality/layer-manager-components-react": "^1.0.1-alpha.0",
     "@vizzuality/layer-manager-plugin-mapbox-gl": "^1.0.2-alpha.0",
-    "@vizzuality/layer-manager-utils": "^1.0.5-alpha.0",
     "classnames": "^2.2.6",
     "d3-ease": "^1.0.5",
     "deck.gl": "7.3.6",
+    "eslint": "^7.25.0",
     "eslint-plugin-flowtype": "^4.3.0",
     "eslint-plugin-react-hooks": "^2.0.1",
     "gh-pages": "^2.1.1",
@@ -24,6 +24,7 @@
     "react-dom": "^16.9.0",
     "react-map-gl": "^5.2.3",
     "react-scripts": "3.1.1",
+    "typescript-eslint": "^0.0.1-alpha.0",
     "vizzuality-components": "^3.0.0-beta.9"
   },
   "scripts": {
@@ -50,6 +51,10 @@
     ]
   },
   "devDependencies": {
-    "eslint-config-react-app": "^6.0.0"
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "eslint": "^7.25.0",
+    "eslint-config-react-app": "^6.0.0",
+    "eslint-plugin-react": "^7.23.2"
   }
 }

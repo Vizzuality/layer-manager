@@ -33,13 +33,20 @@
   },
   "dependencies": {
     "@vizzuality/layer-manager": "^4.0.1-alpha.0",
-    "@vizzuality/layer-manager-utils": "^1.0.5-alpha.0",
-    "prop-types": "^15.7.2"
+    "eslint": "^7.25.0",
+    "prop-types": "^15.7.2",
+    "typescript-eslint": "^0.0.1-alpha.0"
   },
   "peerDependencies": {
     "lodash": "^4.17.20",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
-  "gitHead": "c9d9936fbcdb2aabdc9bca8a046f5486c18a1ce0"
+  "gitHead": "c9d9936fbcdb2aabdc9bca8a046f5486c18a1ce0",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "eslint": "^7.25.0",
+    "eslint-plugin-react": "^7.23.2"
+  }
 }
