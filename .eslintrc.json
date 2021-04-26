@@ -1,34 +1,23 @@
 {
-  "extends": ["vizzuality", "prettier"],
   "env": {
     "browser": true,
-    "node": true,
-    "es6": true,
-    "jest/globals": true
+    "es2021": true,
+    "node": true
   },
-  "globals": {
-    "L": true
-  },
-  "parser": "babel-eslint",
-  "plugins": [
-    "babel",
-    "jest",
-    "prettier"
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
-  "rules": {
-    "import/prefer-default-export": 0,
-    "no-underscore-dangle": 0,
-    "no-debugger": 1,
-    "no-eval": [1, { "allowIndirect": true }],
-    "import/no-extraneous-dependencies": 0,
-    "react/sort-comp": "off"
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
   },
-  "settings": {
-    "import/resolver": {
-      "babel-module": {},
-      "node": {
-        "extensions": [".js", ".jsx"]
-      }
-    }
-  }
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "rules": {}
 }

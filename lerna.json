@@ -1,9 +1,6 @@
 {
-  "workspaces": [
-    "src/packages/*/*",
-    "src/applications/*/*"
-  ],
   "version": "independent",
   "npmClient": "yarn",
-  "useWorkspaces": true
+  "useWorkspaces": true,
+  "stream": true
 }

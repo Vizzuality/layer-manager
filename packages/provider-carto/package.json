@@ -1,0 +1,40 @@
+{
+  "name": "@vizzuality/layer-manager-provider-carto",
+  "version": "1.0.5-alpha.0",
+  "author": "Vizzuality <hello@vizzuality.com>",
+  "keywords": [
+    "layer-manager",
+    "providers",
+    "carto"
+  ],
+  "license": "MIT",
+  "private": false,
+  "main": "dist/carto-provider.js",
+  "types": "index.d.ts",
+  "files": [
+    "dist",
+    "index.d.ts",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vizzuality/layer-manager.git",
+    "directory": "packages/provider-carto"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "lint": "eslint . --ext .js,.ts --ignore-path ../../.eslintignore"
+  },
+  "dependencies": {
+    "lodash": "^4.17.20"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "eslint": "^7.25.0",
+    "eslint-plugin-react": "^7.23.2"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "name": "@vizzuality/layer-manager-plugin-mapboxgl",
+  "version": "1.0.2-alpha.0",
+  "author": "Vizzuality <hello@vizzuality.com>",
+  "keywords": [
+    "layer-manager",
+    "plugins",
+    "mapbox-gl"
+  ],
+  "license": "MIT",
+  "private": false,
+  "main": "dist/index.js",
+  "types": "index.d.ts",
+  "files": [
+    "dist",
+    "index.d.ts",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vizzuality/layer-manager.git",
+    "directory": "packages/plugin-mapboxgl"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "lint": "eslint . --ext .js,.ts --ignore-path ../../.eslintignore"
+  },
+  "peerDependencies": {
+    "deck.gl": "7.3.6",
+    "lodash": "^4.17.20",
+    "luma.gl": "7.3.2"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "eslint": "^7.25.0",
+    "eslint-plugin-react": "^7.23.2"
+  }
+}

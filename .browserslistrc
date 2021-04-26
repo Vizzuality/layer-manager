@@ -1,7 +1,3 @@
-# Browsers that we support
-
-> 1%
-Last 2 versions
-Firefox ESR
-Safari >= 9
-IE 10
+defaults
+last 1 Safari versions
+not IE 11
