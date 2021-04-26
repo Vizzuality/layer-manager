@@ -1,0 +1,36 @@
+{
+  "name": "@vizzuality/layer-manager",
+  "version": "4.0.1-alpha.0",
+  "author": "Vizzuality <hello@vizzuality.com>",
+  "keywords": [
+    "layer-manager"
+  ],
+  "main": "lib/index.js",
+  "license": "MIT",
+  "private": false,
+  "files": [
+    "lib",
+    "src"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "scripts": {
+    "prepare": "lerna run build --scope @vizzuality/layer-manager",
+    "build": "bnr build",
+    "watch": "rollup --config rollup.config.js --watch"
+  },
+  "betterScripts": {
+    "build": {
+      "command": "rollup -c",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  },
+  "peerDependencies": {
+    "lodash": "^4.17.20"
+  },
+  "gitHead": "c9d9936fbcdb2aabdc9bca8a046f5486c18a1ce0"
+}
