@@ -33,9 +33,7 @@
   },
   "dependencies": {
     "@vizzuality/layer-manager": "^4.0.1-alpha.0",
-    "eslint": "^7.25.0",
-    "prop-types": "^15.7.2",
-    "typescript-eslint": "^0.0.1-alpha.0"
+    "prop-types": "^15.7.2"
   },
   "peerDependencies": {
     "lodash": "^4.17.20",

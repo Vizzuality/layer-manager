@@ -16,23 +16,13 @@
     "access": "public"
   },
   "scripts": {
-    "prepare": "lerna run build --scope @vizzuality/layer-manager",
-    "build": "bnr build"
-  },
-  "betterScripts": {
-    "build": {
-      "command": "rollup -c",
-      "env": {
-        "NODE_ENV": "production"
-      }
-    }
+    "prepare": "lerna run build --scope @vizzuality/layer-manager"
   },
   "peerDependencies": {
     "lodash": "^4.17.20"
   },
   "dependencies": {
-    "eslint": "^7.25.0",
-    "typescript-eslint": "^0.0.1-alpha.0"
+    "eslint": "^7.25.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.22.0",
