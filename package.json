@@ -11,22 +11,7 @@
   "private": true,
   "scripts": {
     "lint": "lerna run lint",
-    "test": "jest --config ./jest.config.js --colors",
-    "build": "lerna run build",
-    "start:sandbox": "lerna run start --scope @vizzuality/layer-manager-sandbox",
-    "build:sandbox": "lerna run build --scope @vizzuality/layer-manager-sandbox",
-    "test:sandbox": "cd sandbox && yarn test",
-    "deploy:sandbox": "cd sandbox && yarn deploy",
-    "watch:core": "lerna run watch --scope @vizzuality/layer-manager",
-    "build:core": "lerna run build --scope @vizzuality/layer-manager",
-    "watch:plugin-mapbox-gl": "lerna run watch --scope @vizzuality/layer-manager-plugin-mapbox-gl",
-    "build:plugin-mapbox-gl": "lerna run build --scope @vizzuality/layer-manager-plugin-mapbox-gl",
-    "watch:provider-carto": "lerna run watch --scope @vizzuality/layer-manager-provider-carto",
-    "build:provider-carto": "lerna run build --scope @vizzuality/layer-manager-provider-carto",
-    "watch:utils": "lerna run watch --scope @vizzuality/layer-manager-utils",
-    "build:utils": "lerna run build --scope @vizzuality/layer-manager-utils",
-    "watch:components-react": "lerna run watch --scope @vizzuality/layer-manager-components-react",
-    "build:components-react": "lerna run build --scope @vizzuality/layer-manager-components-react"
+    "build": "lerna run build"
   },
   "workspaces": [
     "packages/*"
