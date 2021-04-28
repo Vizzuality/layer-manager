@@ -1,5 +1,5 @@
 import isEmpty from 'lodash/isEmpty';
-import { CancelablePromise } from '@vizzuality/layer-manager-utils';
+import { CancelablePromise } from './utils';
 
 import LayerModel from './layer-model';
 

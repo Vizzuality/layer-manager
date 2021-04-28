@@ -9,14 +9,10 @@
   },
   "license": "MIT",
   "private": true,
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
   "scripts": {
-    "lint": "eslint --ext .jsx,.js,.ts,.tsx --fix",
+    "lint": "lerna run lint",
     "test": "jest --config ./jest.config.js --colors",
     "build": "lerna run build",
-    "prettier": "prettier --single-quote --write \"src/**/*.js\"",
     "start:sandbox": "lerna run start --scope @vizzuality/layer-manager-sandbox",
     "build:sandbox": "lerna run build --scope @vizzuality/layer-manager-sandbox",
     "test:sandbox": "cd sandbox && yarn test",
@@ -33,20 +29,6 @@
     "build:components-react": "lerna run build --scope @vizzuality/layer-manager-components-react"
   },
   "workspaces": [
-    "src/packages/*",
-    "src/packages/*/*",
-    "src/applications/*",
-    "src/applications/*/*"
-  ],
-  "dependencies": {
-    "axios": "^0.21.1",
-    "lodash": "^4.17.20",
-    "supercluster": "^4.1.1"
-  },
-  "devDependencies": {
-  },
-  "peerDependencies": {
-    "prop-types": "^15.7.2",
-    "react": "^16.3.2"
-  }
+    "packages/*"
+  ]
 }

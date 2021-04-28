@@ -1,5 +1,5 @@
 {
-  "name": "@vizzuality/layer-manager-components-react",
+  "name": "@vizzuality/layer-manager-components",
   "version": "1.0.1-alpha.0",
   "author": "Vizzuality <hello@vizzuality.com>",
   "keywords": [
@@ -9,27 +9,15 @@
   ],
   "license": "MIT",
   "private": false,
-  "main": "lib/index.js",
+  "main": "dist/index.js",
+  "types": "index.d.ts",
   "files": [
-    "lib",
-    "src"
+    "dist",
+    "README.md"
   ],
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/",
-    "access": "public"
-  },
   "scripts": {
-    "prepare": "lerna run build --scope @vizzuality/layer-manager-components-react",
-    "build": "bnr build",
+    "build": "lerna run build --scope @vizzuality/layer-manager-components",
     "watch": "rollup --config rollup.config.js --watch"
-  },
-  "betterScripts": {
-    "build": {
-      "command": "rollup -c",
-      "env": {
-        "NODE_ENV": "production"
-      }
-    }
   },
   "dependencies": {
     "@vizzuality/layer-manager": "^4.0.1-alpha.0",
@@ -40,7 +28,6 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
-  "gitHead": "c9d9936fbcdb2aabdc9bca8a046f5486c18a1ce0",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
