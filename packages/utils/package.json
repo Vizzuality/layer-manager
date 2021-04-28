@@ -19,7 +19,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/vizzuality/layer-manager.git",
-    "directory": "packages/core"
+    "directory": "packages/utils"
   },
   "scripts": {
     "build": "tsc -b tsconfig.build.json",
@@ -30,6 +30,7 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@types/lodash": "^4.14.168",
     "@types/node": "^15.0.1",
     "@typescript-eslint/eslint-plugin": "^4.22.0",

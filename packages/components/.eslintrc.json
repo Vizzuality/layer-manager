@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "../../.eslintrc.json",
+    "plugin:react/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "react"
+  ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "rules": {}
+}

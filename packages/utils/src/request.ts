@@ -1,25 +1,52 @@
-import axios, { CancelToken } from 'axios';
+import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
 
-const headers = {
+const defaultHeaders: AxiosRequestConfig["headers"] = {
   'Content-Type': 'application/json'
 };
 
-export const get = (url, options = {}) =>
-  axios.get(url, {
-    headers,
-    ...options
+export const get = (
+  url: string,
+  options: Partial<AxiosRequestConfig> = {},
+): AxiosPromise =>
+  axios({
+    ...options,
+    headers: {
+      ...defaultHeaders,
+      ...(options.headers || {}),
+    },
+    url,
+    method: 'get',
   });
 
-export const post = (url, body) => axios.post(url, body, { headers });
+export const post = (
+  url: string,
+  body:AxiosRequestConfig['data'],
+  options: Partial<AxiosRequestConfig> = {},
+): AxiosPromise =>
+  axios({
+    ...options,
+    headers: {
+      ...defaultHeaders,
+      ...(options.headers || {}),
+    },
+    data: body,
+    url,
+    method: 'post',
+  });
 
-export const fetch = (type, url, options, layerModel) => {
+export const fetch = (
+  type: AxiosRequestConfig["method"],
+  url: string,
+  options: Partial<AxiosRequestConfig> = {},
+  layerModel: any, // TO-DO: change to layer model type
+): AxiosPromise => {
   const { layerRequest } = layerModel;
 
   if (layerRequest) {
     layerRequest.cancel('Operation canceled by the user.');
   }
 
-  const layerRequestSource = CancelToken.source();
+  const layerRequestSource = axios.CancelToken.source();
   layerModel.set('layerRequest', layerRequestSource);
 
   const method = type === 'post' ? post : get;

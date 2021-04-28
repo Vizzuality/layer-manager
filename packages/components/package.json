@@ -15,6 +15,11 @@
     "dist",
     "README.md"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vizzuality/layer-manager.git",
+    "directory": "packages/components"
+  },
   "scripts": {
     "build": "tsc -b tsconfig.build.json",
     "lint": "eslint . --ext .ts,.tsx --ignore-path ../../.eslintignore"
@@ -29,6 +34,7 @@
     "react-dom": "^17.0.1"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
     "eslint": "^7.25.0",
