@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { LayerManager, LayerModel } = require('@vizzuality/layer-manager');
+const LayerManager = require('@vizzuality/layer-manager').default;
+const LayerModel = require('@vizzuality/layer-manager').LayerModel;
 
 function TestPlugin() {}
 TestPlugin.prototype.setParams = () => {};
