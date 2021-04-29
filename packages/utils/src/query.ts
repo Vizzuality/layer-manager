@@ -1,13 +1,17 @@
 import compact from 'lodash/compact';
 import isPlainObject from 'lodash/isPlainObject';
 
+interface Params {
+  [key:string]: any;
+}
+
 /**
  * Params should have this format => { key:'xxx', key2:'xxx' }
  * Keys to search should be in this format {{key}}
  * @param {String} originalStr
  * @param {Object} params
  */
-export const substitution = (originalStr, params = {}) => {
+export const substitution = (originalStr: string, params: Params = {}): string => {
   let str = originalStr;
   Object.keys(params).forEach(key => {
     if (Array.isArray(params[key]) || isPlainObject(params[key])) {
@@ -43,7 +47,7 @@ export const substitution = (originalStr, params = {}) => {
  * @param {String} originalStr
  * @param {Object} params
  */
-export const concatenation = (originalStr, params = {}) => {
+export const concatenation = (originalStr: string, params: Params = {}): string => {
   let str = originalStr;
   let sql;
 
@@ -82,7 +86,7 @@ export const concatenation = (originalStr, params = {}) => {
  * @param {Object} params
  * @param {Object} sqlParams
  */
-export const replace = (originalStr, params = {}, sqlParams = {}) => {
+export const replace = (originalStr: string, params: Params = {}, sqlParams: Params = {}): string => {
   let str = originalStr;
 
   if (typeof str === 'string') {
