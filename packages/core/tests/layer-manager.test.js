@@ -1,5 +1,5 @@
-import LayerManger from 'index';
-import LayerModel from 'layer-model';
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { LayerManager, LayerModel } = require('@vizzuality/layer-manager');
 
 function TestPlugin() {}
 TestPlugin.prototype.setParams = () => {};
@@ -24,7 +24,7 @@ TestPlugin.prototype.getLayerByType = jest.fn().mockImplementation(type => {
 
 describe('Core layer manager', () => {
   const MAP_INSTANCE = {};
-  const layerManager = new LayerManger(MAP_INSTANCE, TestPlugin);
+  const layerManager = new LayerManager(MAP_INSTANCE, TestPlugin);
   layerManager.requestCancel = jest.fn();
 
   beforeEach(() => {
