@@ -3,7 +3,6 @@
   "version": "4.0.1-alpha.0",
   "author": "Vizzuality <hello@vizzuality.com>",
   "main": "dist/index.js",
-  "typings": "src/index.ts",
   "types": "index.d.ts",
   "keywords": [
     "layer-manager"
