@@ -1,7 +1,7 @@
 import compact from 'lodash/compact';
 import isPlainObject from 'lodash/isPlainObject';
 
-interface Params {
+export interface QueryParams {
   [key:string]: any;
 }
 
@@ -11,7 +11,7 @@ interface Params {
  * @param {String} originalStr
  * @param {Object} params
  */
-export const substitution = (originalStr: string, params: Params = {}): string => {
+export const substitution = (originalStr: string, params: QueryParams = {}): string => {
   let str = originalStr;
   Object.keys(params).forEach(key => {
     if (Array.isArray(params[key]) || isPlainObject(params[key])) {
@@ -47,7 +47,7 @@ export const substitution = (originalStr: string, params: Params = {}): string =
  * @param {String} originalStr
  * @param {Object} params
  */
-export const concatenation = (originalStr: string, params: Params = {}): string => {
+export const concatenation = (originalStr: string, params: QueryParams = {}): string => {
   let str = originalStr;
   let sql;
 
@@ -86,7 +86,7 @@ export const concatenation = (originalStr: string, params: Params = {}): string 
  * @param {Object} params
  * @param {Object} sqlParams
  */
-export const replace = (originalStr: string, params: Params = {}, sqlParams: Params = {}): string => {
+export const replace = (originalStr: string, params: QueryParams = {}, sqlParams: QueryParams = {}): string => {
   let str = originalStr;
 
   if (typeof str === 'string') {

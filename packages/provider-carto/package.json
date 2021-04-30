@@ -28,6 +28,7 @@
     "lint": "eslint . --ext .js,.ts --ignore-path ../../.eslintignore"
   },
   "dependencies": {
+    "cancelable-promise": "^3.2.3",
     "lodash": "^4.17.20"
   },
   "devDependencies": {
