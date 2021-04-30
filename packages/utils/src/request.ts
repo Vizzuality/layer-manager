@@ -65,5 +65,3 @@ export const fetch = (
 
   return newLayerRequest;
 };
-
-export default { get, post, fetch };

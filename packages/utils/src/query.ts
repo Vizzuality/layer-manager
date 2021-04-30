@@ -48,11 +48,10 @@ export const substitution = (originalStr: string, params: QueryParams = {}): str
  * @param {Object} params
  */
 export const concatenation = (originalStr: string, params: QueryParams = {}): string => {
-  let str = originalStr;
-  let sql;
+  let result = originalStr;
 
-  Object.keys(params).forEach(key => {
-    sql = `${compact(
+  Object.keys(params).map(key => {
+    let sql = `${compact(
       Object.keys(params[key]).map(k => {
         const value = params[key][k];
 
@@ -73,11 +72,10 @@ export const concatenation = (originalStr: string, params: QueryParams = {}): st
     else if (sql && key.startsWith('and')) sql = `AND ${sql}`;
     else sql = '';
 
-    str = str.replace(new RegExp(`{{${key}}}`, 'g'), sql);
-    str = str.replace(new RegExp(`{${key}}`, 'g'), sql);
+    result = substitution(result, { [key]: sql });
   });
 
-  return str;
+  return result;
 };
 
 /**
