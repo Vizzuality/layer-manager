@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@vizzuality/layer-manager": "^4.0.1-alpha.0",
+    "cancelable-promise": "^3.2.3",
     "prop-types": "^15.7.2"
   },
   "peerDependencies": {

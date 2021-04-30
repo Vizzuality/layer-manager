@@ -1,4 +1,4 @@
-import { CancelablePromise } from '@vizzuality/layer-manager-utils';
+import { CancelablePromise } from 'cancelable-promise';
 
 const VideoLayer = layerModel => {
   const { source = {}, render, id } = layerModel;

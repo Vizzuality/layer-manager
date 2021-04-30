@@ -1,4 +1,5 @@
-import { CancelablePromise, getVectorStyleLayers } from '@vizzuality/layer-manager-utils';
+import { CancelablePromise } from 'cancelable-promise';
+import { getVectorStyleLayers } from './vector-style-layers';
 import MapboxLayer from './custom-layers/mapbox-layer';
 import TileLayer from './custom-layers/tile-layer';
 import DecodedLayer from './custom-layers/decoded-layer';

@@ -1,4 +1,5 @@
-import { CancelablePromise, getVectorStyleLayers } from '@vizzuality/layer-manager-utils';
+import { CancelablePromise } from 'cancelable-promise';
+import { getVectorStyleLayers } from './vector-style-layers';
 
 const GeoJsonLayer = (layerModel, providers) => {
   const { source = {}, render = {}, id } = layerModel;
