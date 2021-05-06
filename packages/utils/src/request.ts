@@ -1,4 +1,5 @@
 import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
+import { Layer } from '@vizzuality/layer-manager';
 
 const defaultHeaders: AxiosRequestConfig["headers"] = {
   'Content-Type': 'application/json'
@@ -38,7 +39,7 @@ export const fetch = (
   type: AxiosRequestConfig["method"],
   url: string,
   options: Partial<AxiosRequestConfig> = {},
-  layerModel: any, // TO-DO: change to layer model type
+  layerModel: Layer, // TO-DO: change to layer model type
 ): AxiosPromise => {
   const { layerRequest } = layerModel;
 
@@ -47,7 +48,7 @@ export const fetch = (
   }
 
   const layerRequestSource = axios.CancelToken.source();
-  layerModel.set('layerRequest', layerRequestSource);
+  layerModel.setLayerRequest(layerRequestSource);
 
   const method = type === 'post' ? post : get;
 
