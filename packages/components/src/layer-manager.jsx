@@ -1,47 +1,49 @@
-import { PureComponent, Children, cloneElement } from 'react';
-import PropTypes from 'prop-types';
-import Manager from '@vizzuality/layer-manager';
+import { useState, Children, cloneElement, useEffect } from "react";
+import PropTypes from "prop-types";
+import Manager from "@vizzuality/layer-manager";
 
-class LayerManager extends PureComponent {
-  static propTypes = {
-    map: PropTypes.shape({}).isRequired,
-    plugin: PropTypes.func.isRequired,
-    providers: PropTypes.shape({}),
-    children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node])
-  };
+const LayerManager = (props) => {
+  const [layerManager, setLayerManager] = useState(null);
+  const { map, plugin, providers } = props;
 
-  static defaultProps = {
-    children: [],
-    providers: {}
-  };
+  useEffect(() => {
+    setLayerManager(new Manager(map, plugin, providers));
+  }, []);
 
-  constructor(props) {
-    super(props);
-    const { map, plugin, providers } = props;
-    this.layerManager = new Manager(map, plugin, providers);
+  useEffect(() => {
+    return () => layerManager.unmount();
+  }, [layerManager]);
+
+  const { children } = this.props;
+
+  if (children && Children.count(children)) {
+    return Children.map(
+      children,
+      (child, i) =>
+        child &&
+        cloneElement(child, {
+          layerManager: this.layerManager,
+          zIndex: child.props.zIndex || 1000 - i,
+        })
+    );
   }
 
-  componentWillUnmount() {
-    this.layerManager.unmount();
-  }
-
-  render() {
-    const { children } = this.props;
-
-    if (children && Children.count(children)) {
-      return Children.map(
-        children,
-        (child, i) =>
-          child &&
-          cloneElement(child, {
-            layerManager: this.layerManager,
-            zIndex: child.props.zIndex || 1000 - i
-          })
-      );
-    }
-
-    return null;
-  }
-}
+  return null;
+};
 
 export default LayerManager;
+
+LayerManager.propTypes = {
+  map: PropTypes.shape({}).isRequired,
+  plugin: PropTypes.func.isRequired,
+  providers: PropTypes.shape({}),
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
+};
+
+LayerManager.defaultProps = {
+  children: [],
+  providers: {},
+};
