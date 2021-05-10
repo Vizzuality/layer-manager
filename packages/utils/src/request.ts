@@ -1,5 +1,5 @@
 import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
-import { Layer } from '@vizzuality/layer-manager';
+import { LayerModel } from '@vizzuality/layer-manager';
 
 const defaultHeaders: AxiosRequestConfig["headers"] = {
   'Content-Type': 'application/json'
@@ -39,7 +39,7 @@ export const fetch = (
   type: AxiosRequestConfig["method"],
   url: string,
   options: Partial<AxiosRequestConfig> = {},
-  layerModel: Layer, // TO-DO: change to layer model type
+  layerModel: LayerModel, // TO-DO: change to layer model type
 ): AxiosPromise => {
   const { layerRequest } = layerModel;
 
