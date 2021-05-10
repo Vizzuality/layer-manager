@@ -1,7 +1,11 @@
-import LayerModel from '../src/layer-model';
+import LayerModel, { LayerSpec } from '../src/layer-model';
+import mockData from './mock-data.json';
 
 describe('Layer Model', () => {
-  const layerModel = new LayerModel({ opacity: 1 });
+  // It seems like you have to stringify and then parse
+  // when you import JSON files, I didn't find why
+  const layerSpec: LayerSpec = JSON.parse(JSON.stringify(mockData));
+  const layerModel = new LayerModel(layerSpec);
 
   it('set and get attribute', () => {
     layerModel.set('opacity', 0.5);
@@ -11,6 +15,6 @@ describe('Layer Model', () => {
   it('update given a layerSpec', () => {
     layerModel.update({ opacity: 0.7 });
     expect(layerModel.get('opacity')).toBe(0.7);
-    expect(layerModel['changedAttributes']).toEqual({ opacity: 0.7 }); // the only way to access to a private attribute
+    expect(layerModel.changedAttributes).toEqual({ opacity: 0.7 });
   });
 });

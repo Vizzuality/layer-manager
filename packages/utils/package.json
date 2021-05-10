@@ -3,7 +3,6 @@
   "version": "4.0.1-alpha.0",
   "author": "Vizzuality <hello@vizzuality.com>",
   "main": "dist/index.js",
-  "types": "types.d.ts",
   "keywords": [
     "layer-manager"
   ],
@@ -35,7 +34,6 @@
     "@types/axios": "^0.14.0",
     "@types/jest": "^26.0.23",
     "@types/lodash": "^4.14.168",
-    "@types/mapbox-gl": "^2.1.2",
     "@types/node": "^15.0.1",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
