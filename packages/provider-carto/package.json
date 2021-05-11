@@ -10,7 +10,6 @@
   "license": "MIT",
   "private": false,
   "main": "dist/carto-provider.js",
-  "types": "index.d.ts",
   "files": [
     "dist",
     "index.d.ts",

@@ -1,5 +1,4 @@
 import { fetch } from '@vizzuality/layer-manager-utils';
-
 import omit from 'lodash/omit';
 
 export default {
