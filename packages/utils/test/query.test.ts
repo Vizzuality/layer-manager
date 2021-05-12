@@ -1,4 +1,4 @@
-import { concatenation, replace, substitution } from '../dist/index';
+import { concatenation, replace, substitution } from '../src';
 
 describe('Layer Manager Utils: Query', () => {
   it ('{{key}} string substitution', () => {

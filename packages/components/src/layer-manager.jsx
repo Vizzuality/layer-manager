@@ -4,10 +4,14 @@ import Manager from "@vizzuality/layer-manager";
 
 const LayerManager = (props) => {
   const [layerManager, setLayerManager] = useState(null);
-  const { map, plugin, providers } = props;
+  const { map, plugin: Plugin, providers } = props;
 
   useEffect(() => {
-    setLayerManager(new Manager(map, plugin, providers));
+    const pluginInstance = new Plugin(map);
+    Object.keys(providers).forEach((key) => {
+      Manager.registerProvider(key, providers[key]);
+    });
+    setLayerManager(new Manager(pluginInstance));
   }, []);
 
   useEffect(() => {
