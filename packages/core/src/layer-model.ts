@@ -9,13 +9,27 @@ import isEqual from 'lodash/isEqual';
 
 export type LayerType = 'geojson' | 'raster' | 'vector'
 
-export type Source = (GeoJSONSourceRaw | VectorSource | RasterSource) & {
-  // TO-DO: define providers types
-  provider: {
-    type: string
-    options: Record<string, unknown>
-  }
+/**
+ * "carto" provider requires @vizzuality/layer-manager-provider-carto
+ */
+export type Provider = {
+  type: 'carto' | string
+  options: Record<string, unknown>
 }
+
+export type LMGeoJSONSourceRaw = GeoJSONSourceRaw & {
+  provider: Provider
+}
+
+export type LMVectorSource = VectorSource & {
+  provider: Provider
+}
+
+export type LMRasterSource = RasterSource & {
+  provider: Provider
+}
+
+export type Source = LMGeoJSONSourceRaw | LMVectorSource | LMRasterSource
 
 export type Params = Record<string, unknown>
 
@@ -51,6 +65,7 @@ export type LayerSpec = {
   render?: {
     layers: AnyLayer
   }
+  interactivity?: unknown[],
   onAfterAdd?: (layerModel: LayerModel) => void
   onAfterRemove?: (layerModel: LayerModel) => void
 };
@@ -63,29 +78,27 @@ const defaultLayerSpec: Partial<LayerSpec> = {
 export class LayerModel {
   static _counter = 0
 
-  private _layerSpec: Partial<LayerSpec> = defaultLayerSpec
-
   private _changedAttributes: Partial<LayerSpec> = {}
 
   public layerRequest: CancelTokenSource | undefined = undefined
 
   public mapLayer: unknown // depends on the plugin
 
-  constructor(layerSpec: LayerSpec) {
-    if (!layerSpec) throw new Error('layerSpec object is required');
+  constructor(private _layerSpec: LayerSpec) {
+    if (!_layerSpec) throw new Error('layerSpec object is required');
 
     // updating counter for internal purposes
     LayerModel._counter = LayerModel._counter++;
 
     this._layerSpec = {
-      ...this._layerSpec,
-      ...layerSpec,
+      ...defaultLayerSpec,
+      ..._layerSpec,
       uid: LayerModel._counter,
     };
 
   }
 
-  public get layerSpec(): Partial<LayerSpec> {
+  public get layerSpec(): LayerSpec {
     return this._layerSpec;
   }
 
@@ -94,7 +107,7 @@ export class LayerModel {
   }
 
   public get(key: keyof LayerSpec): LayerSpec[keyof LayerSpec] {
-    return this._layerSpec[key as keyof LayerSpec];
+    return this._layerSpec[key];
   }
 
   public set(key: string, value: unknown): void {
