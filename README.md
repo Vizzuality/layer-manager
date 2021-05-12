@@ -20,22 +20,25 @@ We currently only supports **Mapbox** spec. Leaflet or Google Maps Plugin are no
 ```js
 import mapboxgl from 'mapbox-gl';
 import MapboxGLPlugin from '@vizzuality/layer-manager-plugin-mapboxgl';
-import cartoProvider from '@vizzuality/layer-manager-provider-carto';
+import CartoProvider from '@vizzuality/layer-manager-provider-carto';
 import LayerManager from '@vizzuality/layer-manager';
 
 mapboxgl.accessToken = '<your access token here>';
 
-var map = new mapboxgl.Map({
+const map = new mapboxgl.Map({
 	container: 'map', // container ID
 	style: 'mapbox://styles/mapbox/streets-v11', // style URL
 	center: [-74.5, 40], // starting position [lng, lat]
 	zoom: 9 // starting zoom
 });
 
-var plugin = new MapboxGLPlugin(map); // required
-var providers = [cartoProvider]; // optional
-var layerManager = new LayerManager(plugin, providers);
+const plugin = new MapboxGLPlugin(map, pluginOptions); // required
+const layerManager = new LayerManager(plugin);
+
+// Optionally you can add additional providers
+const provider = new CartoProvider();
+LayerManager.registerProvider(provider); // optional
 
 layerManager.add(layerSpec); // see docs/LAYER-SPEC.md
-
+layerManager.remove(1);
 ```

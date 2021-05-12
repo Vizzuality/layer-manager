@@ -1,5 +1,7 @@
-import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
-import { LayerModel } from '@vizzuality/layer-manager';
+import axios from 'axios';
+
+import type { AxiosPromise, AxiosRequestConfig } from 'axios';
+import type { LayerModel } from '@vizzuality/layer-manager';
 
 const defaultHeaders: AxiosRequestConfig["headers"] = {
   'Content-Type': 'application/json'

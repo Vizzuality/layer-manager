@@ -25,7 +25,8 @@ TestPlugin.prototype.getLayerByType = jest.fn().mockImplementation(type => {
 
 describe('Core layer manager', () => {
   const MAP_INSTANCE = {};
-  const layerManager = new LayerManager(MAP_INSTANCE, TestPlugin);
+  const plugin = new TestPlugin(MAP_INSTANCE);
+  const layerManager = new LayerManager(plugin);
   layerManager.requestCancel = jest.fn();
 
   beforeEach(() => {
@@ -49,15 +50,11 @@ describe('Core layer manager', () => {
     expect(layers).toBe(layerManager.layers);
     expect(layers.length).toBe(1);
     expect(layers[0]).toBeInstanceOf(LayerModel);
-    expect(layers[0]).toEqual({
+    expect(layers[0].layerSpec).toEqual({
       zIndex: 0,
       opacity: 1,
       id: layer.id,
-      source: {},
-      render: {},
       visibility: true,
-      interactivity: null,
-      changedAttributes: {}
     });
   });
 
@@ -77,7 +74,6 @@ describe('Core layer manager', () => {
     expect(layerManager.layers[1]).toEqual({
       ...customOptions,
       id: layer.id,
-      changedAttributes: {}
     });
   });
 

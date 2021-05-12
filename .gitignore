@@ -29,3 +29,6 @@
 **/.env.production
 **/.env.production.local
 **/.env.test.local
+
+# Typescript
+*.tsbuildinfo
