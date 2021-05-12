@@ -1,5 +1,7 @@
-import { LayerModel, LayerSpec } from '@vizzuality/layer-manager';
+import { LayerModel } from '../src/index';
 import mockData from './mock-data.json';
+
+import type { LayerSpec } from '@vizzuality/layer-manager';
 
 describe('Layer Model', () => {
   // It seems like you have to stringify and then parse

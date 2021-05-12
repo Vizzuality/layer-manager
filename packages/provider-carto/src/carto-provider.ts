@@ -1,43 +1,28 @@
-import { LayerModel, LayerSpec, Source } from '@vizzuality/layer-manager';
 import { fetch } from '@vizzuality/layer-manager-utils';
 import omit from 'lodash/omit';
 
-export type CartoData = {
-  cdn_url: {
-    templates: {
-      https: {
-        url: string
-      }
-    }
-  }
-  layergroupid: string
-}
+import type { LayerModel, LayerSpec, Source, ProviderMaker } from '@vizzuality/layer-manager';
+import type { CartoData, CartoParams, CartoLayer, CartoProvider } from '../index';
 
-export type CartoLayer = {
-  options: Record<string, unknown>
-  interactivity: unknown
-}
+/**
+ * Specify how to get the data and the layers for this provider
+ * @param layerModel Instance of LayerModel
+ * @param resolve Object
+ * @param reject Function
+ */
+class CartoProviderMaker implements ProviderMaker {
+  /**
+   * REQUIRED
+   * A name(key) for the provider.
+   * Use the same name you will use in your layerSpec object.
+   */
+  public name = 'carto'
 
-export type CartoProvider = {
-  account: string
-  api_key: string
-  layers: CartoLayer[]
-  options?: Record<string, unknown>
-  type: 'carto'
-}
-
-export type CartoParams = {
-  stat_tag: 'API'
-  config: string
-  api_key?: string
-}
-
-export default {
-  carto: (
+  public handleData(
     layerModel: LayerModel,
     resolve: (layerSpec: LayerSpec) => void,
-    reject: (err: Error) => void,
-  ): void => {
+    reject?: (err: Error) => void,
+  ): void {
     const { layerSpec } = layerModel;
     const { interactivity, source } = layerSpec;
     const { provider } = source as Source;
@@ -66,12 +51,12 @@ export default {
     const url = `https://${cartoProvider.account}.carto.com/api/v1/map?${apiParamsString}`;
 
     fetch('get', url, {}, layerModel)
-      .then((response) => {
-        const data: CartoData = response.data;
+      .then((data: unknown) => {
+        const cartoData = data as CartoData;
         const ext = layerSpec.type === 'vector' ? 'mvt' : 'png';
-        const tileUrl = `${data.cdn_url.templates.https.url.replace('{s}', 'a')}/${
+        const tileUrl = `${cartoData.cdn_url.templates.https.url.replace('{s}', 'a')}/${
           cartoProvider.account
-        }/api/v1/map/${data.layergroupid}/{z}/{x}/{y}.${ext}`;
+        }/api/v1/map/${cartoData.layergroupid}/{z}/{x}/{y}.${ext}`;
         const result = {
           ...layerSpec,
           source: {
@@ -82,6 +67,10 @@ export default {
 
         resolve(result);
       })
-      .catch(err => reject(err));
+      .catch(err => {
+        if (reject) reject(err);
+      });
   }
-};
+}
+
+export default CartoProviderMaker;
