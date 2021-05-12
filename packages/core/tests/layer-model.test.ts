@@ -1,4 +1,4 @@
-import LayerModel, { LayerSpec } from '../src/layer-model';
+import { LayerModel, LayerSpec } from '@vizzuality/layer-manager';
 import mockData from './mock-data.json';
 
 describe('Layer Model', () => {

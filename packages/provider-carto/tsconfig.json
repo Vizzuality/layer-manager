@@ -4,5 +4,6 @@
     "composite": false,
     "rootDir": "."
   },
-  "include": ["src", "index.d.ts"]
+  "include": ["src", "index.d.ts"],
+  "references": [{ "path": "../utils/tsconfig.build.json" }]
 }
