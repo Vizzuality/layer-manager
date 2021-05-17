@@ -8,7 +8,7 @@ const defaultLayerSpec: Partial<LayerSpec> = {
   visibility: true,
 };
 
-export class LayerModel {
+class LayerModel {
   private _uid: number // for internal purposes
 
   static _counter = 0
