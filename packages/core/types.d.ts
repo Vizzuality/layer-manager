@@ -8,7 +8,9 @@ import type {
 
 import type { LayerModel } from './src';
 
-export type { LayerModel } from './src';
+export { default } from './src';
+
+export { LayerModel } from './src';
 
 export type LayerType = 'geojson' | 'raster' | 'vector'
 
@@ -94,6 +96,6 @@ export interface Plugin {
   setSQLParams: (layerModel: LayerModel) => void
   setDecodeParams: (layerModel: LayerModel) => void
   getLayerByType: (type: LayerModel['type']) => any // TO-DO: better type definition
-  getLayerByProvider: () => void // Deprecated
+  getLayerByProvider?: () => void // Deprecated
   unmount: () => void
 }

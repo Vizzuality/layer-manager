@@ -1,3 +1,5 @@
+export { default } from './src/carto-provider';
+
 export type CartoData = {
   cdn_url: {
     templates: {

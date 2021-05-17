@@ -2,7 +2,7 @@ import { fetch } from '@vizzuality/layer-manager-utils';
 import omit from 'lodash/omit';
 
 import type { LayerModel, LayerSpec, Source, ProviderMaker } from '@vizzuality/layer-manager';
-import type { CartoData, CartoParams, CartoLayer, CartoProvider } from '../index';
+import type { CartoData, CartoParams, CartoLayer, CartoProvider } from '../types';
 
 /**
  * Specify how to get the data and the layers for this provider
@@ -67,7 +67,7 @@ class CartoProviderMaker implements ProviderMaker {
 
         resolve(result);
       })
-      .catch(err => {
+      .catch((err: Error) => {
         if (reject) reject(err);
       });
   }

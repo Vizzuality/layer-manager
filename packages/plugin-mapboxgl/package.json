@@ -43,6 +43,11 @@
     "ts-jest": "^26.5.5"
   },
   "dependencies": {
-    "cancelable-promise": "^3.2.3"
+    "@deck.gl/core": "^7",
+    "@deck.gl/react": "^7",
+    "cancelable-promise": "^3.2.3",
+    "deck.gl": "^7",
+    "luma.gl": "^7.3.2",
+    "react": "^17.0.2"
   }
 }
