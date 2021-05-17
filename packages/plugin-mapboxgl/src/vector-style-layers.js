@@ -1,4 +1,4 @@
-import { replace } from './query';
+import { replace } from '@vizzuality/layer-manager-utils';
 
 /**
  * Parsed vector style layers that follow the mapbox style layer spec

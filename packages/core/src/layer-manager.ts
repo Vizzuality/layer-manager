@@ -233,7 +233,7 @@ class LayerManager {
    * Method to register a new provider
    * @param provider Instance of ProviderMaker
    */
-  public registerProvider(provider: ProviderMaker): void {
+  public static registerProvider(provider: ProviderMaker): void {
     LayerManager.providers = {
       ...LayerManager.providers,
       [provider.name]: provider.handleData
