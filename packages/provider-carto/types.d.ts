@@ -1,8 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 export { default } from './src/carto-provider';
 
 =======
 >>>>>>> 3eacbe8... added types on package.json; added test for carto provider
+=======
+export { default } from './src/carto-provider';
+
+>>>>>>> 4c55291... refactoring tests for layer manager
 export type CartoData = {
   cdn_url: {
     templates: {

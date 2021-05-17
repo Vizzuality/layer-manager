@@ -67,11 +67,7 @@ class CartoProviderMaker implements ProviderMaker {
 
         resolve(result);
       })
-<<<<<<< HEAD
       .catch((err: Error) => {
-=======
-      .catch(err => {
->>>>>>> 3eacbe8... added types on package.json; added test for carto provider
         if (reject) reject(err);
       });
   }

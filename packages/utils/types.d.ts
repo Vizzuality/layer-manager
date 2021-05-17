@@ -1,3 +1,5 @@
+export { fetch, replace, concatenation, substitution } from './src';
+
 export type QueryParams = {
   [key:string]: string;
 }
