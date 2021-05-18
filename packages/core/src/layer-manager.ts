@@ -18,6 +18,7 @@ class LayerManager {
 
   constructor(plugin: Plugin) {
     this._plugin = plugin;
+    this._plugin.setOptions({ getLayers: this.getLayers.bind(this) });
   }
 
   /**
@@ -126,7 +127,7 @@ class LayerManager {
    * NOTE: This method will be DEPRECATED
    * @returns []
    */
-  getLayers(): LayerModel[] {
+  public getLayers(): LayerModel[] {
     return this._layers;
   }
 
@@ -181,11 +182,11 @@ class LayerManager {
       this._promises[layerModel.id] = method.call(this, layerModel, LayerManager.providers).then((layer: unknown) => {
         const { _canceled } = this._promises[layerModel.id];
         if (!_canceled) {
-          layerModel.set('mapLayer', layer);
+          layerModel.setMapLayer(layer);
 
           this._plugin.add(layerModel, this._layers);
-          if (layerModel.zIndex) this._plugin.setZIndex(layerModel, layerModel.zIndex);
-          if (layerModel.opacity) this._plugin.setOpacity(layerModel, layerModel.opacity);
+          if (layerModel.zIndex || layerModel.zIndex === 0) this._plugin.setZIndex(layerModel, layerModel.zIndex);
+          if (layerModel.opacity || layerModel.opacity === 0) this._plugin.setOpacity(layerModel, layerModel.opacity);
           if (layerModel.visibility) this._plugin.setVisibility(layerModel, layerModel.visibility);
 
           this._plugin.setRender(layerModel);

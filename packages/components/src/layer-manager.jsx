@@ -17,8 +17,11 @@ class LayerManager extends PureComponent {
 
   constructor(props) {
     super(props);
-    const { map, plugin, providers } = props;
-    this.layerManager = new Manager(map, plugin, providers);
+    const { map, plugin: Plugin, providers } = props;
+
+    Manager.providers = providers;
+
+    this.layerManager = new Manager(new Plugin(map));
   }
 
   componentWillUnmount() {

@@ -20,11 +20,12 @@ class CartoProviderMaker implements ProviderMaker {
 
   public handleData(
     layerModel: LayerModel,
-    resolve: (layerSpec: LayerSpec) => void,
+    layer: LayerSpec,
+    resolve?: (layerSpec: LayerSpec) => void,
     reject?: (err: Error) => void,
   ): void {
     const { layerSpec } = layerModel;
-    const { interactivity, source } = layerSpec;
+    const { interactivity, source } = layer;
     const { provider } = source as Source;
     const cartoProvider = provider as CartoProvider;
 
@@ -65,7 +66,7 @@ class CartoProviderMaker implements ProviderMaker {
           } as Source
         };
 
-        resolve(result);
+        if (resolve) resolve(result);
       })
       .catch((err: Error) => {
         if (reject) reject(err);

@@ -78,6 +78,7 @@ export interface ProviderMaker {
   name: string
   handleData: (
     layerModel: LayerModel,
+    layer: LayerSpec,
     resolve: (layerSpec: LayerSpec) => void,
     reject?: (err: Error) => void,
   ) => void
@@ -97,5 +98,6 @@ export interface Plugin {
   setDecodeParams: (layerModel: LayerModel) => void
   getLayerByType: (type: LayerModel['type']) => any // TO-DO: better type definition
   getLayerByProvider?: () => void // Deprecated
+  setOptions: (options: Record<string, unknown>) => void
   unmount: () => void
 }

@@ -7,7 +7,7 @@ import geoJsonLayer from './geojson-layer-mapbox-gl';
 import videoLayer from './video-layer-mapbox-gl';
 
 class PluginMapboxGL {
-  constructor(map, options) {
+  constructor(map, options = {}) {
     this.map = map;
     this.options = options;
 
@@ -25,6 +25,10 @@ class PluginMapboxGL {
     geojson: geoJsonLayer,
     video: videoLayer
   };
+
+  setOptions(options = {}) {
+    this.options = options;
+  }
 
   /**
    * Add a layer
@@ -348,8 +352,10 @@ class PluginMapboxGL {
       return this;
     }
 
+    console.log(mapLayer)
+
     try {
-      mapLayer.layers.forEach((layer, i) => {
+      mapLayer.layers?.forEach((layer, i) => {
         const { id } = layer;
         const rl = renderLayers[i] || renderLayers[0] || {}; // take the style for each layer or use the first one for all of them
         const { paint = {}, layout = {}, filter = null } = rl;
