@@ -13,7 +13,7 @@ import 'ace-builds/src-noconflict/theme-github';
 import { LayerManager, Layer } from '@vizzuality/layer-manager-components';
 import { fetch } from '@vizzuality/layer-manager-utils';
 import PluginMapboxGl from '@vizzuality/layer-manager-plugin-mapboxgl';
-import CARTO_PROVIDER from '@vizzuality/layer-manager-provider-carto';
+import CartoProvider from '@vizzuality/layer-manager-provider-carto';
 
 // Legend
 import {
@@ -32,6 +32,8 @@ import { getParams } from './utils';
 import DEFAULT_LAYERS from './layers';
 
 import './App.scss';
+
+const cartoProvider = new CartoProvider();
 
 function App() {
   const [layers, setLayers] = useState(DEFAULT_LAYERS);
@@ -196,7 +198,7 @@ function App() {
                 map={map}
                 plugin={PluginMapboxGl}
                 providers={{
-                  ...CARTO_PROVIDER,
+                  [cartoProvider.name]: cartoProvider.handleData,
                   'carto-sql-points': (layerModel, layer, resolve, reject) => {
                     const { source } = layerModel;
                     const { provider } = source;
