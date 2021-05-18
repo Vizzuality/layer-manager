@@ -3,7 +3,8 @@ node_js:
   - 14
 cache: yarn
 install:
-  - yarn install --ignore-engines
-  - yarn add global lerna
+  - npm install -g lerna
+  - npm install -g yarn
+  - npm run bootstrap
 script:
-  - yarn test
+  - npm run test
