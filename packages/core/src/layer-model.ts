@@ -57,12 +57,48 @@ class LayerModel {
     return this._layerSpec.zIndex;
   }
 
+  public get images(): LayerSpec['images'] {
+    return this._layerSpec.images;
+  }
+
+  public get render(): LayerSpec['render'] {
+    return this._layerSpec.render;
+  }
+
+  public get source(): LayerSpec['source'] {
+    return this._layerSpec.source;
+  }
+
+  public get interactivity(): LayerSpec['interactivity'] {
+    return this._layerSpec.interactivity;
+  }
+
+  public get params(): LayerSpec['params'] {
+    return this._layerSpec.params;
+  }
+
+  public get decodeParams(): LayerSpec['decodeParams'] {
+    return this._layerSpec.decodeParams;
+  }
+
+  public get sqlParams(): LayerSpec['sqlParams'] {
+    return this._layerSpec.sqlParams;
+  }
+
+  public get decodeFunction(): LayerSpec['decodeFunction'] {
+    return this._layerSpec.decodeFunction;
+  }
+
   public get layerSpec(): LayerSpec {
     return this._layerSpec;
   }
 
   public get changedAttributes(): Partial<LayerSpec> {
     return this._changedAttributes;
+  }
+
+  public setMapLayer(mapLayer: unknown): void  {
+    this.mapLayer = mapLayer;
   }
 
   public get(key: keyof LayerSpec): LayerSpec[keyof LayerSpec] {
