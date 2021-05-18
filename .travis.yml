@@ -1,8 +1,9 @@
 language: node_js
 node_js:
-  - 10
+  - 14
 cache: yarn
 install:
   - yarn install --ignore-engines
+  - yarn add global lerna
 script:
   - yarn test
