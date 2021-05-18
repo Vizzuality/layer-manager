@@ -5,5 +5,6 @@ install:
   - npm install -g lerna
   - npm install -g yarn
   - npm run bootstrap
+  - npm run build
 script:
   - npm run test
