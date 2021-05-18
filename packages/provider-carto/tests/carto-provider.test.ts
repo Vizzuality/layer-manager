@@ -88,6 +88,7 @@ describe('Carto Provider', () => {
   it('handleData should request a layer', (done) => {
     cartoProvider.handleData(
       layerModel,
+      layerModel.layerSpec,
       (layerModelResult) => {
         try {
           expect(layerModelResult).toEqual(LAYER_RESULT);

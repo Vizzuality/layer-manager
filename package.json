@@ -11,10 +11,10 @@
   "private": true,
   "scripts": {
     "lint": "lerna run lint",
-    "build": "lerna run build"
+    "build": "lerna run build",
+    "test": "lerna run test"
   },
   "workspaces": [
-    "packages/*",
-    "applications/*"
+    "packages/*"
   ]
 }
