@@ -10,6 +10,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "bootstrap": "lerna bootstrap",
     "lint": "lerna run lint",
     "build": "lerna run build",
     "test": "lerna run test"
