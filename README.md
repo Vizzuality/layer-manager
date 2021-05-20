@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Vizzuality/layer-manager.svg?branch=develop)](https://travis-ci.org/Vizzuality/layer-manager)
+[![Run tests](https://github.com/Vizzuality/layer-manager/actions/workflows/test.yml/badge.svg)](https://github.com/Vizzuality/layer-manager/actions/workflows/test.yml)
 
 # Layer Manager
 
