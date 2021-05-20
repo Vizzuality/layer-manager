@@ -1,8 +1,10 @@
 language: node_js
 node_js:
-  - 10
-cache: yarn
+  - 14
 install:
-  - yarn install --ignore-engines
+  - npm install -g lerna
+  - npm install -g yarn
+  - npm run bootstrap
+  - npm run build
 script:
-  - yarn test
+  - npm run test
