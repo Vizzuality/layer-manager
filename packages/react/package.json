@@ -1,5 +1,5 @@
 {
-  "name": "@vizzuality/layer-manager-components",
+  "name": "@vizzuality/layer-manager-react",
   "version": "1.0.1-alpha.0",
   "author": "Vizzuality <hello@vizzuality.com>",
   "keywords": [
@@ -10,7 +10,7 @@
   "license": "MIT",
   "private": false,
   "main": "dist/index.js",
-  "types": "index.d.ts",
+  "types": "types.d.ts",
   "files": [
     "dist",
     "README.md"
@@ -18,7 +18,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/vizzuality/layer-manager.git",
-    "directory": "packages/components"
+    "directory": "packages/react"
   },
   "scripts": {
     "build": "tsc -b tsconfig.build.json",
