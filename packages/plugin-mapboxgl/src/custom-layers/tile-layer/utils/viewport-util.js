@@ -5,9 +5,9 @@ const DEGREES_TO_RADIANS = PI / 180;
 
 function lngLatToWorld([lng, lat], scale) {
   if (
-    !Number.isFinite(lng) ||
-    !Number.isFinite(scale) ||
-    !(Number.isFinite(lat) && lat >= -90 && lat <= 90)
+    !Number.isFinite(lng)
+    || !Number.isFinite(scale)
+    || !(Number.isFinite(lat) && lat >= -90 && lat <= 90)
   ) {
     return console.error('lngLatToWorld: lng, lat or scale are not correct values');
   }
@@ -24,14 +24,14 @@ function getBoundingBox(viewport) {
     viewport.unproject([0, 0]),
     viewport.unproject([viewport.width, 0]),
     viewport.unproject([0, viewport.height]),
-    viewport.unproject([viewport.width, viewport.height])
+    viewport.unproject([viewport.width, viewport.height]),
   ];
 
   return [
     corners.reduce((minLng, p) => (minLng < p[0] ? minLng : p[0]), 180),
     corners.reduce((minLat, p) => (minLat < p[1] ? minLat : p[1]), 90),
     corners.reduce((maxLng, p) => (maxLng > p[0] ? maxLng : p[0]), -180),
-    corners.reduce((maxLat, p) => (maxLat > p[1] ? maxLat : p[1]), -90)
+    corners.reduce((maxLat, p) => (maxLat > p[1] ? maxLat : p[1]), -90),
   ];
 }
 
@@ -47,7 +47,7 @@ function getAdjustedTileIndex({ x, y, z }, adjustedZ) {
   return {
     x: Math.floor(x / m),
     y: Math.floor(y / m),
-    z: adjustedZ
+    z: adjustedZ,
   };
 }
 
@@ -65,7 +65,7 @@ export function getTileIndices(viewport, maxZoom, minZoom) {
   // eslint-disable-next-line no-param-reassign
   viewport = new viewport.constructor({
     ...viewport,
-    zoom: z - 1
+    zoom: z - 1,
   });
 
   const bbox = getBoundingBox(viewport);

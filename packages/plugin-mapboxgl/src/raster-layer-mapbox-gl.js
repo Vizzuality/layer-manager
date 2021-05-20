@@ -7,9 +7,9 @@ import DecodedLayer from './custom-layers/decoded-layer';
 const getTileData = ({ x, y, z }, url) => {
   if (url.match(/({s}\.)/i) !== null) {
     console.error(
-      "Mapbox raster provider doesn't support subdomain templates. " +
-        'If you wish to implement Domain Sharding please provide each subdomain as a separate url within the tiles property. ' +
-        "Example. { tiles: ['a.domain.com/{x}/{y}/{z}.png', 'b.domain.com/{x}/{y}/{z}.png', 'c.domain.com/{x}/{y}/{z}.png'] }"
+      "Mapbox raster provider doesn't support subdomain templates. "
+        + 'If you wish to implement Domain Sharding please provide each subdomain as a separate url within the tiles property. '
+        + "Example. { tiles: ['a.domain.com/{x}/{y}/{z}.png', 'b.domain.com/{x}/{y}/{z}.png', 'c.domain.com/{x}/{y}/{z}.png'] }",
     );
   }
   const mapSource = url
@@ -18,8 +18,8 @@ const getTileData = ({ x, y, z }, url) => {
     .replace('{y}', y);
 
   return fetch(mapSource)
-    .then(response => response.blob())
-    .then(response => {
+    .then((response) => response.blob())
+    .then((response) => {
       const { type } = response || {};
       if (type !== 'application/xml' && type !== 'text/xml' && type !== 'text/html') {
         const src = URL.createObjectURL(response);
@@ -34,18 +34,20 @@ const getTileData = ({ x, y, z }, url) => {
 };
 
 const RasterLayer = (layerModel, providers) => {
-  const { source = {}, render = {}, decodeParams, id, opacity, decodeFunction } = layerModel;
+  const {
+    source = {}, render = {}, decodeParams, id, opacity, decodeFunction,
+  } = layerModel;
 
   const DEFAULT_RASTER_OPTIONS = {
     id: `${id}-raster`,
     type: 'raster',
-    source: id
+    source: id,
   };
 
   const { provider } = source;
 
   const {
-    layers = [DEFAULT_RASTER_OPTIONS] // Set the default to this to
+    layers = [DEFAULT_RASTER_OPTIONS], // Set the default to this to
   } = render;
 
   let layer = {};
@@ -60,46 +62,45 @@ const RasterLayer = (layerModel, providers) => {
           id: `${id}-raster-decode-bg`,
           type: 'background',
           paint: {
-            'background-color': 'transparent'
-          }
+            'background-color': 'transparent',
+          },
         },
         ...source.tiles.map(
-          t =>
-            new MapboxLayer({
-              id: `${id}-raster-decode`,
-              type: TileLayer,
-              getTileData: e => getTileData(e, t),
-              renderSubLayers: ({
-                id: subLayerId,
-                data,
-                tile,
-                visible,
-                zoom,
-                decodeParams: decodeParamsSub,
-                decodeFunction: decodeFunctionSub
-              }) => {
-                if (data && data.src) {
-                  return new DecodedLayer({
-                    id: subLayerId,
-                    image: data.src,
-                    bounds: tile.bbox,
-                    visible,
-                    zoom,
-                    decodeParams: decodeParamsSub,
-                    decodeFunction: decodeFunctionSub,
-                    opacity
-                  });
-                }
-                return null;
-              },
-              minZoom: source.minzoom,
-              maxZoom: source.maxzoom,
-              opacity: layerModel.opacity,
-              decodeParams,
-              decodeFunction
-            })
-        )
-      ]
+          (t) => new MapboxLayer({
+            id: `${id}-raster-decode`,
+            type: TileLayer,
+            getTileData: (e) => getTileData(e, t),
+            renderSubLayers: ({
+              id: subLayerId,
+              data,
+              tile,
+              visible,
+              zoom,
+              decodeParams: decodeParamsSub,
+              decodeFunction: decodeFunctionSub,
+            }) => {
+              if (data && data.src) {
+                return new DecodedLayer({
+                  id: subLayerId,
+                  image: data.src,
+                  bounds: tile.bbox,
+                  visible,
+                  zoom,
+                  decodeParams: decodeParamsSub,
+                  decodeFunction: decodeFunctionSub,
+                  opacity,
+                });
+              }
+              return null;
+            },
+            minZoom: source.minzoom,
+            maxZoom: source.maxzoom,
+            opacity: layerModel.opacity,
+            decodeParams,
+            decodeFunction,
+          }),
+        ),
+      ],
     };
   } else {
     layer = {
@@ -108,15 +109,15 @@ const RasterLayer = (layerModel, providers) => {
       source: {
         type: 'raster',
         tileSize: 256,
-        ...source
+        ...source,
       },
       layers: getVectorStyleLayers(
-        layers.map(l => ({
+        layers.map((l) => ({
           ...DEFAULT_RASTER_OPTIONS,
-          ...l
+          ...l,
         })),
-        layerModel
-      )
+        layerModel,
+      ),
     };
   }
 
@@ -127,8 +128,8 @@ const RasterLayer = (layerModel, providers) => {
       if (!method) {
         reject(
           new Error(
-            `${provider.type} provider is not supported. Try to add it to the providers method when you initialize layer-manager`
-          )
+            `${provider.type} provider is not supported. Try to add it to the providers method when you initialize layer-manager`,
+          ),
         );
       }
 

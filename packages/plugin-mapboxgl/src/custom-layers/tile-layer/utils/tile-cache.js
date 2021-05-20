@@ -12,7 +12,9 @@ export default class TileCache {
    * Takes in a function that returns tile data, a cache size, and a max and a min zoom level.
    * Cache size defaults to 5 * number of tiles in the current viewport
    */
-  constructor({ getTileData, maxSize, maxZoom, minZoom, onTileLoad, onTileError }) {
+  constructor({
+    getTileData, maxSize, maxZoom, minZoom, onTileLoad, onTileError,
+  }) {
     // TODO: Instead of hardcode size, we should calculate how much memory left
     this._getTileData = getTileData;
     this._maxSize = maxSize;
@@ -48,14 +50,16 @@ export default class TileCache {
    * @param {*} onUpdate
    */
   update(viewport) {
-    const { _cache, _getTileData, _maxSize, _maxZoom, _minZoom } = this;
+    const {
+      _cache, _getTileData, _maxSize, _maxZoom, _minZoom,
+    } = this;
     this._markOldTiles();
     const tileIndices = getTileIndices(viewport, _maxZoom, _minZoom);
     if (!tileIndices || tileIndices.length === 0) {
       return;
     }
-    _cache.forEach(cachedTile => {
-      if (tileIndices.some(tile => cachedTile.isOverlapped(tile))) {
+    _cache.forEach((cachedTile) => {
+      if (tileIndices.some((tile) => cachedTile.isOverlapped(tile))) {
         cachedTile.isVisible = true; // eslint-disable-line
       }
     });
@@ -74,7 +78,7 @@ export default class TileCache {
           y,
           z,
           onTileLoad: this.onTileLoad,
-          onTileError: this.onTileError
+          onTileError: this.onTileError,
         });
         tile.isVisible = true;
         changed = true;
@@ -116,7 +120,7 @@ export default class TileCache {
   }
 
   _markOldTiles() {
-    this._cache.forEach(cachedTile => {
+    this._cache.forEach((cachedTile) => {
       // eslint-disable-next-line no-param-reassign
       cachedTile.isVisible = false;
     });

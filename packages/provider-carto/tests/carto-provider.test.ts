@@ -16,12 +16,12 @@ const LAYER_SPEC = {
           options: {
             cartocss: '#wdpa_protected_areas {  polygon-opacity: 1.0; polygon-fill: #704489 }',
             cartocss_version: '2.3.0',
-            sql: 'SELECT * FROM wdpa_protected_areas'
+            sql: 'SELECT * FROM wdpa_protected_areas',
           },
-          type: 'mapnik'
-        }
-      ]
-    }
+          type: 'mapnik',
+        },
+      ],
+    },
   },
   render: {
     layers: [
@@ -34,24 +34,24 @@ const LAYER_SPEC = {
             'case',
             ['boolean', ['feature-state', 'hover'], false],
             '#000',
-            '#5ca2d1'
+            '#5ca2d1',
           ],
           'fill-color-transition': {
             duration: 300,
-            delay: 0
+            delay: 0,
           },
-          'fill-opacity': 1
-        }
+          'fill-opacity': 1,
+        },
       },
       {
         type: 'line',
         'source-layer': 'layer0',
         paint: {
           'line-color': '#000000',
-          'line-opacity': 0.1
-        }
-      }
-    ]
+          'line-opacity': 0.1,
+        },
+      },
+    ],
   },
   paramsConfig: [],
 };
@@ -61,13 +61,13 @@ const LAYER_RESULT = {
   source: {
     promoteId: 'cartodb_id',
     tiles: [
-      'https://cartocdn-gusc-a.global.ssl.fastly.net/wri-01/api/v1/map/487c0089ed193790cae385eec498b239:1549530042384/{z}/{x}/{y}.mvt'
+      'https://cartocdn-gusc-a.global.ssl.fastly.net/wri-01/api/v1/map/487c0089ed193790cae385eec498b239:1549530042384/{z}/{x}/{y}.mvt',
     ],
     type: 'vector',
   },
   opacity: 1,
   visibility: true,
-}
+};
 
 describe('Carto Provider', () => {
   const cartoProvider = new CartoProvider();
@@ -83,7 +83,7 @@ describe('Carto Provider', () => {
 
   it('should have a method called "handleData"', () => {
     expect(typeof cartoProvider.handleData).toBe('function');
-  })
+  });
 
   it('handleData should request a layer', (done) => {
     cartoProvider.handleData(
@@ -93,7 +93,7 @@ describe('Carto Provider', () => {
         try {
           expect(layerModelResult).toEqual(LAYER_RESULT);
           done();
-        } catch(err) {
+        } catch (err) {
           done(err);
         }
       },

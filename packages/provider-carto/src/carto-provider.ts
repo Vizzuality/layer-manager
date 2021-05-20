@@ -1,7 +1,11 @@
 import { fetch, omit } from '@vizzuality/layer-manager-utils';
 
-import type { LayerModel, LayerSpec, Source, ProviderMaker } from '@vizzuality/layer-manager';
-import type { CartoData, CartoParams, CartoLayer, CartoProvider } from '../types';
+import type {
+  LayerModel, LayerSpec, Source, ProviderMaker,
+} from '@vizzuality/layer-manager';
+import type {
+  CartoData, CartoParams, CartoLayer, CartoProvider,
+} from '../types';
 
 /**
  * Specify how to get the data and the layers for this provider
@@ -36,17 +40,17 @@ class CartoProviderMaker implements ProviderMaker {
           return { ...l, options: { ...l.options, interactivity } };
         }
         return l;
-      })
+      }),
     });
 
     // https://carto.com/developers/auth-api/guides/how-to-send-API-Keys/
     const apiParams: CartoParams = {
       stat_tag: 'API',
       config: encodeURIComponent(layerTpl),
-      ...(cartoProvider.api_key && { api_key: cartoProvider.api_key })
+      ...(cartoProvider.api_key && { api_key: cartoProvider.api_key }),
     };
     const apiParamsString = Object.keys(apiParams)
-      .map(k => `${k}=${apiParams[k as keyof CartoParams]}`)
+      .map((k) => `${k}=${apiParams[k as keyof CartoParams]}`)
       .join('&');
     const url = `https://${cartoProvider.account}.carto.com/api/v1/map?${apiParamsString}`;
 

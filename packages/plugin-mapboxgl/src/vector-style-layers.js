@@ -11,11 +11,11 @@ export const getVectorStyleLayers = (vectorLayers, layerModel) => {
   if (vectorLayers && vectorLayers.length) {
     const vectorLayersParsed = JSON.parse(replace(JSON.stringify(vectorLayers), params, sqlParams));
     return (
-      vectorLayersParsed &&
-      vectorLayersParsed.map((vectorLayer, i) => {
+      vectorLayersParsed
+      && vectorLayersParsed.map((vectorLayer, i) => {
         const PAINT_STYLE_NAMES = {
           symbol: ['icon', 'text'],
-          circle: ['circle', 'circle-stroke']
+          circle: ['circle', 'circle-stroke'],
         };
 
         // Select the paint property from the original layer
@@ -34,7 +34,7 @@ export const getVectorStyleLayers = (vectorLayers, layerModel) => {
             }
 
             if (Array.isArray(currentProperty)) {
-              paintOpacity = currentProperty.map(j => {
+              paintOpacity = currentProperty.map((j) => {
                 if (typeof j === 'number') {
                   return j * layerModel.opacity * 0.99;
                 }
@@ -45,22 +45,21 @@ export const getVectorStyleLayers = (vectorLayers, layerModel) => {
 
           return {
             ...obj,
-            [`${name}-opacity`]: paintOpacity
+            [`${name}-opacity`]: paintOpacity,
           };
         }, {});
 
         // if paint properties are null are passed it breaks interaction
         // on mapbox. We need to remove these
-        const filteredPaintProperties =
-          vectorLayer.paint &&
-          Object.entries(vectorLayer.paint).reduce(
+        const filteredPaintProperties = vectorLayer.paint
+          && Object.entries(vectorLayer.paint).reduce(
             (obj, [key, value]) => ({
               ...obj,
               ...(!!value && {
-                [key]: value
-              })
+                [key]: value,
+              }),
             }),
-            {}
+            {},
           );
 
         return {
@@ -72,9 +71,9 @@ export const getVectorStyleLayers = (vectorLayers, layerModel) => {
           ...(vectorLayer.paint && {
             paint: {
               ...filteredPaintProperties,
-              ...opacityPaintStyles
-            }
-          })
+              ...opacityPaintStyles,
+            },
+          }),
         };
       })
     );

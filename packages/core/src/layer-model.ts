@@ -23,11 +23,11 @@ class LayerModel {
     if (!_layerSpec) throw new Error('layerSpec object is required');
 
     // updating counter for internal purposes
-    LayerModel._counter = LayerModel._counter++;
+    LayerModel._counter += 1;
 
     this._layerSpec = {
       ...defaultLayerSpec,
-      ..._layerSpec
+      ..._layerSpec,
     };
 
     this._uid = LayerModel._counter;
@@ -97,7 +97,7 @@ class LayerModel {
     return this._changedAttributes;
   }
 
-  public setMapLayer(mapLayer: unknown): void  {
+  public setMapLayer(mapLayer: unknown): void {
     this.mapLayer = mapLayer;
   }
 

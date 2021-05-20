@@ -49,13 +49,13 @@ export const substitution = (originalStr: string, params: QueryParams = {}): str
 export const concatenation = (originalStr: string, params: WhereQueryParams = {}): string => {
   let result = originalStr;
 
-  Object.keys(params).map(key => {
+  Object.keys(params).forEach(key => {
     let sql = `${Object.keys(params[key])
       .map(k => {
         const value = params[key][k];
 
         if (Array.isArray(value) && !!value.length) {
-          const mappedValue = value.map(v => (typeof v !== 'number' ? `'${v}'` : v));
+          const mappedValue = value.map((v) => (typeof v !== 'number' ? `'${v}'` : v));
           return `${k} IN (${mappedValue.join(', ')})`;
         }
 
@@ -84,7 +84,11 @@ export const concatenation = (originalStr: string, params: WhereQueryParams = {}
  * @param {Object} params
  * @param {Object} sqlParams
  */
-export const replace = (originalStr: string, params: QueryParams = {}, sqlParams: WhereQueryParams = {}): string => {
+export const replace = (
+  originalStr: string,
+  params: QueryParams = {},
+  sqlParams: WhereQueryParams = {},
+): string => {
   let str = originalStr;
 
   if (typeof str === 'string') {

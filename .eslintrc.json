@@ -6,7 +6,7 @@
     "jest": true
   },
   "extends": [
-    "eslint:recommended",
+    "airbnb",
     "plugin:@typescript-eslint/recommended"
   ],
   "parser": "@typescript-eslint/parser",
@@ -20,5 +20,21 @@
   "plugins": [
     "@typescript-eslint"
   ],
-  "rules": {}
+  "rules": {
+    "import/extensions": ["error", "ignorePackages", {
+      "js": "never",
+      "jsx": "never",
+      "ts": "never",
+      "tsx": "never"
+    }],
+    "no-underscore-dangle": "off"
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".json", ".ts", ".tsx", ".d.ts"]
+      },
+      "typescript": {}
+    }
+  }
 }

@@ -13,7 +13,7 @@ class PluginMapboxGL {
     this.map.on('style.load', () => {
       const layers = this.getLayers();
 
-      layers.forEach(layer => this.add(layer));
+      layers.forEach((layer) => this.add(layer));
     });
   }
 
@@ -21,7 +21,7 @@ class PluginMapboxGL {
     raster: rasterLayer,
     vector: vectorLayer,
     geojson: geoJsonLayer,
-    video: videoLayer
+    video: videoLayer,
   };
 
   setOptions(options = {}) {
@@ -50,18 +50,18 @@ class PluginMapboxGL {
 
     // add source if it has one
     if (
-      this.map &&
-      mapLayer &&
-      mapLayer.source &&
-      mapLayer.id &&
-      !this.map.getSource(mapLayer.id)
+      this.map
+      && mapLayer
+      && mapLayer.source
+      && mapLayer.id
+      && !this.map.getSource(mapLayer.id)
     ) {
       this.map.addSource(mapLayer.id, mapLayer.source);
     }
 
     // add layers
     if (mapLayer && mapLayer.layers) {
-      mapLayer.layers.forEach(l => {
+      mapLayer.layers.forEach((l) => {
         const { metadata = {} } = l;
         const nextLayerId = metadata.position === 'top' ? null : this.getNextLayerId(layerModel);
 
@@ -83,7 +83,7 @@ class PluginMapboxGL {
   remove(layerModel = {}) {
     const { mapLayer } = layerModel;
     if (mapLayer && mapLayer.layers && this.map && this.map.style) {
-      mapLayer.layers.forEach(l => {
+      mapLayer.layers.forEach((l) => {
         if (this.map.getLayer(l.id)) {
           this.map.removeLayer(l.id);
         }
@@ -145,15 +145,13 @@ class PluginMapboxGL {
     const layersOnMap = this.getLayersOnMap();
 
     // find the top layer for placing data layers below
-    const customLayer =
-      layersOnMap &&
-      layersOnMap.length &&
-      layersOnMap.find(
-        l =>
-          l.id.includes('custom-layers') ||
-          l.id.includes('label') ||
-          l.id.includes('place') ||
-          l.id.includes('poi')
+    const customLayer = layersOnMap
+      && layersOnMap.length
+      && layersOnMap.find(
+        (l) => l.id.includes('custom-layers')
+          || l.id.includes('label')
+          || l.id.includes('place')
+          || l.id.includes('poi'),
       );
 
     // make sure layers are sorted by zIndex
@@ -165,13 +163,12 @@ class PluginMapboxGL {
 
     // get the layer with zIndex greater than current layer from all layers
     const nextLayer = sortedLayers.find(
-      l =>
-        l.zIndex > zIndex &&
-        (!l.mapLayer ||
-          !l.mapLayer.layers ||
-          !l.mapLayer.layers[0] ||
-          !l.mapLayer.layers[0].metadata ||
-          !l.mapLayer.layers[0].metadata.position)
+      (l) => l.zIndex > zIndex
+        && (!l.mapLayer
+          || !l.mapLayer.layers
+          || !l.mapLayer.layers[0]
+          || !l.mapLayer.layers[0].metadata
+          || !l.mapLayer.layers[0].metadata.position),
     );
 
     // if no layer above it then use the custom layer
@@ -187,7 +184,7 @@ class PluginMapboxGL {
     const { id } = nextLayerMapLayer;
 
     // if it has a layer above it, check if that layer has been added to the map and get its id
-    const isNextLayerOnMap = !!layersOnMap.find(l => id === l.id);
+    const isNextLayerOnMap = !!layersOnMap.find((l) => id === l.id);
 
     // if next layer is on map return the id, else return the custom layer to add below
     return isNextLayerOnMap ? id : customLayer.id;
@@ -202,9 +199,9 @@ class PluginMapboxGL {
     const layersOnMap = this.getLayersOnMap();
 
     // set zIndex for all layers currently on map
-    layersOnMap.forEach(l => {
+    layersOnMap.forEach((l) => {
       const { id, metadata = {} } = l;
-      const layerModel = allLayers.find(ly => id.includes(ly.id));
+      const layerModel = allLayers.find((ly) => id.includes(ly.id));
 
       if (layerModel) {
         const nextLayerId = metadata.position === 'top' ? null : this.getNextLayerId(layerModel);
@@ -213,10 +210,10 @@ class PluginMapboxGL {
     });
 
     // set for all decode layers that don't exist inside mapStyle()
-    const decodeLayers = allLayers.filter(l => !!l.decodeFunction);
+    const decodeLayers = allLayers.filter((l) => !!l.decodeFunction);
 
     if (decodeLayers && this.map) {
-      decodeLayers.forEach(layerModel => {
+      decodeLayers.forEach((layerModel) => {
         const { mapLayer } = layerModel;
 
         if (mapLayer) {
@@ -224,7 +221,7 @@ class PluginMapboxGL {
           const parentLayer = layers[0];
           const childLayer = layers[1];
 
-          const parentLayerOnMap = layersOnMap.find(ly => ly.id === parentLayer.id);
+          const parentLayerOnMap = layersOnMap.find((ly) => ly.id === parentLayer.id);
           const childLayerOnMap = this.map.getLayer(childLayer.id);
 
           if (parentLayerOnMap && childLayerOnMap) {
@@ -250,7 +247,7 @@ class PluginMapboxGL {
     const {
       opacity,
       render: { layers = [] },
-      mapLayer
+      mapLayer,
     } = layerModel;
     const isOpacityProperty = /-opacity$/.test(propertyName);
 
@@ -259,14 +256,13 @@ class PluginMapboxGL {
       return desiredValue;
     }
 
-    const { paint = {} } =
-      layers.find((layer, index) => {
-        if (layer.id === undefined || layer.id === null) {
-          return `${mapLayer.id}-${layer.type}-${index}` === layerId;
-        }
+    const { paint = {} } = layers.find((layer, index) => {
+      if (layer.id === undefined || layer.id === null) {
+        return `${mapLayer.id}-${layer.type}-${index}` === layerId;
+      }
 
-        return layer.id === layerId;
-      }) || {};
+      return layer.id === layerId;
+    }) || {};
     const currentValue = paint[propertyName];
 
     let res = 0.99 * opacity;
@@ -275,9 +271,7 @@ class PluginMapboxGL {
       if (typeof currentValue === 'number') {
         res = currentValue * opacity * 0.99;
       } else if (Array.isArray(currentValue)) {
-        res = currentValue.map(element =>
-          typeof element === 'number' ? element * opacity * 0.99 : element
-        );
+        res = currentValue.map((element) => (typeof element === 'number' ? element * opacity * 0.99 : element));
       }
     }
 
@@ -292,24 +286,24 @@ class PluginMapboxGL {
   setOpacity(layerModel, opacity) {
     const PAINT_STYLE_NAMES = {
       symbol: ['icon', 'text'],
-      circle: ['circle', 'circle-stroke']
+      circle: ['circle', 'circle-stroke'],
     };
 
     const { mapLayer, decodeFunction } = layerModel;
 
     if (mapLayer.layers && !decodeFunction) {
-      mapLayer.layers.forEach(l => {
+      mapLayer.layers.forEach((l) => {
         // Select the style to change depending on the type of layer
         const paintStyleNames = PAINT_STYLE_NAMES[l.type] || [l.type];
 
         // Loop each style name and check if there is an opacity in the original layer
-        paintStyleNames.forEach(name => {
+        paintStyleNames.forEach((name) => {
           const propertyName = `${name}-opacity`;
           const propertyValue = this.computePaintPropertyValue(
             layerModel,
             l.id,
             propertyName,
-            opacity
+            opacity,
           );
 
           this.map.setPaintProperty(l.id, propertyName, propertyValue);
@@ -335,7 +329,7 @@ class PluginMapboxGL {
     const { mapLayer } = layerModel;
 
     if (mapLayer && mapLayer.layers && this.map && this.map.style) {
-      mapLayer.layers.forEach(l => {
+      mapLayer.layers.forEach((l) => {
         this.map.setLayoutProperty(l.id, 'visibility', visibility ? 'visible' : 'none');
       });
     }
@@ -360,7 +354,7 @@ class PluginMapboxGL {
       return this;
     }
 
-    console.log(mapLayer)
+    console.log(mapLayer);
 
     try {
       mapLayer.layers?.forEach((layer, i) => {
@@ -370,15 +364,15 @@ class PluginMapboxGL {
 
         this.map.setFilter(id, filter);
 
-        Object.keys(paint).forEach(p => {
+        Object.keys(paint).forEach((p) => {
           this.map.setPaintProperty(
             id,
             p,
-            this.computePaintPropertyValue(layerModel, id, p, paint[p])
+            this.computePaintPropertyValue(layerModel, id, p, paint[p]),
           );
         });
 
-        Object.keys(layout).forEach(l => {
+        Object.keys(layout).forEach((l) => {
           this.map.setLayoutProperty(id, l, layout[l]);
         });
       });
@@ -459,7 +453,7 @@ class PluginMapboxGL {
       layer.setProps({ decodeParams });
     } else {
       console.error(
-        "Layer is not present. You defined decodeParams but maybe you didn't define a decodeFunction"
+        "Layer is not present. You defined decodeParams but maybe you didn't define a decodeFunction",
       );
     }
 

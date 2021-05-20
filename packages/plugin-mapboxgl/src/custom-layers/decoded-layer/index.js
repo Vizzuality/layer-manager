@@ -22,7 +22,9 @@
 /* global Image, HTMLCanvasElement */
 import GL from '@luma.gl/constants';
 import { Layer } from '@deck.gl/core';
-import { Model, Geometry, Texture2D, fp64 } from 'luma.gl';
+import {
+  Model, Geometry, Texture2D, fp64,
+} from 'luma.gl';
 import { loadImage } from '@loaders.gl/images';
 import decodeVX from './decoded-layer-vertex';
 import decodeFR from './decoded-layer-fragment';
@@ -33,7 +35,7 @@ const DEFAULT_TEXTURE_PARAMETERS = {
   [GL.TEXTURE_MIN_FILTER]: GL.NEAREST,
   [GL.TEXTURE_MAG_FILTER]: GL.NEAREST,
   [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
-  [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE
+  [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE,
 };
 
 const defaultProps = {
@@ -41,12 +43,14 @@ const defaultProps = {
   bounds: { type: 'array', value: [1, 0, 0, 1], compare: true },
   fp64: false,
 
-  desaturate: { type: 'number', min: 0, max: 1, value: 0 },
+  desaturate: {
+    type: 'number', min: 0, max: 1, value: 0,
+  },
   // More context: because of the blending mode we're using for ground imagery,
   // alpha is not effective when blending the bitmap layers with the base map.
   // Instead we need to manually dim/blend rgb values with a background color.
   transparentColor: { type: 'color', value: [0, 0, 0, 0] },
-  tintColor: { type: 'color', value: [255, 255, 255] }
+  tintColor: { type: 'color', value: [255, 255, 255] },
 };
 
 /*
@@ -62,8 +66,8 @@ export default class DecodeLayer extends Layer {
       .replace(
         '{decodeParams}',
         Object.keys(this.props.decodeParams)
-          .map(p => `uniform float ${p};`)
-          .join(' ')
+          .map((p) => `uniform float ${p};`)
+          .join(' '),
       )
       .replace('{decodeFunction}', this.props.decodeFunction || '');
 
@@ -77,13 +81,13 @@ export default class DecodeLayer extends Layer {
       positions: {
         size: 3,
         update: this.calculatePositions,
-        value: new Float32Array(12)
+        value: new Float32Array(12),
       },
       positions64xyLow: {
         size: 3,
         update: this.calculatePositions64xyLow,
-        value: new Float32Array(12)
-      }
+        value: new Float32Array(12),
+      },
     });
 
     this.setState({ numInstances: 4 }); // 4 corners
@@ -108,7 +112,7 @@ export default class DecodeLayer extends Layer {
 
     if (props.bounds !== oldProps.bounds) {
       this.setState({
-        positions: this._getPositionsFromBounds(props.bounds)
+        positions: this._getPositionsFromBounds(props.bounds),
       });
       attributeManager.invalidate('positions');
       attributeManager.invalidate('positions64xyLow');
@@ -173,39 +177,43 @@ export default class DecodeLayer extends Layer {
     */
     return new Model(
       gl,
-      Object.assign({}, this.getShaders(), {
+      ({
+        ...this.getShaders(),
         id: this.props.id,
         shaderCache: this.context.shaderCache,
         geometry: new Geometry({
           drawMode: GL.TRIANGLE_FAN,
           vertexCount: 4,
           attributes: {
-            texCoords: new Float32Array([0, 0, 0, 1, 1, 1, 1, 0])
-          }
+            texCoords: new Float32Array([0, 0, 0, 1, 1, 1, 1, 0]),
+          },
         }),
-        isInstanced: false
-      })
+        isInstanced: false,
+      }),
     );
   }
 
   draw({ uniforms }) {
     const { bitmapTexture, model } = this.state;
-    const { desaturate, transparentColor, tintColor, zoom, decodeParams, opacity } = this.props;
+    const {
+      desaturate, transparentColor, tintColor, zoom, decodeParams, opacity,
+    } = this.props;
 
     // // TODO fix zFighting
     // Render the image
     if (bitmapTexture && model) {
       model
         .setUniforms(
-          Object.assign({}, uniforms, {
+          {
+            ...uniforms,
             bitmapTexture,
             desaturate,
             transparentColor,
             tintColor,
             zoom,
             ...decodeParams,
-            opacity
-          })
+            opacity,
+          },
         )
         .draw();
     }
@@ -216,7 +224,7 @@ export default class DecodeLayer extends Layer {
       image = loadImage(image);
     }
     if (image instanceof Promise) {
-      image.then(data => this.loadTexture(data));
+      image.then((data) => this.loadTexture(data));
       return;
     }
 
@@ -230,15 +238,15 @@ export default class DecodeLayer extends Layer {
       this.setState({ bitmapTexture: image });
     } else if (
       // browser object
-      image instanceof Image ||
-      image instanceof HTMLCanvasElement
+      image instanceof Image
+      || image instanceof HTMLCanvasElement
     ) {
       this.setState({
         bitmapTexture: new Texture2D(gl, {
           data: image,
           parameters: DEFAULT_TEXTURE_PARAMETERS,
-          mipmaps: false
-        })
+          mipmaps: false,
+        }),
       });
     }
   }

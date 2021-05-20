@@ -1,4 +1,6 @@
-import { getDeckInstance, addLayer, removeLayer, updateLayer, drawLayer } from './deck-utils';
+import {
+  getDeckInstance, addLayer, removeLayer, updateLayer, drawLayer,
+} from './deck-utils';
 
 export default class MapboxLayer {
   /* eslint-disable no-this-before-super */

@@ -26,12 +26,12 @@ export function getDeckInstance({ map, gl, deck }) {
       depthMask: true,
       depthTest: true,
       blendFunc: [gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA],
-      blendEquation: gl.FUNC_ADD
+      blendEquation: gl.FUNC_ADD,
     },
     userData: {
       isExternal: false,
-      mapboxLayers: new Set()
-    }
+      mapboxLayers: new Set(),
+    },
   };
 
   if (deck) {
@@ -43,7 +43,7 @@ export function getDeckInstance({ map, gl, deck }) {
       gl,
       width: false,
       height: false,
-      viewState: getViewState(map)
+      viewState: getViewState(map),
     });
     deck = new Deck(deckProps);
 
@@ -93,8 +93,8 @@ export function drawLayer(deck, map, layer) {
   deck._drawLayers('mapbox-repaint', {
     viewports: [currentViewport],
     // TODO - accept layerFilter in drawLayers' renderOptions
-    layers: getLayers(deck, deckLayer => shouldDrawLayer(layer.id, deckLayer)),
-    clearCanvas: false
+    layers: getLayers(deck, (deckLayer) => shouldDrawLayer(layer.id, deckLayer)),
+    clearCanvas: false,
   });
 }
 
@@ -105,7 +105,7 @@ function getViewState(map) {
     latitude: lat,
     zoom: map.getZoom(),
     bearing: map.getBearing(),
-    pitch: map.getPitch()
+    pitch: map.getPitch(),
   };
 }
 
@@ -126,30 +126,28 @@ function getViewport(deck, map, useMapboxProjection = true) {
   const { mapboxVersion } = deck.props.userData;
 
   return new WebMercatorViewport(
-    Object.assign(
-      {
-        x: 0,
-        y: 0,
-        width: deck.width,
-        height: deck.height,
-        repeat: true
-      },
-      getViewState(map),
-      useMapboxProjection
+    {
+      x: 0,
+      y: 0,
+      width: deck.width,
+      height: deck.height,
+      repeat: true,
+      ...getViewState(map),
+      ...(useMapboxProjection
         ? {
-            // match mapbox's projection matrix
-            // A change of near plane was made in 1.3.0
-            // https://github.com/mapbox/mapbox-gl-js/pull/8502
-            nearZMultiplier:
+          // match mapbox's projection matrix
+          // A change of near plane was made in 1.3.0
+          // https://github.com/mapbox/mapbox-gl-js/pull/8502
+          nearZMultiplier:
               (mapboxVersion.major === 1 && mapboxVersion.minor >= 3) || mapboxVersion.major >= 2
                 ? 0.02
-                : 1 / (deck.height || 1)
-          }
+                : 1 / (deck.height || 1),
+        }
         : {
-            // use deck.gl's own default
-            nearZMultiplier: 0.1
-          }
-    )
+          // use deck.gl's own default
+          nearZMultiplier: 0.1,
+        }),
+    },
   );
 }
 
@@ -158,8 +156,8 @@ function afterRender(deck, map) {
 
   if (isExternal) {
     // Draw non-Mapbox layers
-    const mapboxLayerIds = Array.from(mapboxLayers, layer => layer.id);
-    const layers = getLayers(deck, deckLayer => {
+    const mapboxLayerIds = Array.from(mapboxLayers, (layer) => layer.id);
+    const layers = getLayers(deck, (deckLayer) => {
       for (const id of mapboxLayerIds) {
         if (shouldDrawLayer(id, deckLayer)) {
           return false;
@@ -171,7 +169,7 @@ function afterRender(deck, map) {
       deck._drawLayers('mapbox-repaint', {
         viewports: [getViewport(deck, map, false)],
         layers,
-        clearCanvas: false
+        clearCanvas: false,
       });
     }
   }
@@ -182,7 +180,7 @@ function afterRender(deck, map) {
 
 function onMapMove(deck, map) {
   deck.setProps({
-    viewState: getViewState(map)
+    viewState: getViewState(map),
   });
   // Camera changed, will trigger a map repaint right after this
   // Clear any change flag triggered by setting viewState so that deck does not request
@@ -212,7 +210,7 @@ function updateLayers(deck) {
   }
 
   const layers = [];
-  deck.props.userData.mapboxLayers.forEach(deckLayer => {
+  deck.props.userData.mapboxLayers.forEach((deckLayer) => {
     const LayerType = deckLayer.props.type;
     const layer = new LayerType(deckLayer.props);
     layers.push(layer);
