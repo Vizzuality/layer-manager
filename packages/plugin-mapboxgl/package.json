@@ -50,6 +50,11 @@
   },
   "dependencies": {
     "@deck.gl/core": "^8.4.16",
+    "@deck.gl/geo-layers": "^8.4.16",
+    "@deck.gl/layers": "^8.4.16",
+    "@deck.gl/mapbox": "^8.4.16",
+    "@deck.gl/mesh-layers": "^8.4.16",
+    "@luma.gl/constants": "^8.4.5",
     "@luma.gl/core": "^8.4.5",
     "@math.gl/web-mercator": "^3.4.2",
     "cancelable-promise": "^3.2.3",

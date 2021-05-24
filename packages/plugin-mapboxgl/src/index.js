@@ -354,12 +354,11 @@ class PluginMapboxGL {
       return this;
     }
 
-    console.log(mapLayer);
-
     try {
       mapLayer.layers?.forEach((layer, i) => {
         const { id } = layer;
-        const rl = renderLayers[i] || renderLayers[0] || {}; // take the style for each layer or use the first one for all of them
+        // take the style for each layer or use the first one for all of them
+        const rl = renderLayers[i] || renderLayers[0] || {};
         const { paint = {}, layout = {}, filter = null } = rl;
 
         this.map.setFilter(id, filter);

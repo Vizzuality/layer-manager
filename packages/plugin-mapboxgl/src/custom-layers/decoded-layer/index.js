@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Copyright (c) 2015 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -51,7 +52,7 @@ const defaultProps = {
  * @param {number} props.transparentColor - color to interpret transparency to
  * @param {number} props.tintColor - color bias
  */
-export default class BitmapLayer extends Layer {
+export default class DecodedLayer extends Layer {
   getShaders() {
     const fs = decodeFS
       .replace(
@@ -228,6 +229,8 @@ export default class BitmapLayer extends Layer {
     // // TODO fix zFighting
     // Render the image
     if (image && model) {
+      console.log(model);
+
       model
         .setUniforms(uniforms)
         .setUniforms({
@@ -238,8 +241,8 @@ export default class BitmapLayer extends Layer {
           coordinateConversion,
           bounds,
           zoom,
-          ...decodeParams,
           opacity,
+          ...decodeParams,
         })
         .draw();
     }
@@ -279,8 +282,8 @@ export default class BitmapLayer extends Layer {
   }
 }
 
-BitmapLayer.layerName = 'BitmapLayer';
-BitmapLayer.defaultProps = defaultProps;
+DecodedLayer.layerName = 'DecodedLayer';
+DecodedLayer.defaultProps = defaultProps;
 
 /**
  * Decode uv floats from rgb bytes where b contains 4-bit fractions of uv

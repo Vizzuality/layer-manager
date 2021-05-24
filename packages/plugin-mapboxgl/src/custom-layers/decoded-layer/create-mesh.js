@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { lerp } from 'math.gl';
 
 const DEFAULT_INDICES = new Uint16Array([0, 2, 1, 0, 3, 2]);
