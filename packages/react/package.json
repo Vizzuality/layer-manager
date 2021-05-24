@@ -12,7 +12,10 @@
   "main": "dist/index.js",
   "types": "types.d.ts",
   "files": [
+    "types.d.ts",
     "dist",
+    "package.json",
+    "LICENSE",
     "README.md"
   ],
   "repository": {

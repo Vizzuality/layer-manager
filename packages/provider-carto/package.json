@@ -13,7 +13,7 @@
   "types": "types.d.ts",
   "files": [
     "dist",
-    "index.d.ts",
+    "types.d.ts",
     "package.json",
     "README.md",
     "LICENSE"

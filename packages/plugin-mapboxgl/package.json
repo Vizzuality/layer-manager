@@ -10,10 +10,10 @@
   "license": "MIT",
   "private": false,
   "main": "dist/index.js",
-  "types": "index.d.ts",
+  "types": "types.d.ts",
   "files": [
     "dist",
-    "index.d.ts",
+    "types.d.ts",
     "package.json",
     "README.md",
     "LICENSE"
