@@ -1,7 +1,7 @@
 import isEqual from 'fast-deep-equal';
 
-import type { LayerSpec } from '../types';
 import type { CancelTokenSource } from 'axios';
+import type { LayerSpec } from '../types';
 
 const defaultLayerSpec: Partial<LayerSpec> = {
   opacity: 1,
