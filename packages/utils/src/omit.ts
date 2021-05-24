@@ -1,5 +1,4 @@
-export const omit = (key: string, obj: Record<string, unknown>): Record<string, unknown> => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const omit = (key: string, obj: any): any => {
   const { [key]: omitted, ...rest } = obj;
   return rest;
 };

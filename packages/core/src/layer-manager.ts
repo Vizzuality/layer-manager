@@ -1,6 +1,6 @@
-import isEmpty from 'lodash/isEmpty';
 import { CancelablePromise } from 'cancelable-promise';
 import LayerModel from './layer-model';
+import { isEmpty } from '@vizzuality/layer-manager-utils';
 
 import type { LayerSpec, ProviderMaker, Plugin } from '../types';
 
