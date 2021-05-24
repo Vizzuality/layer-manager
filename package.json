@@ -13,7 +13,8 @@
     "bootstrap": "lerna bootstrap",
     "lint": "lerna run lint",
     "build": "lerna run build",
-    "test": "lerna run test"
+    "test": "lerna run test",
+    "postinstall": "husky install"
   },
   "workspaces": [
     "packages/*"
