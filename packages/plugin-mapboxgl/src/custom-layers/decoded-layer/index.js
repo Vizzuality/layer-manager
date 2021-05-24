@@ -24,7 +24,7 @@ import GL from '@luma.gl/constants';
 import { Layer } from '@deck.gl/core';
 import {
   Model, Geometry, Texture2D, fp64,
-} from 'luma.gl';
+} from '@luma.gl/core';
 import { loadImage } from '@loaders.gl/images';
 import decodeVX from './decoded-layer-vertex';
 import decodeFR from './decoded-layer-fragment';

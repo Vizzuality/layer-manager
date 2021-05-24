@@ -17,6 +17,7 @@
     "postinstall": "husky install"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "applications/*"
   ]
 }

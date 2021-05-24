@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign,no-restricted-properties,class-methods-use-this,no-underscore-dangle */
-import { CompositeLayer } from 'deck.gl';
+import { CompositeLayer } from '@deck.gl/core';
 import TileCache from './utils/tile-cache';
 
 const defaultProps = {

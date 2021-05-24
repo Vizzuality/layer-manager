@@ -24,12 +24,13 @@
     "directory": "packages/plugin-mapboxgl"
   },
   "scripts": {
+    "watch": "tsc -b tsconfig.build.json --watch",
     "build": "tsc -b tsconfig.build.json",
     "lint": "eslint . --ext .js,.ts --ignore-path ../../.eslintignore --fix"
   },
   "peerDependencies": {
-    "deck.gl": "7.3.6",
-    "luma.gl": "7.3.2"
+    "@deck.gl/core": "^7",
+    "@luma.gl/core": "^7"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
@@ -48,11 +49,11 @@
     "ts-jest": "^26.5.5"
   },
   "dependencies": {
-    "@deck.gl/core": "^7",
-    "@deck.gl/react": "^7",
+    "@deck.gl/core": "7.3.15",
+    "@loaders.gl/images": "^2.3.13",
+    "@luma.gl/constants": "^8.4.5",
+    "@luma.gl/core": "7.3.2",
     "cancelable-promise": "^3.2.3",
-    "deck.gl": "^7",
-    "luma.gl": "^7.3.2",
     "react": "^17.0.2"
   }
 }
