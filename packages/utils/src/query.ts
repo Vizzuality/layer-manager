@@ -1,4 +1,4 @@
-import type { QueryParams, WhereQueryParams} from '../types';
+import type { QueryParams, WhereQueryParams } from '../types';
 
 /**
  * Params should have this format => { key:'xxx', key2:'xxx' }
@@ -8,7 +8,7 @@ import type { QueryParams, WhereQueryParams} from '../types';
  */
 export const substitution = (originalStr: string, params: QueryParams = {}): string => {
   let str = originalStr;
-  Object.keys(params).forEach(key => {
+  Object.keys(params).forEach((key) => {
     const isObject = params[key] != null
       && typeof params[key] === 'object'
       && Object.prototype.toString.call(params[key]) === '[object Object]';
@@ -49,9 +49,9 @@ export const substitution = (originalStr: string, params: QueryParams = {}): str
 export const concatenation = (originalStr: string, params: WhereQueryParams = {}): string => {
   let result = originalStr;
 
-  Object.keys(params).forEach(key => {
+  Object.keys(params).forEach((key) => {
     let sql = `${Object.keys(params[key])
-      .map(k => {
+      .map((k) => {
         const value = params[key][k];
 
         if (Array.isArray(value) && !!value.length) {
@@ -65,7 +65,7 @@ export const concatenation = (originalStr: string, params: WhereQueryParams = {}
 
         return null;
       })
-      .filter(value => !!value)
+      .filter((value) => !!value)
       .join(' AND ')}`;
 
     if (sql && key.startsWith('where')) sql = `WHERE ${sql}`;
