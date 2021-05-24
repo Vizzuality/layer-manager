@@ -1,6 +1,6 @@
 {
   "name": "@vizzuality/layer-manager",
-  "version": "4.0.1-alpha.0",
+  "version": "4.0.0-alpha.1",
   "author": "Vizzuality <hello@vizzuality.com>",
   "main": "dist/index.js",
   "types": "types.d.ts",
