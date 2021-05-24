@@ -21,12 +21,12 @@ class CartoProviderMaker implements ProviderMaker {
    */
   public name = 'carto'
 
-  public handleData(
+  public handleData = (
     layerModel: LayerModel,
     layer: LayerSpec,
     resolve?: (layerSpec: LayerSpec) => void,
     reject?: (err: Error) => void,
-  ): void {
+  ): void => {
     const { layerSpec } = layerModel;
     const { interactivity, source } = layer;
     const { provider } = source as Source;
@@ -65,8 +65,8 @@ class CartoProviderMaker implements ProviderMaker {
           ...layerSpec,
           source: {
             ...omit('provider', layerSpec.source),
-            tiles: [tileUrl]
-          } as Source
+            tiles: [tileUrl],
+          } as Source,
         };
 
         if (resolve) resolve(result);
