@@ -1,9 +1,7 @@
 import { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import isEqual from 'lodash/isEqual';
-import isEmpty from 'lodash/isEmpty';
-
-import { replace } from '@vizzuality/layer-manager-utils';
+import isEqual from 'fast-deep-equal/react';
+import { isEmpty, replace } from '@vizzuality/layer-manager-utils';
 
 class Layer extends PureComponent {
   static propTypes = {

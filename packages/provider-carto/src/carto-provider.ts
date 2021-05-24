@@ -1,5 +1,4 @@
-import { fetch } from '@vizzuality/layer-manager-utils';
-import omit from 'lodash/omit';
+import { fetch, omit } from '@vizzuality/layer-manager-utils';
 
 import type { LayerModel, LayerSpec, Source, ProviderMaker } from '@vizzuality/layer-manager';
 import type { CartoData, CartoParams, CartoLayer, CartoProvider } from '../types';
@@ -61,7 +60,7 @@ class CartoProviderMaker implements ProviderMaker {
         const result = {
           ...layerSpec,
           source: {
-            ...omit(layerSpec.source, 'provider'),
+            ...omit('provider', layerSpec.source),
             tiles: [tileUrl]
           } as Source
         };

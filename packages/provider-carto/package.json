@@ -29,7 +29,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "lodash": "^4.17.20"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",

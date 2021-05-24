@@ -1,4 +1,4 @@
-import isEqual from 'lodash/isEqual';
+import isEqual from 'fast-deep-equal';
 
 import type { LayerSpec } from '../types';
 import type { CancelTokenSource } from 'axios';

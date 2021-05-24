@@ -28,13 +28,11 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
-    "cancelable-promise": "^3.2.3",
-    "lodash": "^4.17.21"
+    "cancelable-promise": "^3.2.3"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
     "@types/jest": "^26.0.23",
-    "@types/lodash": "^4.14.168",
     "@types/node": "^15.0.1",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
