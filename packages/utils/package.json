@@ -28,8 +28,7 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
-    "cancelable-promise": "^3.2.3",
-    "lodash": "^4.17.21"
+    "cancelable-promise": "^3.2.3"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",

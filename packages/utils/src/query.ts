@@ -1,6 +1,3 @@
-import compact from 'lodash/compact';
-import isPlainObject from 'lodash/isPlainObject';
-
 import type { QueryParams, WhereQueryParams} from '../types';
 
 /**
@@ -12,7 +9,11 @@ import type { QueryParams, WhereQueryParams} from '../types';
 export const substitution = (originalStr: string, params: QueryParams = {}): string => {
   let str = originalStr;
   Object.keys(params).forEach(key => {
-    if (Array.isArray(params[key]) || isPlainObject(params[key])) {
+    const isObject = params[key] != null
+      && typeof params[key] === 'object'
+      && Object.prototype.toString.call(params[key]) === '[object Object]';
+
+    if (Array.isArray(params[key]) || isObject) {
       str = str
         .replace(new RegExp(`"{{${key}}}"`, 'g'), JSON.stringify(params[key]))
         .replace(new RegExp(`'{{${key}}}'`, 'g'), JSON.stringify(params[key]))
@@ -49,8 +50,8 @@ export const concatenation = (originalStr: string, params: WhereQueryParams = {}
   let result = originalStr;
 
   Object.keys(params).map(key => {
-    let sql = `${compact(
-      Object.keys(params[key]).map(k => {
+    let sql = `${Object.keys(params[key])
+      .map(k => {
         const value = params[key][k];
 
         if (Array.isArray(value) && !!value.length) {
@@ -64,7 +65,8 @@ export const concatenation = (originalStr: string, params: WhereQueryParams = {}
 
         return null;
       })
-    ).join(' AND ')}`;
+      .filter(value => !!value)
+      .join(' AND ')}`;
 
     if (sql && key.startsWith('where')) sql = `WHERE ${sql}`;
     else if (sql && key.startsWith('and')) sql = `AND ${sql}`;
