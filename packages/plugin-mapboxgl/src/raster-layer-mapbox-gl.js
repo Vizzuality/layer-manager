@@ -70,20 +70,23 @@ const RasterLayer = (layerModel, providers) => {
             id: `${id}-raster-decode`,
             type: TileLayer,
             getTileData: (e) => getTileData(e, t),
-            renderSubLayers: ({
-              id: subLayerId,
-              data,
-              tile,
-              visible,
-              zoom,
-              decodeParams: decodeParamsSub,
-              decodeFunction: decodeFunctionSub,
-            }) => {
+            renderSubLayers: (sl) => {
+              const {
+                id: subLayerId,
+                data,
+                tile,
+                visible,
+                zoom,
+                decodeParams: decodeParamsSub,
+                decodeFunction: decodeFunctionSub,
+              } = sl;
+
               if (data && data.src) {
                 return new DecodedLayer({
                   id: subLayerId,
                   image: data.src,
                   bounds: tile.bbox,
+
                   visible,
                   zoom,
                   decodeParams: decodeParamsSub,
