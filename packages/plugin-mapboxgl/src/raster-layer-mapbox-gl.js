@@ -1,37 +1,12 @@
 import { CancelablePromise } from 'cancelable-promise';
+
+import GL from '@luma.gl/constants';
+import { MapboxLayer } from '@deck.gl/mapbox';
+import { TileLayer } from '@deck.gl/geo-layers';
+
 import { getVectorStyleLayers } from './vector-style-layers';
-import MapboxLayer from './custom-layers/mapbox-layer';
-import TileLayer from './custom-layers/tile-layer';
+
 import DecodedLayer from './custom-layers/decoded-layer';
-
-const getTileData = ({ x, y, z }, url) => {
-  if (url.match(/({s}\.)/i) !== null) {
-    console.error(
-      "Mapbox raster provider doesn't support subdomain templates. "
-        + 'If you wish to implement Domain Sharding please provide each subdomain as a separate url within the tiles property. '
-        + "Example. { tiles: ['a.domain.com/{x}/{y}/{z}.png', 'b.domain.com/{x}/{y}/{z}.png', 'c.domain.com/{x}/{y}/{z}.png'] }",
-    );
-  }
-  const mapSource = url
-    .replace('{z}', z)
-    .replace('{x}', x)
-    .replace('{y}', y);
-
-  return fetch(mapSource)
-    .then((response) => response.blob())
-    .then((response) => {
-      const { type } = response || {};
-      if (type !== 'application/xml' && type !== 'text/xml' && type !== 'text/html') {
-        const src = URL.createObjectURL(response);
-        const image = new Image();
-
-        image.src = src;
-        return image;
-      }
-
-      return false;
-    });
-};
 
 const RasterLayer = (layerModel, providers) => {
   const {
@@ -69,23 +44,40 @@ const RasterLayer = (layerModel, providers) => {
           (t) => new MapboxLayer({
             id: `${id}-raster-decode`,
             type: TileLayer,
-            getTileData: (e) => getTileData(e, t),
-            renderSubLayers: ({
-              id: subLayerId,
-              data,
-              tile,
-              visible,
-              zoom,
-              decodeParams: decodeParamsSub,
-              decodeFunction: decodeFunctionSub,
-            }) => {
-              if (data && data.src) {
+            data: t,
+            tileSize: 256,
+            // refinementStrategy: 'never',
+            renderSubLayers: (sl) => {
+              const {
+                id: subLayerId,
+                data,
+                tile,
+                visible,
+                decodeParams: decodeParamsSub,
+                decodeFunction: decodeFunctionSub,
+              } = sl;
+
+              const {
+                z,
+                bbox: {
+                  west, south, east, north,
+                },
+              } = tile;
+
+              if (data) {
                 return new DecodedLayer({
                   id: subLayerId,
-                  image: data.src,
-                  bounds: tile.bbox,
+                  image: data,
+                  bounds: [west, south, east, north],
+                  textureParameters: {
+                    [GL.TEXTURE_MIN_FILTER]: GL.NEAREST,
+                    [GL.TEXTURE_MAG_FILTER]: GL.NEAREST,
+                    [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
+                    [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE,
+                  },
+
                   visible,
-                  zoom,
+                  zoom: z,
                   decodeParams: decodeParamsSub,
                   decodeFunction: decodeFunctionSub,
                   opacity,

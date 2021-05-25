@@ -1,4 +1,7 @@
-/* eslint-disable no-param-reassign,no-restricted-properties,class-methods-use-this,no-underscore-dangle */
+/*
+  eslint-disable no-param-reassign,
+  no-restricted-properties,class-methods-use-this,no-underscore-dangle
+*/
 import { CompositeLayer } from '@deck.gl/core';
 import TileCache from './utils/tile-cache';
 
@@ -120,7 +123,8 @@ export default class TileLayer extends CompositeLayer {
 
       // cache the rendered layer in the tile
       if (!tile.layer) {
-        // I have an error when I try this condition. I think is related to return the same tile.layer
+        // I have an error when I try this condition.
+        // I think is related to return the same tile.layer
         // https://github.com/uber/deck.gl/blob/c616dbfbcbdc9d8533b88ba8a142c5527764bbd8/modules/core/src/lib/layer-manager.js#L67-L70
         tile.layer = renderSubLayers({
           ...this.props,

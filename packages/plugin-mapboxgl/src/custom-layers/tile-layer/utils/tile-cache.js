@@ -88,7 +88,8 @@ export default class TileCache {
     }
 
     if (changed) {
-      // cache size is either the user defined maxSize or 5 * number of current tiles in the viewport.
+      // cache size is either the user defined
+      // maxSize or 5 * number of current tiles in the viewport.
       const commonZoomRange = 5;
       this._resizeCache(_maxSize || commonZoomRange * tileIndices.length);
       this._tiles = Array.from(this._cache.values())
