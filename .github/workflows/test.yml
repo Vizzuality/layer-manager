@@ -17,4 +17,4 @@ jobs:
       - name: Build
         run: lerna run build --ignore @vizzuality/layer-manager-sandbox
       - name: Test
-        run: lerna test --ignore @vizzuality/layer-manager-sandbox
+        run: lerna run test --ignore @vizzuality/layer-manager-sandbox
