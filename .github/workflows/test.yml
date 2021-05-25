@@ -15,6 +15,6 @@ jobs:
       - name: Install
         run: yarn bootstrap
       - name: Build
-        run: yarn build
+        run: lerna run build --ignore @vizzuality/layer-manager-sandbox
       - name: Test
-        run: yarn test
+        run: lerna test --ignore @vizzuality/layer-manager-sandbox
