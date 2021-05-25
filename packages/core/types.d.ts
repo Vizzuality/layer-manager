@@ -24,19 +24,27 @@ export type Provider = {
 
 export type LMGeoJSONSourceRaw = GeoJSONSourceRaw & {
   provider: Provider
+  parse: boolean
 };
 
 export type LMVectorSource = VectorSource & {
   provider: Provider
+  parse: boolean
 };
 
 export type LMRasterSource = RasterSource & {
   provider: Provider
+  parse: boolean
 };
 
 export type Source = LMGeoJSONSourceRaw | LMVectorSource | LMRasterSource;
 
-export type Params = Record<string, unknown>;
+export type Render = {
+  layers: AnyLayer
+  parse: boolean
+};
+
+export type Params = Record<string, string | number | boolean | unknown>;
 
 /**
  * keys should start by 'where' or 'and'
@@ -66,10 +74,8 @@ export type LayerSpec = {
   decodeParams?: DecodeParams
   decodeFunction?: string
   source: Source
-  render?: {
-    layers: AnyLayer
-  }
-  interactivity?: unknown[],
+  render?: Render
+  interactivity?: unknown[]
   onAfterAdd?: () => void
   onAfterRemove?: (layerModel: LayerModel) => void
 };

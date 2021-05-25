@@ -1,4 +1,7 @@
+import type { Params } from '@vizzuality/layer-manager';
 import type { QueryParams, WhereQueryParams } from '../types';
+
+type UtilsParams = Params | QueryParams;
 
 /**
  * Params should have this format => { key:'xxx', key2:'xxx' }
@@ -6,36 +9,16 @@ import type { QueryParams, WhereQueryParams } from '../types';
  * @param {String} originalStr
  * @param {Object} params
  */
-export const substitution = (originalStr: string, params: QueryParams = {}): string => {
+export const substitution = (originalStr: string, params: UtilsParams = {}): string => {
   let str = originalStr;
   Object.keys(params).forEach((key) => {
-    const isObject = params[key] != null
-      && typeof params[key] === 'object'
-      && Object.prototype.toString.call(params[key]) === '[object Object]';
-
-    if (Array.isArray(params[key]) || isObject) {
-      str = str
-        .replace(new RegExp(`"{{${key}}}"`, 'g'), JSON.stringify(params[key]))
-        .replace(new RegExp(`'{{${key}}}'`, 'g'), JSON.stringify(params[key]))
-        .replace(new RegExp(`\`{{${key}}}\``, 'g'), JSON.stringify(params[key]))
-        .replace(new RegExp(`"{${key}}"`, 'g'), JSON.stringify(params[key]))
-        .replace(new RegExp(`'{${key}}'`, 'g'), JSON.stringify(params[key]))
-        .replace(new RegExp(`\`{${key}}\``, 'g'), JSON.stringify(params[key]));
-    }
-
-    if (typeof params[key] === 'number' || typeof params[key] === 'boolean') {
-      str = str
-        .replace(new RegExp(`"{{${key}}}"`, 'g'), params[key].toString())
-        .replace(new RegExp(`'{{${key}}}'`, 'g'), params[key].toString())
-        .replace(new RegExp(`\`{{${key}}}\``, 'g'), params[key].toString())
-        .replace(new RegExp(`"{${key}}"`, 'g'), params[key].toString())
-        .replace(new RegExp(`'{${key}}'`, 'g'), params[key].toString())
-        .replace(new RegExp(`\`{${key}}\``, 'g'), params[key].toString());
-    }
-
     str = str
-      .replace(new RegExp(`{{${key}}}`, 'g'), params[key].toString())
-      .replace(new RegExp(`{${key}}`, 'g'), params[key].toString());
+      .replace(new RegExp(`"{{${key}}}"`, 'g'), JSON.stringify(params[key]))
+      .replace(new RegExp(`'{{${key}}}'`, 'g'), JSON.stringify(params[key]))
+      .replace(new RegExp(`\`{{${key}}}\``, 'g'), JSON.stringify(params[key]))
+      .replace(new RegExp(`"{${key}}"`, 'g'), JSON.stringify(params[key]))
+      .replace(new RegExp(`'{${key}}'`, 'g'), JSON.stringify(params[key]))
+      .replace(new RegExp(`\`{${key}}\``, 'g'), JSON.stringify(params[key]));
   });
   return str;
 };
@@ -86,7 +69,7 @@ export const concatenation = (originalStr: string, params: WhereQueryParams = {}
  */
 export const replace = (
   originalStr: string,
-  params: QueryParams = {},
+  params: UtilsParams = {},
   sqlParams: WhereQueryParams = {},
 ): string => {
   let str = originalStr;

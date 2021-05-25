@@ -57,6 +57,7 @@
     "@luma.gl/constants": "^8.4.5",
     "@luma.gl/core": "^8.4.5",
     "@math.gl/web-mercator": "^3.4.2",
+    "@vizzuality/layer-manager-utils": "^1.1.0-alpha.1",
     "cancelable-promise": "^3.2.3",
     "math.gl": "^3.4.2",
     "react": "^17.0.2"

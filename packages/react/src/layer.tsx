@@ -16,8 +16,8 @@ class Layer extends PureComponent<LayerProps> {
     opacity: 1,
     visibility: true,
     zIndex: undefined,
+    source: {},
     render: {},
-    layerManager: null,
     onAfterAdd: () => null,
   };
 
@@ -50,7 +50,7 @@ class Layer extends PureComponent<LayerProps> {
     } = this.props;
 
     // Check that source has changed
-    const prevSourceParsed = prevSource.parse === false
+    const prevSourceParsed = prevSource?.parse === false
       ? prevSource
       : JSON.parse(replace(JSON.stringify(prevSource), prevParams, prevSqlParams));
 
@@ -59,11 +59,11 @@ class Layer extends PureComponent<LayerProps> {
       : JSON.parse(replace(JSON.stringify(source), params, sqlParams));
 
     // Check that render has changed
-    const prevRenderParsed = prevRender.parse === false
+    const prevRenderParsed = prevRender?.parse === false
       ? prevRender
       : JSON.parse(replace(JSON.stringify(prevRender), prevParams, prevSqlParams));
 
-    const renderParsed = render.parse === false
+    const renderParsed = render?.parse === false
       ? render
       : JSON.parse(replace(JSON.stringify(render), params, sqlParams));
 
@@ -134,7 +134,7 @@ class Layer extends PureComponent<LayerProps> {
       ? source
       : JSON.parse(replace(JSON.stringify(source), params, sqlParams));
 
-    const renderParsed = render.parse === false
+    const renderParsed = render?.parse === false
       ? render
       : JSON.parse(replace(JSON.stringify(render), params, sqlParams));
 

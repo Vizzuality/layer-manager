@@ -3,7 +3,7 @@ export {
 } from './src';
 
 export type QueryParams = {
-  [key:string]: string;
+  [key:string]: unknown;
 };
 
 export type WhereQueryParams = {

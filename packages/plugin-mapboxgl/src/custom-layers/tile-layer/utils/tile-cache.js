@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable class-methods-use-this */
 import Tile from './tile';
 import { getTileIndices } from './viewport-util';
@@ -66,7 +67,7 @@ export default class TileCache {
 
     let changed = false;
 
-    for (let i = 0; i < tileIndices.length; i++) {
+    for (let i = 0; i < tileIndices.length; i += 1) {
       const tileIndex = tileIndices[i];
 
       const { x, y, z } = tileIndex;

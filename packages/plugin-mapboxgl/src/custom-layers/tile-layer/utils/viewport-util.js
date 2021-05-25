@@ -80,8 +80,8 @@ export function getTileIndices(viewport, maxZoom, minZoom) {
 
   const indices = [];
 
-  for (let x = minX; x < maxX; x++) {
-    for (let y = minY; y < maxY; y++) {
+  for (let x = minX; x < maxX; x += 1) {
+    for (let y = minY; y < maxY; y += 1) {
       if (maxZoom && z > maxZoom) {
         indices.push(getAdjustedTileIndex({ x, y, z }, maxZoom));
       } else {
@@ -92,3 +92,5 @@ export function getTileIndices(viewport, maxZoom, minZoom) {
 
   return indices;
 }
+
+export default getTileIndices;
