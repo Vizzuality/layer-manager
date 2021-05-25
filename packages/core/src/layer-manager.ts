@@ -11,13 +11,13 @@ const defaultLayerOptions: Partial<LayerSpec> = {
 };
 
 class LayerManager {
-  private _layers: LayerModel[] = []
+  private _layers: LayerModel[] = [];
 
-  private _plugin: Plugin
+  private _plugin: Plugin;
 
-  private _promises: Record<LayerSpec['id'], any> = {} // TO-DO: better type definition
+  private _promises: Record<LayerSpec['id'], any> = {}; // TO-DO: better type definition
 
-  static providers: Record<ProviderMaker['name'], ProviderMaker['handleData']> = {}
+  static providers: Record<ProviderMaker['name'], ProviderMaker['handleData']> = {};
 
   constructor(plugin: Plugin) {
     this._plugin = plugin;
@@ -185,8 +185,8 @@ class LayerManager {
       this._promises[layerModel.id] = method
         .call(this, layerModel, LayerManager.providers)
         .then((layer: unknown) => {
-          const { _canceled } = this._promises[layerModel.id];
-          if (!_canceled) {
+          const { canceled } = this._promises[layerModel.id];
+          if (!canceled) {
             layerModel.setMapLayer(layer);
 
             this._plugin.add(layerModel, this._layers);

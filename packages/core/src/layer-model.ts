@@ -9,15 +9,15 @@ const defaultLayerSpec: Partial<LayerSpec> = {
 };
 
 class LayerModel {
-  private _uid: number // for internal purposes
+  private _uid: number; // for internal purposes
 
-  static _counter = 0
+  static _counter = 0;
 
-  private _changedAttributes: Partial<LayerSpec> = {}
+  private _changedAttributes: Partial<LayerSpec> = {};
 
-  public layerRequest: CancelTokenSource | undefined = undefined
+  public layerRequest: CancelTokenSource | undefined = undefined;
 
-  public mapLayer: unknown // depends on the plugin
+  public mapLayer: unknown; // depends on the plugin
 
   constructor(private _layerSpec: LayerSpec) {
     if (!_layerSpec) throw new Error('layerSpec object is required');

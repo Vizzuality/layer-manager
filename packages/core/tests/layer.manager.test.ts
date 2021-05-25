@@ -20,9 +20,4 @@ describe('LayerManager', () => {
     LayerManager.registerProvider(provider);
     expect(Object.keys(LayerManager.providers)[0]).toBe('carto');
   });
-
-  // Optionally you can add additional providers
-
-  // layerManager.add(layerSpec); // see docs/LAYER-SPEC.md
-  // layerManager.remove(1);
 });

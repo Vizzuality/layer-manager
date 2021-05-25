@@ -9,12 +9,12 @@ export type CartoData = {
     }
   }
   layergroupid: string
-}
+};
 
 export type CartoLayer = {
   options: Record<string, unknown>
   interactivity: unknown
-}
+};
 
 export type CartoProvider = {
   account: string
@@ -22,10 +22,10 @@ export type CartoProvider = {
   layers: CartoLayer[]
   options?: Record<string, unknown>
   type: 'carto'
-}
+};
 
 export type CartoParams = {
   'stat_tag': 'API'
   config: string
   'api_key'?: string
-}
+};

@@ -19,7 +19,7 @@ class CartoProviderMaker implements ProviderMaker {
    * A name(key) for the provider.
    * Use the same name you will use in your layerSpec object.
    */
-  public name = 'carto'
+  public name = 'carto';
 
   public handleData = (
     layerModel: LayerModel,
@@ -74,7 +74,7 @@ class CartoProviderMaker implements ProviderMaker {
       .catch((err: Error) => {
         if (reject) reject(err);
       });
-  }
+  };
 }
 
 export default CartoProviderMaker;

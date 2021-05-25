@@ -12,7 +12,7 @@ export { default } from './src';
 
 export { LayerModel } from './src';
 
-export type LayerType = 'geojson' | 'raster' | 'vector'
+export type LayerType = 'geojson' | 'raster' | 'vector';
 
 /**
  * 'carto' provider requires @vizzuality/layer-manager-provider-carto
@@ -20,29 +20,29 @@ export type LayerType = 'geojson' | 'raster' | 'vector'
 export type Provider = {
   type: 'carto' | string
   options: Record<string, unknown>
-}
+};
 
 export type LMGeoJSONSourceRaw = GeoJSONSourceRaw & {
   provider: Provider
-}
+};
 
 export type LMVectorSource = VectorSource & {
   provider: Provider
-}
+};
 
 export type LMRasterSource = RasterSource & {
   provider: Provider
-}
+};
 
-export type Source = LMGeoJSONSourceRaw | LMVectorSource | LMRasterSource
+export type Source = LMGeoJSONSourceRaw | LMVectorSource | LMRasterSource;
 
-export type Params = Record<string, unknown>
+export type Params = Record<string, unknown>;
 
 /**
  * keys should start by 'where' or 'and'
  */
-export type SQLParams = Record<string, Params>
-export type DecodeParams = Record<string, number>
+export type SQLParams = Record<string, Params>;
+export type DecodeParams = Record<string, number>;
 
 /**
  * Documentation for images on MapboxGL
@@ -52,7 +52,7 @@ export type Image = {
   id: string
   src: string
   options?: { pixelRatio?: number; sdf?: boolean }
-}
+};
 
 export type LayerSpec = {
   id: string | number
@@ -70,7 +70,7 @@ export type LayerSpec = {
     layers: AnyLayer
   }
   interactivity?: unknown[],
-  onAfterAdd?: (layerModel: LayerModel) => void
+  onAfterAdd?: () => void
   onAfterRemove?: (layerModel: LayerModel) => void
 };
 
@@ -100,4 +100,8 @@ export interface Plugin {
   getLayerByProvider?: () => void // Deprecated
   setOptions: (options: Record<string, unknown>) => void
   unmount: () => void
+}
+
+export class PluginConstructor implements Partial<Plugin> {
+  constructor(map: Map)
 }

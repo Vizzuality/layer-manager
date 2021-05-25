@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@vizzuality/layer-manager": "^4.0.0-alpha.1",
+    "@vizzuality/layer-manager-utils": "^1.1.0-alpha.1",
     "cancelable-promise": "^3.2.3",
     "fast-deep-equal": "^3.1.3",
     "prop-types": "^15.7.2"
@@ -40,10 +41,11 @@
   "devDependencies": {
     "@types/axios": "^0.14.0",
     "@types/jest": "^26.0.23",
+    "@types/react": "^17.0.6",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
     "eslint": "^7.25.0",
-    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
