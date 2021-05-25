@@ -11,14 +11,36 @@ type UtilsParams = Params | QueryParams;
  */
 export const substitution = (originalStr: string, params: UtilsParams = {}): string => {
   let str = originalStr;
+
   Object.keys(params).forEach((key) => {
+    const value = params[key] as string;
+    const isObject = value != null
+      && typeof value === 'object'
+      && Object.prototype.toString.call(value) === '[object Object]';
+
+    if (Array.isArray(value) || isObject) {
+      str = str
+        .replace(new RegExp(`"{{${key}}}"`, 'g'), JSON.stringify(value))
+        .replace(new RegExp(`'{{${key}}}'`, 'g'), JSON.stringify(value))
+        .replace(new RegExp(`\`{{${key}}}\``, 'g'), JSON.stringify(value))
+        .replace(new RegExp(`"{${key}}"`, 'g'), JSON.stringify(value))
+        .replace(new RegExp(`'{${key}}'`, 'g'), JSON.stringify(value))
+        .replace(new RegExp(`\`{${key}}\``, 'g'), JSON.stringify(value));
+    }
+
+    if (typeof value === 'number' || typeof value === 'boolean') {
+      str = str
+        .replace(new RegExp(`"{{${key}}}"`, 'g'), value)
+        .replace(new RegExp(`'{{${key}}}'`, 'g'), value)
+        .replace(new RegExp(`\`{{${key}}}\``, 'g'), value)
+        .replace(new RegExp(`"{${key}}"`, 'g'), value)
+        .replace(new RegExp(`'{${key}}'`, 'g'), value)
+        .replace(new RegExp(`\`{${key}}\``, 'g'), value);
+    }
+
     str = str
-      .replace(new RegExp(`"{{${key}}}"`, 'g'), JSON.stringify(params[key]))
-      .replace(new RegExp(`'{{${key}}}'`, 'g'), JSON.stringify(params[key]))
-      .replace(new RegExp(`\`{{${key}}}\``, 'g'), JSON.stringify(params[key]))
-      .replace(new RegExp(`"{${key}}"`, 'g'), JSON.stringify(params[key]))
-      .replace(new RegExp(`'{${key}}'`, 'g'), JSON.stringify(params[key]))
-      .replace(new RegExp(`\`{${key}}\``, 'g'), JSON.stringify(params[key]));
+      .replace(new RegExp(`{{${key}}}`, 'g'), value.toString())
+      .replace(new RegExp(`{${key}}`, 'g'), value.toString());
   });
   return str;
 };
