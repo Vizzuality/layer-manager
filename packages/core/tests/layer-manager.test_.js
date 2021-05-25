@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable */
 const LayerManager = require('@vizzuality/layer-manager').default;
-const LayerModel = require('@vizzuality/layer-manager').LayerModel;
+const { LayerModel } = require('@vizzuality/layer-manager');
 
 function TestPlugin() {}
 TestPlugin.prototype.setParams = () => {};
@@ -13,10 +13,10 @@ TestPlugin.prototype.setVisibility = jest.fn();
 TestPlugin.prototype.setOpacity = jest.fn();
 TestPlugin.prototype.setZIndex = jest.fn();
 TestPlugin.prototype.setDecodeParams = jest.fn();
-TestPlugin.prototype.getLayerByType = jest.fn().mockImplementation(type => {
+TestPlugin.prototype.getLayerByType = jest.fn().mockImplementation((type) => {
   if (type !== 'success') {
     return () => ({
-      then: () => {}
+      then: () => {},
     });
   }
   const mapLayer = { id: 'YET_ANOTHER_MAP_LAYER' };
@@ -66,7 +66,7 @@ describe('Core layer manager', () => {
       interactivity: true,
       source: {},
       render: {},
-      extra: 'wait what?' // is this expected behaviour?
+      extra: 'wait what?', // is this expected behaviour?
     };
     const layer = { id: 'layer_1' };
     layerManager.add(layer, customOptions);
@@ -115,7 +115,7 @@ describe('Core layer manager', () => {
       opacity: 1,
       visibility: true,
       zIndex: 0,
-      decodeParams: { stuff: [] }
+      decodeParams: { stuff: [] },
     };
 
     layerManager.update('layer_0', changedProps);
@@ -130,7 +130,7 @@ describe('Core layer manager', () => {
     const changedProps = {
       opacity: 1,
       visibility: true,
-      zIndex: 0
+      zIndex: 0,
     };
 
     const originalLayer = { ...layerManager.layers[0] };
@@ -151,14 +151,14 @@ describe('Core layer manager', () => {
       ...changedProps,
       mapLayer,
       // does it makes sense to save the data? Perhaps only the keys are needed?
-      changedAttributes: changedProps
+      changedAttributes: changedProps,
     });
   });
 
   it('updates only the decodeParams', () => {
     const originalLayer = { ...layerManager.layers[0] };
     const changedProps = {
-      decodeParams: { key: 'someParams' }
+      decodeParams: { key: 'someParams' },
     };
     layerManager.update('layer_1', changedProps);
 
@@ -171,7 +171,7 @@ describe('Core layer manager', () => {
       ...originalLayer,
       ...changedProps,
       // does it makes sense to save the data? Perhaps only the keys are needed?
-      changedAttributes: changedProps
+      changedAttributes: changedProps,
     });
   });
 
@@ -180,7 +180,7 @@ describe('Core layer manager', () => {
       id: 'layer_2',
       type: 'vector',
       source: {},
-      render: {}
+      render: {},
     };
     layerManager.add(newLayer);
     const layer = layerManager.layers[1];

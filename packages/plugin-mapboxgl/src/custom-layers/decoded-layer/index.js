@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Copyright (c) 2015 Uber Technologies, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,35 +19,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-/* eslint-disable no-underscore-dangle,no-param-reassign,prefer-destructuring,class-methods-use-this */
-/* global Image, HTMLCanvasElement */
 import GL from '@luma.gl/constants';
-import { Layer } from '@deck.gl/core';
-import { Model, Geometry, Texture2D, fp64 } from 'luma.gl';
-import { loadImage } from '@loaders.gl/images';
-import decodeVX from './decoded-layer-vertex';
-import decodeFR from './decoded-layer-fragment';
+import {
+  Layer, project32, picking, COORDINATE_SYSTEM,
+} from '@deck.gl/core';
+import { Model, Geometry } from '@luma.gl/core';
+import { lngLatToWorld } from '@math.gl/web-mercator';
 
-const { fp64LowPart } = fp64;
+import createMesh from './create-mesh';
 
-const DEFAULT_TEXTURE_PARAMETERS = {
-  [GL.TEXTURE_MIN_FILTER]: GL.NEAREST,
-  [GL.TEXTURE_MAG_FILTER]: GL.NEAREST,
-  [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
-  [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE
-};
+import decodeVS from './decoded-layer-vertex';
+import decodeFS from './decoded-layer-fragment';
 
 const defaultProps = {
-  image: null,
+  image: { type: 'image', value: null, async: true },
   bounds: { type: 'array', value: [1, 0, 0, 1], compare: true },
-  fp64: false,
+  _imageCoordinateSystem: COORDINATE_SYSTEM.DEFAULT,
 
-  desaturate: { type: 'number', min: 0, max: 1, value: 0 },
+  desaturate: {
+    type: 'number', min: 0, max: 1, value: 0,
+  },
   // More context: because of the blending mode we're using for ground imagery,
   // alpha is not effective when blending the bitmap layers with the base map.
   // Instead we need to manually dim/blend rgb values with a background color.
   transparentColor: { type: 'color', value: [0, 0, 0, 0] },
-  tintColor: { type: 'color', value: [255, 255, 255] }
+  tintColor: { type: 'color', value: [255, 255, 255] },
 };
 
 /*
@@ -55,76 +52,125 @@ const defaultProps = {
  * @param {number} props.transparentColor - color to interpret transparency to
  * @param {number} props.tintColor - color bias
  */
-export default class DecodeLayer extends Layer {
+export default class DecodedLayer extends Layer {
   getShaders() {
-    const projectModule = 'project32';
-    const fs = decodeFR
+    const fs = decodeFS
       .replace(
         '{decodeParams}',
         Object.keys(this.props.decodeParams)
-          .map(p => `uniform float ${p};`)
-          .join(' ')
+          .map((p) => `uniform float ${p};`)
+          .join(' '),
       )
       .replace('{decodeFunction}', this.props.decodeFunction || '');
 
-    return { vs: decodeVX, fs, modules: [projectModule, 'picking'] };
+    return super.getShaders({
+      vs: decodeVS,
+      fs,
+      modules: [project32, picking],
+    });
   }
 
   initializeState() {
     const attributeManager = this.getAttributeManager();
 
+    attributeManager.remove(['instancePickingColors']);
+    const noAlloc = true;
+
     attributeManager.add({
+      indices: {
+        size: 1,
+        isIndexed: true,
+        update: (attribute) => (attribute.value = this.state.mesh.indices),
+        noAlloc,
+      },
       positions: {
         size: 3,
-        update: this.calculatePositions,
-        value: new Float32Array(12)
+        type: GL.DOUBLE,
+        fp64: this.use64bitPositions(),
+        update: (attribute) => (attribute.value = this.state.mesh.positions),
+        noAlloc,
       },
-      positions64xyLow: {
-        size: 3,
-        update: this.calculatePositions64xyLow,
-        value: new Float32Array(12)
-      }
+      texCoords: {
+        size: 2,
+        update: (attribute) => (attribute.value = this.state.mesh.texCoords),
+        noAlloc,
+      },
     });
-
-    this.setState({ numInstances: 4 }); // 4 corners
   }
 
-  updateState({ props, oldProps }) {
+  updateState({ props, oldProps, changeFlags }) {
     // setup model first
-    if (props.fp64 !== oldProps.fp64) {
+    if (changeFlags.extensionsChanged) {
       const { gl } = this.context;
-      if (this.state.model) {
-        this.state.model.delete();
-      }
-      this.setState({ model: this._getModel(gl) });
+      this.state.model?.delete();
+      this.state.model = this._getModel(gl);
       this.getAttributeManager().invalidateAll();
-    }
-
-    if (props.image !== oldProps.image) {
-      this.loadTexture(props.image);
     }
 
     const attributeManager = this.getAttributeManager();
 
     if (props.bounds !== oldProps.bounds) {
-      this.setState({
-        positions: this._getPositionsFromBounds(props.bounds)
-      });
-      attributeManager.invalidate('positions');
-      attributeManager.invalidate('positions64xyLow');
+      const oldMesh = this.state.mesh;
+      const mesh = this._createMesh();
+      this.state.model.setVertexCount(mesh.vertexCount);
+      for (const key in mesh) {
+        if (oldMesh && oldMesh[key] !== mesh[key]) {
+          attributeManager.invalidate(key);
+        }
+      }
+      this.setState({ mesh, ...this._getCoordinateUniforms() });
+    } else if (props._imageCoordinateSystem !== oldProps._imageCoordinateSystem) {
+      this.setState(this._getCoordinateUniforms());
     }
   }
 
-  finalizeState() {
-    super.finalizeState();
+  getPickingInfo({ info }) {
+    const { image } = this.props;
 
-    if (this.state.bitmapTexture) {
-      this.state.bitmapTexture.delete();
+    if (!info.color || !image) {
+      info.bitmap = null;
+      return info;
     }
+
+    const { width, height } = image;
+
+    // Picking color doesn't represent object index in this layer
+    info.index = 0;
+
+    // Calculate uv and pixel in bitmap
+    const uv = unpackUVsFromRGB(info.color);
+
+    const pixel = [Math.floor(uv[0] * width), Math.floor(uv[1] * height)];
+
+    info.bitmap = {
+      size: { width, height }, // Size of bitmap
+      uv, // Floating point precision in 0-1 range
+      pixel, // Truncated to integer and scaled to pixel size
+    };
+
+    return info;
   }
 
-  _getPositionsFromBounds(bounds) {
-    const positions = new Array(12);
+  // Override base Layer multi-depth picking logic
+  disablePickingIndex() {
+    this.setState({ disablePicking: true });
+  }
+
+  restorePickingColors() {
+    this.setState({ disablePicking: false });
+  }
+
+  _updateAutoHighlight(info) {
+    super._updateAutoHighlight({
+      ...info,
+      color: this.encodePickingColor(0),
+    });
+  }
+
+  _createMesh() {
+    const { bounds } = this.props;
+
+    let normalizedBounds = bounds;
     // bounds as [minX, minY, maxX, maxY]
     if (Number.isFinite(bounds[0])) {
       /*
@@ -134,31 +180,15 @@ export default class DecodeLayer extends Layer {
                |                  |
         (minX0, minY1) ---- (maxX2, minY1)
      */
-      positions[0] = bounds[0];
-      positions[1] = bounds[1];
-      positions[2] = 0;
-
-      positions[3] = bounds[0];
-      positions[4] = bounds[3];
-      positions[5] = 0;
-
-      positions[6] = bounds[2];
-      positions[7] = bounds[3];
-      positions[8] = 0;
-
-      positions[9] = bounds[2];
-      positions[10] = bounds[1];
-      positions[11] = 0;
-    } else {
-      // [[minX, minY], [minX, maxY], [maxX, maxY], [maxX, minY]]
-      for (let i = 0; i < bounds.length; i++) {
-        positions[i * 3 + 0] = bounds[i][0];
-        positions[i * 3 + 1] = bounds[i][1];
-        positions[i * 3 + 2] = bounds[i][2] || 0;
-      }
+      normalizedBounds = [
+        [bounds[0], bounds[1]],
+        [bounds[0], bounds[3]],
+        [bounds[2], bounds[3]],
+        [bounds[2], bounds[1]],
+      ];
     }
 
-    return positions;
+    return createMesh(normalizedBounds, this.context.viewport.resolution);
   }
 
   _getModel(gl) {
@@ -167,100 +197,103 @@ export default class DecodeLayer extends Layer {
     }
 
     /*
-      0,1 --- 1,1
-       |       |
       0,0 --- 1,0
+       |       |
+      0,1 --- 1,1
     */
-    return new Model(
-      gl,
-      Object.assign({}, this.getShaders(), {
-        id: this.props.id,
-        shaderCache: this.context.shaderCache,
-        geometry: new Geometry({
-          drawMode: GL.TRIANGLE_FAN,
-          vertexCount: 4,
-          attributes: {
-            texCoords: new Float32Array([0, 0, 0, 1, 1, 1, 1, 0])
-          }
-        }),
-        isInstanced: false
-      })
-    );
+    return new Model(gl, {
+      ...this.getShaders(),
+      id: this.props.id,
+      geometry: new Geometry({
+        drawMode: GL.TRIANGLES,
+        vertexCount: 6,
+      }),
+      isInstanced: false,
+    });
   }
 
-  draw({ uniforms }) {
-    const { bitmapTexture, model } = this.state;
-    const { desaturate, transparentColor, tintColor, zoom, decodeParams, opacity } = this.props;
+  draw(opts) {
+    const { uniforms, moduleParameters } = opts;
+    const {
+      model, coordinateConversion, bounds, disablePicking,
+    } = this.state;
+    const {
+      image, desaturate, transparentColor, tintColor,
+      zoom, decodeParams, opacity,
+    } = this.props;
+
+    if (moduleParameters.pickingActive && disablePicking) {
+      return;
+    }
 
     // // TODO fix zFighting
     // Render the image
-    if (bitmapTexture && model) {
+    if (image && model) {
+      console.log(model);
+
       model
-        .setUniforms(
-          Object.assign({}, uniforms, {
-            bitmapTexture,
-            desaturate,
-            transparentColor,
-            tintColor,
-            zoom,
-            ...decodeParams,
-            opacity
-          })
-        )
+        .setUniforms(uniforms)
+        .setUniforms({
+          bitmapTexture: image,
+          desaturate,
+          transparentColor: transparentColor.map((x) => x / 255),
+          tintColor: tintColor.slice(0, 3).map((x) => x / 255),
+          coordinateConversion,
+          bounds,
+          zoom,
+          opacity,
+          ...decodeParams,
+        })
         .draw();
     }
   }
 
-  loadTexture(image) {
-    if (typeof image === 'string') {
-      image = loadImage(image);
+  _getCoordinateUniforms() {
+    const { LNGLAT, CARTESIAN, DEFAULT } = COORDINATE_SYSTEM;
+    let { _imageCoordinateSystem: imageCoordinateSystem } = this.props;
+    if (imageCoordinateSystem !== DEFAULT) {
+      const { bounds } = this.props;
+      if (!Number.isFinite(bounds[0])) {
+        throw new Error('_imageCoordinateSystem only supports rectangular bounds');
+      }
+
+      // The default behavior (linearly interpolated tex coords)
+      const defaultImageCoordinateSystem = this.context.viewport.resolution ? LNGLAT : CARTESIAN;
+      imageCoordinateSystem = imageCoordinateSystem === LNGLAT ? LNGLAT : CARTESIAN;
+
+      if (imageCoordinateSystem === LNGLAT && defaultImageCoordinateSystem === CARTESIAN) {
+        // LNGLAT in Mercator, e.g. display LNGLAT-encoded image in WebMercator projection
+        return { coordinateConversion: -1, bounds };
+      }
+      if (imageCoordinateSystem === CARTESIAN && defaultImageCoordinateSystem === LNGLAT) {
+        // Mercator in LNGLAT, e.g. display WebMercator encoded image in Globe projection
+        const bottomLeft = lngLatToWorld([bounds[0], bounds[1]]);
+        const topRight = lngLatToWorld([bounds[2], bounds[3]]);
+        return {
+          coordinateConversion: 1,
+          bounds: [bottomLeft[0], bottomLeft[1], topRight[0], topRight[1]],
+        };
+      }
     }
-    if (image instanceof Promise) {
-      image.then(data => this.loadTexture(data));
-      return;
-    }
-
-    const { gl } = this.context;
-
-    if (this.state.bitmapTexture) {
-      this.state.bitmapTexture.delete();
-    }
-
-    if (image instanceof Texture2D) {
-      this.setState({ bitmapTexture: image });
-    } else if (
-      // browser object
-      image instanceof Image ||
-      image instanceof HTMLCanvasElement
-    ) {
-      this.setState({
-        bitmapTexture: new Texture2D(gl, {
-          data: image,
-          parameters: DEFAULT_TEXTURE_PARAMETERS,
-          mipmaps: false
-        })
-      });
-    }
-  }
-
-  calculatePositions({ value }) {
-    const { positions } = this.state;
-    value.set(positions);
-  }
-
-  calculatePositions64xyLow(attribute) {
-    const isFP64 = this.use64bitPositions();
-    attribute.constant = !isFP64;
-
-    if (!isFP64) {
-      attribute.value = new Float32Array(4);
-      return;
-    }
-
-    const { value } = attribute;
-    value.set(this.state.positions.map(fp64LowPart));
+    return {
+      coordinateConversion: 0,
+      bounds: [0, 0, 0, 0],
+    };
   }
 }
 
-DecodeLayer.layerName = 'DecodeLayer';
-DecodeLayer.defaultProps = defaultProps;
+DecodedLayer.layerName = 'DecodedLayer';
+DecodedLayer.defaultProps = defaultProps;
+
+/**
+ * Decode uv floats from rgb bytes where b contains 4-bit fractions of uv
+ * @param {number[]} color
+ * @returns {number[]} uvs
+ * https://stackoverflow.com/questions/30242013/glsl-compressing-packing-multiple-0-1-colours-var4-into-a-single-var4-variab
+ */
+function unpackUVsFromRGB(color) {
+  const [u, v, fracUV] = color;
+  const vFrac = (fracUV & 0xf0) / 256;
+  const uFrac = (fracUV & 0x0f) / 16;
+  return [(u + uFrac) / 256, (v + vFrac) / 256];
+}

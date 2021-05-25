@@ -1,20 +1,23 @@
 import { CancelablePromise } from 'cancelable-promise';
-import LayerModel from './layer-model';
 import { isEmpty } from '@vizzuality/layer-manager-utils';
+import LayerModel from './layer-model';
 
 import type { LayerSpec, ProviderMaker, Plugin } from '../types';
 
 const defaultLayerOptions: Partial<LayerSpec> = {
   opacity: 1,
   visibility: true,
-  zIndex: 0
+  zIndex: 0,
 };
 
 class LayerManager {
-  private _layers: LayerModel[] = []
-  private _plugin: Plugin
-  private _promises: Record<LayerSpec['id'], any> = {} // TO-DO: better type definition
-  static providers: Record<ProviderMaker['name'], ProviderMaker['handleData']> = {}
+  private _layers: LayerModel[] = [];
+
+  private _plugin: Plugin;
+
+  private _promises: Record<LayerSpec['id'], any> = {}; // TO-DO: better type definition
+
+  static providers: Record<ProviderMaker['name'], ProviderMaker['handleData']> = {};
 
   constructor(plugin: Plugin) {
     this._plugin = plugin;
@@ -52,7 +55,7 @@ class LayerManager {
    * @param {String} id
    * @param {Object} newLayerSpec
    */
-  update(id: LayerSpec["id"], newLayerSpec: Partial<LayerSpec>): void {
+  update(id: LayerSpec['id'], newLayerSpec: Partial<LayerSpec>): void {
     const layerModel = this.getLayerModel(id);
     if (!layerModel || !layerModel.mapLayer) return;
 
@@ -66,7 +69,7 @@ class LayerManager {
       render,
       params,
       sqlParams,
-      decodeParams
+      decodeParams,
     } = newLayerSpec;
 
     if (typeof opacity !== 'undefined') {
@@ -107,7 +110,7 @@ class LayerManager {
    * @param {String} id
    * @param {Function} onAfterRemove
    */
-  remove(id: LayerSpec["id"], onAfterRemove: (layerModel: LayerModel) => void): void {
+  remove(id: LayerSpec['id'], onAfterRemove: (layerModel: LayerModel) => void): void {
     const layers = this._layers.slice(0);
 
     this.requestCancel(id);
@@ -119,7 +122,7 @@ class LayerManager {
       onAfterRemove(layerModel);
     }
 
-    this._layers = layers.filter(l => l.id !== id);
+    this._layers = layers.filter((l) => l.id !== id);
   }
 
   /**
@@ -131,7 +134,7 @@ class LayerManager {
     return this._layers;
   }
 
-  public getLayerModel(id: LayerSpec["id"]): LayerModel | undefined {
+  public getLayerModel(id: LayerSpec['id']): LayerModel | undefined {
     return this._layers.find((layerModel) => layerModel.id === id);
   }
 
@@ -165,13 +168,13 @@ class LayerManager {
     if (layerModel) this._plugin.setZIndex(layerModel, zIndex);
   }
 
-  requestLayer(layerModel: LayerModel, onAfterAdd: (layerModel: LayerModel) => void): void {
-    const { id,  type } = layerModel;
+  requestLayer(layerModel: LayerModel, onAfterAdd: (_layerModel: LayerModel) => void): void {
+    const { id, type } = layerModel;
     const method = this._plugin.getLayerByType(type);
 
     if (!method) {
       this._promises[id] = CancelablePromise.reject(
-        new Error(`${type} type is not yet supported.`)
+        new Error(`${type} type is not yet supported.`),
       );
     } else {
       // Cancel previous/existing request
@@ -179,21 +182,30 @@ class LayerManager {
 
       // every request method returns a promise that we store in the array
       // to control when all layers are fetched.
-      this._promises[layerModel.id] = method.call(this, layerModel, LayerManager.providers).then((layer: unknown) => {
-        const { _canceled } = this._promises[layerModel.id];
-        if (!_canceled) {
-          layerModel.setMapLayer(layer);
+      this._promises[layerModel.id] = method
+        .call(this, layerModel, LayerManager.providers)
+        .then((layer: unknown) => {
+          const { canceled } = this._promises[layerModel.id];
+          if (!canceled) {
+            layerModel.setMapLayer(layer);
 
-          this._plugin.add(layerModel, this._layers);
-          if (layerModel.zIndex || layerModel.zIndex === 0) this._plugin.setZIndex(layerModel, layerModel.zIndex);
-          if (layerModel.opacity || layerModel.opacity === 0) this._plugin.setOpacity(layerModel, layerModel.opacity);
-          if (layerModel.visibility) this._plugin.setVisibility(layerModel, layerModel.visibility);
+            this._plugin.add(layerModel, this._layers);
 
-          this._plugin.setRender(layerModel);
+            if (layerModel.zIndex || layerModel.zIndex === 0) {
+              this._plugin.setZIndex(layerModel, layerModel.zIndex);
+            }
+            if (layerModel.opacity || layerModel.opacity === 0) {
+              this._plugin.setOpacity(layerModel, layerModel.opacity);
+            }
+            if (layerModel.visibility) {
+              this._plugin.setVisibility(layerModel, layerModel.visibility);
+            }
 
-          onAfterAdd(layerModel);
-        }
-      });
+            this._plugin.setRender(layerModel);
+
+            onAfterAdd(layerModel);
+          }
+        });
     }
   }
 
@@ -237,7 +249,7 @@ class LayerManager {
   public static registerProvider(provider: ProviderMaker): void {
     LayerManager.providers = {
       ...LayerManager.providers,
-      [provider.name]: provider.handleData
+      [provider.name]: provider.handleData,
     };
   }
 }

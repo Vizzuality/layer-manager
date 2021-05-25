@@ -1,4 +1,4 @@
-import omit from '../src/omit';
+import { omit } from '../src';
 
 describe('isEmpty', () => {
   it('object should be empty', () => {

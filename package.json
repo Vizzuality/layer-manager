@@ -10,12 +10,13 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "bootstrap": "lerna bootstrap",
+    "bootstrap": "lerna bootstrap && npx husky install",
     "lint": "lerna run lint",
     "build": "lerna run build",
     "test": "lerna run test"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "applications/*"
   ]
 }

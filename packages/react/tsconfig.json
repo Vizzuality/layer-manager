@@ -2,6 +2,7 @@
   "extends": "./tsconfig.build.json",
   "compilerOptions": {
     "composite": false,
+    "jsx": "react",
     "rootDir": "."
   },
   "include": ["src", "index.d.ts"]

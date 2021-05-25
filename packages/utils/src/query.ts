@@ -1,4 +1,7 @@
-import type { QueryParams, WhereQueryParams} from '../types';
+import type { Params } from '@vizzuality/layer-manager';
+import type { QueryParams, WhereQueryParams } from '../types';
+
+type UtilsParams = Params | QueryParams;
 
 /**
  * Params should have this format => { key:'xxx', key2:'xxx' }
@@ -6,36 +9,38 @@ import type { QueryParams, WhereQueryParams} from '../types';
  * @param {String} originalStr
  * @param {Object} params
  */
-export const substitution = (originalStr: string, params: QueryParams = {}): string => {
+export const substitution = (originalStr: string, params: UtilsParams = {}): string => {
   let str = originalStr;
-  Object.keys(params).forEach(key => {
-    const isObject = params[key] != null
-      && typeof params[key] === 'object'
-      && Object.prototype.toString.call(params[key]) === '[object Object]';
 
-    if (Array.isArray(params[key]) || isObject) {
+  Object.keys(params).forEach((key) => {
+    const value = params[key] as string;
+    const isObject = value != null
+      && typeof value === 'object'
+      && Object.prototype.toString.call(value) === '[object Object]';
+
+    if (Array.isArray(value) || isObject) {
       str = str
-        .replace(new RegExp(`"{{${key}}}"`, 'g'), JSON.stringify(params[key]))
-        .replace(new RegExp(`'{{${key}}}'`, 'g'), JSON.stringify(params[key]))
-        .replace(new RegExp(`\`{{${key}}}\``, 'g'), JSON.stringify(params[key]))
-        .replace(new RegExp(`"{${key}}"`, 'g'), JSON.stringify(params[key]))
-        .replace(new RegExp(`'{${key}}'`, 'g'), JSON.stringify(params[key]))
-        .replace(new RegExp(`\`{${key}}\``, 'g'), JSON.stringify(params[key]));
+        .replace(new RegExp(`"{{${key}}}"`, 'g'), JSON.stringify(value))
+        .replace(new RegExp(`'{{${key}}}'`, 'g'), JSON.stringify(value))
+        .replace(new RegExp(`\`{{${key}}}\``, 'g'), JSON.stringify(value))
+        .replace(new RegExp(`"{${key}}"`, 'g'), JSON.stringify(value))
+        .replace(new RegExp(`'{${key}}'`, 'g'), JSON.stringify(value))
+        .replace(new RegExp(`\`{${key}}\``, 'g'), JSON.stringify(value));
     }
 
-    if (typeof params[key] === 'number' || typeof params[key] === 'boolean') {
+    if (typeof value === 'number' || typeof value === 'boolean') {
       str = str
-        .replace(new RegExp(`"{{${key}}}"`, 'g'), params[key].toString())
-        .replace(new RegExp(`'{{${key}}}'`, 'g'), params[key].toString())
-        .replace(new RegExp(`\`{{${key}}}\``, 'g'), params[key].toString())
-        .replace(new RegExp(`"{${key}}"`, 'g'), params[key].toString())
-        .replace(new RegExp(`'{${key}}'`, 'g'), params[key].toString())
-        .replace(new RegExp(`\`{${key}}\``, 'g'), params[key].toString());
+        .replace(new RegExp(`"{{${key}}}"`, 'g'), value)
+        .replace(new RegExp(`'{{${key}}}'`, 'g'), value)
+        .replace(new RegExp(`\`{{${key}}}\``, 'g'), value)
+        .replace(new RegExp(`"{${key}}"`, 'g'), value)
+        .replace(new RegExp(`'{${key}}'`, 'g'), value)
+        .replace(new RegExp(`\`{${key}}\``, 'g'), value);
     }
 
     str = str
-      .replace(new RegExp(`{{${key}}}`, 'g'), params[key].toString())
-      .replace(new RegExp(`{${key}}`, 'g'), params[key].toString());
+      .replace(new RegExp(`{{${key}}}`, 'g'), value.toString())
+      .replace(new RegExp(`{${key}}`, 'g'), value.toString());
   });
   return str;
 };
@@ -49,13 +54,13 @@ export const substitution = (originalStr: string, params: QueryParams = {}): str
 export const concatenation = (originalStr: string, params: WhereQueryParams = {}): string => {
   let result = originalStr;
 
-  Object.keys(params).map(key => {
+  Object.keys(params).forEach((key) => {
     let sql = `${Object.keys(params[key])
-      .map(k => {
+      .map((k) => {
         const value = params[key][k];
 
         if (Array.isArray(value) && !!value.length) {
-          const mappedValue = value.map(v => (typeof v !== 'number' ? `'${v}'` : v));
+          const mappedValue = value.map((v) => (typeof v !== 'number' ? `'${v}'` : v));
           return `${k} IN (${mappedValue.join(', ')})`;
         }
 
@@ -65,7 +70,7 @@ export const concatenation = (originalStr: string, params: WhereQueryParams = {}
 
         return null;
       })
-      .filter(value => !!value)
+      .filter((value) => !!value)
       .join(' AND ')}`;
 
     if (sql && key.startsWith('where')) sql = `WHERE ${sql}`;
@@ -84,7 +89,11 @@ export const concatenation = (originalStr: string, params: WhereQueryParams = {}
  * @param {Object} params
  * @param {Object} sqlParams
  */
-export const replace = (originalStr: string, params: QueryParams = {}, sqlParams: WhereQueryParams = {}): string => {
+export const replace = (
+  originalStr: string,
+  params: UtilsParams = {},
+  sqlParams: WhereQueryParams = {},
+): string => {
   let str = originalStr;
 
   if (typeof str === 'string') {

@@ -1,6 +1,7 @@
 {
   "extends": [
     "../../.eslintrc.json",
+    "airbnb/hooks",
     "plugin:react/recommended"
   ],
   "parser": "@typescript-eslint/parser",
@@ -12,5 +13,7 @@
       "version": "detect"
     }
   },
-  "rules": {}
+  "rules": {
+    "react/jsx-filename-extension": [1, { "extensions": [".jsx", ".tsx"] }]
+  }
 }

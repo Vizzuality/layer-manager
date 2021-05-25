@@ -1,5 +1,8 @@
-/* eslint-disable no-param-reassign,no-restricted-properties,class-methods-use-this,no-underscore-dangle */
-import { CompositeLayer } from 'deck.gl';
+/*
+  eslint-disable no-param-reassign,
+  no-restricted-properties,class-methods-use-this,no-underscore-dangle
+*/
+import { CompositeLayer } from '@deck.gl/core';
 import TileCache from './utils/tile-cache';
 
 const defaultProps = {
@@ -11,14 +14,14 @@ const defaultProps = {
   onTileError: { type: 'function', value: err => console.error(err) },
   maxZoom: null,
   minZoom: 0,
-  maxCacheSize: null
+  maxCacheSize: null,
 };
 
 export default class TileLayer extends CompositeLayer {
   initializeState() {
     this.state = {
       tiles: [],
-      isLoaded: false
+      isLoaded: false,
     };
   }
 
@@ -29,11 +32,13 @@ export default class TileLayer extends CompositeLayer {
   updateState({ props, context, changeFlags }) {
     let { tileCache } = this.state;
     if (
-      !tileCache ||
-      (changeFlags.updateTriggersChanged &&
-        (changeFlags.updateTriggersChanged.all || changeFlags.updateTriggersChanged.getTileData))
+      !tileCache
+      || (changeFlags.updateTriggersChanged
+        && (changeFlags.updateTriggersChanged.all || changeFlags.updateTriggersChanged.getTileData))
     ) {
-      const { getTileData, maxZoom, minZoom, maxCacheSize } = props;
+      const {
+        getTileData, maxZoom, minZoom, maxCacheSize,
+      } = props;
       if (tileCache) {
         tileCache.finalize();
       }
@@ -43,13 +48,13 @@ export default class TileLayer extends CompositeLayer {
         maxZoom,
         minZoom,
         onTileLoad: this._onTileLoad.bind(this),
-        onTileError: this._onTileError.bind(this)
+        onTileError: this._onTileError.bind(this),
       });
 
       this.setState({ tileCache });
     } else if (changeFlags.updateTriggersChanged) {
       // if any updateTriggersChanged (other than getTileData), delete the layer
-      this.state.tileCache.tiles.forEach(tile => {
+      this.state.tileCache.tiles.forEach((tile) => {
         tile.layer = null;
       });
     }
@@ -59,7 +64,7 @@ export default class TileLayer extends CompositeLayer {
       const z = this.getLayerZoomLevel();
       tileCache.update(viewport);
       // The tiles that should be displayed at this zoom level
-      const currTiles = tileCache.tiles.filter(tile => tile.z === z);
+      const currTiles = tileCache.tiles.filter((tile) => tile.z === z);
       this.setState({ isLoaded: false, tiles: currTiles });
       this._onTileLoad();
     }
@@ -68,12 +73,12 @@ export default class TileLayer extends CompositeLayer {
   _onTileLoad() {
     const { onViewportLoaded } = this.props;
     const currTiles = this.state.tiles;
-    const allCurrTilesLoaded = currTiles.every(tile => tile.isLoaded);
+    const allCurrTilesLoaded = currTiles.every((tile) => tile.isLoaded);
 
     if (this.state.isLoaded !== allCurrTilesLoaded) {
       this.setState({ isLoaded: allCurrTilesLoaded });
       if (allCurrTilesLoaded && onViewportLoaded) {
-        onViewportLoaded(currTiles.filter(tile => tile._data).map(tile => tile._data));
+        onViewportLoaded(currTiles.filter((tile) => tile._data).map((tile) => tile._data));
       }
     }
   }
@@ -104,10 +109,12 @@ export default class TileLayer extends CompositeLayer {
   }
 
   renderLayers() {
-    const { visible, opacity, decodeParams, renderSubLayers } = this.props;
+    const {
+      visible, opacity, decodeParams, renderSubLayers,
+    } = this.props;
     const z = this.getLayerZoomLevel();
 
-    return this.state.tiles.map(tile => {
+    return this.state.tiles.map((tile) => {
       // For a tile to be visible:
       // - parent layer must be visible
       // - tile must be visible in the current viewport
@@ -116,7 +123,8 @@ export default class TileLayer extends CompositeLayer {
 
       // cache the rendered layer in the tile
       if (!tile.layer) {
-        // I have an error when I try this condition. I think is related to return the same tile.layer
+        // I have an error when I try this condition.
+        // I think is related to return the same tile.layer
         // https://github.com/uber/deck.gl/blob/c616dbfbcbdc9d8533b88ba8a142c5527764bbd8/modules/core/src/lib/layer-manager.js#L67-L70
         tile.layer = renderSubLayers({
           ...this.props,
@@ -125,19 +133,19 @@ export default class TileLayer extends CompositeLayer {
           visible: isVisible,
           opacity,
           tile,
-          zoom: z
+          zoom: z,
         });
       } else if (tile.layer.props.visible !== isVisible) {
         tile.layer = tile.layer.clone({
-          visible: isVisible
+          visible: isVisible,
         });
       } else if (tile.layer.props.opacity !== opacity) {
         tile.layer = tile.layer.clone({
-          opacity
+          opacity,
         });
       } else if (tile.layer.props.decodeParams) {
         tile.layer = tile.layer.clone({
-          decodeParams
+          decodeParams,
         });
       }
       return tile.layer;

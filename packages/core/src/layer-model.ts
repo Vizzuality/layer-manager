@@ -1,7 +1,7 @@
 import isEqual from 'fast-deep-equal';
 
-import type { LayerSpec } from '../types';
 import type { CancelTokenSource } from 'axios';
+import type { LayerSpec } from '../types';
 
 const defaultLayerSpec: Partial<LayerSpec> = {
   opacity: 1,
@@ -9,25 +9,25 @@ const defaultLayerSpec: Partial<LayerSpec> = {
 };
 
 class LayerModel {
-  private _uid: number // for internal purposes
+  private _uid: number; // for internal purposes
 
-  static _counter = 0
+  static _counter = 0;
 
-  private _changedAttributes: Partial<LayerSpec> = {}
+  private _changedAttributes: Partial<LayerSpec> = {};
 
-  public layerRequest: CancelTokenSource | undefined = undefined
+  public layerRequest: CancelTokenSource | undefined = undefined;
 
-  public mapLayer: unknown // depends on the plugin
+  public mapLayer: unknown; // depends on the plugin
 
   constructor(private _layerSpec: LayerSpec) {
     if (!_layerSpec) throw new Error('layerSpec object is required');
 
     // updating counter for internal purposes
-    LayerModel._counter = LayerModel._counter++;
+    LayerModel._counter += 1;
 
     this._layerSpec = {
       ...defaultLayerSpec,
-      ..._layerSpec
+      ..._layerSpec,
     };
 
     this._uid = LayerModel._counter;
@@ -97,7 +97,7 @@ class LayerModel {
     return this._changedAttributes;
   }
 
-  public setMapLayer(mapLayer: unknown): void  {
+  public setMapLayer(mapLayer: unknown): void {
     this.mapLayer = mapLayer;
   }
 

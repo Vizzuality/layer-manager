@@ -10,10 +10,10 @@ const GeoJsonLayer = (layerModel, providers) => {
     id,
     source: {
       type: 'geojson',
-      ...source
+      ...source,
     },
     ...render,
-    layers: getVectorStyleLayers(layers, layerModel)
+    layers: getVectorStyleLayers(layers, layerModel),
   };
 
   if (provider) {
@@ -23,8 +23,8 @@ const GeoJsonLayer = (layerModel, providers) => {
       if (!method) {
         reject(
           new Error(
-            `${provider.type} provider is not supported. Try to add it to the providers method when you initialize layer-manager`
-          )
+            `${provider.type} provider is not supported. Try to add it to the providers method when you initialize layer-manager`,
+          ),
         );
       }
 

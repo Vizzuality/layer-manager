@@ -3,6 +3,126 @@
 /* eslint-disable no-param-reassign */
 import { Deck, WebMercatorViewport } from '@deck.gl/core';
 
+function getLayers(deck, layerFilter) {
+  const layers = deck.layerManager.getLayers();
+  return layers.filter(layerFilter);
+}
+
+function shouldDrawLayer(id, layer) {
+  let layerInstance = layer;
+  while (layerInstance) {
+    if (layerInstance.id === id) {
+      return true;
+    }
+    layerInstance = layerInstance.parent;
+  }
+  return false;
+}
+
+function updateLayers(deck) {
+  if (deck.props.userData.isExternal) {
+    return;
+  }
+
+  const layers = [];
+  deck.props.userData.mapboxLayers.forEach((deckLayer) => {
+    const LayerType = deckLayer.props.type;
+    const layer = new LayerType(deckLayer.props);
+    layers.push(layer);
+  });
+  deck.setProps({ layers });
+}
+
+function getViewState(map) {
+  const { lng, lat } = map.getCenter();
+  return {
+    longitude: lng,
+    latitude: lat,
+    zoom: map.getZoom(),
+    bearing: map.getBearing(),
+    pitch: map.getPitch(),
+  };
+}
+
+function getMapboxVersion(map) {
+  // parse mapbox version string
+  let major = 0;
+  let minor = 0;
+  if (map.version) {
+    [major, minor] = map.version
+      .split('.')
+      .slice(0, 2)
+      .map(Number);
+  }
+  return { major, minor };
+}
+
+function getViewport(deck, map, useMapboxProjection = true) {
+  const { mapboxVersion } = deck.props.userData;
+
+  return new WebMercatorViewport(
+    {
+      x: 0,
+      y: 0,
+      width: deck.width,
+      height: deck.height,
+      repeat: true,
+      ...getViewState(map),
+      ...(useMapboxProjection
+        ? {
+          // match mapbox's projection matrix
+          // A change of near plane was made in 1.3.0
+          // https://github.com/mapbox/mapbox-gl-js/pull/8502
+          nearZMultiplier:
+              (mapboxVersion.major === 1 && mapboxVersion.minor >= 3) || mapboxVersion.major >= 2
+                ? 0.02
+                : 1 / (deck.height || 1),
+        }
+        : {
+          // use deck.gl's own default
+          nearZMultiplier: 0.1,
+        }),
+    },
+  );
+}
+
+function afterRender(deck, map) {
+  const { mapboxLayers, isExternal } = deck.props.userData;
+
+  if (isExternal) {
+    // Draw non-Mapbox layers
+    const mapboxLayerIds = Array.from(mapboxLayers, (layer) => layer.id);
+    const layers = getLayers(deck, (deckLayer) => {
+      for (const id of mapboxLayerIds) {
+        if (shouldDrawLayer(id, deckLayer)) {
+          return false;
+        }
+      }
+      return true;
+    });
+    if (layers.length > 0) {
+      deck._drawLayers('mapbox-repaint', {
+        viewports: [getViewport(deck, map, false)],
+        layers,
+        clearCanvas: false,
+      });
+    }
+  }
+
+  // End of render cycle, clear generated viewport
+  deck.props.userData.currentViewport = null;
+}
+
+function onMapMove(deck, map) {
+  deck.setProps({
+    viewState: getViewState(map),
+  });
+  // Camera changed, will trigger a map repaint right after this
+  // Clear any change flag triggered by setting viewState so that deck does not request
+  // a second repaint
+  // deck.needsRedraw({ clearRedrawFlags: true });
+}
+
 export function getDeckInstance({ map, gl, deck }) {
   // Only create one deck instance per context
   if (map.__deck) {
@@ -26,12 +146,12 @@ export function getDeckInstance({ map, gl, deck }) {
       depthMask: true,
       depthTest: true,
       blendFunc: [gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA],
-      blendEquation: gl.FUNC_ADD
+      blendEquation: gl.FUNC_ADD,
     },
     userData: {
       isExternal: false,
-      mapboxLayers: new Set()
-    }
+      mapboxLayers: new Set(),
+    },
   };
 
   if (deck) {
@@ -43,7 +163,7 @@ export function getDeckInstance({ map, gl, deck }) {
       gl,
       width: false,
       height: false,
-      viewState: getViewState(map)
+      viewState: getViewState(map),
     });
     deck = new Deck(deckProps);
 
@@ -93,129 +213,7 @@ export function drawLayer(deck, map, layer) {
   deck._drawLayers('mapbox-repaint', {
     viewports: [currentViewport],
     // TODO - accept layerFilter in drawLayers' renderOptions
-    layers: getLayers(deck, deckLayer => shouldDrawLayer(layer.id, deckLayer)),
-    clearCanvas: false
+    layers: getLayers(deck, (deckLayer) => shouldDrawLayer(layer.id, deckLayer)),
+    clearCanvas: false,
   });
-}
-
-function getViewState(map) {
-  const { lng, lat } = map.getCenter();
-  return {
-    longitude: lng,
-    latitude: lat,
-    zoom: map.getZoom(),
-    bearing: map.getBearing(),
-    pitch: map.getPitch()
-  };
-}
-
-function getMapboxVersion(map) {
-  // parse mapbox version string
-  let major = 0;
-  let minor = 0;
-  if (map.version) {
-    [major, minor] = map.version
-      .split('.')
-      .slice(0, 2)
-      .map(Number);
-  }
-  return { major, minor };
-}
-
-function getViewport(deck, map, useMapboxProjection = true) {
-  const { mapboxVersion } = deck.props.userData;
-
-  return new WebMercatorViewport(
-    Object.assign(
-      {
-        x: 0,
-        y: 0,
-        width: deck.width,
-        height: deck.height,
-        repeat: true
-      },
-      getViewState(map),
-      useMapboxProjection
-        ? {
-            // match mapbox's projection matrix
-            // A change of near plane was made in 1.3.0
-            // https://github.com/mapbox/mapbox-gl-js/pull/8502
-            nearZMultiplier:
-              (mapboxVersion.major === 1 && mapboxVersion.minor >= 3) || mapboxVersion.major >= 2
-                ? 0.02
-                : 1 / (deck.height || 1)
-          }
-        : {
-            // use deck.gl's own default
-            nearZMultiplier: 0.1
-          }
-    )
-  );
-}
-
-function afterRender(deck, map) {
-  const { mapboxLayers, isExternal } = deck.props.userData;
-
-  if (isExternal) {
-    // Draw non-Mapbox layers
-    const mapboxLayerIds = Array.from(mapboxLayers, layer => layer.id);
-    const layers = getLayers(deck, deckLayer => {
-      for (const id of mapboxLayerIds) {
-        if (shouldDrawLayer(id, deckLayer)) {
-          return false;
-        }
-      }
-      return true;
-    });
-    if (layers.length > 0) {
-      deck._drawLayers('mapbox-repaint', {
-        viewports: [getViewport(deck, map, false)],
-        layers,
-        clearCanvas: false
-      });
-    }
-  }
-
-  // End of render cycle, clear generated viewport
-  deck.props.userData.currentViewport = null;
-}
-
-function onMapMove(deck, map) {
-  deck.setProps({
-    viewState: getViewState(map)
-  });
-  // Camera changed, will trigger a map repaint right after this
-  // Clear any change flag triggered by setting viewState so that deck does not request
-  // a second repaint
-  // deck.needsRedraw({ clearRedrawFlags: true });
-}
-
-function getLayers(deck, layerFilter) {
-  const layers = deck.layerManager.getLayers();
-  return layers.filter(layerFilter);
-}
-
-function shouldDrawLayer(id, layer) {
-  let layerInstance = layer;
-  while (layerInstance) {
-    if (layerInstance.id === id) {
-      return true;
-    }
-    layerInstance = layerInstance.parent;
-  }
-  return false;
-}
-
-function updateLayers(deck) {
-  if (deck.props.userData.isExternal) {
-    return;
-  }
-
-  const layers = [];
-  deck.props.userData.mapboxLayers.forEach(deckLayer => {
-    const LayerType = deckLayer.props.type;
-    const layer = new LayerType(deckLayer.props);
-    layers.push(layer);
-  });
-  deck.setProps({ layers });
 }
