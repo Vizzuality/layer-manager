@@ -191,6 +191,14 @@ function App() {
             mapOptions={{
               fadeDuration: 0
             }}
+            bounds={{
+              bbox: [
+                -123.4808349609375,
+                36.37264499608118,
+                -120.7672119140625,
+                38.61687046392973
+              ]
+            }}
             interactiveLayerIds={layersInteractiveIds}
           >
             {map => (

@@ -105,7 +105,7 @@ const LAYERS = [
           type: TileLayer,
           data: 'https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png',
           tileSize: 256,
-          // refinementStrategy: 'never',
+          refinementStrategy: 'no-overlap',
           renderSubLayers: (sl) => {
             const {
               id: subLayerId,
