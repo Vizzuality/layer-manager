@@ -27,8 +27,7 @@ class CartoProviderMaker implements ProviderMaker {
     resolve?: (layerSpec: LayerSpec) => void,
     reject?: (err: Error) => void,
   ): void => {
-    const { layerSpec } = layerModel;
-    const { interactivity, source } = layerSpec;
+    const { interactivity, source, type } = layerModel;
     const { provider } = source as Source;
     const cartoProvider = provider as CartoProvider;
 
@@ -57,14 +56,14 @@ class CartoProviderMaker implements ProviderMaker {
     fetch('get', url, {}, layerModel)
       .then((data: unknown) => {
         const cartoData = data as CartoData;
-        const ext = layerSpec.type === 'vector' ? 'mvt' : 'png';
+        const ext = type === 'vector' ? 'mvt' : 'png';
         const tileUrl = `${cartoData.cdn_url.templates.https.url.replace('{s}', 'a')}/${
           cartoProvider.account
         }/api/v1/map/${cartoData.layergroupid}/{z}/{x}/{y}.${ext}`;
         const result = {
           ...layer,
           source: {
-            ...omit('provider', layerSpec.source),
+            ...omit('provider', layer.source),
             tiles: [tileUrl],
           } as Source,
         };
