@@ -162,6 +162,8 @@ function App() {
     }
   };
 
+  console.log('map layers', layers);
+
   return (
     <div className="c-app">
       <Icons />
