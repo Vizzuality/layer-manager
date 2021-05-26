@@ -24,6 +24,7 @@
     "directory": "packages/provider-carto"
   },
   "scripts": {
+    "watch": "tsc -b tsconfig.build.json --watch",
     "build": "tsc -b tsconfig.build.json",
     "lint": "eslint . --ext .js,.ts --ignore-path ../../.eslintignore --fix",
     "test": "jest"

@@ -9,6 +9,7 @@
     "directory": "applications/sandbox"
   },
   "dependencies": {
+    "@deck.gl/aggregation-layers": "^8.4.16",
     "@deck.gl/core": "^8.4.16",
     "@luma.gl/core": "^8.4.5",
     "@math.gl/web-mercator": "^3.3.2",

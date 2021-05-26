@@ -12,7 +12,7 @@ export { default } from './src';
 
 export { LayerModel } from './src';
 
-export type LayerType = 'geojson' | 'raster' | 'vector';
+export type LayerType = 'geojson' | 'raster' | 'vector' | 'deck';
 
 /**
  * 'carto' provider requires @vizzuality/layer-manager-provider-carto
@@ -76,6 +76,7 @@ export type LayerSpec = {
   source: Source
   render?: Render
   interactivity?: unknown[]
+  deck?: any[]
   onAfterAdd?: () => void
   onAfterRemove?: (layerModel: LayerModel) => void
 };
@@ -102,6 +103,7 @@ export interface Plugin {
   setParams: (layerModel: LayerModel) => void
   setSQLParams: (layerModel: LayerModel) => void
   setDecodeParams: (layerModel: LayerModel) => void
+  setDeck: (layerModel: LayerModel) => void
   getLayerByType: (type: LayerModel['type']) => any // TO-DO: better type definition
   getLayerByProvider?: () => void // Deprecated
   setOptions: (options: Record<string, unknown>) => void

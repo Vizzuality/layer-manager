@@ -1231,6 +1231,15 @@
   resolved "https://registry.yarnpkg.com/@csstools/normalize.css/-/normalize.css-9.0.1.tgz#c27b391d8457d1e893f1eddeaf5e5412d12ffbb5"
   integrity sha512-6It2EVfGskxZCQhuykrfnALg7oVeiI6KclWSmGDqB0AiInVrTGB9Jp9i4/Ad21u9Jde/voVQz6eFX/eSg/UsPA==
 
+"@deck.gl/aggregation-layers@^8.4.16":
+  version "8.4.16"
+  resolved "https://registry.yarnpkg.com/@deck.gl/aggregation-layers/-/aggregation-layers-8.4.16.tgz#faa60b5805aea7fea9583e3277d3b97ced93a609"
+  integrity sha512-LREnqBWMAdlTrwykZsLUO2lDd2oLENQOinqzD7eslpwR6KBhAry1FthoO3+fL95eBnUVvTYspiDM+jX9nUBQyw==
+  dependencies:
+    "@luma.gl/shadertools" "^8.4.1"
+    "@math.gl/web-mercator" "^3.4.2"
+    d3-hexbin "^0.2.1"
+
 "@deck.gl/core@^8.4.16":
   version "8.4.16"
   resolved "https://registry.yarnpkg.com/@deck.gl/core/-/core-8.4.16.tgz#5b439077a105f66966c380d27a23675be18e487d"
@@ -4565,6 +4574,11 @@ d3-ease@^1.0.5:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/d3-ease/-/d3-ease-1.0.7.tgz#9a834890ef8b8ae8c558b2fe55bd57f5993b85e2"
   integrity sha512-lx14ZPYkhNx0s/2HX5sLFUI3mbasHjSSpwO/KaaNACweVwxUruKyWVcb293wMv1RqTPZyZ8kSZ2NogUZNcLOFQ==
+
+d3-hexbin@^0.2.1:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/d3-hexbin/-/d3-hexbin-0.2.2.tgz#9c5837dacfd471ab05337a9e91ef10bfc4f98831"
+  integrity sha1-nFg32s/UcasFM3qeke8Qv8T5iDE=
 
 d@1, d@^1.0.1:
   version "1.0.1"

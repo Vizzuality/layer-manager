@@ -1,7 +1,140 @@
 import MARKER1 from 'images/marker1.svg';
 import MARKER2 from 'images/marker2.svg';
 
-export default [
+import { LineLayer, ScatterplotLayer } from '@deck.gl/layers';
+import { GridLayer } from '@deck.gl/aggregation-layers';
+
+const LAYERS = [
+  {
+    id: 'deck-line-testing',
+    name: 'Deck Line',
+    config: {
+      type: 'deck',
+      source: {
+        parse: false
+      },
+      render: {
+        parse: false
+      },
+      deck: [
+        {
+          id: 'line-layer',
+          type: LineLayer,
+          data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart-segments.json',
+          /* props from LineLayer class */
+
+          // getHeight: 1,
+          getColor: d => [Math.sqrt(d.inbound), 140, 0],
+          getSourcePosition: d => [
+            ...d.from.coordinates,
+            10
+          ],
+          getTargetPosition: d => [
+            ...d.to.coordinates,
+            10
+          ],
+          // getTilt: 0,
+          getWidth: 12,
+          // greatCircle: false,
+          // widthMaxPixels: Number.MAX_SAFE_INTEGER,
+          // widthMinPixels: 0,
+          // widthScale: 1,
+          // widthUnits: 'pixels',
+
+          /* props inherited from Layer class */
+
+          // autoHighlight: false,
+          // coordinateOrigin: [0, 0, 0],
+          // coordinateSystem: COORDINATE_SYSTEM.LNGLAT,
+          // highlightColor: [0, 0, 128, 128],
+          // modelMatrix: null,
+          // opacity: 1,
+          pickable: true,
+          // visible: true,
+          // wrapLongitude: false,
+        }
+      ]
+    },
+    legendConfig: {}
+  },
+  {
+    id: 'deck-grid',
+    name: 'Deck Grid',
+    config: {
+      type: 'deck',
+      source: {
+        parse: false
+      },
+      render: {
+        parse: false
+      },
+      deck: [
+        {
+          id: 'grid-layer',
+          type: GridLayer,
+          data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/sf-bike-parking.json',
+          pickable: true,
+          extruded: true,
+          cellSize: 200,
+          elevationScale: 4,
+          getPosition: d => d.COORDINATES,
+        }
+      ]
+    },
+    legendConfig: {}
+  },
+
+  {
+    id: 'deck-scatterplot',
+    name: 'Deck Scatterplot',
+    config: {
+      type: 'deck',
+      source: {
+        parse: false
+      },
+      render: {
+        parse: false
+      },
+      deck: [
+        {
+          id: 'scatterplot-layer',
+          type: ScatterplotLayer,
+          data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart-stations.json',
+          /* props from ScatterplotLayer class */
+
+          // filled: true,
+          getFillColor: [255, 140, 0],
+          getLineColor: [0, 0, 0],
+          // getLineWidth: 1,
+          getPosition: d => d.coordinates,
+          getRadius: d => Math.sqrt(d.exits),
+          // lineWidthMaxPixels: Number.MAX_SAFE_INTEGER,
+          lineWidthMinPixels: 1,
+          // lineWidthScale: 1,
+          // lineWidthUnits: 'meters',
+          radiusMaxPixels: 100,
+          radiusMinPixels: 1,
+          radiusScale: 6,
+          // radiusUnits: 'meters',
+          stroked: true,
+
+          /* props inherited from Layer class */
+
+          // autoHighlight: false,
+          // coordinateOrigin: [0, 0, 0],
+          // coordinateSystem: COORDINATE_SYSTEM.LNGLAT,
+          // highlightColor: [0, 0, 128, 128],
+          // modelMatrix: null,
+          opacity: 0.8,
+          pickable: true,
+          // visible: true,
+          // wrapLongitude: false,
+        }
+      ]
+    },
+    legendConfig: {}
+  },
+
   // RASTER LAYER
   {
     id: 'gain',
@@ -21,88 +154,88 @@ export default [
     }
   },
 
-  // DECODED RASTER LAYER
-  {
-    id: 'loss',
-    name: 'Tree cover loss',
-    config: {
-      type: 'raster',
-      source: {
-        type: 'raster',
-        tiles: [
-          'https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png'
-        ],
-        minzoom: 3,
-        maxzoom: 12
-      }
-    },
-    legendConfig: {
-      enabled: true
-    },
-    decodeConfig: [
-      {
-        default: '2001-01-01',
-        key: 'startDate',
-        required: true
-      },
-      {
-        default: '2018-12-31',
-        key: 'endDate',
-        required: true
-      }
-    ],
-    timelineConfig: {
-      step: 1,
-      speed: 250,
-      interval: 'years',
-      dateFormat: 'YYYY',
-      trimEndDate: '2018-12-31',
-      maxDate: '2018-12-31',
-      minDate: '2001-01-01',
-      canPlay: true,
-      railStyle: {
-        background: '#DDD'
-      },
-      trackStyle: [
-        {
-          background: '#dc6c9a'
-        },
-        {
-          background: '#982d5f'
-        }
-      ]
-    },
-    decodeFunction: `
-      // values for creating power scale, domain (input), and range (output)
-      float domainMin = 0.;
-      float domainMax = 255.;
-      float rangeMin = 0.;
-      float rangeMax = 255.;
+  // // DECODED RASTER LAYER
+  // {
+  //   id: 'loss',
+  //   name: 'Tree cover loss',
+  //   config: {
+  //     type: 'raster',
+  //     source: {
+  //       type: 'raster',
+  //       tiles: [
+  //         'https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png'
+  //       ],
+  //       minzoom: 3,
+  //       maxzoom: 12
+  //     }
+  //   },
+  //   legendConfig: {
+  //     enabled: true
+  //   },
+  //   decodeConfig: [
+  //     {
+  //       default: '2001-01-01',
+  //       key: 'startDate',
+  //       required: true
+  //     },
+  //     {
+  //       default: '2018-12-31',
+  //       key: 'endDate',
+  //       required: true
+  //     }
+  //   ],
+  //   timelineConfig: {
+  //     step: 1,
+  //     speed: 250,
+  //     interval: 'years',
+  //     dateFormat: 'YYYY',
+  //     trimEndDate: '2018-12-31',
+  //     maxDate: '2018-12-31',
+  //     minDate: '2001-01-01',
+  //     canPlay: true,
+  //     railStyle: {
+  //       background: '#DDD'
+  //     },
+  //     trackStyle: [
+  //       {
+  //         background: '#dc6c9a'
+  //       },
+  //       {
+  //         background: '#982d5f'
+  //       }
+  //     ]
+  //   },
+  //   decodeFunction: `
+  //     // values for creating power scale, domain (input), and range (output)
+  //     float domainMin = 0.;
+  //     float domainMax = 255.;
+  //     float rangeMin = 0.;
+  //     float rangeMax = 255.;
 
-      float exponent = zoom < 13. ? 0.3 + (zoom - 3.) / 20. : 1.;
-      float intensity = color.r * 255.;
+  //     float exponent = zoom < 13. ? 0.3 + (zoom - 3.) / 20. : 1.;
+  //     float intensity = color.r * 255.;
 
-      // get the min, max, and current values on the power scale
-      float minPow = pow(domainMin, exponent - domainMin);
-      float maxPow = pow(domainMax, exponent);
-      float currentPow = pow(intensity, exponent);
+  //     // get the min, max, and current values on the power scale
+  //     float minPow = pow(domainMin, exponent - domainMin);
+  //     float maxPow = pow(domainMax, exponent);
+  //     float currentPow = pow(intensity, exponent);
 
-      // get intensity value mapped to range
-      float scaleIntensity = ((currentPow - minPow) / (maxPow - minPow) * (rangeMax - rangeMin)) + rangeMin;
-      // a value between 0 and 255
-      alpha = zoom < 13. ? scaleIntensity / 255. : color.g;
+  //     // get intensity value mapped to range
+  //     float scaleIntensity = ((currentPow - minPow) / (maxPow - minPow) * (rangeMax - rangeMin)) + rangeMin;
+  //     // a value between 0 and 255
+  //     alpha = zoom < 13. ? scaleIntensity / 255. : color.g;
 
-      float year = 2000.0 + (color.b * 255.);
-      // map to years
-      if (year >= startYear && year <= endYear && year >= 2001.) {
-        color.r = 220. / 255.;
-        color.g = (72. - zoom + 102. - 3. * scaleIntensity / zoom) / 255.;
-        color.b = (33. - zoom + 153. - intensity / zoom) / 255.;
-      } else {
-        alpha = 0.;
-      }
-    `
-  },
+  //     float year = 2000.0 + (color.b * 255.);
+  //     // map to years
+  //     if (year >= startYear && year <= endYear && year >= 2001.) {
+  //       color.r = 220. / 255.;
+  //       color.g = (72. - zoom + 102. - 3. * scaleIntensity / zoom) / 255.;
+  //       color.b = (33. - zoom + 153. - intensity / zoom) / 255.;
+  //     } else {
+  //       alpha = 0.;
+  //     }
+  //   `
+  // },
 
   // VECTOR - PROVIDER CARTO
   {
@@ -254,5 +387,7 @@ export default [
       enabled: true,
       type: 'hover'
     }
-  }
+  },
 ];
+
+export default LAYERS;

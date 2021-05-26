@@ -24,6 +24,7 @@
     "directory": "packages/react"
   },
   "scripts": {
+    "watch": "tsc -b tsconfig.build.json --watch",
     "build": "tsc -b tsconfig.build.json",
     "lint": "eslint . --ext .ts,.tsx --ignore-path ../../.eslintignore --fix"
   },
