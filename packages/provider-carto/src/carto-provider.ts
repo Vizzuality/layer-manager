@@ -28,7 +28,7 @@ class CartoProviderMaker implements ProviderMaker {
     reject?: (err: Error) => void,
   ): void => {
     const { layerSpec } = layerModel;
-    const { interactivity, source } = layer;
+    const { interactivity, source } = layerSpec;
     const { provider } = source as Source;
     const cartoProvider = provider as CartoProvider;
 
@@ -62,7 +62,7 @@ class CartoProviderMaker implements ProviderMaker {
           cartoProvider.account
         }/api/v1/map/${cartoData.layergroupid}/{z}/{x}/{y}.${ext}`;
         const result = {
-          ...layerSpec,
+          ...layer,
           source: {
             ...omit('provider', layerSpec.source),
             tiles: [tileUrl],

@@ -229,8 +229,6 @@ export default class DecodedLayer extends Layer {
     // // TODO fix zFighting
     // Render the image
     if (image && model) {
-      console.log(model);
-
       model
         .setUniforms(uniforms)
         .setUniforms({

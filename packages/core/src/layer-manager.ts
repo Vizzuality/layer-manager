@@ -185,8 +185,8 @@ class LayerManager {
       this._promises[layerModel.id] = method
         .call(this, layerModel, LayerManager.providers)
         .then((layer: unknown) => {
-          const { canceled } = this._promises[layerModel.id];
-          if (!canceled) {
+          const { isCanceled } = this._promises[layerModel.id];
+          if (!isCanceled()) {
             layerModel.setMapLayer(layer);
 
             this._plugin.add(layerModel, this._layers);
