@@ -135,7 +135,7 @@ function App() {
   };
 
   const onAfterAdd = layerModel => {
-    if (!isEmpty(layerModel.interactionConfig)) {
+    if (!isEmpty(layerModel.layerSpec.interactionConfig)) {
       layerModel.mapLayer.layers.forEach(l => {
         const { id } = l;
 
@@ -147,7 +147,7 @@ function App() {
   };
 
   const onAfterRemove = layerModel => {
-    if (!isEmpty(layerModel.interactionConfig)) {
+    if (!isEmpty(layerModel.layerSpec.interactionConfig)) {
       layerModel.mapLayer.layers.forEach(l => {
         const { id } = l;
 
@@ -161,8 +161,6 @@ function App() {
       });
     }
   };
-
-  console.log('map layers', layers);
 
   return (
     <div className="c-app">
