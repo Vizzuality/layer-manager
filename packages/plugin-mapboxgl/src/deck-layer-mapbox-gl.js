@@ -2,7 +2,9 @@ import { CancelablePromise } from 'cancelable-promise';
 import { MapboxLayer } from '@deck.gl/mapbox';
 
 const DeckLayer = (layerModel) => {
-  const { deck = [], id, zIndex } = layerModel;
+  const {
+    deck = [], id, zIndex, decodeParams,
+  } = layerModel;
 
   const layer = {
     id,
@@ -17,6 +19,7 @@ const DeckLayer = (layerModel) => {
       },
       ...deck.map((d) => new MapboxLayer({
         ...d,
+        decodeParams,
         getPolygonOffset: () => [0, -zIndex],
       })),
     ],
