@@ -2,7 +2,7 @@ import MARKER1 from 'images/marker1.svg';
 import MARKER2 from 'images/marker2.svg';
 
 import GL from '@luma.gl/constants';
-import { TileLayer } from '@deck.gl/geo-layers';
+import { TileLayer, H3ClusterLayer } from '@deck.gl/geo-layers';
 import { LineLayer, ScatterplotLayer } from '@deck.gl/layers';
 import { GridLayer } from '@deck.gl/aggregation-layers';
 
@@ -45,6 +45,58 @@ const LAYERS = [
           // widthMinPixels: 0,
           // widthScale: 1,
           // widthUnits: 'pixels',
+
+          /* props inherited from Layer class */
+
+          // autoHighlight: false,
+          // coordinateOrigin: [0, 0, 0],
+          // coordinateSystem: COORDINATE_SYSTEM.LNGLAT,
+          // highlightColor: [0, 0, 128, 128],
+          // modelMatrix: null,
+          // opacity: 1,
+          pickable: true,
+          // visible: true,
+          // wrapLongitude: false,
+        }
+      ]
+    },
+    legendConfig: {}
+  },
+  {
+    id: 'deck-h3',
+    name: 'Deck H3',
+    config: {
+      type: 'deck',
+      source: {
+        parse: false
+      },
+      render: {
+        parse: false
+      },
+      deck: [
+        {
+          id: 'grid-layer',
+          type: H3ClusterLayer,
+          data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/sf.h3clusters.json',
+          /* props from H3ClusterLayer class */
+
+          // elevationScale: 1,
+          extruded: false,
+          filled: true,
+          // getElevation: 1000,
+          getFillColor: d => [255, (1 - d.mean / 500) * 255, 0],
+          getHexagons: d => d.hexIds,
+          getLineColor: [255, 255, 255],
+          // getLineWidth: 1,
+          // lineJointRounded: false,
+          // lineMiterLimit: 4,
+          // lineWidthMaxPixels: Number.MAX_SAFE_INTEGER,
+          lineWidthMinPixels: 2,
+          // lineWidthScale: 1,
+          // lineWidthUnits: 'meters',
+          // material: true,
+          stroked: true,
+          // wireframe: false,
 
           /* props inherited from Layer class */
 
