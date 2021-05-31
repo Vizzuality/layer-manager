@@ -6,7 +6,7 @@ import { TileLayer, H3ClusterLayer } from '@deck.gl/geo-layers';
 import { LineLayer, ScatterplotLayer } from '@deck.gl/layers';
 import { GridLayer } from '@deck.gl/aggregation-layers';
 
-import DeckLayers from '@vizzuality/layer-manager-layers-deckgl';
+import { DecodedLayer } from '@vizzuality/layer-manager-layers-deckgl';
 
 
 const LAYERS = [
@@ -176,7 +176,7 @@ const LAYERS = [
             } = tile;
 
             if (data) {
-              return new DeckLayers.DecodedLayer({
+              return new DecodedLayer({
                 id: subLayerId,
                 image: data,
                 bounds: [west, south, east, north],
