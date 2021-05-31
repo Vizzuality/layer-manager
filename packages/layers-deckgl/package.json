@@ -1,5 +1,5 @@
 {
-  "name": "@vizzuality/layer-manager-plugin-mapboxgl",
+  "name": "@vizzuality/layer-manager-layers-deckgl",
   "version": "1.0.0-alpha.1",
   "author": "Vizzuality <hello@vizzuality.com>",
   "keywords": [
@@ -21,14 +21,12 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/vizzuality/layer-manager.git",
-    "directory": "packages/plugin-mapboxgl"
+    "directory": "packages/layers-deckgl"
   },
   "scripts": {
     "watch": "tsc -b tsconfig.build.json --watch",
     "build": "tsc -b tsconfig.build.json",
     "lint": "eslint . --ext .js,.ts --ignore-path ../../.eslintignore --fix"
-  },
-  "peerDependencies": {
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
@@ -47,9 +45,14 @@
     "ts-jest": "^26.5.5"
   },
   "dependencies": {
-    "@deck.gl/mapbox": "^8.4.16",
+    "@deck.gl/aggregation-layers": "^8.4.16",
+    "@deck.gl/core": "^8.4.16",
+    "@luma.gl/constants": "^8.4.5",
+    "@luma.gl/core": "^8.4.5",
+    "@math.gl/web-mercator": "^3.4.2",
     "@vizzuality/layer-manager-utils": "^1.1.0-alpha.1",
     "cancelable-promise": "^3.2.3",
+    "math.gl": "^3.4.2",
     "react": "^17.0.2"
   }
 }
