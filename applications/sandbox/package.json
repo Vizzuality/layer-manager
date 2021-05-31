@@ -11,8 +11,12 @@
   "dependencies": {
     "@deck.gl/aggregation-layers": "^8.4.16",
     "@deck.gl/core": "^8.4.16",
+    "@deck.gl/geo-layers": "^8.4.16",
+    "@deck.gl/layers": "^8.4.16",
+    "@deck.gl/mesh-layers": "^8.4.16",
     "@luma.gl/core": "^8.4.5",
     "@math.gl/web-mercator": "^3.3.2",
+    "@vizzuality/layer-manager-layers-deckgl": "^1.0.0-alpha.1",
     "@vizzuality/layer-manager-plugin-mapboxgl": "^1.0.0-alpha.1",
     "@vizzuality/layer-manager-react": "^1.0.0-alpha.1",
     "classnames": "^2.2.6",
