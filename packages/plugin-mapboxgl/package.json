@@ -1,6 +1,6 @@
 {
   "name": "@vizzuality/layer-manager-plugin-mapboxgl",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "author": "Vizzuality <hello@vizzuality.com>",
   "keywords": [
     "layer-manager",
@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "@deck.gl/mapbox": "^8.4.16",
-    "@vizzuality/layer-manager-utils": "^1.0.0-alpha.2",
+    "@vizzuality/layer-manager-utils": "^1.0.0-alpha.3",
     "cancelable-promise": "^3.2.3",
     "react": "^17.0.2"
   }

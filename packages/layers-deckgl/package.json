@@ -1,6 +1,6 @@
 {
   "name": "@vizzuality/layer-manager-layers-deckgl",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "author": "Vizzuality <hello@vizzuality.com>",
   "keywords": [
     "layer-manager",
@@ -49,7 +49,7 @@
     "@luma.gl/constants": "^8.4.5",
     "@luma.gl/core": "^8.4.5",
     "@math.gl/web-mercator": "^3.4.2",
-    "@vizzuality/layer-manager-utils": "^1.0.0-alpha.2",
+    "@vizzuality/layer-manager-utils": "^1.0.0-alpha.3",
     "cancelable-promise": "^3.2.3",
     "math.gl": "^3.4.2",
     "react": "^17.0.2"

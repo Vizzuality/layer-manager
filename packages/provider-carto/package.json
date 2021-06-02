@@ -1,6 +1,6 @@
 {
   "name": "@vizzuality/layer-manager-provider-carto",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "author": "Vizzuality <hello@vizzuality.com>",
   "keywords": [
     "layer-manager",
@@ -30,8 +30,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@vizzuality/layer-manager": "^4.0.0-alpha.3",
-    "@vizzuality/layer-manager-utils": "^1.0.0-alpha.2"
+    "@vizzuality/layer-manager": "^4.0.0-alpha.4",
+    "@vizzuality/layer-manager-utils": "^1.0.0-alpha.3"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",

@@ -1,6 +1,6 @@
 {
   "name": "@vizzuality/layer-manager-sandbox",
-  "version": "0.1.1-alpha.1",
+  "version": "0.1.1-alpha.3",
   "author": "Vizzuality <hello@vizzuality.com>",
   "private": true,
   "repository": {
@@ -16,9 +16,9 @@
     "@deck.gl/mesh-layers": "^8.4.16",
     "@luma.gl/core": "^8.4.5",
     "@math.gl/web-mercator": "^3.3.2",
-    "@vizzuality/layer-manager-layers-deckgl": "^1.0.0-alpha.2",
-    "@vizzuality/layer-manager-plugin-mapboxgl": "^1.0.0-alpha.2",
-    "@vizzuality/layer-manager-react": "^1.0.0-alpha.2",
+    "@vizzuality/layer-manager-layers-deckgl": "^1.0.0-alpha.3",
+    "@vizzuality/layer-manager-plugin-mapboxgl": "^1.0.0-alpha.3",
+    "@vizzuality/layer-manager-react": "^1.0.0-alpha.3",
     "classnames": "^2.2.6",
     "d3-ease": "^1.0.5",
     "gh-pages": "^2.1.1",
