@@ -15,7 +15,7 @@ class LayerManager {
 
   private _plugin: Plugin;
 
-  private _promises: Record<LayerSpec['id'], any> = {}; // TO-DO: better type definition
+  private _promises: Record<LayerSpec['id'], any> = {};
 
   static providers: Record<ProviderMaker['name'], ProviderMaker['handleData']> = {};
 

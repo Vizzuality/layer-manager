@@ -10,6 +10,7 @@ const DEFAULT_TEX_COORDS = new Float32Array([0, 1, 0, 0, 1, 0, 1, 1]);
   |      |
   0 ---- 3
 */
+
 /* eslint-disable max-statements */
 
 function createQuad(bounds) {

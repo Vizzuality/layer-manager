@@ -89,7 +89,7 @@ class Layer extends PureComponent<LayerProps> {
         this.remove();
         this.add();
 
-        // prevent updating layer
+        // Prevent updating layer
         return;
       }
     }

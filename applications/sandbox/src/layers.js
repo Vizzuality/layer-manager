@@ -39,7 +39,7 @@ const LAYERS = [
             10
           ],
           // getTilt: 0,
-          getWidth: 12,
+          getWidth: 10,
           // greatCircle: false,
           // widthMaxPixels: Number.MAX_SAFE_INTEGER,
           // widthMinPixels: 0,

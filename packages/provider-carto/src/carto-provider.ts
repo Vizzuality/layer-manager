@@ -16,7 +16,7 @@ import type {
 class CartoProviderMaker implements ProviderMaker {
   /**
    * REQUIRED
-   * A name(key) for the provider.
+   * A name (key) for the provider.
    * Use the same name you will use in your layerSpec object.
    */
   public name = 'carto';

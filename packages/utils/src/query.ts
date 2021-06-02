@@ -6,6 +6,7 @@ type UtilsParams = Params | QueryParams;
 /**
  * Params should have this format => { key:'xxx', key2:'xxx' }
  * Keys to search should be in this format {{key}}
+ *
  * @param {String} originalStr
  * @param {Object} params
  */

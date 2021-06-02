@@ -10,7 +10,7 @@ class PluginMapboxGL {
     this.map = map;
     this.options = options;
 
-    // You can change mapStyles and all the layers will be repositioned
+    // You can change map styles and all the layers will be repositioned
     this.map.on('style.load', () => {
       const layers = this.getLayers();
 
