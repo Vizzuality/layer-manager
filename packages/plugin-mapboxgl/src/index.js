@@ -3,6 +3,7 @@ import rasterLayer from './raster-layer-mapbox-gl';
 import vectorLayer from './vector-layer-mapbox-gl';
 import geoJsonLayer from './geojson-layer-mapbox-gl';
 import videoLayer from './video-layer-mapbox-gl';
+import deckLayer from './deck-layer-mapbox-gl';
 
 class PluginMapboxGL {
   constructor(map, options = {}) {
@@ -22,6 +23,7 @@ class PluginMapboxGL {
     vector: vectorLayer,
     geojson: geoJsonLayer,
     video: videoLayer,
+    deck: deckLayer,
   };
 
   setOptions(options = {}) {
@@ -210,23 +212,24 @@ class PluginMapboxGL {
     });
 
     // set for all decode layers that don't exist inside mapStyle()
-    const decodeLayers = allLayers.filter((l) => !!l.decodeFunction);
+    const deckLayers = allLayers.filter((l) => !!l.type === 'deck');
 
-    if (decodeLayers && this.map) {
-      decodeLayers.forEach((layerModel) => {
+    if (deckLayers && this.map) {
+      deckLayers.forEach((layerModel) => {
         const { mapLayer } = layerModel;
 
         if (mapLayer) {
           const { layers } = mapLayer;
-          const parentLayer = layers[0];
-          const childLayer = layers[1];
+          const [parentLayer, ...childLayers] = layers;
 
           const parentLayerOnMap = layersOnMap.find((ly) => ly.id === parentLayer.id);
-          const childLayerOnMap = this.map.getLayer(childLayer.id);
+          childLayers.forEach((childLayer) => {
+            const childLayerOnMap = this.map.getLayer(childLayer.id);
 
-          if (parentLayerOnMap && childLayerOnMap) {
-            this.map.moveLayer(childLayer.id, parentLayer.id);
-          }
+            if (parentLayerOnMap && childLayerOnMap) {
+              this.map.moveLayer(childLayer.id, parentLayer.id);
+            }
+          });
         }
       });
     }
@@ -289,9 +292,9 @@ class PluginMapboxGL {
       circle: ['circle', 'circle-stroke'],
     };
 
-    const { mapLayer, decodeFunction } = layerModel;
+    const { type, mapLayer } = layerModel;
 
-    if (mapLayer.layers && !decodeFunction) {
+    if (mapLayer.layers && type !== 'deck') {
       mapLayer.layers.forEach((l) => {
         // Select the style to change depending on the type of layer
         const paintStyleNames = PAINT_STYLE_NAMES[l.type] || [l.type];
@@ -311,7 +314,7 @@ class PluginMapboxGL {
       });
     }
 
-    if (decodeFunction) {
+    if (type === 'deck') {
       const layer = mapLayer.layers[1];
 
       if (layer && typeof layer.setProps === 'function') {
@@ -456,6 +459,10 @@ class PluginMapboxGL {
       );
     }
 
+    return this;
+  }
+
+  setDeck() {
     return this;
   }
 

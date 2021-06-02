@@ -89,6 +89,10 @@ class LayerModel {
     return this._layerSpec.decodeFunction;
   }
 
+  public get deck(): LayerSpec['deck'] {
+    return this._layerSpec.deck;
+  }
+
   public get layerSpec(): LayerSpec {
     return this._layerSpec;
   }
