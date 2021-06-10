@@ -9,7 +9,7 @@ type LayerManagerProps = {
   map: Map
   plugin: typeof PluginConstructor
   providers?: Record<string, ProviderMaker['handleData']>
-  children?: React.ReactChildren
+  children?: React.ReactNode
 };
 
 type ChildProps = {

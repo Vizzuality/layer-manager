@@ -3,7 +3,7 @@ import isEqual from 'fast-deep-equal/react';
 import { isEmpty, replace } from '@vizzuality/layer-manager-utils';
 import LayerManager, { LayerSpec } from '@vizzuality/layer-manager';
 
-type LayerProps = LayerSpec & {
+export type LayerProps = LayerSpec & {
   layerManager: LayerManager
 };
 
