@@ -5,7 +5,7 @@ import Manager from '@vizzuality/layer-manager';
 import type { Map } from 'mapbox-gl';
 import type { Plugin, PluginConstructor, ProviderMaker } from '@vizzuality/layer-manager';
 
-type LayerManagerProps = {
+export type LayerManagerProps = {
   map: Map
   plugin: typeof PluginConstructor
   providers?: Record<string, ProviderMaker['handleData']>

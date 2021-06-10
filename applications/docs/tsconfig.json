@@ -5,5 +5,5 @@
     "rootDir": ".",
     "strict": false
   },
-  "include": ["src", "types.d.ts"]
+  "include": ["src"]
 }

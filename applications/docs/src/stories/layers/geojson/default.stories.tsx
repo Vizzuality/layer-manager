@@ -12,7 +12,7 @@ import Map from '../../../components/map';
 const cartoProvider = new CartoProvider();
 
 export default {
-  title: 'Layers/Raster',
+  title: 'Layers/Geojson',
   argTypes: {
   },
 };
@@ -21,7 +21,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
   const minZoom = 2;
   const maxZoom = 20;
   const [viewport, setViewport] = useState({});
-  const [bounds] = useState();
+  const [bounds] = useState(null);
 
   const handleViewportChange = useCallback((vw) => {
     setViewport(vw);
@@ -61,46 +61,62 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
 
 export const Default = Template.bind({});
 Default.args = {
-  id: 'gain',
-  type: 'raster',
+  id: 'test-geojson',
+  type: 'geojson',
   source: {
-    type: 'raster',
-    tiles: [
-      'http://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png',
-    ],
-  },
-};
-
-export const WithMinMaxSourceZoom = Template.bind({});
-WithMinMaxSourceZoom.args = {
-  id: 'gain',
-  type: 'raster',
-  source: {
-    type: 'raster',
-    tiles: [
-      'http://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png',
-    ],
-    minzoom: 3,
-    maxzoom: 12,
-  },
-};
-
-export const WithMinMaxRenderZoom = Template.bind({});
-WithMinMaxRenderZoom.args = {
-  id: 'gain',
-  type: 'raster',
-  source: {
-    type: 'raster',
-    tiles: [
-      'http://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png',
-    ],
+    type: 'geojson',
+    data: {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "properties": {},
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  6.6796875,
+                  52.696361078274485
+                ],
+                [
+                  -5.625,
+                  40.97989806962013
+                ],
+                [
+                  -7.3828125,
+                  22.59372606392931
+                ],
+                [
+                  17.9296875,
+                  1.0546279422758869
+                ],
+                [
+                  48.8671875,
+                  22.268764039073968
+                ],
+                [
+                  73.828125,
+                  45.583289756006316
+                ],
+                [
+                  6.6796875,
+                  52.696361078274485
+                ]
+              ]
+            ]
+          }
+        }
+      ]
+    },
   },
   render: {
     layers: [
       {
-        type: 'raster',
-        minzoom: 2,
-        maxzoom: 8,
+        type: 'fill',
+        paint: {
+          'fill-color': '#F00'
+        }
       }
     ]
   }
