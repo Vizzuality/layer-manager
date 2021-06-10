@@ -21,8 +21,8 @@
     "@vizzuality/layer-manager-react": "^1.0.0-alpha.3",
     "classnames": "^2.2.6",
     "mapbox-gl": "^1.8.1",
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0",
+    "react": "^16.8 || ^17",
+    "react-dom": "^16.8 || ^17",
     "react-map-gl": "^5.2.3",
     "storybook": "^6.2.9",
     "use-debounce": "^6.0.1"
@@ -48,9 +48,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.14.5",
-    "@storybook/addon-actions": "^6.2.9",
     "@storybook/addon-essentials": "^6.2.9",
-    "@storybook/addon-links": "^6.2.9",
     "@storybook/react": "^6.2.9",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
