@@ -21,6 +21,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
   const minZoom = 2;
   const maxZoom = 20;
   const [viewport, setViewport] = useState({});
+  const [interactiveLayerIds, setInteractiveLayerIds] = useState();
   const [bounds] = useState(null);
 
   const handleViewportChange = useCallback((vw) => {
@@ -40,6 +41,12 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
         minZoom={minZoom}
         maxZoom={maxZoom}
         viewport={viewport}
+        interactiveLayerIds={interactiveLayerIds}
+        onClick={(e) => {
+          if (e?.features) {
+            console.log(e.features)
+          }
+        }}
         mapboxApiAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
         onMapViewportChange={handleViewportChange}
       >
@@ -51,7 +58,15 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
               [cartoProvider.name]: cartoProvider.handleData,
             }}
           >
-            <Layer {...args} />
+            <Layer
+              {...args}
+              onAfterAdd={(layerModel) => {
+                if (layerModel?.mapLayer) {
+                  const ids = layerModel?.mapLayer?.layers.filter(l => l.interactive).map(l => l.id);
+                  setInteractiveLayerIds(ids);
+                }
+              }}
+            />
           </LayerManager>
         )}
       </Map>
@@ -70,21 +85,24 @@ Default.args = {
   render: {
     layers: [
       {
+        interactive: true,
         type: 'fill',
         'source-layer': 'country_boundaries',
         paint: {
-          'fill-color': '#FF0'
+          'fill-color': '#FF0',
         }
       },
       {
+        interactive: true,
         type: 'line',
         'source-layer': 'country_boundaries',
         paint: {
-          'line-color': '#F00'
+          'line-color': '#F00',
+          'line-width': 10,
         }
       }
     ]
-  }
+  },
 };
 
 export const WithParams = Template.bind({});
