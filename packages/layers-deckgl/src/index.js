@@ -1,9 +1,2 @@
-import DecodedLayer from './decoded-layer';
-
-export {
-  default as DecodedLayer,
-} from './decoded-layer';
-
-export default {
-  DecodedLayer,
-};
+// eslint-disable-next-line
+export { default as DecodedLayer } from './decoded-layer';
