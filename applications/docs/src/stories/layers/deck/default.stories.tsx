@@ -1,6 +1,6 @@
+
 import React, { useCallback, useState } from 'react';
 import { Story } from '@storybook/react/types-6-0';
-
 // Layer manager
 import { LayerManager, Layer, LayerProps } from '@vizzuality/layer-manager-react';
 import PluginMapboxGl from '@vizzuality/layer-manager-plugin-mapboxgl';
@@ -100,6 +100,7 @@ Default.args = {
         if (data) {
           return new DecodedLayer({
             id: subLayerId,
+            // @ts-expect-error
             image: data,
             bounds: [west, south, east, north],
             textureParameters: {
