@@ -17,7 +17,7 @@ class LayerModel {
 
   public layerRequest: CancelTokenSource | undefined = undefined;
 
-  public mapLayer: unknown; // depends on the plugin
+  public mapLayer: any; // depends on the plugin
 
   constructor(private _layerSpec: LayerSpec) {
     if (!_layerSpec) throw new Error('layerSpec object is required');

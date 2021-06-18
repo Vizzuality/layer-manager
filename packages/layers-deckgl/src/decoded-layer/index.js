@@ -54,14 +54,17 @@ const defaultProps = {
  */
 export default class DecodedLayer extends Layer {
   getShaders() {
+    const decodeParams = this.props.decodeParams || {};
+    const decodeFunction = this.props.decodeFunction || '';
+
     const fs = decodeFS
       .replace(
         '{decodeParams}',
-        Object.keys(this.props.decodeParams)
+        Object.keys(decodeParams)
           .map((p) => `uniform float ${p};`)
           .join(' '),
       )
-      .replace('{decodeFunction}', this.props.decodeFunction || '');
+      .replace('{decodeFunction}', decodeFunction || '');
 
     return super.getShaders({
       vs: decodeVS,
