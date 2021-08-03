@@ -76,7 +76,7 @@ class PluginMapboxGL {
     const { mapLayer } = layerModel;
     if (mapLayer && mapLayer.layers && this.map && this.map.style) {
       mapLayer.layers.forEach(l => {
-        if (l && this.map.getLayer(l?.id)) {
+        if (l && this.map.getLayer(l.id)) {
           this.map.removeLayer(l.id);
         }
       });
