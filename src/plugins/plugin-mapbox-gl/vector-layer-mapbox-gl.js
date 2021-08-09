@@ -71,7 +71,10 @@ const VectorLayer = layerModel => {
             ...layer,
             source: {
               ...layer.source,
-              tiles: [tileUrl]
+              tiles: [tileUrl],
+              ...(layerModel.promoteId && {
+                promoteId: layerModel.promoteId
+              })
             }
           });
         })

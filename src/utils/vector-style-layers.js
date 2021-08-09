@@ -26,12 +26,26 @@ export const getVectorStyleLayers = (vectorLayers, layerModel) => {
 
         const opacityPaintStyles = opacityPaintNames.reduce((obj, name) => {
           const currentProperty = paint[`${name}-opacity`];
+          let paintOpacity = 0.99 * layerModel.opacity;
 
-          const paintOpacity =
-            currentProperty !== undefined && currentProperty !== null ? currentProperty : 1;
+          if (currentProperty !== undefined && currentProperty !== null) {
+            if (typeof currentProperty === 'number') {
+              paintOpacity = currentProperty * layerModel.opacity * 0.99;
+            }
+
+            if (Array.isArray(currentProperty)) {
+              paintOpacity = currentProperty.map(j => {
+                if (typeof j === 'number') {
+                  return j * layerModel.opacity * 0.99;
+                }
+                return j;
+              });
+            }
+          }
+
           return {
             ...obj,
-            [`${name}-opacity`]: paintOpacity * layerModel.opacity * 0.99
+            [`${name}-opacity`]: paintOpacity
           };
         }, {});
 

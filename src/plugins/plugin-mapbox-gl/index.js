@@ -222,6 +222,55 @@ class PluginMapboxGL {
   }
 
   /**
+   * Given a desired value to give to a paint property of a layer, this function will return the
+   * correct value to set, by taking into account other factors such as the opacity of the layer
+   * @param {object} layerModel LayerModel instance
+   * @param {string} layerId ID of the layer that contains the property
+   * @param {string} propertyName Name of the property to set
+   * @param {any} desiredValue Value to give the property
+   */
+  // eslint-disable-next-line class-methods-use-this
+  computePaintPropertyValue(layerModel, layerId, propertyName, desiredValue) {
+    const {
+      opacity,
+      layerConfig: {
+        body: { vectorLayers = [] }
+      },
+      mapLayer
+    } = layerModel;
+    const isOpacityProperty = /-opacity$/.test(propertyName);
+
+    // The opacity of the layer isn't relevant for this property
+    if (!isOpacityProperty) {
+      return desiredValue;
+    }
+
+    const { paint = {} } =
+      vectorLayers.find((layer, index) => {
+        if (layer.id === undefined || layer.id === null) {
+          return `${mapLayer.id}-${layer.type}-${index}` === layerId;
+        }
+
+        return layer.id === layerId;
+      }) || {};
+    const currentValue = paint[propertyName];
+
+    let res = 0.99 * opacity;
+
+    if (currentValue !== undefined && currentValue !== null) {
+      if (typeof currentValue === 'number') {
+        res = currentValue * opacity * 0.99;
+      } else if (Array.isArray(currentValue)) {
+        res = currentValue.map(element =>
+          typeof element === 'number' ? element * opacity * 0.99 : element
+        );
+      }
+    }
+
+    return res;
+  }
+
+  /**
    * A namespace to set opacity
    * @param {Object} layerModel
    * @param {Number} opacity
@@ -232,24 +281,24 @@ class PluginMapboxGL {
       circle: ['circle', 'circle-stroke']
     };
 
-    const { layerConfig, mapLayer, decodeFunction } = layerModel;
-    const { body } = layerConfig;
-    const { vectorLayers = [] } = body;
+    const { mapLayer, decodeFunction } = layerModel;
 
     if (mapLayer.layers && !decodeFunction) {
       mapLayer.layers.forEach(l => {
         // Select the style to change depending on the type of layer
         const paintStyleNames = PAINT_STYLE_NAMES[l.type] || [l.type];
 
-        // Select the paint property from the original layer
-        const { paint = {} } =
-          vectorLayers.find((v, i) => (v.id || `${l.source}-${v.type}-${i}`) === l.id) || {};
-
         // Loop each style name and check if there is an opacity in the original layer
         paintStyleNames.forEach(name => {
-          const currentProperty = paint[`${name}-opacity`];
-          const paintOpacity = currentProperty !== undefined ? currentProperty : 1;
-          this.map.setPaintProperty(l.id, `${name}-opacity`, paintOpacity * opacity * 0.99);
+          const propertyName = `${name}-opacity`;
+          const propertyValue = this.computePaintPropertyValue(
+            layerModel,
+            l.id,
+            propertyName,
+            opacity
+          );
+
+          this.map.setPaintProperty(l.id, propertyName, propertyValue);
         });
       });
     }
