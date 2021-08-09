@@ -8,7 +8,7 @@ import compact from 'lodash/compact';
  */
 export const substitution = (originalStr, params = {}) => {
   let str = originalStr;
-  Object.keys(params).forEach((key) => {
+  Object.keys(params).forEach(key => {
     str = str
       .replace(new RegExp(`{{${key}}}`, 'g'), params[key])
       .replace(new RegExp(`{${key}}`, 'g'), params[key]);
@@ -26,9 +26,9 @@ export const concatenation = (originalStr, params = {}) => {
   let str = originalStr;
   let sql;
 
-  Object.keys(params).forEach((key) => {
+  Object.keys(params).forEach(key => {
     sql = `${compact(
-      Object.keys(params[key]).map((k) => {
+      Object.keys(params[key]).map(k => {
         const value = params[key][k];
 
         if (Array.isArray(value) && !!value.length) {
@@ -37,9 +37,7 @@ export const concatenation = (originalStr, params = {}) => {
         }
 
         if (!Array.isArray(value) && value) {
-          return typeof value !== 'number'
-            ? `${k} = '${value}'`
-            : `${k} = ${value}`;
+          return typeof value !== 'number' ? `${k} = '${value}'` : `${k} = ${value}`;
         }
 
         return null;

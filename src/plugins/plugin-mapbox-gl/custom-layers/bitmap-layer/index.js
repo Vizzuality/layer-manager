@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+/* eslint-disable no-underscore-dangle,no-param-reassign,prefer-destructuring,class-methods-use-this */
 /* global Image, HTMLCanvasElement */
 import GL from '@luma.gl/constants';
 import { Layer } from '@deck.gl/core';
@@ -25,7 +26,6 @@ import { Model, Geometry, Texture2D, fp64 } from 'luma.gl';
 import { loadImage } from '@loaders.gl/images';
 import vs from './bitmap-layer-vertex';
 import shaderTemplate from './bitmap-layer-fragment';
-
 
 const { fp64LowPart } = fp64;
 
@@ -38,15 +38,15 @@ const DEFAULT_TEXTURE_PARAMETERS = {
 
 const defaultProps = {
   image: null,
-  bounds: {type: 'array', value: [1, 0, 0, 1], compare: true},
+  bounds: { type: 'array', value: [1, 0, 0, 1], compare: true },
   fp64: false,
 
-  desaturate: {type: 'number', min: 0, max: 1, value: 0},
+  desaturate: { type: 'number', min: 0, max: 1, value: 0 },
   // More context: because of the blending mode we're using for ground imagery,
   // alpha is not effective when blending the bitmap layers with the base map.
   // Instead we need to manually dim/blend rgb values with a background color.
-  transparentColor: {type: 'color', value: [0, 0, 0, 0]},
-  tintColor: {type: 'color', value: [255, 255, 255]}
+  transparentColor: { type: 'color', value: [0, 0, 0, 0] },
+  tintColor: { type: 'color', value: [255, 255, 255] }
 };
 
 /*
@@ -59,7 +59,12 @@ export default class BitmapLayer extends Layer {
   getShaders() {
     const projectModule = this.use64bitProjection() ? 'project64' : 'project32';
     const fs = shaderTemplate
-      .replace('{decodeParams}', Object.keys(this.props.decodeParams).map(p => `uniform float ${p};`).join(' '))
+      .replace(
+        '{decodeParams}',
+        Object.keys(this.props.decodeParams)
+          .map(p => `uniform float ${p};`)
+          .join(' ')
+      )
       .replace('{decodeFunction}', this.props.decodeFunction || '');
 
     return { vs, fs, modules: [projectModule, 'picking'] };
@@ -81,17 +86,17 @@ export default class BitmapLayer extends Layer {
       }
     });
 
-    this.setState({numInstances: 4}); // 4 corners
+    this.setState({ numInstances: 4 }); // 4 corners
   }
 
-  updateState({props, oldProps, changeFlags}) {
+  updateState({ props, oldProps }) {
     // setup model first
     if (props.fp64 !== oldProps.fp64) {
-      const {gl} = this.context;
+      const { gl } = this.context;
       if (this.state.model) {
         this.state.model.delete();
       }
-      this.setState({model: this._getModel(gl)});
+      this.setState({ model: this._getModel(gl) });
       this.getAttributeManager().invalidateAll();
     }
 
@@ -215,14 +220,14 @@ export default class BitmapLayer extends Layer {
       return;
     }
 
-    const {gl} = this.context;
+    const { gl } = this.context;
 
     if (this.state.bitmapTexture) {
       this.state.bitmapTexture.delete();
     }
 
     if (image instanceof Texture2D) {
-      this.setState({bitmapTexture: image});
+      this.setState({ bitmapTexture: image });
     } else if (
       // browser object
       image instanceof Image ||
@@ -238,8 +243,8 @@ export default class BitmapLayer extends Layer {
     }
   }
 
-  calculatePositions({value}) {
-    const {positions} = this.state;
+  calculatePositions({ value }) {
+    const { positions } = this.state;
     value.set(positions);
   }
 
@@ -252,7 +257,7 @@ export default class BitmapLayer extends Layer {
       return;
     }
 
-    const {value} = attribute;
+    const { value } = attribute;
     value.set(this.state.positions.map(fp64LowPart));
   }
 }

@@ -2,7 +2,7 @@ import UTFGridLayer from './utf-grid-layer-leaflet';
 
 const { L } = typeof window !== 'undefined' ? window : {};
 
-const NEXGDDPLayer = (layerModel) => {
+const NEXGDDPLayer = layerModel => {
   const { id, layerConfig, interactivity } = layerModel;
   const { period } = layerConfig;
   const year = (period || {}).value || '1971-01-01';
@@ -17,8 +17,8 @@ const NEXGDDPLayer = (layerModel) => {
 
     const LayerGroup = L.LayerGroup.extend({
       group: true,
-      setOpacity: (opacity) => {
-        layerModel.mapLayer.getLayers().forEach((l) => {
+      setOpacity: opacity => {
+        layerModel.mapLayer.getLayers().forEach(l => {
           l.setOpacity(opacity);
         });
       }
@@ -27,7 +27,7 @@ const NEXGDDPLayer = (layerModel) => {
     layer = new LayerGroup([layer, interactiveLayer]);
   }
 
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     resolve(layer);
   });
 };

@@ -6,10 +6,7 @@ class LayerManager extends PureComponent {
   static propTypes = {
     map: PropTypes.shape({}).isRequired,
     plugin: PropTypes.func.isRequired,
-    children: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.node),
-      PropTypes.node
-    ])
+    children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node])
   };
 
   static defaultProps = {
@@ -22,16 +19,22 @@ class LayerManager extends PureComponent {
     this.layerManager = new Manager(map, plugin);
   }
 
+  componentWillUnmount() {
+    this.layerManager.unmount();
+  }
+
   render() {
     const { children } = this.props;
 
     if (children && Children.count(children)) {
       return Children.map(
         children,
-        (child, i) => child && cloneElement(child, {
-          layerManager: this.layerManager,
-          zIndex: child.props.zIndex || 1000 - i
-        })
+        (child, i) =>
+          child &&
+          cloneElement(child, {
+            layerManager: this.layerManager,
+            zIndex: child.props.zIndex || 1000 - i
+          })
       );
     }
 

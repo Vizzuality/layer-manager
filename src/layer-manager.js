@@ -13,15 +13,21 @@ function checkPluginProperties(plugin) {
       'setZIndex',
       'setLayerConfig',
       'setParams',
+      'setSQLParams',
       'setDecodeParams',
-      'getLayerByProvider'
+      'getLayerByType'
     ];
 
-    requiredProperties.forEach((property) => {
+    requiredProperties.forEach(property => {
       if (!plugin[property]) {
-        console.error(
-          `The ${property} function is required for layer manager plugins`
-        );
+        console.error(`The ${property} function is required for layer manager plugins`);
+      }
+    });
+
+    const deprecatedProperties = ['getLayerByProvider'];
+    deprecatedProperties.forEach(property => {
+      if (plugin[property]) {
+        console.warn(`The ${property} function is deprecated for layer manager plugins`);
       }
     });
   }
@@ -39,7 +45,6 @@ class LayerManager {
     this.plugin = new Plugin(this.map, this.options);
     checkPluginProperties(this.plugin);
   }
-
 
   /**
    * Add layers
@@ -63,7 +68,9 @@ class LayerManager {
     const layerModel = new LayerModel({ ...layer, ...layerOptions });
     const { id } = layerModel;
 
-    if (this.layers.find(l => l.id === id)) return this.layers;
+    if (this.layers.find(l => l.id === id)) {
+      return this.layers;
+    }
     this.layers.push(layerModel);
 
     this.requestLayer(layerModel);
@@ -81,24 +88,21 @@ class LayerManager {
 
     layerModel.update(changedProps);
 
-    const {
-      opacity,
-      visibility,
-      zIndex,
-      decodeParams
-    } = changedProps;
+    const { opacity, visibility, zIndex, decodeParams } = changedProps;
 
     if (typeof opacity !== 'undefined') {
       this.plugin.setOpacity(layerModel, opacity);
     }
     if (typeof visibility !== 'undefined') {
-      this.plugin.setOpacity(layerModel, !visibility ? 0 : layerModel.opacity);
+      this.plugin.setVisibility(layerModel, visibility);
     }
     if (typeof zIndex !== 'undefined') {
       this.plugin.setZIndex(layerModel, zIndex);
     }
 
-    if (!isEmpty(decodeParams)) this.plugin.setDecodeParams(layerModel);
+    if (!isEmpty(decodeParams)) {
+      this.plugin.setDecodeParams(layerModel);
+    }
   }
 
   /**
@@ -159,23 +163,25 @@ class LayerManager {
 
   requestLayer(layerModel) {
     const { layerType, provider } = layerModel;
-    const method = this.plugin.getLayerByType(layerType) || this.plugin.getLayerByProvider(provider, layerModel);
+    const method =
+      this.plugin.getLayerByType(layerType) || this.plugin.getLayerByProvider(provider, layerModel);
 
     if (!method) {
-      this.promises[layerModel.id] = Promise.reject(new Error(`${provider} provider is not yet supported.`));
+      this.promises[layerModel.id] = Promise.reject(
+        new Error(`${provider} provider is not yet supported.`)
+      );
       return false;
     }
 
     // Cancel previous/existing request
     this.requestCancel(layerModel.id);
 
-    // every render method returns a promise that we store in the array
+    // every request method returns a promise that we store in the array
     // to control when all layers are fetched.
-    this.promises[layerModel.id] = method.call(this, layerModel).then((layer) => {
+    this.promises[layerModel.id] = method.call(this, layerModel).then(layer => {
       const { _canceled: canceled } = this.promises[layerModel.id];
       if (!canceled) {
         layerModel.set('mapLayer', layer);
-
         this.plugin.add(layerModel, this.layers);
         this.plugin.setZIndex(layerModel, layerModel.zIndex);
         this.plugin.setOpacity(layerModel, layerModel.opacity);
@@ -188,12 +194,14 @@ class LayerManager {
 
   requestCancel(layerModelId) {
     // Cancel previous/existing request
-    if (
-      this.promises[layerModelId]
-      && this.promises[layerModelId].cancel
-    ) {
+    if (this.promises[layerModelId] && this.promises[layerModelId].cancel) {
       this.promises[layerModelId].cancel();
     }
+  }
+
+  unmount() {
+    this.map = null;
+    this.plugin.unmount();
   }
 }
 

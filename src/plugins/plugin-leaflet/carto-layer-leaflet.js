@@ -3,17 +3,18 @@ import { replace } from 'utils/query';
 
 const { L } = typeof window !== 'undefined' ? window : {};
 
-const CartoLayer = (layerModel) => {
+const CartoLayer = layerModel => {
   if (!L) throw new Error('Leaflet must be defined.');
 
   const { layerConfig, params, sqlParams, interactivity } = layerModel;
-  const layerConfigParsed = layerConfig.parse === false
-    ? layerConfig
-    : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
+  const layerConfigParsed =
+    layerConfig.parse === false
+      ? layerConfig
+      : JSON.parse(replace(JSON.stringify(layerConfig), params, sqlParams));
 
   return new Promise((resolve, reject) => {
     fetchTile(layerModel)
-      .then((response) => {
+      .then(response => {
         const tileUrl = `${response.cdn_url.templates.https.url}/${layerConfigParsed.account}/api/v1/map/${response.layergroupid}/{z}/{x}/{y}.png`;
         const layer = L.tileLayer(tileUrl);
 
@@ -24,8 +25,8 @@ const CartoLayer = (layerModel) => {
 
           const LayerGroup = L.LayerGroup.extend({
             group: true,
-            setOpacity: (opacity) => {
-              layerModel.mapLayer.getLayers().forEach((l) => {
+            setOpacity: opacity => {
+              layerModel.mapLayer.getLayers().forEach(l => {
                 l.setOpacity(opacity);
               });
             }

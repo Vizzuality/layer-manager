@@ -9,7 +9,7 @@ class PluginCesium {
     this.map = map;
     this.eventListener = new Cesium.ScreenSpaceEventHandler(map.scene.canvas);
 
-    this.method = {
+    this.methods = {
       carto: cartoLayer(Cesium),
       cartodb: cartoLayer(Cesium),
       cesium: tileLayer(Cesium)
@@ -28,7 +28,7 @@ class PluginCesium {
   }
 
   getLayerByProvider(provider) {
-    return this.method[provider];
+    return this.methods[provider];
   }
 
   setZIndex(layerModel, zIndex) {
@@ -64,20 +64,21 @@ class PluginCesium {
 
   setEvents(layerModel) {
     const { events } = layerModel;
-    Object.keys(events).forEach((type) => {
+    Object.keys(events).forEach(type => {
       const action = events[type];
       if (this.eventListener.getInputAction(type)) {
         this.eventListener.removeInputAction(type);
       }
-      this.eventListener.setInputAction(
-        this.getCoordinatesFromEvent(action),
-        type
-      );
+      this.eventListener.setInputAction(this.getCoordinatesFromEvent(action), type);
     });
     return this;
   }
 
   setParams(layerModel) {
+    this.remove(layerModel);
+  }
+
+  setSQLParams(layerModel) {
     this.remove(layerModel);
   }
 
@@ -89,7 +90,7 @@ class PluginCesium {
     console.info('Decode params callback', layerModel, this);
   }
 
-  getCoordinatesFromEvent = action => (event) => {
+  getCoordinatesFromEvent = action => event => {
     const { position } = event;
     const { Cesium } = PluginCesium;
     const clicked = new Cesium.Cartesian2(position.x, position.y);
