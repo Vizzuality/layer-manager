@@ -1,6 +1,6 @@
 {
   "name": "layer-manager",
-  "version": "3.0.0",
+  "version": "3.0.0-video",
   "description": "A library to get a layer depending on provider and layer spec",
   "repository": {
     "type": "git",
