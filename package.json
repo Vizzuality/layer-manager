@@ -1,6 +1,6 @@
 {
   "name": "@vizzuality/layer-manager-monorepo",
-  "version": "4.0.0-alpha",
+  "version": "4.0.0",
   "description": "Vizzuality's Layer Manager monorepo",
   "author": "Vizzuality <hello@vizzuality.com>",
   "repository": {
