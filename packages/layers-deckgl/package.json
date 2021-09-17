@@ -1,6 +1,6 @@
 {
   "name": "@vizzuality/layer-manager-layers-deckgl",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0",
   "author": "Vizzuality <hello@vizzuality.com>",
   "keywords": [
     "layer-manager",

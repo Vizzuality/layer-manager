@@ -1,6 +1,6 @@
 {
   "name": "@vizzuality/layer-manager-sandbox",
-  "version": "0.1.1-alpha.3",
+  "version": "0.1.1",
   "author": "Vizzuality <hello@vizzuality.com>",
   "private": true,
   "repository": {
