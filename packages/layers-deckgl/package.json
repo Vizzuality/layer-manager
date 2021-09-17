@@ -28,28 +28,12 @@
     "build": "tsc -b tsconfig.build.json",
     "lint": "eslint . --ext .js,.ts --ignore-path ../../.eslintignore --fix"
   },
-  "devDependencies": {
-    "@types/axios": "^0.14.0",
-    "@types/jest": "^26.0.23",
-    "@typescript-eslint/eslint-plugin": "^4.22.0",
-    "@typescript-eslint/parser": "^4.22.0",
-    "eslint": "^7.25.0",
-    "eslint-config-airbnb-typescript": "^12.3.1",
-    "eslint-import-resolver-typescript": "^2.4.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-react": "^7.23.2",
-    "eslint-plugin-react-hooks": "^4",
-    "husky": "^6.0.0",
-    "jest": "^26.6.3",
-    "ts-jest": "^26.5.5"
-  },
   "dependencies": {
     "@deck.gl/core": "^8.4.16",
     "@luma.gl/constants": "^8.4.5",
     "@luma.gl/core": "^8.4.5",
     "@math.gl/web-mercator": "^3.4.2",
-    "@vizzuality/layer-manager-utils": "^1.0.0-alpha.3",
+    "@vizzuality/layer-manager-utils": "file:../utils",
     "cancelable-promise": "^3.2.3",
     "math.gl": "^3.4.2",
     "react": "^17.0.2"

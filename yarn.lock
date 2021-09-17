@@ -1240,7 +1240,7 @@
     "@math.gl/web-mercator" "^3.4.2"
     d3-hexbin "^0.2.1"
 
-"@deck.gl/core@^8.4.16":
+"@deck.gl/core@8.4.16", "@deck.gl/core@^8.4.16":
   version "8.4.16"
   resolved "https://registry.yarnpkg.com/@deck.gl/core/-/core-8.4.16.tgz#5b439077a105f66966c380d27a23675be18e487d"
   integrity sha512-8rNAj2/wB0zsQ3kDgatdx4pgkKdobdiK78+DAvmiomDGI74DJIbBYd2eVEw55B7UXKydiMwTcRHb0fskfcGEhw==
@@ -2405,6 +2405,84 @@
   dependencies:
     "@typescript-eslint/types" "4.25.0"
     eslint-visitor-keys "^2.0.0"
+
+"@vizzuality/layer-manager-layers-deckgl@file:packages/layers-deckgl":
+  version "1.0.0-alpha.3"
+  dependencies:
+    "@deck.gl/core" "^8.4.16"
+    "@luma.gl/constants" "^8.4.5"
+    "@luma.gl/core" "^8.4.5"
+    "@math.gl/web-mercator" "^3.4.2"
+    "@vizzuality/layer-manager-utils" "file:../../.cache/yarn/v6/npm-@vizzuality-layer-manager-layers-deckgl-1.0.0-alpha.3-5a4b2c20-bc3a-46a5-88ba-1bead3a633dc-1631868230898/node_modules/@vizzuality/utils"
+    cancelable-promise "^3.2.3"
+    math.gl "^3.4.2"
+    react "^17.0.2"
+
+"@vizzuality/layer-manager-plugin-mapboxgl@file:packages/plugin-mapboxgl":
+  version "1.0.0-alpha.3"
+  dependencies:
+    "@deck.gl/core" "8.4.16"
+    "@deck.gl/mapbox" "^8.4.16"
+    "@vizzuality/layer-manager-utils" "file:../../.cache/yarn/v6/npm-@vizzuality-layer-manager-plugin-mapboxgl-1.0.0-alpha.3-9856c156-bb37-4161-a4bb-87d1a95692a2-1631868230910/node_modules/@vizzuality/utils"
+    cancelable-promise "^3.2.3"
+    react "^17.0.2"
+
+"@vizzuality/layer-manager-provider-carto@file:packages/provider-carto":
+  version "1.0.0-alpha.3"
+  dependencies:
+    "@vizzuality/layer-manager" "file:../../.cache/yarn/v6/npm-@vizzuality-layer-manager-provider-carto-1.0.0-alpha.3-bb91a78e-8f7d-40ed-b27b-97d5e405a952-1631868231086/node_modules/@vizzuality/core"
+    "@vizzuality/layer-manager-utils" "file:../../.cache/yarn/v6/npm-@vizzuality-layer-manager-provider-carto-1.0.0-alpha.3-bb91a78e-8f7d-40ed-b27b-97d5e405a952-1631868231086/node_modules/@vizzuality/utils"
+
+"@vizzuality/layer-manager-react@file:packages/react":
+  version "1.0.0-alpha.3"
+  dependencies:
+    "@vizzuality/layer-manager" "file:../../.cache/yarn/v6/npm-@vizzuality-layer-manager-react-1.0.0-alpha.3-8c3a70d4-acf2-4e52-8753-e10d2fb5fa01-1631868231088/node_modules/@vizzuality/core"
+    "@vizzuality/layer-manager-utils" "file:../../.cache/yarn/v6/npm-@vizzuality-layer-manager-react-1.0.0-alpha.3-8c3a70d4-acf2-4e52-8753-e10d2fb5fa01-1631868231088/node_modules/@vizzuality/utils"
+    cancelable-promise "^3.2.3"
+    fast-deep-equal "^3.1.3"
+    prop-types "^15.7.2"
+
+"@vizzuality/layer-manager-sandbox@file:applications/sandbox":
+  version "0.1.1-alpha.3"
+  dependencies:
+    "@deck.gl/aggregation-layers" "^8.4.16"
+    "@deck.gl/core" "^8.4.16"
+    "@deck.gl/geo-layers" "^8.4.16"
+    "@deck.gl/layers" "^8.4.16"
+    "@deck.gl/mesh-layers" "^8.4.16"
+    "@luma.gl/core" "^8.4.5"
+    "@math.gl/web-mercator" "^3.3.2"
+    "@vizzuality/layer-manager-layers-deckgl" "file:../../.cache/yarn/v6/npm-@vizzuality-layer-manager-sandbox-0.1.1-alpha.3-29fb97b1-d101-4abf-a4a8-4cd38229d736-1631868231091/node_modules/packages/layers-deckgl"
+    "@vizzuality/layer-manager-plugin-mapboxgl" "file:../../.cache/yarn/v6/npm-@vizzuality-layer-manager-sandbox-0.1.1-alpha.3-29fb97b1-d101-4abf-a4a8-4cd38229d736-1631868231091/node_modules/packages/plugin-mapboxgl"
+    "@vizzuality/layer-manager-react" "file:../../.cache/yarn/v6/npm-@vizzuality-layer-manager-sandbox-0.1.1-alpha.3-29fb97b1-d101-4abf-a4a8-4cd38229d736-1631868231091/node_modules/packages/react"
+    classnames "^2.2.6"
+    d3-ease "^1.0.5"
+    gh-pages "^2.1.1"
+    mapbox-gl "^1.8.1"
+    moment "^2.24.0"
+    node-sass "^4.12.0"
+    prop-types "^15.7.2"
+    react "^16.9.0"
+    react-ace "^8.0.0"
+    react-dom "^16.9.0"
+    react-map-gl "^5.2.3"
+    react-scripts "3.1.1"
+    vizzuality-components "^3.0.0-beta.9"
+
+"@vizzuality/layer-manager-utils@file:packages/utils":
+  version "1.0.0-alpha.3"
+  dependencies:
+    axios "^0.21.1"
+    cancelable-promise "^3.2.3"
+
+"@vizzuality/layer-manager@file:packages/core":
+  version "4.0.0-alpha.4"
+  dependencies:
+    "@vizzuality/layer-manager-utils" "file:../../.cache/yarn/v6/npm-@vizzuality-layer-manager-4.0.0-alpha.4-5b14e885-d3f9-4873-acf8-e8a8d22b2b6c-1631868230884/node_modules/@vizzuality/utils"
+    axios "^0.21.1"
+    cancelable-promise "^3.2.3"
+    fast-deep-equal "^3.1.3"
+    mapbox-gl "^2.2.0"
 
 "@webassemblyjs/ast@1.8.5":
   version "1.8.5"
@@ -5369,11 +5447,6 @@ eslint-plugin-react-hooks@^1.6.1:
   resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-1.7.0.tgz#6210b6d5a37205f0b92858f895a4e827020a7d04"
   integrity sha512-iXTCFcOmlWvw4+TOE8CLWj6yX1GwzT0Y6cUfHHZqWnSk144VmVIRcVGtUAzrLES7C798lmvnt02C7rxaOX1HNA==
 
-eslint-plugin-react-hooks@^2.0.1:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-2.5.1.tgz#4ef5930592588ce171abeb26f400c7fbcbc23cd0"
-  integrity sha512-Y2c4b55R+6ZzwtTppKwSmK/Kar8AdLiC2f9NADCuxbcTgPPg41Gyqa6b9GppgXSvCtkRw43ZE86CT5sejKC6/g==
-
 eslint-plugin-react-hooks@^4:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-4.2.0.tgz#8c229c268d468956334c943bb45fc860280f5556"
@@ -7538,7 +7611,7 @@ jest-changed-files@^26.6.2:
     execa "^4.0.0"
     throat "^5.0.0"
 
-jest-cli@^24.8.0, jest-cli@^24.9.0:
+jest-cli@^24.8.0:
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/jest-cli/-/jest-cli-24.9.0.tgz#ad2de62d07472d419c6abc301fc432b98b10d2af"
   integrity sha512-+VLRKyitT3BWoMeSUIHRxV/2g8y9gw91Jh5z2UmXZzkZKpbC08CSehVxgHUwTpy+HwGcns/tqafQDJW7imYvGg==
@@ -8264,14 +8337,6 @@ jest@24.8.0:
   dependencies:
     import-local "^2.0.0"
     jest-cli "^24.8.0"
-
-jest@^24.8.0:
-  version "24.9.0"
-  resolved "https://registry.yarnpkg.com/jest/-/jest-24.9.0.tgz#987d290c05a08b52c56188c1002e368edb007171"
-  integrity sha512-YvkBL1Zm7d2B1+h5fHEOdyjCG+sGMz4f8D86/0HiqJ6MB4MnDc8FgP5vdWsGnemOQro7lnYo8UakZ3+5A0jxGw==
-  dependencies:
-    import-local "^2.0.0"
-    jest-cli "^24.9.0"
 
 jest@^26.6.3:
   version "26.6.3"
