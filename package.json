@@ -1,6 +1,6 @@
 {
   "name": "@vizzuality/layer-manager-monorepo",
-  "version": "4.0.0-alpha",
+  "version": "4.0.0",
   "description": "Vizzuality's Layer Manager monorepo",
   "author": "Vizzuality <hello@vizzuality.com>",
   "repository": {
@@ -18,5 +18,38 @@
   "workspaces": [
     "packages/*",
     "applications/*"
-  ]
+  ],
+  "dependencies": {
+    "@vizzuality/layer-manager": "file:packages/core",
+    "@vizzuality/layer-manager-layers-deckgl": "file:packages/layers-deckgl",
+    "@vizzuality/layer-manager-plugin-mapboxgl": "file:packages/plugin-mapboxgl",
+    "@vizzuality/layer-manager-provider-carto": "file:packages/provider-carto",
+    "@vizzuality/layer-manager-react": "file:packages/react",
+    "@vizzuality/layer-manager-sandbox": "file:applications/sandbox",
+    "@vizzuality/layer-manager-utils": "file:packages/utils"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/jest": "^27.0.1",
+    "@types/mapbox-gl": "^2.1.2",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "^15.0.1",
+    "@types/react": "^17.0.6",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "babel-eslint": "^10.0.0",
+    "eslint": "^7.25.0",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-config-react-app": "^6.0.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-flowtype": "^5.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.23.2",
+    "eslint-plugin-react-hooks": "^4",
+    "husky": "^6.0.0",
+    "jest": "^27.2.0",
+    "ts-jest": "^27.0.5",
+    "typescript": "^4.2.4"
+  }
 }
