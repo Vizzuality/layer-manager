@@ -13,10 +13,14 @@
     "bootstrap": "lerna bootstrap && npx husky install",
     "lint": "lerna run lint",
     "build": "lerna run build",
-    "test": "lerna run test"
+    "test": "lerna run test",
+    "prepare": "husky install"
   },
   "workspaces": [
     "packages/*",
     "applications/*"
-  ]
+  ],
+  "devDependencies": {
+    "husky": "^7.0.0"
+  }
 }
