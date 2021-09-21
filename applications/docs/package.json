@@ -11,6 +11,7 @@
   "dependencies": {
     "@deck.gl/aggregation-layers": "^8.4.16",
     "@deck.gl/core": "^8.4.16",
+    "@deck.gl/extensions": "^8.5.8",
     "@deck.gl/geo-layers": "^8.4.16",
     "@deck.gl/layers": "^8.4.16",
     "@deck.gl/mesh-layers": "^8.4.16",
@@ -20,6 +21,7 @@
     "@vizzuality/layer-manager-plugin-mapboxgl": "^1.0.0-alpha.3",
     "@vizzuality/layer-manager-react": "^1.0.0-alpha.3",
     "classnames": "^2.2.6",
+    "d3-ease": "^3.0.1",
     "mapbox-gl": "^1.8.1",
     "react": "^16.8 || ^17",
     "react-dom": "^16.8 || ^17",

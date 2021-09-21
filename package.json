@@ -25,7 +25,6 @@
     "@vizzuality/layer-manager-plugin-mapboxgl": "file:packages/plugin-mapboxgl",
     "@vizzuality/layer-manager-provider-carto": "file:packages/provider-carto",
     "@vizzuality/layer-manager-react": "file:packages/react",
-    "@vizzuality/layer-manager-sandbox": "file:applications/sandbox",
     "@vizzuality/layer-manager-utils": "file:packages/utils"
   },
   "devDependencies": {

@@ -80,6 +80,7 @@ Default.args = {
       type: TileLayer,
       data: 'https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png',
       tileSize: 256,
+      visible: true,
       refinementStrategy: 'no-overlap',
       renderSubLayers: (sl) => {
         const {
@@ -89,6 +90,8 @@ Default.args = {
           visible,
           opacity,
         } = sl;
+
+        console.log(sl);
 
         const {
           z,
@@ -100,7 +103,6 @@ Default.args = {
         if (data) {
           return new DecodedLayer({
             id: subLayerId,
-            // @ts-expect-error
             image: data,
             bounds: [west, south, east, north],
             textureParameters: {
@@ -109,7 +111,6 @@ Default.args = {
               [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
               [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE,
             },
-
             zoom: z,
             visible,
             opacity,
