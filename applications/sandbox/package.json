@@ -1,6 +1,6 @@
 {
   "name": "@vizzuality/layer-manager-sandbox",
-  "version": "0.1.1-alpha.3",
+  "version": "0.1.2",
   "author": "Vizzuality <hello@vizzuality.com>",
   "private": true,
   "repository": {
@@ -9,19 +9,28 @@
     "directory": "applications/sandbox"
   },
   "dependencies": {
-    "@deck.gl/aggregation-layers": "^8.4.16",
-    "@deck.gl/core": "^8.4.16",
-    "@deck.gl/geo-layers": "^8.4.16",
-    "@deck.gl/layers": "^8.4.16",
-    "@deck.gl/mesh-layers": "^8.4.16",
+    "@deck.gl/aggregation-layers": "^8.5.8",
+    "@deck.gl/core": "^8.5.8",
+    "@deck.gl/extensions": "^8.5.8",
+    "@deck.gl/geo-layers": "^8.5.8",
+    "@deck.gl/layers": "^8.5.8",
+    "@deck.gl/mesh-layers": "^8.5.8",
+    "@loaders.gl/core": "^3.0.0",
+    "@loaders.gl/gltf": "^3.0.0",
+    "@loaders.gl/images": "^3.0.0",
     "@luma.gl/core": "^8.4.5",
+    "@luma.gl/engine": "^8.4.5",
+    "@luma.gl/gltools": "^8.4.5",
+    "@luma.gl/shadertools": "^8.4.5",
+    "@luma.gl/webgl": "^8.4.5",
     "@math.gl/web-mercator": "^3.3.2",
-    "@vizzuality/layer-manager-layers-deckgl": "^1.0.0-alpha.3",
-    "@vizzuality/layer-manager-plugin-mapboxgl": "^1.0.0-alpha.3",
-    "@vizzuality/layer-manager-react": "^1.0.0-alpha.3",
+    "@vizzuality/layer-manager-layers-deckgl": "file:../../packages/layers-deckgl",
+    "@vizzuality/layer-manager-plugin-mapboxgl": "file:../../packages/plugin-mapboxgl",
+    "@vizzuality/layer-manager-react": "file:../../packages/react",
     "classnames": "^2.2.6",
     "d3-ease": "^1.0.5",
     "gh-pages": "^2.1.1",
+    "gl-matrix": "^3.0.0",
     "mapbox-gl": "^1.8.1",
     "moment": "^2.24.0",
     "node-sass": "^4.12.0",
@@ -54,17 +63,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.22.0",
-    "@typescript-eslint/parser": "^4.22.0",
-    "eslint": "^6.1.0",
-    "eslint-config-airbnb-typescript": "^12.3.1",
-    "eslint-config-react-app": "^6.0.0",
-    "eslint-plugin-flowtype": "^4.3.0",
-    "eslint-plugin-react": "^7.23.2",
-    "eslint-plugin-react-hooks": "^2.0.1",
-    "jest": "^24.8.0",
-    "typescript-eslint": "^0.0.1-alpha.0"
   }
 }
