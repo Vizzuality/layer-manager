@@ -16,5 +16,7 @@ jobs:
         run: yarn bootstrap
       - name: Build
         run: lerna run build --ignore @vizzuality/layer-manager-docs
+      - name: Link
+        run: lerna link
       - name: Test
         run: lerna run test --ignore @vizzuality/layer-manager-docs
