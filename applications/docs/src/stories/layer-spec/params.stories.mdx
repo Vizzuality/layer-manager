@@ -1,0 +1,59 @@
+import { Meta, Story } from '@storybook/addon-docs/blocks';
+
+<Meta title="Layer/Attributtes/Params" />
+
+# Params
+An object that we will use to substitute all the concurrences of each key with its respective value inside render and source.
+
+```json
+{
+  "id": "test",
+  "type": "geojson",
+  "params": {
+    "color": "#CCC"
+  },
+  "source": {
+    "type": "geojson",
+    "data": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "properties": {},
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [12.3046875, 48.69096039092549],
+                [5.625, 20.632784250388028],
+                [45.3515625, 27.059125784374068],
+                [48.515625, 45.82879925192134],
+                [12.3046875, 48.69096039092549]
+              ]
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "render": {
+    "layers": [
+      {
+        "type": "fill",
+        "paint": {
+          "fill-color": "{{color}}",
+          "fill-opacity": 1
+        }
+      },
+      {
+        "type": "line",
+        "paint": {
+          "line-color": "{{color}}",
+          "line-opacity": 0.1
+        }
+      }
+    ]
+  }
+}
+```
+<Story id="layers-vector--with-params" />

@@ -77,7 +77,7 @@ export type LayerSpec = {
   render?: Render
   interactivity?: unknown[]
   deck?: any[]
-  onAfterAdd?: () => void
+  onAfterAdd?: (layerModel: LayerModel) => void
   onAfterRemove?: (layerModel: LayerModel) => void
 };
 

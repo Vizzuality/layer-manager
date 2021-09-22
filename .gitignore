@@ -32,3 +32,6 @@
 
 # Typescript
 *.tsbuildinfo
+
+# Storybook
+**/storybook-static

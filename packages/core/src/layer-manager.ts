@@ -33,7 +33,7 @@ class LayerManager {
   add(
     layer: LayerSpec,
     layerOptions: Partial<LayerSpec> = defaultLayerOptions,
-    onAfterAdd: () => void,
+    onAfterAdd: (layerModel: LayerModel) => void,
   ): LayerModel[] {
     if (!layer) throw new Error('layer param is required');
 

@@ -13,8 +13,10 @@ jobs:
         with:
           node-version: '14.x'
       - name: Install
-        run: yarn bootstrap
+        run: lerna bootstrap --no-ci
       - name: Build
-        run: lerna run build --ignore @vizzuality/layer-manager-sandbox
+        run: lerna run build --ignore @vizzuality/layer-manager-docs
+      - name: Link
+        run: lerna link --force-local
       - name: Test
-        run: lerna run test --ignore @vizzuality/layer-manager-sandbox
+        run: lerna run test --ignore @vizzuality/layer-manager-docs
