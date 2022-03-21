@@ -5,8 +5,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/vizzuality/layer-manager.git",
-    "directory": "applications/docs"
+    "url": "https://github.com/vizzuality/layer-manager.git"
   },
   "dependencies": {
     "@deck.gl/aggregation-layers": "^8.4.16",
