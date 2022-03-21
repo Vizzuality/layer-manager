@@ -8,5 +8,5 @@
     "resolveJsonModule": true,
     "strict": false
   },
-  "include": ["src"]
+  "include": ["src", "node_modules"]
 }
