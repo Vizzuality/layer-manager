@@ -31,7 +31,7 @@
   "dependencies": {
     "@deck.gl/core": "^8.5.8",
     "@deck.gl/mapbox": "^8.5.8",
-    "@vizzuality/layer-manager-utils": "file:../utils",
+    "@vizzuality/layer-manager-utils": "*",
     "cancelable-promise": "^3.2.3",
     "react": "^17.0.2"
   }

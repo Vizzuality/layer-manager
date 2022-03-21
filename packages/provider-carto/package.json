@@ -30,7 +30,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@vizzuality/layer-manager": "file:../core",
-    "@vizzuality/layer-manager-utils": "file:../utils"
+    "@vizzuality/layer-manager": "*",
+    "@vizzuality/layer-manager-utils": "*"
   }
 }
