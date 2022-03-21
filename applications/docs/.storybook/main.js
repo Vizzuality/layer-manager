@@ -2,14 +2,7 @@ const path = require("path");
 
 module.exports = {
   stories: ["../src/**/*.stories.@(js|jsx|ts|tsx|mdx)"],
-  addons: [
-    {
-      name: "@storybook/addon-essentials",
-      options: {
-        actions: false
-      }
-    },
-  ],
+  addons: ['@storybook/addon-essentials'],
   typescript: {
     check: false,
     checkOptions: {},

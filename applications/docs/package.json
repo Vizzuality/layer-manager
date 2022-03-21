@@ -16,9 +16,9 @@
     "@deck.gl/mesh-layers": "^8.4.16",
     "@luma.gl/core": "^8.4.5",
     "@math.gl/web-mercator": "^3.3.2",
-    "@vizzuality/layer-manager-provider-carto": "*",
     "@vizzuality/layer-manager-layers-deckgl": "*",
     "@vizzuality/layer-manager-plugin-mapboxgl": "*",
+    "@vizzuality/layer-manager-provider-carto": "*",
     "@vizzuality/layer-manager-react": "*",
     "classnames": "^2.2.6",
     "d3-ease": "^3.0.1",
@@ -50,6 +50,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.14.5",
+    "@storybook/addon-docs": "^6.4.19",
     "@storybook/addon-essentials": "^6.2.9",
     "@storybook/react": "^6.2.9",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
