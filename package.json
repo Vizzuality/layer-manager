@@ -16,8 +16,7 @@
     "test": "lerna run test"
   },
   "workspaces": [
-    "packages/*",
-    "applications/*"
+    "packages/*"
   ],
   "dependencies": {
     "@vizzuality/layer-manager": "*",
