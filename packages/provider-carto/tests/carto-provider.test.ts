@@ -61,7 +61,7 @@ const LAYER_RESULT = {
   source: {
     promoteId: 'cartodb_id',
     tiles: [
-      'https://cartocdn-gusc-a.global.ssl.fastly.net/wri-01/api/v1/map/487c0089ed193790cae385eec498b239:1549530042384/{z}/{x}/{y}.mvt',
+      'https://a.gusc.cartocdn.com/wri-01/api/v1/map/487c0089ed193790cae385eec498b239:1549530042384/{z}/{x}/{y}.mvt',
     ],
     type: 'vector',
   },
