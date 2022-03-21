@@ -20,12 +20,12 @@
     "applications/*"
   ],
   "dependencies": {
-    "@vizzuality/layer-manager": "file:packages/core",
-    "@vizzuality/layer-manager-layers-deckgl": "file:packages/layers-deckgl",
-    "@vizzuality/layer-manager-plugin-mapboxgl": "file:packages/plugin-mapboxgl",
-    "@vizzuality/layer-manager-provider-carto": "file:packages/provider-carto",
-    "@vizzuality/layer-manager-react": "file:packages/react",
-    "@vizzuality/layer-manager-utils": "file:packages/utils"
+    "@vizzuality/layer-manager": "*",
+    "@vizzuality/layer-manager-layers-deckgl": "*",
+    "@vizzuality/layer-manager-plugin-mapboxgl": "*",
+    "@vizzuality/layer-manager-provider-carto": "*",
+    "@vizzuality/layer-manager-react": "*",
+    "@vizzuality/layer-manager-utils": "*"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
