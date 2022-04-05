@@ -1177,7 +1177,7 @@
     "@math.gl/polygon" "^3.5.7"
     earcut "^2.0.6"
 
-"@deck.gl/mapbox@^8.5.8":
+"@deck.gl/mapbox@^8.5.8", "@deck.gl/mapbox@^8.7.4":
   version "8.7.4"
   resolved "https://registry.yarnpkg.com/@deck.gl/mapbox/-/mapbox-8.7.4.tgz#f16d9a609c0317c9f102168e84fb0d64f5a4d173"
   integrity sha512-ziJ7b0zY9f8uw93Fwe4CwOivE08SPznQDjqXLgU8oKA6DbUWZEvjtjbkneSuAVWwu51xgYbauEvV1xn612T+vQ==
@@ -4593,6 +4593,11 @@ cipher-base@^1.0.0, cipher-base@^1.0.1, cipher-base@^1.0.3:
   dependencies:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
+
+circle-to-polygon@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/circle-to-polygon/-/circle-to-polygon-2.2.0.tgz#ca4aec7b0536510fc99bf3e1dcef1d53a504a04e"
+  integrity sha512-yC9/bw6P0YmV2/oxm4DLrSgrzHhbz9H+vgUScmSFN5KilR/KFGVRbUi9a0mIYPsXK44HvnysVVi/iIysRJVvNw==
 
 class-utils@^0.3.5:
   version "0.3.6"

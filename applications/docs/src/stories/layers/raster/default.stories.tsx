@@ -66,7 +66,7 @@ Default.args = {
   source: {
     type: 'raster',
     tiles: [
-      'http://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png',
+      'https://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png',
     ],
   },
 };
@@ -78,7 +78,7 @@ WithMinMaxSourceZoom.args = {
   source: {
     type: 'raster',
     tiles: [
-      'http://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png',
+      'https://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png',
     ],
     minzoom: 3,
     maxzoom: 12,
@@ -92,7 +92,7 @@ WithMinMaxRenderZoom.args = {
   source: {
     type: 'raster',
     tiles: [
-      'http://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png',
+      'https://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png',
     ],
   },
   render: {
