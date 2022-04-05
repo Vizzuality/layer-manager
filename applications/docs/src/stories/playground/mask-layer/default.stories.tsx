@@ -76,7 +76,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
                 {
                   id: 'deck-gain-layer',
                   type: TileLayer,
-                  data: 'http://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png',
+                  data: 'https://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png',
                   tileSize: 256,
                   visible: true,
                   extensions: [new MaskExtension()],
