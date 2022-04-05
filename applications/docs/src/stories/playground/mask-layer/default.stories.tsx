@@ -30,7 +30,7 @@ export default {
   },
 };
 
-const Template: Story<LayerProps> = (args: LayerProps) => {
+const Template: Story<LayerProps> = (args: any) => {
   const { id, tileUrl, decodeFunction, decodeParams } = args;
 
   const minZoom = 2;
@@ -74,13 +74,17 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
               {...args}
               deck={[
                 {
+                  id: 'mask',
+                  type: GeoJsonLayer,
+                  data: PORTUGAL_GEOJSON,
+                  operation: 'mask',
+                },
+                {
                   id: 'deck-gain-layer',
                   type: TileLayer,
                   data: 'https://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png',
                   tileSize: 256,
                   visible: true,
-                  extensions: [new MaskExtension()],
-                  maskId: 'mask',
 
                   renderSubLayers: (sl) => {
                     const {
@@ -88,7 +92,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
                       data,
                       tile,
                       visible,
-                      opacity,
+                      opacity = 1,
                     } = sl;
 
                     const {
@@ -103,6 +107,8 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
                         id: subLayerId,
                         image: data,
                         bounds: [west, south, east, north],
+                        extensions: [new MaskExtension()],
+                        maskId: 'mask',
                         textureParameters: {
                           [GL.TEXTURE_MIN_FILTER]: GL.NEAREST,
                           [GL.TEXTURE_MAG_FILTER]: GL.NEAREST,
@@ -119,13 +125,6 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
                   minZoom: 3,
                   maxZoom: 12,
                 },
-                {
-                  id: 'mask',
-                  type: GeoJsonLayer,
-                  data: PORTUGAL_GEOJSON,
-                  operation: 'mask',
-                },
-
                 {
                   id: 'selected-cities',
                   data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/cities15000.csv',

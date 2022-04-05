@@ -80,7 +80,7 @@ if (year >= startYear && year <= endYear && year >= 2001.) {
   },
 };
 
-const Template: Story<LayerProps> = (args: LayerProps) => {
+const Template: Story<LayerProps> = (args: any) => {
   const { id, tileUrl, decodeFunction, decodeParams } = args;
 
   const minZoom = 2;
