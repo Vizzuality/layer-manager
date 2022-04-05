@@ -1,6 +1,6 @@
 {
   "name": "@vizzuality/layer-manager-plugin-mapboxgl",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "Vizzuality <hello@vizzuality.com>",
   "keywords": [
     "layer-manager",
@@ -29,8 +29,8 @@
     "lint": "eslint . --ext .js,.ts --ignore-path ../../.eslintignore --fix"
   },
   "dependencies": {
-    "@deck.gl/core": "^8.5.8",
-    "@deck.gl/mapbox": "^8.5.8",
+    "@deck.gl/core": "^8.7.3",
+    "@deck.gl/mapbox": "^8.7.3",
     "@vizzuality/layer-manager-utils": "*",
     "cancelable-promise": "^3.2.3",
     "react": "^17.0.2"

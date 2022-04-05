@@ -3,8 +3,16 @@ import { MapboxLayer } from '@deck.gl/mapbox';
 
 const DeckLayer = (layerModel) => {
   const {
-    deck = [], id, zIndex, decodeParams,
+    deck = [], id, zIndex,
   } = layerModel;
+
+  const deckLayers = deck.map((d) => {
+    const l = new MapboxLayer({
+      ...d,
+      getPolygonOffset: () => [0, -zIndex],
+    });
+    return l;
+  });
 
   const layer = {
     id,
@@ -17,11 +25,7 @@ const DeckLayer = (layerModel) => {
           'background-color': 'transparent',
         },
       },
-      ...deck.map((d) => new MapboxLayer({
-        ...d,
-        decodeParams,
-        getPolygonOffset: () => [0, -zIndex],
-      })),
+      ...deckLayers,
     ],
   };
 
