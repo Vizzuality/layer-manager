@@ -1,3 +1,4 @@
+/* eslint-disable react/default-props-match-prop-types */
 import { PureComponent } from 'react';
 import isEqual from 'fast-deep-equal/react';
 import { isEmpty, replace } from '@vizzuality/layer-manager-utils';

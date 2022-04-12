@@ -9,7 +9,7 @@ import CartoProvider from '@vizzuality/layer-manager-provider-carto';
 import GL from '@luma.gl/constants';
 import { TileLayer } from '@deck.gl/geo-layers';
 import { DecodedLayer } from '@vizzuality/layer-manager-layers-deckgl';
-
+import { MapboxLayer } from '@deck.gl/mapbox';
 
 // Map
 import Map from '../../../components/map';
@@ -142,85 +142,87 @@ Default.args = {
     parse: false
   },
   deck: [
-    {
-      id: `deck-loss-raster-decode`,
-      type: TileLayer,
-      data: 'https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png',
-      tileSize: 256,
-      visible: true,
-      refinementStrategy: 'no-overlap',
-      renderSubLayers: (sl) => {
-        const {
-          id: subLayerId,
-          data,
-          tile,
-          visible,
-          opacity,
-          decodeParams,
-        } = sl;
-
-        const {
-          z,
-          bbox: {
-            west, south, east, north,
-          },
-        } = tile;
-
-        if (data) {
-          return new DecodedLayer({
+    new MapboxLayer(
+      {
+        id: `deck-loss-raster-decode`,
+        type: TileLayer,
+        data: 'https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png',
+        tileSize: 256,
+        visible: true,
+        refinementStrategy: 'no-overlap',
+        renderSubLayers: (sl) => {
+          const {
             id: subLayerId,
-            image: data,
-            bounds: [west, south, east, north],
-            textureParameters: {
-              [GL.TEXTURE_MIN_FILTER]: GL.NEAREST,
-              [GL.TEXTURE_MAG_FILTER]: GL.NEAREST,
-              [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
-              [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE,
-            },
-            zoom: z,
+            data,
+            tile,
             visible,
             opacity,
-            decodeParams: decodeParams || {
-              startYear: 2001,
-              endYear: 2017,
+            decodeParams,
+          } = sl;
+
+          const {
+            z,
+            bbox: {
+              west, south, east, north,
             },
-            decodeFunction: `
-              // values for creating power scale, domain (input), and range (output)
-              float domainMin = 0.;
-              float domainMax = 255.;
-              float rangeMin = 0.;
-              float rangeMax = 255.;
+          } = tile;
 
-              float exponent = zoom < 13. ? 0.3 + (zoom - 3.) / 20. : 1.;
-              float intensity = color.r * 255.;
+          if (data) {
+            return new DecodedLayer({
+              id: subLayerId,
+              image: data,
+              bounds: [west, south, east, north],
+              textureParameters: {
+                [GL.TEXTURE_MIN_FILTER]: GL.NEAREST,
+                [GL.TEXTURE_MAG_FILTER]: GL.NEAREST,
+                [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
+                [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE,
+              },
+              zoom: z,
+              visible,
+              opacity,
+              decodeParams: decodeParams || {
+                startYear: 2001,
+                endYear: 2017,
+              },
+              decodeFunction: `
+                // values for creating power scale, domain (input), and range (output)
+                float domainMin = 0.;
+                float domainMax = 255.;
+                float rangeMin = 0.;
+                float rangeMax = 255.;
 
-              // get the min, max, and current values on the power scale
-              float minPow = pow(domainMin, exponent - domainMin);
-              float maxPow = pow(domainMax, exponent);
-              float currentPow = pow(intensity, exponent);
+                float exponent = zoom < 13. ? 0.3 + (zoom - 3.) / 20. : 1.;
+                float intensity = color.r * 255.;
 
-              // get intensity value mapped to range
-              float scaleIntensity = ((currentPow - minPow) / (maxPow - minPow) * (rangeMax - rangeMin)) + rangeMin;
-              // a value between 0 and 255
-              alpha = zoom < 13. ? scaleIntensity / 255. : color.g;
+                // get the min, max, and current values on the power scale
+                float minPow = pow(domainMin, exponent - domainMin);
+                float maxPow = pow(domainMax, exponent);
+                float currentPow = pow(intensity, exponent);
 
-              float year = 2000.0 + (color.b * 255.);
-              // map to years
-              if (year >= startYear && year <= endYear && year >= 2001.) {
-                color.r = 220. / 255.;
-                color.g = (72. - zoom + 102. - 3. * scaleIntensity / zoom) / 255.;
-                color.b = (33. - zoom + 153. - intensity / zoom) / 255.;
-              } else {
-                alpha = 0.;
-              }
-            `
-          });
-        }
-        return null;
-      },
-      minZoom: 3,
-      maxZoom: 12,
-    }
+                // get intensity value mapped to range
+                float scaleIntensity = ((currentPow - minPow) / (maxPow - minPow) * (rangeMax - rangeMin)) + rangeMin;
+                // a value between 0 and 255
+                alpha = zoom < 13. ? scaleIntensity / 255. : color.g;
+
+                float year = 2000.0 + (color.b * 255.);
+                // map to years
+                if (year >= startYear && year <= endYear && year >= 2001.) {
+                  color.r = 220. / 255.;
+                  color.g = (72. - zoom + 102. - 3. * scaleIntensity / zoom) / 255.;
+                  color.b = (33. - zoom + 153. - intensity / zoom) / 255.;
+                } else {
+                  alpha = 0.;
+                }
+              `
+            });
+          }
+          return null;
+        },
+        minZoom: 3,
+        maxZoom: 12,
+      }
+    )
   ]
 };
 
@@ -236,84 +238,86 @@ Animated.args = {
     parse: false
   },
   deck: [
-    {
-      id: `deck-loss-raster-decode`,
-      type: TileLayer,
-      data: 'https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png',
-      tileSize: 256,
-      visible: true,
-      refinementStrategy: 'no-overlap',
-      renderSubLayers: (sl) => {
-        const {
-          id: subLayerId,
-          data,
-          tile,
-          visible,
-          opacity,
-          decodeParams,
-        } = sl;
-
-        const {
-          z,
-          bbox: {
-            west, south, east, north,
-          },
-        } = tile;
-
-        if (data) {
-          return new DecodedLayer({
+    new MapboxLayer(
+      {
+        id: `deck-loss-raster-decode`,
+        type: TileLayer,
+        data: 'https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png',
+        tileSize: 256,
+        visible: true,
+        refinementStrategy: 'no-overlap',
+        renderSubLayers: (sl) => {
+          const {
             id: subLayerId,
-            image: data,
-            bounds: [west, south, east, north],
-            textureParameters: {
-              [GL.TEXTURE_MIN_FILTER]: GL.NEAREST,
-              [GL.TEXTURE_MAG_FILTER]: GL.NEAREST,
-              [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
-              [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE,
-            },
-            zoom: z,
+            data,
+            tile,
             visible,
             opacity,
-            decodeParams: decodeParams || {
-              startYear: 2001,
-              endYear: 2017,
+            decodeParams,
+          } = sl;
+
+          const {
+            z,
+            bbox: {
+              west, south, east, north,
             },
-            decodeFunction: `
-              // values for creating power scale, domain (input), and range (output)
-              float domainMin = 0.;
-              float domainMax = 255.;
-              float rangeMin = 0.;
-              float rangeMax = 255.;
+          } = tile;
 
-              float exponent = zoom < 13. ? 0.3 + (zoom - 3.) / 20. : 1.;
-              float intensity = color.r * 255.;
+          if (data) {
+            return new DecodedLayer({
+              id: subLayerId,
+              image: data,
+              bounds: [west, south, east, north],
+              textureParameters: {
+                [GL.TEXTURE_MIN_FILTER]: GL.NEAREST,
+                [GL.TEXTURE_MAG_FILTER]: GL.NEAREST,
+                [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
+                [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE,
+              },
+              zoom: z,
+              visible,
+              opacity,
+              decodeParams: decodeParams || {
+                startYear: 2001,
+                endYear: 2017,
+              },
+              decodeFunction: `
+                // values for creating power scale, domain (input), and range (output)
+                float domainMin = 0.;
+                float domainMax = 255.;
+                float rangeMin = 0.;
+                float rangeMax = 255.;
 
-              // get the min, max, and current values on the power scale
-              float minPow = pow(domainMin, exponent - domainMin);
-              float maxPow = pow(domainMax, exponent);
-              float currentPow = pow(intensity, exponent);
+                float exponent = zoom < 13. ? 0.3 + (zoom - 3.) / 20. : 1.;
+                float intensity = color.r * 255.;
 
-              // get intensity value mapped to range
-              float scaleIntensity = ((currentPow - minPow) / (maxPow - minPow) * (rangeMax - rangeMin)) + rangeMin;
-              // a value between 0 and 255
-              alpha = zoom < 13. ? scaleIntensity / 255. : color.g;
+                // get the min, max, and current values on the power scale
+                float minPow = pow(domainMin, exponent - domainMin);
+                float maxPow = pow(domainMax, exponent);
+                float currentPow = pow(intensity, exponent);
 
-              float year = 2000.0 + (color.b * 255.);
-              // map to years
-              if (year >= startYear && year <= endYear && year >= 2001.) {
-                color.r = 220. / 255.;
-                color.g = (72. - zoom + 102. - 3. * scaleIntensity / zoom) / 255.;
-                color.b = (33. - zoom + 153. - intensity / zoom) / 255.;
-              } else {
-                alpha = 0.;
-              }
-            `
-          });
-        }
-        return null;
-      },
-      minZoom: 3,
-      maxZoom: 12,
-    }
+                // get intensity value mapped to range
+                float scaleIntensity = ((currentPow - minPow) / (maxPow - minPow) * (rangeMax - rangeMin)) + rangeMin;
+                // a value between 0 and 255
+                alpha = zoom < 13. ? scaleIntensity / 255. : color.g;
+
+                float year = 2000.0 + (color.b * 255.);
+                // map to years
+                if (year >= startYear && year <= endYear && year >= 2001.) {
+                  color.r = 220. / 255.;
+                  color.g = (72. - zoom + 102. - 3. * scaleIntensity / zoom) / 255.;
+                  color.b = (33. - zoom + 153. - intensity / zoom) / 255.;
+                } else {
+                  alpha = 0.;
+                }
+              `
+            });
+          }
+          return null;
+        },
+        minZoom: 3,
+        maxZoom: 12,
+      }
+    )
   ]
 };

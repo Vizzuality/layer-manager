@@ -1,6 +1,6 @@
 {
   "name": "@vizzuality/layer-manager-layers-deckgl",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "author": "Vizzuality <hello@vizzuality.com>",
   "keywords": [
     "layer-manager",
@@ -29,10 +29,10 @@
     "lint": "eslint . --ext .js,.ts --ignore-path ../../.eslintignore --fix"
   },
   "dependencies": {
-    "@deck.gl/core": "^8.5.8",
-    "@luma.gl/constants": "^8.4.5",
-    "@luma.gl/core": "^8.4.5",
-    "@math.gl/web-mercator": "^3.4.2",
+    "@deck.gl/core": "^8.7.3",
+    "@luma.gl/constants": "^8.5.10",
+    "@luma.gl/core": "^8.5.10",
+    "@math.gl/web-mercator": "^3.4.7",
     "@vizzuality/layer-manager-utils": "*",
     "cancelable-promise": "^3.2.3",
     "math.gl": "^3.4.2",

@@ -18,6 +18,10 @@ module.exports = {
     // If you want to add a directory to search in that takes precedence over node_modules/:
     // https://webpack.js.org/configuration/resolve/#resolvemodules
     config.resolve.modules = [path.resolve(__dirname, ".."), "node_modules"];
+    config.resolve.alias = {
+      '@deck.gl/core': path.join(path.resolve(__dirname, ".."), "node_modules/@deck.gl/core"),
+      '@luma.gl/core': path.join(path.resolve(__dirname, ".."), "node_modules/@luma.gl/core"),
+    }
 
     return config;
   },

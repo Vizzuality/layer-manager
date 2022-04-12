@@ -3,10 +3,10 @@
 ## Requirements
 Install the next peer dependencies:
 ```sh
-"@deck.gl/core": "^8.5.8",
-"@luma.gl/constants": "^8.4.5",
-"@luma.gl/core": "^8.4.5",
-"@math.gl/web-mercator": "^3.4.2",
+"@deck.gl/core": "^8.7.3",
+"@luma.gl/constants": "^8.5.10",
+"@luma.gl/core": "^8.5.10",
+"@math.gl/web-mercator": "^3.4.7",
 "math.gl": "^3.4.2",
 
 ```
