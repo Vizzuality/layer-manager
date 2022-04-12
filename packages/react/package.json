@@ -1,6 +1,6 @@
 {
   "name": "@vizzuality/layer-manager-react",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "author": "Vizzuality <hello@vizzuality.com>",
   "keywords": [
     "layer-manager",
@@ -29,8 +29,8 @@
     "lint": "eslint . --ext .ts,.tsx --ignore-path ../../.eslintignore --fix"
   },
   "dependencies": {
-    "@vizzuality/layer-manager": "*",
-    "@vizzuality/layer-manager-utils": "*",
+    "@vizzuality/layer-manager": "^4.1.0",
+    "@vizzuality/layer-manager-utils": "^1.1.0",
     "cancelable-promise": "^3.2.3",
     "fast-deep-equal": "^3.1.3"
   },
