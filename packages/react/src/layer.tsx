@@ -32,7 +32,6 @@ class Layer extends PureComponent<LayerProps> {
       render: prevRender,
       params: prevParams,
       sqlParams: prevSqlParams,
-      decodeParams: prevDecodeParams,
       opacity: prevOpacity,
       visibility: prevVisibility,
       zIndex: prevZIndex,
@@ -44,7 +43,6 @@ class Layer extends PureComponent<LayerProps> {
       render,
       params,
       sqlParams,
-      decodeParams,
       opacity,
       visibility,
       zIndex,
@@ -110,9 +108,6 @@ class Layer extends PureComponent<LayerProps> {
       }),
       ...(!isEqual(renderParsed, prevRenderParsed) && {
         render: renderParsed,
-      }),
-      ...(!isEqual(decodeParams, prevDecodeParams) && {
-        decodeParams,
       }),
     };
 

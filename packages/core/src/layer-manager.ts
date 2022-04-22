@@ -69,7 +69,6 @@ class LayerManager {
       render,
       params,
       sqlParams,
-      decodeParams,
     } = newLayerSpec;
 
     if (typeof opacity !== 'undefined') {
@@ -98,10 +97,6 @@ class LayerManager {
 
     if (!isEmpty(sqlParams)) {
       this._plugin.setSQLParams(layerModel);
-    }
-
-    if (!isEmpty(decodeParams)) {
-      this._plugin.setDecodeParams(layerModel);
     }
   }
 

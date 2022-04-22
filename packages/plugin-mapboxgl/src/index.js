@@ -442,26 +442,6 @@ class PluginMapboxGL {
     return this;
   }
 
-  setDecodeParams(layerModel) {
-    const { mapLayer, decodeParams } = layerModel;
-
-    if (!mapLayer) {
-      return this;
-    }
-
-    const layer = mapLayer.layers[1];
-
-    if (layer && typeof layer.setProps === 'function') {
-      layer.setProps({ decodeParams });
-    } else {
-      console.error(
-        "Layer is not present. You defined decodeParams but maybe you didn't define a decodeFunction",
-      );
-    }
-
-    return this;
-  }
-
   setDeck() {
     return this;
   }

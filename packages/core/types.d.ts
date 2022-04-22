@@ -50,7 +50,6 @@ export type Params = Record<string, string | number | boolean | unknown>;
  * keys should start by 'where' or 'and'
  */
 export type SQLParams = Record<string, Params>;
-export type DecodeParams = Record<string, number>;
 
 /**
  * Documentation for images on MapboxGL
@@ -71,8 +70,6 @@ export type LayerSpec = {
   images?: Image[]
   params?: Params
   sqlParams?: SQLParams
-  decodeParams?: DecodeParams
-  decodeFunction?: string
   source: Source
   render?: Render
   interactivity?: unknown[]
@@ -102,7 +99,6 @@ export interface Plugin {
   setRender: (layerModel: LayerModel) => void
   setParams: (layerModel: LayerModel) => void
   setSQLParams: (layerModel: LayerModel) => void
-  setDecodeParams: (layerModel: LayerModel) => void
   setDeck: (layerModel: LayerModel) => void
   getLayerByType: (type: LayerModel['type']) => any // TO-DO: better type definition
   getLayerByProvider?: () => void // Deprecated

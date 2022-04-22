@@ -77,16 +77,8 @@ class LayerModel {
     return this._layerSpec.params;
   }
 
-  public get decodeParams(): LayerSpec['decodeParams'] {
-    return this._layerSpec.decodeParams;
-  }
-
   public get sqlParams(): LayerSpec['sqlParams'] {
     return this._layerSpec.sqlParams;
-  }
-
-  public get decodeFunction(): LayerSpec['decodeFunction'] {
-    return this._layerSpec.decodeFunction;
   }
 
   public get deck(): LayerSpec['deck'] {

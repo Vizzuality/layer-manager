@@ -103,7 +103,7 @@ export default class DecodedLayer extends Layer {
 
   updateState({ props, oldProps, changeFlags }) {
     // setup model first
-    if (changeFlags.extensionsChanged) {
+    if (changeFlags.extensionsChanged || changeFlags.somethingChanged.decodeFunction) {
       const { gl } = this.context;
       this.state.model?.delete();
       this.state.model = this._getModel(gl);

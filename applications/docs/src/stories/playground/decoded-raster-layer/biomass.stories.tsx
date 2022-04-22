@@ -1,5 +1,5 @@
 
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Story } from '@storybook/react/types-6-0';
 // Layer manager
 import { LayerManager, Layer, LayerProps } from '@vizzuality/layer-manager-react';
@@ -76,13 +76,17 @@ const Template: Story<LayerProps> = (args: any) => {
           tileSize: 256,
           visible: true,
           refinementStrategy: 'no-overlap',
+          decodeParams,
+          decodeFunction,
           renderSubLayers: (sl) => {
             const {
               id: subLayerId,
               data,
               tile,
               visible,
-              opacity
+              opacity,
+              decodeFunction: dFunction,
+              decodeParams: dParams
             } = sl;
 
             const {
@@ -106,11 +110,12 @@ const Template: Story<LayerProps> = (args: any) => {
                 zoom: z,
                 visible,
                 opacity,
-                decodeParams: decodeParams || {
-                  startYear: 2001,
-                  endYear: 2017,
-                },
-                decodeFunction
+                decodeParams: dParams,
+                decodeFunction: dFunction,
+                updateTriggers: {
+                  decodeParams: dParams,
+                  decodeFunction: dFunction,
+                }
               });
             }
             return null;
@@ -126,11 +131,18 @@ const Template: Story<LayerProps> = (args: any) => {
     setViewport(vw);
   }, []);
 
+  useEffect(() => {
+    const [layer] = DECK_LAYERS;
+    if (layer && typeof layer.setProps === 'function') {
+      layer.setProps({
+        decodeParams,
+        decodeFunction,
+      });
+    }
+  }, [decodeParams, decodeFunction])
+
   return (
     <div
-      key={JSON.stringify({
-        id, tileUrl, decodeFunction, decodeParams
-      })}
       style={{
         position: 'relative',
         width: '100%',

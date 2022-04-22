@@ -12,7 +12,6 @@ TestPlugin.prototype.setRender = jest.fn();
 TestPlugin.prototype.setVisibility = jest.fn();
 TestPlugin.prototype.setOpacity = jest.fn();
 TestPlugin.prototype.setZIndex = jest.fn();
-TestPlugin.prototype.setDecodeParams = jest.fn();
 TestPlugin.prototype.getLayerByType = jest.fn().mockImplementation((type) => {
   if (type !== 'success') {
     return () => ({
@@ -37,7 +36,6 @@ describe('Core layer manager', () => {
     TestPlugin.prototype.setVisibility.mockClear();
     TestPlugin.prototype.setOpacity.mockClear();
     TestPlugin.prototype.setZIndex.mockClear();
-    TestPlugin.prototype.setDecodeParams.mockClear();
     TestPlugin.prototype.getLayerByType.mockClear();
     layerManager.requestCancel.mockClear();
   });
@@ -123,7 +121,6 @@ describe('Core layer manager', () => {
     expect(TestPlugin.prototype.setZIndex).not.toHaveBeenCalled();
     expect(TestPlugin.prototype.setOpacity).not.toHaveBeenCalled();
     expect(TestPlugin.prototype.setVisibility).not.toHaveBeenCalled();
-    expect(TestPlugin.prototype.setDecodeParams).not.toHaveBeenCalled();
   });
 
   it('updates the layer and tracks changes in changedAttributes', () => {
@@ -144,7 +141,6 @@ describe('Core layer manager', () => {
 
     // This seems to be a bug, it's not consistent.
     expect(TestPlugin.prototype.setVisibility).toHaveBeenCalled();
-    expect(TestPlugin.prototype.setDecodeParams).not.toHaveBeenCalled();
 
     expect(layerManager.layers[0]).toEqual({
       ...originalLayer,
@@ -165,7 +161,6 @@ describe('Core layer manager', () => {
     expect(TestPlugin.prototype.setZIndex).not.toHaveBeenCalled();
     expect(TestPlugin.prototype.setOpacity).not.toHaveBeenCalled();
     expect(TestPlugin.prototype.setVisibility).not.toHaveBeenCalled();
-    expect(TestPlugin.prototype.setDecodeParams).toHaveBeenCalled();
 
     expect(layerManager.layers[0]).toEqual({
       ...originalLayer,

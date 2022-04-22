@@ -10,6 +10,5 @@ interface Plugin {
   setRender: () => void
   setParams: () => void
   setSQLParams: () => void
-  setDecodeParams: () => void
   getLayerByType: () => void
 }

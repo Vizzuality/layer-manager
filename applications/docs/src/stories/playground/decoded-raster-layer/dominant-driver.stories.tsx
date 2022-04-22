@@ -1,5 +1,5 @@
 
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Story } from '@storybook/react/types-6-0';
 // Layer manager
 import { LayerManager, Layer, LayerProps } from '@vizzuality/layer-manager-react';
@@ -28,7 +28,7 @@ export default {
     tileUrl: {
       name: 'tileUrl',
       type: { name: 'Tile URL', required: true },
-      defaultValue: 'https://tiles.globalforestwatch.org/gfw_integrated_alerts/latest/default/{z}/{x}/{y}.png',
+      defaultValue: 'https://tiles.globalforestwatch.org/tsc_tree_cover_loss_drivers/v2020/tcd_30/{z}/{x}/{y}.png',
       control: {
         type: 'text'
       },
@@ -37,71 +37,71 @@ export default {
       name: 'decodeParams',
       type: { name: 'object', required: true },
       defaultValue: {
-        startDayIndex: 0,
-        endDayIndex: 1150,
+        startYear: 2001,
+        endYear: 2017,
       }
     },
     decodeFunction: {
       name: 'decodeFunction',
       type: { name: 'string', required: true },
       defaultValue: `
+      float year = 2000.0 + (color.b * 255.);
+      // map to years
+      if (year >= startYear && year <= endYear && year >= 2001.) {
+        // values for creating power scale, domain (input), and range (output)
+        float domainMin = 0.;
+        float domainMax = 255.;
+        float rangeMin = 0.;
+        float rangeMax = 255.;
 
-  // First 6 bits Alpha channel used to individual alert confidence
-  // First two bits (leftmost) are GLAD-L
-  // Next, 3rd and 4th bits are GLAD-S2
-  // Finally, 5th and 6th bits are RADD
-  // Bits are either: 00 (0, no alerts), 01 (1, low conf), or 10 (2, high conf)
-  // e.g. 00 10 01 00 --> no GLAD-L, high conf GLAD-S2, low conf RADD
+        float exponent = zoom < 13. ? 0.3 + (zoom - 3.) / 20. : 1.;
+        float intensity = color.r * 255.;
 
-  float agreementValue = alpha * 255.;
+        // get the min, max, and current values on the power scale
+        float minPow = pow(domainMin, exponent - domainMin);
+        float maxPow = pow(domainMax, exponent);
+        float currentPow = pow(intensity, exponent);
 
-  float r = color.r * 255.;
-  float g = color.g * 255.;
-  float b = color.b * 255.;
+        // get intensity value mapped to range
+        float scaleIntensity = ((currentPow - minPow) / (maxPow - minPow) * (rangeMax - rangeMin)) + rangeMin;
 
-  float day = r * 255. + g;
-  float confidence = floor(b / 100.) - 1.;
-  float intensity = mod(b, 100.) * 50.;
+        // a value between 0 and 255
+        alpha = scaleIntensity * 2. / 255.;
+        float lossCat = color.g * 255.;
 
-  if (
-    day > 0. &&
-    day >= startDayIndex &&
-    day <= endDayIndex &&
-    agreementValue > 0.
-  )
-  {
-    if (intensity > 255.) {
-      intensity = 255.;
-    }
-    // get high and highest confidence alerts
-    float confidenceValue = 0.;
+        float r = 255.;
+        float g = 255.;
+        float b = 255.;
 
-    if (agreementValue == 4. || agreementValue == 16. || agreementValue == 64.) {
-      // ONE ALERT LOW CONF: 4,8,16,32,64,128 i.e. 2**(2+n) for n<8
+        if (lossCat == 1.) {
+          r = 244.;
+          g = 29.;
+          b = 54.;
+        } else if (lossCat == 2.) {
+          r = 239.;
+          g = 211.;
+          b = 26.;
+        } else if (lossCat == 3.) {
+          r = 47.;
+          g = 191.;
+          b = 113.;
+        } else if (lossCat == 4.) {
+          r = 173.;
+          g = 104.;
+          b = 36.;
+        } else if (lossCat == 5.) {
+          r = 178.;
+          g = 53.;
+          b = 204.;
+        }
 
-      color.r = 237. / 255.;
-      color.g = 164. / 255.;
-      color.b = 194. / 255.;
-      alpha = (intensity -confidenceValue) / 255.;
-    } else if (agreementValue == 8. || agreementValue == 32. || agreementValue ==  128.){
-      // ONE HIGH CONF ALERT: 8,32,128 i.e. 2**(2+n) for n<8 and odd
-
-      color.r = 220. / 255.;
-      color.g = 102. / 255.;
-      color.b = 153. / 255.;
-      alpha = intensity / 255.;
-    } else {
-      // MULTIPLE ALERTS: >0 and not 2**(2+n)
-
-      color.r = 201. / 255.;
-      color.g = 42. / 255.;
-      color.b = 109. / 255.;
-      alpha = intensity / 255.;
-    }
-  } else {
-    alpha = 0.;
-  }
-      `,
+        color.r = r / 255.;
+        color.g = g / 255.;
+        color.b = b / 255.;
+      } else {
+        alpha = 0.;
+      }
+    `,
       description: 'The decode function you will apply to each tile pixel',
       control: {
         type: 'text'
@@ -123,19 +123,24 @@ const Template: Story<LayerProps> = (args: any) => {
     return [
       new MapboxLayer(
         {
-          id:'integrated',
+          id:'tcl-by-dominant-driver',
           type: TileLayer,
           data: tileUrl,
           tileSize: 256,
           visible: true,
           refinementStrategy: 'no-overlap',
+          decodeParams,
+          decodeFunction,
           renderSubLayers: (sl) => {
             const {
               id: subLayerId,
               data,
               tile,
               visible,
-              opacity
+              opacity,
+              decodeFunction: dFunction,
+              decodeParams: dParams
+
             } = sl;
 
             const {
@@ -159,11 +164,12 @@ const Template: Story<LayerProps> = (args: any) => {
                 zoom: z,
                 visible,
                 opacity,
-                decodeParams: decodeParams || {
-                  startYear: 2001,
-                  endYear: 2017,
-                },
-                decodeFunction
+                decodeParams: dParams,
+                decodeFunction: dFunction,
+                updateTriggers: {
+                  decodeParams: dParams,
+                  decodeFunction: dFunction,
+                }
               });
             }
             return null;
@@ -179,11 +185,18 @@ const Template: Story<LayerProps> = (args: any) => {
     setViewport(vw);
   }, []);
 
+  useEffect(() => {
+    const [layer] = DECK_LAYERS;
+    if (layer && typeof layer.setProps === 'function') {
+      layer.setProps({
+        decodeParams,
+        decodeFunction,
+      });
+    }
+  }, [decodeParams, decodeFunction])
+
   return (
     <div
-      key={JSON.stringify({
-        id, tileUrl, decodeFunction, decodeParams
-      })}
       style={{
         position: 'relative',
         width: '100%',
@@ -218,8 +231,8 @@ const Template: Story<LayerProps> = (args: any) => {
   );
 };
 
-export const IntegratedAlerts = Template.bind({});
-IntegratedAlerts.args = {
-  id: 'deck-integrated-alerts-decode',
+export const DominantDriver = Template.bind({});
+DominantDriver.args = {
+  id: 'deck-loss-byDriver-decode',
   type: 'deck'
 };
