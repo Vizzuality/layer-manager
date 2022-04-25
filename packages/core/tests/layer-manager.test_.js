@@ -113,7 +113,6 @@ describe('Core layer manager', () => {
       opacity: 1,
       visibility: true,
       zIndex: 0,
-      decodeParams: { stuff: [] },
     };
 
     layerManager.update('layer_0', changedProps);
@@ -146,25 +145,6 @@ describe('Core layer manager', () => {
       ...originalLayer,
       ...changedProps,
       mapLayer,
-      // does it makes sense to save the data? Perhaps only the keys are needed?
-      changedAttributes: changedProps,
-    });
-  });
-
-  it('updates only the decodeParams', () => {
-    const originalLayer = { ...layerManager.layers[0] };
-    const changedProps = {
-      decodeParams: { key: 'someParams' },
-    };
-    layerManager.update('layer_1', changedProps);
-
-    expect(TestPlugin.prototype.setZIndex).not.toHaveBeenCalled();
-    expect(TestPlugin.prototype.setOpacity).not.toHaveBeenCalled();
-    expect(TestPlugin.prototype.setVisibility).not.toHaveBeenCalled();
-
-    expect(layerManager.layers[0]).toEqual({
-      ...originalLayer,
-      ...changedProps,
       // does it makes sense to save the data? Perhaps only the keys are needed?
       changedAttributes: changedProps,
     });

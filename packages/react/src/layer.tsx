@@ -13,7 +13,6 @@ class Layer extends PureComponent<LayerProps> {
   static defaultProps = {
     params: undefined,
     sqlParams: undefined,
-    decodeParams: undefined,
     opacity: 1,
     visibility: true,
     zIndex: undefined,
