@@ -193,7 +193,6 @@ const Template: Story<LayerProps> = (args: any) => {
             <Layer
               {...args}
               deck={DECK_LAYERS}
-              decodeParams={decodeParams}
             />
           </LayerManager>
         )}
