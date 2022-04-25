@@ -111,7 +111,7 @@ export default {
 };
 
 const Template: Story<LayerProps> = (args: any) => {
-  const { id, tileUrl, decodeFunction, decodeParams } = args;
+  const { tileUrl, decodeFunction, decodeParams } = args;
 
   const minZoom = 2;
   const maxZoom = 20;
