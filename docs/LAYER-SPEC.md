@@ -451,31 +451,6 @@ You will have this result
 }
 ```
 
-#### `decodeParams - (optional) - (object)`
-
-An object that we will use as properties to decode the raster tile images of a layer. The must be numbers, no strings allowed.
-
-`decodeFunction` must be present.
-
-These `decodeParams` will be sent to the `decodeFunction`.
-
-Example:
-
-```json
-{
-  "decodeParams": {
-    "startYear": 2001,
-    "endYear": 2018
-  }
-}
-```
-
-#### `decodeFunction - (optional) - (string)`
-
-A shader that defines how to decode each of the images tiles that comes to a raster layer.
-
-`decodeParams` must be present.
-
 #### `onAfterAdd` - (optional) - (function)
 A function that will be triggered after you add a layer. It doesn't mean that the layer tiles are loaded, it means that the layer is ready for consumption for things like adding interactivity, reading source, etc...
 

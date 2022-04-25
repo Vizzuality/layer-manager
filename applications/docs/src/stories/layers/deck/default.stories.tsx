@@ -1,5 +1,5 @@
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Story } from '@storybook/react/types-6-0';
 // Layer manager
 import { LayerManager, Layer, LayerProps } from '@vizzuality/layer-manager-react';
@@ -27,11 +27,93 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
   const minZoom = 2;
   const maxZoom = 20;
   const [viewport, setViewport] = useState({});
-  const [decodeParams] = useState({
-    startYear: 2001,
-    endYear: 2017,
-  });
   const [bounds] = useState(null);
+
+  const DECK_LAYERS = useMemo(() => {
+    return [
+      new MapboxLayer(
+        {
+          id: `deck-loss-raster-decode-animated`,
+          type: TileLayer,
+          data: 'https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png',
+          tileSize: 256,
+          visible: true,
+          refinementStrategy: 'no-overlap',
+          renderSubLayers: (sl) => {
+            const {
+              id: subLayerId,
+              data,
+              tile,
+              visible,
+              opacity,
+              decodeParams,
+            } = sl;
+
+            const {
+              z,
+              bbox: {
+                west, south, east, north,
+              },
+            } = tile;
+
+            if (data) {
+              return new DecodedLayer({
+                id: subLayerId,
+                image: data,
+                bounds: [west, south, east, north],
+                textureParameters: {
+                  [GL.TEXTURE_MIN_FILTER]: GL.NEAREST,
+                  [GL.TEXTURE_MAG_FILTER]: GL.NEAREST,
+                  [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
+                  [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE,
+                },
+                zoom: z,
+                visible,
+                opacity,
+                decodeParams: decodeParams || {
+                  startYear: 2001,
+                  endYear: 2017,
+                },
+                decodeFunction: `
+                  // values for creating power scale, domain (input), and range (output)
+                  float domainMin = 0.;
+                  float domainMax = 255.;
+                  float rangeMin = 0.;
+                  float rangeMax = 255.;
+
+                  float exponent = zoom < 13. ? 0.3 + (zoom - 3.) / 20. : 1.;
+                  float intensity = color.r * 255.;
+
+                  // get the min, max, and current values on the power scale
+                  float minPow = pow(domainMin, exponent - domainMin);
+                  float maxPow = pow(domainMax, exponent);
+                  float currentPow = pow(intensity, exponent);
+
+                  // get intensity value mapped to range
+                  float scaleIntensity = ((currentPow - minPow) / (maxPow - minPow) * (rangeMax - rangeMin)) + rangeMin;
+                  // a value between 0 and 255
+                  alpha = zoom < 13. ? scaleIntensity / 255. : color.g;
+
+                  float year = 2000.0 + (color.b * 255.);
+                  // map to years
+                  if (year >= startYear && year <= endYear && year >= 2001.) {
+                    color.r = 220. / 255.;
+                    color.g = (72. - zoom + 102. - 3. * scaleIntensity / zoom) / 255.;
+                    color.b = (33. - zoom + 153. - intensity / zoom) / 255.;
+                  } else {
+                    alpha = 0.;
+                  }
+                `
+              });
+            }
+            return null;
+          },
+          minZoom: 3,
+          maxZoom: 12,
+        }
+      )
+    ]
+  }, []);
 
   const handleViewportChange = useCallback((vw) => {
     setViewport(vw);
@@ -63,7 +145,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
           >
             <Layer
               {...args}
-              decodeParams={decodeParams}
+              deck={DECK_LAYERS}
             />
           </LayerManager>
         )}
@@ -78,9 +160,95 @@ const AnimatedTemplate: Story<LayerProps> = (args: LayerProps) => {
   const [viewport, setViewport] = useState({});
   const [decodeParams, setDecodedParams] = useState({
     startYear: 2001,
-    endYear: 2017,
+    endYear: 2002,
   });
   const [bounds] = useState(null);
+
+  const DECK_LAYERS = useMemo(() => {
+    return [
+      new MapboxLayer(
+        {
+          id: `deck-loss-raster-decode-animated`,
+          type: TileLayer,
+          data: 'https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png',
+          tileSize: 256,
+          visible: true,
+          refinementStrategy: 'no-overlap',
+          renderSubLayers: (sl) => {
+            const {
+              id: subLayerId,
+              data,
+              tile,
+              visible,
+              opacity,
+              decodeParams,
+            } = sl;
+
+            const {
+              z,
+              bbox: {
+                west, south, east, north,
+              },
+            } = tile;
+
+            if (data) {
+              return new DecodedLayer({
+                id: subLayerId,
+                image: data,
+                bounds: [west, south, east, north],
+                textureParameters: {
+                  [GL.TEXTURE_MIN_FILTER]: GL.NEAREST,
+                  [GL.TEXTURE_MAG_FILTER]: GL.NEAREST,
+                  [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
+                  [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE,
+                },
+                zoom: z,
+                visible,
+                opacity,
+                decodeParams: decodeParams || {
+                  startYear: 2001,
+                  endYear: 2017,
+                },
+                decodeFunction: `
+                  // values for creating power scale, domain (input), and range (output)
+                  float domainMin = 0.;
+                  float domainMax = 255.;
+                  float rangeMin = 0.;
+                  float rangeMax = 255.;
+
+                  float exponent = zoom < 13. ? 0.3 + (zoom - 3.) / 20. : 1.;
+                  float intensity = color.r * 255.;
+
+                  // get the min, max, and current values on the power scale
+                  float minPow = pow(domainMin, exponent - domainMin);
+                  float maxPow = pow(domainMax, exponent);
+                  float currentPow = pow(intensity, exponent);
+
+                  // get intensity value mapped to range
+                  float scaleIntensity = ((currentPow - minPow) / (maxPow - minPow) * (rangeMax - rangeMin)) + rangeMin;
+                  // a value between 0 and 255
+                  alpha = zoom < 13. ? scaleIntensity / 255. : color.g;
+
+                  float year = 2000.0 + (color.b * 255.);
+                  // map to years
+                  if (year >= startYear && year <= endYear && year >= 2001.) {
+                    color.r = 220. / 255.;
+                    color.g = (72. - zoom + 102. - 3. * scaleIntensity / zoom) / 255.;
+                    color.b = (33. - zoom + 153. - intensity / zoom) / 255.;
+                  } else {
+                    alpha = 0.;
+                  }
+                `
+              });
+            }
+            return null;
+          },
+          minZoom: 3,
+          maxZoom: 12,
+        }
+      )
+    ]
+  }, []);
 
   const handleViewportChange = useCallback((vw) => {
     setViewport(vw);
@@ -94,6 +262,15 @@ const AnimatedTemplate: Story<LayerProps> = (args: LayerProps) => {
       endYear: end,
     })
   }, 500);
+
+  useEffect(() => {
+    const [layer] = DECK_LAYERS;
+    if (layer && typeof layer.setProps === 'function') {
+      layer.setProps({
+        decodeParams,
+      });
+    }
+  }, [decodeParams]);
 
 
   return (
@@ -122,7 +299,7 @@ const AnimatedTemplate: Story<LayerProps> = (args: LayerProps) => {
           >
             <Layer
               {...args}
-              decodeParams={decodeParams}
+              deck={DECK_LAYERS}
             />
           </LayerManager>
         )}
@@ -133,7 +310,7 @@ const AnimatedTemplate: Story<LayerProps> = (args: LayerProps) => {
 
 export const Default = Template.bind({});
 Default.args = {
-  id: 'test-geojson',
+  id: 'raster-decode-layer',
   type: 'deck',
   source: {
     parse: false,
@@ -141,95 +318,13 @@ Default.args = {
   render: {
     parse: false
   },
-  deck: [
-    new MapboxLayer(
-      {
-        id: `deck-loss-raster-decode`,
-        type: TileLayer,
-        data: 'https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png',
-        tileSize: 256,
-        visible: true,
-        refinementStrategy: 'no-overlap',
-        renderSubLayers: (sl) => {
-          const {
-            id: subLayerId,
-            data,
-            tile,
-            visible,
-            opacity,
-            decodeParams,
-          } = sl;
-
-          const {
-            z,
-            bbox: {
-              west, south, east, north,
-            },
-          } = tile;
-
-          if (data) {
-            return new DecodedLayer({
-              id: subLayerId,
-              image: data,
-              bounds: [west, south, east, north],
-              textureParameters: {
-                [GL.TEXTURE_MIN_FILTER]: GL.NEAREST,
-                [GL.TEXTURE_MAG_FILTER]: GL.NEAREST,
-                [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
-                [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE,
-              },
-              zoom: z,
-              visible,
-              opacity,
-              decodeParams: decodeParams || {
-                startYear: 2001,
-                endYear: 2017,
-              },
-              decodeFunction: `
-                // values for creating power scale, domain (input), and range (output)
-                float domainMin = 0.;
-                float domainMax = 255.;
-                float rangeMin = 0.;
-                float rangeMax = 255.;
-
-                float exponent = zoom < 13. ? 0.3 + (zoom - 3.) / 20. : 1.;
-                float intensity = color.r * 255.;
-
-                // get the min, max, and current values on the power scale
-                float minPow = pow(domainMin, exponent - domainMin);
-                float maxPow = pow(domainMax, exponent);
-                float currentPow = pow(intensity, exponent);
-
-                // get intensity value mapped to range
-                float scaleIntensity = ((currentPow - minPow) / (maxPow - minPow) * (rangeMax - rangeMin)) + rangeMin;
-                // a value between 0 and 255
-                alpha = zoom < 13. ? scaleIntensity / 255. : color.g;
-
-                float year = 2000.0 + (color.b * 255.);
-                // map to years
-                if (year >= startYear && year <= endYear && year >= 2001.) {
-                  color.r = 220. / 255.;
-                  color.g = (72. - zoom + 102. - 3. * scaleIntensity / zoom) / 255.;
-                  color.b = (33. - zoom + 153. - intensity / zoom) / 255.;
-                } else {
-                  alpha = 0.;
-                }
-              `
-            });
-          }
-          return null;
-        },
-        minZoom: 3,
-        maxZoom: 12,
-      }
-    )
-  ]
+  deck: []
 };
 
 
 export const Animated = AnimatedTemplate.bind({});
 Animated.args = {
-  id: 'test-geojson',
+  id: 'raster-decode-layer-animated',
   type: 'deck',
   source: {
     parse: false,
@@ -237,87 +332,5 @@ Animated.args = {
   render: {
     parse: false
   },
-  deck: [
-    new MapboxLayer(
-      {
-        id: `deck-loss-raster-decode`,
-        type: TileLayer,
-        data: 'https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png',
-        tileSize: 256,
-        visible: true,
-        refinementStrategy: 'no-overlap',
-        renderSubLayers: (sl) => {
-          const {
-            id: subLayerId,
-            data,
-            tile,
-            visible,
-            opacity,
-            decodeParams,
-          } = sl;
-
-          const {
-            z,
-            bbox: {
-              west, south, east, north,
-            },
-          } = tile;
-
-          if (data) {
-            return new DecodedLayer({
-              id: subLayerId,
-              image: data,
-              bounds: [west, south, east, north],
-              textureParameters: {
-                [GL.TEXTURE_MIN_FILTER]: GL.NEAREST,
-                [GL.TEXTURE_MAG_FILTER]: GL.NEAREST,
-                [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
-                [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE,
-              },
-              zoom: z,
-              visible,
-              opacity,
-              decodeParams: decodeParams || {
-                startYear: 2001,
-                endYear: 2017,
-              },
-              decodeFunction: `
-                // values for creating power scale, domain (input), and range (output)
-                float domainMin = 0.;
-                float domainMax = 255.;
-                float rangeMin = 0.;
-                float rangeMax = 255.;
-
-                float exponent = zoom < 13. ? 0.3 + (zoom - 3.) / 20. : 1.;
-                float intensity = color.r * 255.;
-
-                // get the min, max, and current values on the power scale
-                float minPow = pow(domainMin, exponent - domainMin);
-                float maxPow = pow(domainMax, exponent);
-                float currentPow = pow(intensity, exponent);
-
-                // get intensity value mapped to range
-                float scaleIntensity = ((currentPow - minPow) / (maxPow - minPow) * (rangeMax - rangeMin)) + rangeMin;
-                // a value between 0 and 255
-                alpha = zoom < 13. ? scaleIntensity / 255. : color.g;
-
-                float year = 2000.0 + (color.b * 255.);
-                // map to years
-                if (year >= startYear && year <= endYear && year >= 2001.) {
-                  color.r = 220. / 255.;
-                  color.g = (72. - zoom + 102. - 3. * scaleIntensity / zoom) / 255.;
-                  color.b = (33. - zoom + 153. - intensity / zoom) / 255.;
-                } else {
-                  alpha = 0.;
-                }
-              `
-            });
-          }
-          return null;
-        },
-        minZoom: 3,
-        maxZoom: 12,
-      }
-    )
-  ]
+  deck: []
 };
