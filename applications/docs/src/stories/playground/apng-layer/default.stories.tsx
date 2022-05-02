@@ -28,8 +28,8 @@ export default {
 
 const Template: Story<LayerProps> = (args: LayerProps) => {
   const [frame, setFrame] = useState(0);
-  const minZoom = 1;
-  const maxZoom = 3;
+  const minZoom = 0;
+  const maxZoom = 20;
   const [viewport, setViewport] = useState({});
   const [bounds] = useState(null);
 
@@ -112,6 +112,8 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
             }
             return null;
           },
+          minZoom: 0,
+          maxZoom: 3,
         }
       )
     ]
