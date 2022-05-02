@@ -76,6 +76,8 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
           visible: true,
           refinementStrategy: 'no-overlap',
           renderSubLayers: (sl) => {
+            if (!sl) return null;
+
             const {
               id: subLayerId,
               data,
@@ -84,6 +86,8 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
               opacity,
               frame: f
             } = sl;
+
+            if (!tile || !data) return null;
 
             const {
               z,
@@ -113,7 +117,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
             return null;
           },
           minZoom: 0,
-          maxZoom: 3,
+          maxZoom: 5,
         }
       )
     ]
