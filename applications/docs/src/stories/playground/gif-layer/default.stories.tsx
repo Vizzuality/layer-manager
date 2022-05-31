@@ -37,7 +37,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
     const f = (frame === 22 - 1) ? 0 :  frame + 1;
 
     setFrame(f);
-  }, 75);
+  }, 100);
 
   const DECK_LAYERS = useMemo(() => {
     return [
