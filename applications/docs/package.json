@@ -26,6 +26,7 @@
     "circle-to-polygon": "^2.2.0",
     "classnames": "^2.2.6",
     "d3-ease": "^3.0.1",
+    "gif-frames": "1.0.1",
     "mapbox-gl": "^1.8.1",
     "react": "^16.8 || ^17",
     "react-dom": "^16.8 || ^17",

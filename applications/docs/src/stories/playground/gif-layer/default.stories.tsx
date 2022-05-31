@@ -11,7 +11,7 @@ import { TileLayer } from '@deck.gl/geo-layers';
 import { BitmapLayer } from '@deck.gl/layers';
 import { MapboxLayer } from '@deck.gl/mapbox';
 
-import parseAPNG from 'apng-js';
+import gifFrames from 'gif-frames';
 
 // Map
 import Map from '../../../components/map';
@@ -21,7 +21,7 @@ import { useEffect } from 'react';
 const cartoProvider = new CartoProvider();
 
 export default {
-  title: 'Playground/APNG-Layer',
+  title: 'Playground/GIF-Layer',
   argTypes: {
   },
 };
@@ -47,31 +47,45 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
           type: TileLayer,
           frame,
           data: 'https://storage.googleapis.com/skydipper_materials/movie-tiles/MODIS/APNGs/{z}/{x}/{y}.png',
+          // getTileData: (tile) => {
+          //   const { x, y, z, signal } = tile;
+          //   const url = `https://storage.googleapis.com/skydipper_materials/movie-tiles/MODIS/GIFs/${z}/${x}/${y}.gif`;
+          //   const response = fetch(url, { signal });
+
+          //   if (signal.aborted) {
+          //     return null;
+          //   }
+
+          //   return response
+          //     .then((res) => res.arrayBuffer())
+          //     .then((buffer) => {
+          //       return gifFrames({
+          //         url: Buffer.from(buffer),
+          //         type: 'image/gif',
+          //         frames: 'all'
+          //       })
+          //         .then((frames) => {
+          //           return frames
+          //         });
+          //     });
+          // },
           getTileData: (tile) => {
-            const { x, y, z, signal } = tile;
-            const url = `https://storage.googleapis.com/skydipper_materials/movie-tiles/MODIS/APNGs/${z}/${x}/${y}.png`;
-            const response = fetch(url, { signal });
+            const { x, y, z } = tile;
+            const url = `https://storage.googleapis.com/skydipper_materials/movie-tiles/MODIS/GIFs/${z}/${x}/${y}.gif`;
 
-            if (signal.aborted) {
-              return null;
-            }
-
-            return response
-              .then((res) => res.arrayBuffer())
-              .then((buffer) => {
-                const apng = parseAPNG(buffer);
-                if (apng instanceof Error) {
-                  throw apng;
-                }
-
-                return apng.frames.map((frame) => {
-                  return {
-                    ...frame,
-                    bitmapData: createImageBitmap(frame.imageData),
-                  };
-                });
+            return gifFrames({
+              url,
+              type: 'image/gif',
+              frames: 'all',
+              outputType: 'canvas',
+              cumulative: true
+            })
+              .then((frames) => {
+                return frames
               });
+
           },
+
           tileSize: 256,
           visible: true,
           refinementStrategy: 'no-overlap',
@@ -101,7 +115,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
             if (FRAME) {
               return new BitmapLayer({
                 id: subLayerId,
-                image: FRAME.bitmapData,
+                image: FRAME.getImage(),
                 bounds: [west, south, east, north],
                 textureParameters: {
                   [GL.TEXTURE_MIN_FILTER]: GL.NEAREST,
@@ -176,7 +190,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
 
 export const Default = Template.bind({});
 Default.args = {
-  id: 'raster-decode-layer',
+  id: 'raster-gif-layer',
   type: 'deck',
   source: {
     parse: false,
