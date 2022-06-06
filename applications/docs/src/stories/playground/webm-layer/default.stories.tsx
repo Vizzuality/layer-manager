@@ -1,5 +1,5 @@
 
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react';
 import { Story } from '@storybook/react/types-6-0';
 // Layer manager
 import { LayerManager, Layer, LayerProps } from '@vizzuality/layer-manager-react';
@@ -13,9 +13,7 @@ import { MapboxLayer } from '@deck.gl/mapbox';
 
 // Map
 import Map from '../../../components/map';
-
-import { useEffect } from 'react';
-import { useRef } from 'react';
+import { VideoCollectionPlayer } from './video-player';
 
 const cartoProvider = new CartoProvider();
 
@@ -26,8 +24,7 @@ export default {
 };
 
 const Template: Story<LayerProps> = (args: LayerProps) => {
-  const frame = useRef(0);
-  const frameAnimation = useRef(null);
+  const videoCollectionPlayer = useRef(null);
 
   const minZoom = 0;
   const maxZoom = 20;
@@ -41,8 +38,8 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
           id: `deck-loss-raster-decode-animated`,
           type: TileLayer,
           data: 'https://storage.googleapis.com/skydipper_materials/movie-tiles/MODIS/WebMs/{z}/{x}/{y}.webm',
-          frame,
-          getTileData: (tile) => {
+          frame: 0,
+          getTileData: (tile: { x: any; y: any; z: any; }) => {
             const { x, y, z } = tile;
             const url = `https://storage.googleapis.com/skydipper_materials/movie-tiles/MODIS/WebMs/${z}/${x}/${y}.webm`;
 
@@ -50,15 +47,15 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
             video.src = url;
             video.crossOrigin = 'anonymous';
             video.muted = true;
-            video.autoplay = true;
-            video.loop = true;
+            video.autoplay = false;
+            video.loop = false;
 
             return video;
           },
           tileSize: 256,
           visible: true,
           refinementStrategy: 'no-overlap',
-          renderSubLayers: (sl) => {
+          renderSubLayers: (sl: { id: any; data: any; tile: any; visible: any; opacity: any; frame: any; }, ...rest) => {
             if (!sl) return null;
 
             const {
@@ -93,58 +90,43 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
               zoom: z,
               visible,
               opacity,
+              updateTriggers: {
+                frame: f,
+              },
             });
-
-            // data.play();
-            // data.addEventListener('loadeddata', () => {
-            //   data.play();
-            // })
-
-            // data.addEventListener('timeupdate', () => {
-            //   if (!data.paused) return;
-            // })
-
-            // data.addEventListener('seeking', (event) => {
-            //   console.log(event);
-            //   data.currentTime = `${(f / 1000) * data.duration}`;
-            // })
-
-            if (data.readyState === 4) {
-              // data.play();
-              data.currentTime = `${(f / 100) * data.duration}`;
-              console.log(f, data.currentTime);
-            }
-
 
             return VideoBitmapLayer;
           },
+          onTileLoad: (tile: any) => {
+            videoCollectionPlayer.current.addVideo(tile.data);
+          },
+          onTileUnload: (tile: any) => {
+            videoCollectionPlayer.current.removeVideo(tile.data);
+          },
           minZoom: 0,
-          maxZoom: 5,
+          maxZoom: 3,
         }
       )
     ]
   }, []);
 
-  const updateFrame = () => {
-    frame.current = (frame.current === 100) ? 0 :  frame.current + 1;
-
-    const [layer] = DECK_LAYERS;
-    if (layer && typeof layer.setProps === 'function') {
-      layer.setProps({
-        frame: frame.current,
-      });
-    }
-    setTimeout(updateFrame, 50);
-  };
-
-
-  useEffect(() => {
-    updateFrame();
+  const handleViewportChange = useCallback((vw: React.SetStateAction<{}>) => {
+    setViewport(vw);
   }, []);
 
+  useEffect(() => {
+    videoCollectionPlayer.current = new VideoCollectionPlayer();
+    videoCollectionPlayer.current.setCurrentTime(0);
+    videoCollectionPlayer.current.onTimeChanged = (frame) => {
+      const [layer] = DECK_LAYERS;
+      // layer.setProps({ frame });
+      layer.map.triggerRepaint();
 
-  const handleViewportChange = useCallback((vw) => {
-    setViewport(vw);
+      setTimeout(() => {
+        const f = (frame === 22) ? 0 : frame + 1;
+        videoCollectionPlayer.current.setCurrentTime(f);
+      }, 50);
+    }
   }, []);
 
   return (
@@ -162,6 +144,10 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
         viewport={viewport}
         mapboxApiAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
         onMapViewportChange={handleViewportChange}
+        onClick={() => {
+          const f = Math.floor(Math.random() * 22);
+          videoCollectionPlayer.current.setCurrentTime(f);
+        }}
       >
         {(map) => (
           <>
