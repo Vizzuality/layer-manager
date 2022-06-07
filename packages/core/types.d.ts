@@ -100,6 +100,7 @@ export interface Plugin {
   setParams: (layerModel: LayerModel) => void
   setSQLParams: (layerModel: LayerModel) => void
   setDeck: (layerModel: LayerModel) => void
+  getMap: () => Map
   getLayerByType: (type: LayerModel['type']) => any // TO-DO: better type definition
   getLayerByProvider?: () => void // Deprecated
   setOptions: (options: Record<string, unknown>) => void

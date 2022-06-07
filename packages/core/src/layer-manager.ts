@@ -57,6 +57,7 @@ class LayerManager {
    */
   update(id: LayerSpec['id'], newLayerSpec: Partial<LayerSpec>): void {
     const layerModel = this.getLayerModel(id);
+
     if (!layerModel || !layerModel.mapLayer) return;
 
     layerModel.update(newLayerSpec);
@@ -69,6 +70,7 @@ class LayerManager {
       render,
       params,
       sqlParams,
+      deck,
     } = newLayerSpec;
 
     if (typeof opacity !== 'undefined') {
@@ -97,6 +99,10 @@ class LayerManager {
 
     if (!isEmpty(sqlParams)) {
       this._plugin.setSQLParams(layerModel);
+    }
+
+    if (!isEmpty(deck)) {
+      this._plugin.setDeck(layerModel);
     }
   }
 
@@ -165,6 +171,7 @@ class LayerManager {
 
   requestLayer(layerModel: LayerModel, onAfterAdd: (_layerModel: LayerModel) => void): void {
     const { id, type } = layerModel;
+    const map = this._plugin.getMap();
     const method = this._plugin.getLayerByType(type);
 
     if (!method) {
@@ -178,7 +185,7 @@ class LayerManager {
       // every request method returns a promise that we store in the array
       // to control when all layers are fetched.
       this._promises[layerModel.id] = method
-        .call(this, layerModel, LayerManager.providers)
+        .call(this, layerModel, map, LayerManager.providers)
         .then((layer: unknown) => {
           const { isCanceled } = this._promises[layerModel.id];
           if (!isCanceled()) {

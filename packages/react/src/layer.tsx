@@ -18,6 +18,7 @@ class Layer extends PureComponent<LayerProps> {
     zIndex: undefined,
     source: {},
     render: {},
+    deck: [],
     onAfterAdd: () => null,
   };
 
@@ -34,6 +35,7 @@ class Layer extends PureComponent<LayerProps> {
       opacity: prevOpacity,
       visibility: prevVisibility,
       zIndex: prevZIndex,
+      deck: prevDeck,
     } = prevProps;
 
     const {
@@ -45,6 +47,7 @@ class Layer extends PureComponent<LayerProps> {
       opacity,
       visibility,
       zIndex,
+      deck,
     } = this.props;
 
     // Check that source has changed
@@ -108,7 +111,12 @@ class Layer extends PureComponent<LayerProps> {
       ...(!isEqual(renderParsed, prevRenderParsed) && {
         render: renderParsed,
       }),
+      ...(isEqual(deck, prevDeck) && {
+        deck,
+      }),
     };
+
+    console.log({ deck, prevDeck, isEqual: isEqual(deck, prevDeck) });
 
     if (!isEmpty(changedProps)) {
       this.update(changedProps);

@@ -1,17 +1,20 @@
 import { CancelablePromise } from 'cancelable-promise';
+import { Deck } from '@deck.gl/core';
+import { MapboxLayer } from '@deck.gl/mapbox';
 
-const DeckLayer = (layerModel) => {
+const DeckLayer = (layerModel, map) => {
   const {
-    deck = [], id, zIndex,
+    deck = [], id,
   } = layerModel;
 
-  const deckLayers = deck.map((d) => {
-    if (d && typeof d.setProps === 'function') {
-      d.setProps({
-        getPolygonOffset: () => [0, -zIndex],
-      });
-    }
-    return d;
+  const DECK = new Deck({
+    gl: map.painter.context.gl,
+    layers: deck,
+  });
+
+  const deckLayer = new MapboxLayer({
+    id,
+    deck: DECK,
   });
 
   const layer = {
@@ -25,7 +28,7 @@ const DeckLayer = (layerModel) => {
           'background-color': 'transparent',
         },
       },
-      ...deckLayers,
+      deckLayer,
     ],
   };
 
