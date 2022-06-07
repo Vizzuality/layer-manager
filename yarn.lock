@@ -2955,6 +2955,13 @@ jest@^27.2.0:
     import-local "^3.0.2"
     jest-cli "^27.5.1"
 
+js-deep-equals@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/js-deep-equals/-/js-deep-equals-2.1.1.tgz#8e352db9d0f9cb0a6fd84d3bdeb1dab091b7a3f6"
+  integrity sha512-l568Khc0UBoO/bA3BpFPUM2PKNcUMR0WW2Ytb639iZOPCd1tRabUJuYDGg8+3UR0Wy6yLUhSdDA79orFq0dV4A==
+  dependencies:
+    murmurhash "0.0.2"
+
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
@@ -3124,7 +3131,7 @@ lodash.truncate@^4.4.2:
   resolved "https://registry.yarnpkg.com/lodash.truncate/-/lodash.truncate-4.4.2.tgz#5a350da0b1113b837ecfffd5812cbe58d6eae193"
   integrity sha1-WjUNoLERO4N+z//VgSy+WNbq4ZM=
 
-lodash@^4.17.15, lodash@^4.17.21, lodash@^4.7.0:
+lodash@^4.17.15, lodash@^4.7.0:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -3272,6 +3279,11 @@ murmurhash-js@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/murmurhash-js/-/murmurhash-js-1.0.0.tgz#b06278e21fc6c37fa5313732b0412bcb6ae15f51"
   integrity sha1-sGJ44h/Gw3+lMTcysEEry2rhX1E=
+
+murmurhash@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/murmurhash/-/murmurhash-0.0.2.tgz#6f07bd8a1105e709c26fc89420cb5930c24585fe"
+  integrity sha512-LKlwdZKWzvCQpMszb2HO5leJ7P9T4m5XuDKku8bM0uElrzqK9cn0+iozwQS8jO4SNjrp4w7olalgd8WgsIjhWA==
 
 natural-compare@^1.4.0:
   version "1.4.0"

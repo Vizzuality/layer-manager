@@ -30,12 +30,13 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
   const [bounds] = useState(null);
 
   const [opacity, setOpacity] = useState(0.5);
+  const [threshold, setThreshold] = useState(30);
 
   const DECK_LAYERS = useMemo(() => {
     return [
       new TileLayer({
         id: `deck-loss-raster-decode-animated`,
-        data: 'https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png',
+        data: `https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc${threshold}/{z}/{x}/{y}.png`,
         tileSize: 256,
         visible: true,
         opacity,
@@ -113,9 +114,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
         maxZoom: 12,
       })
     ];
-  }, [opacity]);
-
-  console.log({ DECK_LAYERS });
+  }, [opacity, threshold]);
 
   const handleViewportChange = useCallback((vw) => {
     setViewport(vw);
@@ -132,7 +131,8 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
       <button
         type="button"
         onClick={() => {
-          setOpacity(Math.random())
+          setOpacity(Math.random() * 0.5 + 0.5)
+          setThreshold(threshold === 30 ? 75 : 30);
         }}
       >
         RANDOM

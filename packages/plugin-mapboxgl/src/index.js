@@ -409,22 +409,6 @@ class PluginMapboxGL {
       }
     });
 
-    console.log('setDeck', mapLayer);
-
-    // layer.props.deck.setProps({
-    //   layers: layer.props.deck.layerManager.layers,
-    // });
-    // layerModel.deck.map((d) => {
-    //   const { type } = d;
-
-    //   if (type === 'custom') {
-    //     d.setProps({
-    //       opacity: Math.random(),
-    //     });
-
-    //     console.log(deck);
-    //   }
-    // });
     return this;
   }
 
