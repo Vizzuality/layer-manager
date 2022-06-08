@@ -1,6 +1,6 @@
 {
   "name": "@vizzuality/layer-manager-docs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Vizzuality <hello@vizzuality.com>",
   "private": true,
   "repository": {
@@ -18,10 +18,10 @@
     "@loaders.gl/csv": "^3.1.8",
     "@luma.gl/core": "^8.5.10",
     "@math.gl/web-mercator": "^3.5.7",
-    "@vizzuality/layer-manager-layers-deckgl": "*",
-    "@vizzuality/layer-manager-plugin-mapboxgl": "*",
-    "@vizzuality/layer-manager-provider-carto": "*",
-    "@vizzuality/layer-manager-react": "*",
+    "@vizzuality/layer-manager-layers-deckgl": "^1.2.1-alpha.0",
+    "@vizzuality/layer-manager-plugin-mapboxgl": "^1.2.1-alpha.0",
+    "@vizzuality/layer-manager-provider-carto": "^1.2.1-alpha.0",
+    "@vizzuality/layer-manager-react": "^1.2.1-alpha.0",
     "apng-js": "^1.1.1",
     "circle-to-polygon": "^2.2.0",
     "classnames": "^2.2.6",
