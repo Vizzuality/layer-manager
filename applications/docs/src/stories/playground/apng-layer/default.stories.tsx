@@ -7,6 +7,7 @@ import PluginMapboxGl from '@vizzuality/layer-manager-plugin-mapboxgl';
 import CartoProvider from '@vizzuality/layer-manager-provider-carto';
 
 import GL from '@luma.gl/constants';
+import { MapboxLayer } from '@deck.gl/mapbox';
 import { TileLayer } from '@deck.gl/geo-layers';
 import { BitmapLayer } from '@deck.gl/layers';
 
@@ -39,9 +40,10 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
 
   const DECK_LAYERS = useMemo(() => {
     return [
-      new TileLayer(
+      new MapboxLayer(
         {
           id: `deck-loss-raster-decode-animated`,
+          type: TileLayer,
           frame,
           data: 'https://storage.googleapis.com/skydipper_materials/movie-tiles/MODIS/APNGs/{z}/{x}/{y}.png',
           getTileData: (tile) => {
