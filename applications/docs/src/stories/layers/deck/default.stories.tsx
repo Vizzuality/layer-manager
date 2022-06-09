@@ -9,7 +9,7 @@ import CartoProvider from '@vizzuality/layer-manager-provider-carto';
 import GL from '@luma.gl/constants';
 import { TileLayer } from '@deck.gl/geo-layers';
 import { DecodedLayer } from '@vizzuality/layer-manager-layers-deckgl';
-
+import { MapboxLayer } from '@deck.gl/mapbox';
 // Map
 import Map from '../../../components/map';
 import useInterval from './utils';
@@ -33,8 +33,9 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
 
   const DECK_LAYERS = useMemo(() => {
     return [
-      new TileLayer({
+      new MapboxLayer({
         id: `deck-loss-raster-decode-animated`,
+        type: TileLayer,
         data: `https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc${threshold}/{z}/{x}/{y}.png`,
         tileSize: 256,
         visible: true,

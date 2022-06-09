@@ -119,10 +119,6 @@ class Layer extends PureComponent<LayerProps> {
       }),
     };
 
-    console.log({
-      deck, prevDeck, compare, isEqual: compare(deck, prevDeck),
-    });
-
     if (!isEmpty(changedProps)) {
       this.update(changedProps);
     }

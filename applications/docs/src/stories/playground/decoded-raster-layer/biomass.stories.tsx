@@ -8,6 +8,7 @@ import CartoProvider from '@vizzuality/layer-manager-provider-carto';
 
 import GL from '@luma.gl/constants';
 import { TileLayer } from '@deck.gl/geo-layers';
+import { MapboxLayer } from '@deck.gl/mapbox';
 import { DecodedLayer } from '@vizzuality/layer-manager-layers-deckgl';
 
 
@@ -62,16 +63,16 @@ const Template: Story<LayerProps> = (args: any) => {
   const minZoom = 2;
   const maxZoom = 20;
   const [viewport, setViewport] = useState({});
-  const [changeLayer, setChangeLayer] = useState(false);
+  const [visibility, setVisibility] = useState(true);
 
   const [bounds] = useState(null);
 
   const DECK_LAYERS = useMemo(() => {
-    if (changeLayer) return [];
     return [
-      new TileLayer(
+      new MapboxLayer(
         {
           id:'tree-biomass-density',
+          type: TileLayer,
           data: tileUrl,
           tileSize: 256,
           visible: true,
@@ -113,6 +114,10 @@ const Template: Story<LayerProps> = (args: any) => {
                 opacity: _opacity,
                 decodeParams: dParams,
                 decodeFunction: dFunction,
+                updateTriggers: {
+                  decodeParams: dParams,
+                  decodeFunction: dFunction,
+                }
               });
             }
             return null;
@@ -122,19 +127,23 @@ const Template: Story<LayerProps> = (args: any) => {
         }
       )
     ]
-  }, [decodeFunction, decodeParams, changeLayer]);
+  }, [decodeFunction, decodeParams]);
 
   const handleViewportChange = useCallback((vw) => {
     setViewport(vw);
   }, []);
 
-  console.log('DECK_LAYERS', DECK_LAYERS)
-
   return (
     <>
-      <button type="button" onClick={() => {
-        setChangeLayer(!changeLayer)
-      }}>Change layer</button>
+      <button
+        type="button"
+        onClick={() => {
+          setVisibility(!visibility)
+        }}
+      >
+        {visibility ? 'Hide' : 'Show'}
+      </button>
+
       <div
         style={{
           position: 'relative',
@@ -158,10 +167,12 @@ const Template: Story<LayerProps> = (args: any) => {
                 [cartoProvider.name]: cartoProvider.handleData,
               }}
             >
-              <Layer
-                {...args}
-                deck={DECK_LAYERS}
-              />
+              {visibility && (
+                <Layer
+                  {...args}
+                  deck={DECK_LAYERS}
+                />
+              )}
             </LayerManager>
           )}
         </Map>

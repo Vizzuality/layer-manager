@@ -9,6 +9,7 @@ import CartoProvider from '@vizzuality/layer-manager-provider-carto';
 import GL from '@luma.gl/constants';
 import { TileLayer } from '@deck.gl/geo-layers';
 import { DecodedLayer } from '@vizzuality/layer-manager-layers-deckgl';
+import { MapboxLayer } from '@deck.gl/mapbox';
 
 
 // Map
@@ -91,9 +92,10 @@ const Template: Story<LayerProps> = (args: any) => {
 
   const DECK_LAYERS = useMemo(() => {
     return [
-      new TileLayer(
+      new MapboxLayer(
         {
           id,
+          type: TileLayer,
           data: tileUrl,
           tileSize: 256,
           visible: true,

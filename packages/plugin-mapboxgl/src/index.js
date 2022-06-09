@@ -400,12 +400,11 @@ class PluginMapboxGL {
     const { mapLayer, deck } = layerModel;
 
     mapLayer?.layers?.forEach((layer) => {
-      const { deck: deckInstance } = layer;
+      if (layer && layer.setProps && typeof layer.setProps === 'function') {
+        const [dl] = deck;
+        const { props: deckProps } = dl;
 
-      if (deckInstance) {
-        deckInstance.setProps({
-          layers: deck,
-        });
+        layer.setProps(deckProps);
       }
     });
 

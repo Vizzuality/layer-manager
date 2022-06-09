@@ -1,21 +1,9 @@
 import { CancelablePromise } from 'cancelable-promise';
-import { Deck } from '@deck.gl/core';
-import { MapboxLayer } from '@deck.gl/mapbox';
 
-const DeckLayer = (layerModel, map) => {
+const DeckLayer = (layerModel) => {
   const {
     deck = [], id,
   } = layerModel;
-
-  const DECK = new Deck({
-    gl: map.painter.context.gl,
-    layers: deck,
-  });
-
-  const deckLayer = new MapboxLayer({
-    id,
-    deck: DECK,
-  });
 
   const layer = {
     id,
@@ -28,11 +16,9 @@ const DeckLayer = (layerModel, map) => {
           'background-color': 'transparent',
         },
       },
-      deckLayer,
+      ...deck,
     ],
   };
-
-  console.log('DeckLayer layer!!', layer);
 
   return new CancelablePromise((resolve, reject) => {
     if (layer) {
