@@ -1,5 +1,5 @@
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Story } from '@storybook/react/types-6-0';
 // Layer manager
 import { LayerManager, Layer, LayerProps } from '@vizzuality/layer-manager-react';
@@ -10,7 +10,6 @@ import GL from '@luma.gl/constants';
 import { TileLayer } from '@deck.gl/geo-layers';
 import { BitmapLayer, GeoJsonLayer, ScatterplotLayer } from '@deck.gl/layers';
 import { MaskExtension } from '@deck.gl/extensions';
-import { MapboxLayer } from '@deck.gl/mapbox';
 import {CSVLoader} from '@loaders.gl/csv';
 
 import circleToPolygon from 'circle-to-polygon';
@@ -55,15 +54,13 @@ const Template: Story<LayerProps> = (args: any) => {
 
   const DECK_LAYERS = useMemo(() => {
     return [
-      new MapboxLayer({
+      new GeoJsonLayer({
         id: 'mask',
-        type: GeoJsonLayer,
         data: CIRCLE_POLYGON,
         operation: 'mask',
       }),
-      new MapboxLayer({
+      new TileLayer({
         id: 'deck-gain-layer',
-        type: TileLayer,
         data: 'https://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png',
         tileSize: 256,
         visible: true,
@@ -107,10 +104,9 @@ const Template: Story<LayerProps> = (args: any) => {
         minZoom: 3,
         maxZoom: 12,
       }),
-      new MapboxLayer({
+      new ScatterplotLayer({
         id: 'selected-cities',
         data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/cities15000.csv',
-        type: ScatterplotLayer,
         getPosition: d => [d.longitude, d.latitude],
         getRadius: d => Math.sqrt(d.population),
         getFillColor: [255, 0, 128],
@@ -121,16 +117,6 @@ const Template: Story<LayerProps> = (args: any) => {
         extensions: [new MaskExtension()]
       }),
     ]
-  }, [])
-
-  useEffect(() => {
-    const [mask] = DECK_LAYERS;
-
-    if (mask) {
-      mask.setProps({
-        data: CIRCLE_POLYGON,
-      });
-    }
   }, [CIRCLE_POLYGON])
 
   const handleViewportChange = useCallback((vw) => {

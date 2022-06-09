@@ -1,5 +1,5 @@
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Story } from '@storybook/react/types-6-0';
 // Layer manager
 import { LayerManager, Layer, LayerProps } from '@vizzuality/layer-manager-react';
@@ -9,7 +9,6 @@ import CartoProvider from '@vizzuality/layer-manager-provider-carto';
 import GL from '@luma.gl/constants';
 import { TileLayer } from '@deck.gl/geo-layers';
 import { DecodedLayer } from '@vizzuality/layer-manager-layers-deckgl';
-import { MapboxLayer } from '@deck.gl/mapbox';
 
 
 // Map
@@ -63,18 +62,20 @@ const Template: Story<LayerProps> = (args: any) => {
   const minZoom = 2;
   const maxZoom = 20;
   const [viewport, setViewport] = useState({});
+  const [changeLayer, setChangeLayer] = useState(false);
 
   const [bounds] = useState(null);
 
   const DECK_LAYERS = useMemo(() => {
+    if (changeLayer) return [];
     return [
-      new MapboxLayer(
+      new TileLayer(
         {
           id:'tree-biomass-density',
-          type: TileLayer,
           data: tileUrl,
           tileSize: 256,
           visible: true,
+          opacity: 1,
           refinementStrategy: 'no-overlap',
           decodeParams,
           decodeFunction,
@@ -84,7 +85,7 @@ const Template: Story<LayerProps> = (args: any) => {
               data,
               tile,
               visible,
-              opacity,
+              opacity: _opacity,
               decodeFunction: dFunction,
               decodeParams: dParams
             } = sl;
@@ -109,13 +110,9 @@ const Template: Story<LayerProps> = (args: any) => {
                 },
                 zoom: z,
                 visible,
-                opacity,
+                opacity: _opacity,
                 decodeParams: dParams,
                 decodeFunction: dFunction,
-                updateTriggers: {
-                  decodeParams: dParams,
-                  decodeFunction: dFunction,
-                }
               });
             }
             return null;
@@ -125,54 +122,51 @@ const Template: Story<LayerProps> = (args: any) => {
         }
       )
     ]
-  }, []);
+  }, [decodeFunction, decodeParams, changeLayer]);
 
   const handleViewportChange = useCallback((vw) => {
     setViewport(vw);
   }, []);
 
-  useEffect(() => {
-    const [layer] = DECK_LAYERS;
-    if (layer && typeof layer.setProps === 'function') {
-      layer.setProps({
-        decodeParams,
-        decodeFunction,
-      });
-    }
-  }, [decodeParams, decodeFunction])
+  console.log('DECK_LAYERS', DECK_LAYERS)
 
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '500px',
-      }}
-    >
-      <Map
-        bounds={bounds}
-        minZoom={minZoom}
-        maxZoom={maxZoom}
-        viewport={viewport}
-        mapboxApiAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
-        onMapViewportChange={handleViewportChange}
+    <>
+      <button type="button" onClick={() => {
+        setChangeLayer(!changeLayer)
+      }}>Change layer</button>
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: '500px',
+        }}
       >
-        {(map) => (
-          <LayerManager
-            map={map}
-            plugin={PluginMapboxGl}
-            providers={{
-              [cartoProvider.name]: cartoProvider.handleData,
-            }}
-          >
-            <Layer
-              {...args}
-              deck={DECK_LAYERS}
-            />
-          </LayerManager>
-        )}
-      </Map>
-    </div>
+        <Map
+          bounds={bounds}
+          minZoom={minZoom}
+          maxZoom={maxZoom}
+          viewport={viewport}
+          mapboxApiAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
+          onMapViewportChange={handleViewportChange}
+        >
+          {(map) => (
+            <LayerManager
+              map={map}
+              plugin={PluginMapboxGl}
+              providers={{
+                [cartoProvider.name]: cartoProvider.handleData,
+              }}
+            >
+              <Layer
+                {...args}
+                deck={DECK_LAYERS}
+              />
+            </LayerManager>
+          )}
+        </Map>
+      </div>
+    </>
   );
 };
 

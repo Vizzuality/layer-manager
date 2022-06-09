@@ -9,7 +9,6 @@ import CartoProvider from '@vizzuality/layer-manager-provider-carto';
 import GL from '@luma.gl/constants';
 import { TileLayer } from '@deck.gl/geo-layers';
 import { BitmapLayer } from '@deck.gl/layers';
-import { MapboxLayer } from '@deck.gl/mapbox';
 
 // Map
 import Map from '../../../components/map';
@@ -25,6 +24,7 @@ export default {
 
 const Template: Story<LayerProps> = (args: LayerProps) => {
   const videoCollectionPlayer = useRef(null);
+  const [frame, setFrame] = useState(0);
 
   const minZoom = 0;
   const maxZoom = 20;
@@ -33,12 +33,11 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
 
   const DECK_LAYERS = useMemo(() => {
     return [
-      new MapboxLayer(
+      new TileLayer(
         {
           id: `deck-loss-raster-decode-animated`,
-          type: TileLayer,
           data: 'https://storage.googleapis.com/skydipper_materials/movie-tiles/MODIS/WebMs/{z}/{x}/{y}.webm',
-          frame: 0,
+          frame,
           getTileData: (tile: { x: any; y: any; z: any; }) => {
             const { x, y, z } = tile;
             const url = `https://storage.googleapis.com/skydipper_materials/movie-tiles/MODIS/WebMs/${z}/${x}/${y}.webm`;
@@ -95,6 +94,8 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
               },
             });
 
+            videoCollectionPlayer.current.setCurrentTime(f);
+
             return VideoBitmapLayer;
           },
           onTileLoad: (tile: any) => {
@@ -116,16 +117,12 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
 
   useEffect(() => {
     videoCollectionPlayer.current = new VideoCollectionPlayer();
-    videoCollectionPlayer.current.setCurrentTime(0);
     videoCollectionPlayer.current.onTimeChanged = (frame) => {
-      const [layer] = DECK_LAYERS;
-      // layer.setProps({ frame });
-      layer.map.triggerRepaint();
+      const f = (frame === 22) ? 0 : frame + 1;
 
-      setTimeout(() => {
-        const f = (frame === 22) ? 0 : frame + 1;
-        videoCollectionPlayer.current.setCurrentTime(f);
-      }, 50);
+      console.log(f);
+
+      setFrame(f);
     }
   }, []);
 

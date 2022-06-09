@@ -9,14 +9,12 @@ import CartoProvider from '@vizzuality/layer-manager-provider-carto';
 import GL from '@luma.gl/constants';
 import { TileLayer } from '@deck.gl/geo-layers';
 import { BitmapLayer } from '@deck.gl/layers';
-import { MapboxLayer } from '@deck.gl/mapbox';
 
 import parseAPNG from 'apng-js';
 
 // Map
 import Map from '../../../components/map';
 import useInterval from '../../layers/deck/utils';
-import { useEffect } from 'react';
 
 const cartoProvider = new CartoProvider();
 
@@ -41,10 +39,9 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
 
   const DECK_LAYERS = useMemo(() => {
     return [
-      new MapboxLayer(
+      new TileLayer(
         {
           id: `deck-loss-raster-decode-animated`,
-          type: TileLayer,
           frame,
           data: 'https://storage.googleapis.com/skydipper_materials/movie-tiles/MODIS/APNGs/{z}/{x}/{y}.png',
           getTileData: (tile) => {
@@ -74,6 +71,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
           },
           tileSize: 256,
           visible: true,
+          opacity: 1,
           refinementStrategy: 'no-overlap',
           renderSubLayers: (sl) => {
             if (!sl) return null;
@@ -83,7 +81,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
               data,
               tile,
               visible,
-              opacity,
+              opacity = 1,
               frame: f
             } = sl;
 
@@ -121,17 +119,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
         }
       )
     ]
-  }, []);
-
-  useEffect(() => {
-    const [layer] = DECK_LAYERS;
-    if (layer && typeof layer.setProps === 'function') {
-      layer.setProps({
-        frame,
-      });
-    }
   }, [frame]);
-
 
   const handleViewportChange = useCallback((vw) => {
     setViewport(vw);

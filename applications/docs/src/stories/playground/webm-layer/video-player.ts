@@ -15,8 +15,8 @@ export class VideoCollectionPlayer {
   onTimeChanged: (frame: number) => void = () => {};
 
   addVideo(video: HTMLVideoElement) {
-    video.loop = false;
-    video.autoplay = false;
+    video.loop = true;
+    video.autoplay = true;
     video.muted = true;
 
     video.play();

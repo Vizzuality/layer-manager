@@ -32,6 +32,8 @@ const DeckLayer = (layerModel, map) => {
     ],
   };
 
+  console.log('DeckLayer layer!!', layer);
+
   return new CancelablePromise((resolve, reject) => {
     if (layer) {
       resolve(layer);

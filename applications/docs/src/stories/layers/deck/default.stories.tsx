@@ -1,5 +1,5 @@
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Story } from '@storybook/react/types-6-0';
 // Layer manager
 import { LayerManager, Layer, LayerProps } from '@vizzuality/layer-manager-react';
@@ -9,7 +9,6 @@ import CartoProvider from '@vizzuality/layer-manager-provider-carto';
 import GL from '@luma.gl/constants';
 import { TileLayer } from '@deck.gl/geo-layers';
 import { DecodedLayer } from '@vizzuality/layer-manager-layers-deckgl';
-import { MapboxLayer } from '@deck.gl/mapbox';
 
 // Map
 import Map from '../../../components/map';
@@ -176,22 +175,23 @@ const AnimatedTemplate: Story<LayerProps> = (args: LayerProps) => {
 
   const DECK_LAYERS = useMemo(() => {
     return [
-      new MapboxLayer(
+      new TileLayer(
         {
           id: `deck-loss-raster-decode-animated`,
-          type: TileLayer,
           data: 'https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png',
           tileSize: 256,
           visible: true,
+          opacity: 1,
           refinementStrategy: 'no-overlap',
+          decodeParams,
           renderSubLayers: (sl) => {
             const {
               id: subLayerId,
               data,
               tile,
               visible,
-              opacity,
-              decodeParams,
+              opacity: _opacity,
+              decodeParams: _decodeParams,
             } = sl;
 
             const {
@@ -214,11 +214,8 @@ const AnimatedTemplate: Story<LayerProps> = (args: LayerProps) => {
                 },
                 zoom: z,
                 visible,
-                opacity,
-                decodeParams: decodeParams || {
-                  startYear: 2001,
-                  endYear: 2017,
-                },
+                opacity: _opacity,
+                decodeParams: _decodeParams,
                 decodeFunction: `
                   // values for creating power scale, domain (input), and range (output)
                   float domainMin = 0.;
@@ -258,7 +255,7 @@ const AnimatedTemplate: Story<LayerProps> = (args: LayerProps) => {
         }
       )
     ]
-  }, []);
+  }, [decodeParams]);
 
   const handleViewportChange = useCallback((vw) => {
     setViewport(vw);
@@ -272,16 +269,6 @@ const AnimatedTemplate: Story<LayerProps> = (args: LayerProps) => {
       endYear: end,
     })
   }, 500);
-
-  useEffect(() => {
-    const [layer] = DECK_LAYERS;
-    if (layer && typeof layer.setProps === 'function') {
-      layer.setProps({
-        decodeParams,
-      });
-    }
-  }, [decodeParams]);
-
 
   return (
     <div
