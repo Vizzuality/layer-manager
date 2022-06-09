@@ -399,12 +399,16 @@ class PluginMapboxGL {
   setDeck(layerModel) {
     const { mapLayer, deck } = layerModel;
 
-    mapLayer?.layers?.forEach((layer) => {
+    mapLayer?.layers?.forEach((layer, i) => {
       if (layer && layer.setProps && typeof layer.setProps === 'function') {
-        const [dl] = deck;
-        const { props: deckProps } = dl;
+        const dl = deck[i - 1];
+        if (dl) {
+          const { props: deckProps } = dl;
 
-        layer.setProps(deckProps);
+          layer.setProps(deckProps);
+        } else {
+          console.warn('No deck layer found for layer', layer);
+        }
       }
     });
 
