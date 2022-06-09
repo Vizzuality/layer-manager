@@ -30,7 +30,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@vizzuality/layer-manager": "^4.2.1-alpha.0",
+    "@vizzuality/layer-manager": "alpha",
     "@vizzuality/layer-manager-utils": "^1.1.1-alpha.0"
   }
 }
