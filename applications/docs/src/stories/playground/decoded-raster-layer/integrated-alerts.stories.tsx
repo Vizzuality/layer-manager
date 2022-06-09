@@ -7,6 +7,7 @@ import PluginMapboxGl from '@vizzuality/layer-manager-plugin-mapboxgl';
 import CartoProvider from '@vizzuality/layer-manager-provider-carto';
 
 import GL from '@luma.gl/constants';
+import { MapboxLayer } from '@deck.gl/mapbox';
 import { TileLayer } from '@deck.gl/geo-layers';
 import { DecodedLayer } from '@vizzuality/layer-manager-layers-deckgl';
 
@@ -120,9 +121,10 @@ const Template: Story<LayerProps> = (args: any) => {
 
   const DECK_LAYERS = useMemo(() => {
     return [
-      new TileLayer(
+      new MapboxLayer(
         {
           id:'integrated',
+          type: TileLayer,
           data: tileUrl,
           tileSize: 256,
           visible: true,
