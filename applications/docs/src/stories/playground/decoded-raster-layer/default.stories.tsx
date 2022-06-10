@@ -137,6 +137,10 @@ const Template: Story<LayerProps> = (args: any) => {
                 opacity: _opacity,
                 decodeParams: dParams,
                 decodeFunction: dFunction,
+                updateTriggers: {
+                  decodeParams: dParams,
+                  decodeFunction: dFunction,
+                }
               });
             }
             return null;

@@ -176,9 +176,10 @@ const AnimatedTemplate: Story<LayerProps> = (args: LayerProps) => {
 
   const DECK_LAYERS = useMemo(() => {
     return [
-      new TileLayer(
+      new MapboxLayer(
         {
           id: `deck-loss-raster-decode-animated`,
+          type: TileLayer,
           data: 'https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png',
           tileSize: 256,
           visible: true,
