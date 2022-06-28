@@ -48,8 +48,8 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
             video.src = url;
             video.crossOrigin = 'anonymous';
             video.muted = true;
-            video.autoplay = false;
-            video.loop = false;
+            video.autoplay = true;
+            video.loop = true;
 
             return video;
           },
@@ -111,7 +111,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
         }
       )
     ]
-  }, []);
+  }, [frame]);
 
   const handleViewportChange = useCallback((vw: React.SetStateAction<{}>) => {
     setViewport(vw);
@@ -121,9 +121,6 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
     videoCollectionPlayer.current = new VideoCollectionPlayer();
     videoCollectionPlayer.current.onTimeChanged = (frame) => {
       const f = (frame === 22) ? 0 : frame + 1;
-
-      console.log(f);
-
       setFrame(f);
     }
   }, []);
