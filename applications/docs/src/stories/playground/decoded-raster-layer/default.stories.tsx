@@ -1,5 +1,5 @@
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Story } from '@storybook/react/types-6-0';
 // Layer manager
 import { LayerManager, Layer, LayerProps } from '@vizzuality/layer-manager-react';
@@ -99,14 +99,17 @@ const Template: Story<LayerProps> = (args: any) => {
           data: tileUrl,
           tileSize: 256,
           visible: true,
+          opacity: 1,
           refinementStrategy: 'no-overlap',
+          decodeFunction,
+          decodeParams,
           renderSubLayers: (sl) => {
             const {
               id: subLayerId,
               data,
               tile,
               visible,
-              opacity,
+              opacity: _opacity,
               decodeParams: dParams,
               decodeFunction: dFunction,
             } = sl;
@@ -131,13 +134,13 @@ const Template: Story<LayerProps> = (args: any) => {
                 },
                 zoom: z,
                 visible,
-                opacity,
+                opacity: _opacity,
                 decodeParams: dParams,
                 decodeFunction: dFunction,
                 updateTriggers: {
                   decodeParams: dParams,
                   decodeFunction: dFunction,
-                },
+                }
               });
             }
             return null;
@@ -147,22 +150,11 @@ const Template: Story<LayerProps> = (args: any) => {
         }
       )
     ]
-  }, []);
+  }, [decodeFunction, decodeParams]);
 
   const handleViewportChange = useCallback((vw) => {
     setViewport(vw);
   }, []);
-
-  useEffect(() => {
-    const [layer] = DECK_LAYERS;
-    if (layer && typeof layer.setProps === 'function') {
-      layer.setProps({
-        decodeParams,
-        decodeFunction,
-      });
-    }
-  }, [decodeParams, decodeFunction])
-
 
   return (
     <div

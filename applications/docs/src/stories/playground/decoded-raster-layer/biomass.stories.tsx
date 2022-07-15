@@ -1,5 +1,5 @@
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Story } from '@storybook/react/types-6-0';
 // Layer manager
 import { LayerManager, Layer, LayerProps } from '@vizzuality/layer-manager-react';
@@ -8,8 +8,8 @@ import CartoProvider from '@vizzuality/layer-manager-provider-carto';
 
 import GL from '@luma.gl/constants';
 import { TileLayer } from '@deck.gl/geo-layers';
-import { DecodedLayer } from '@vizzuality/layer-manager-layers-deckgl';
 import { MapboxLayer } from '@deck.gl/mapbox';
+import { DecodedLayer } from '@vizzuality/layer-manager-layers-deckgl';
 
 
 // Map
@@ -63,6 +63,7 @@ const Template: Story<LayerProps> = (args: any) => {
   const minZoom = 2;
   const maxZoom = 20;
   const [viewport, setViewport] = useState({});
+  const [visibility, setVisibility] = useState(true);
 
   const [bounds] = useState(null);
 
@@ -75,6 +76,7 @@ const Template: Story<LayerProps> = (args: any) => {
           data: tileUrl,
           tileSize: 256,
           visible: true,
+          opacity: 1,
           refinementStrategy: 'no-overlap',
           decodeParams,
           decodeFunction,
@@ -84,7 +86,7 @@ const Template: Story<LayerProps> = (args: any) => {
               data,
               tile,
               visible,
-              opacity,
+              opacity: _opacity,
               decodeFunction: dFunction,
               decodeParams: dParams
             } = sl;
@@ -109,7 +111,7 @@ const Template: Story<LayerProps> = (args: any) => {
                 },
                 zoom: z,
                 visible,
-                opacity,
+                opacity: _opacity,
                 decodeParams: dParams,
                 decodeFunction: dFunction,
                 updateTriggers: {
@@ -125,54 +127,57 @@ const Template: Story<LayerProps> = (args: any) => {
         }
       )
     ]
-  }, []);
+  }, [decodeFunction, decodeParams]);
 
   const handleViewportChange = useCallback((vw) => {
     setViewport(vw);
   }, []);
 
-  useEffect(() => {
-    const [layer] = DECK_LAYERS;
-    if (layer && typeof layer.setProps === 'function') {
-      layer.setProps({
-        decodeParams,
-        decodeFunction,
-      });
-    }
-  }, [decodeParams, decodeFunction])
-
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '500px',
-      }}
-    >
-      <Map
-        bounds={bounds}
-        minZoom={minZoom}
-        maxZoom={maxZoom}
-        viewport={viewport}
-        mapboxApiAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
-        onMapViewportChange={handleViewportChange}
+    <>
+      <button
+        type="button"
+        onClick={() => {
+          setVisibility(!visibility)
+        }}
       >
-        {(map) => (
-          <LayerManager
-            map={map}
-            plugin={PluginMapboxGl}
-            providers={{
-              [cartoProvider.name]: cartoProvider.handleData,
-            }}
-          >
-            <Layer
-              {...args}
-              deck={DECK_LAYERS}
-            />
-          </LayerManager>
-        )}
-      </Map>
-    </div>
+        {visibility ? 'Hide' : 'Show'}
+      </button>
+
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: '500px',
+        }}
+      >
+        <Map
+          bounds={bounds}
+          minZoom={minZoom}
+          maxZoom={maxZoom}
+          viewport={viewport}
+          mapboxApiAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
+          onMapViewportChange={handleViewportChange}
+        >
+          {(map) => (
+            <LayerManager
+              map={map}
+              plugin={PluginMapboxGl}
+              providers={{
+                [cartoProvider.name]: cartoProvider.handleData,
+              }}
+            >
+              {visibility && (
+                <Layer
+                  {...args}
+                  deck={DECK_LAYERS}
+                />
+              )}
+            </LayerManager>
+          )}
+        </Map>
+      </div>
+    </>
   );
 };
 

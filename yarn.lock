@@ -315,6 +315,24 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@deck.gl/core@^8.7.11":
+  version "8.7.11"
+  resolved "https://registry.yarnpkg.com/@deck.gl/core/-/core-8.7.11.tgz#8cfdf212db5857e8ba3a5ef90e317a4a7c46aa10"
+  integrity sha512-zTAjbU2lJ5/LjxLLIA6vFquIqd16uY/Xe2Y3J84YmCxOeFWx7khX8n9s42bfi2mXK+ygx8sqRfhHjReFArg3bA==
+  dependencies:
+    "@loaders.gl/core" "^3.1.5"
+    "@loaders.gl/images" "^3.1.5"
+    "@luma.gl/constants" "^8.5.10"
+    "@luma.gl/core" "^8.5.10"
+    "@math.gl/core" "^3.5.7"
+    "@math.gl/web-mercator" "^3.5.7"
+    "@probe.gl/env" "^3.5.0"
+    "@probe.gl/log" "^3.5.0"
+    "@probe.gl/stats" "^3.5.0"
+    gl-matrix "^3.0.0"
+    math.gl "^3.5.7"
+    mjolnir.js "^2.5.0"
+
 "@deck.gl/core@^8.7.3":
   version "8.7.4"
   resolved "https://registry.yarnpkg.com/@deck.gl/core/-/core-8.7.4.tgz#f2e0c397ab28c06785a215a75e0e1463206843f5"
@@ -333,10 +351,10 @@
     math.gl "^3.5.7"
     mjolnir.js "^2.5.0"
 
-"@deck.gl/mapbox@^8.7.3":
-  version "8.7.4"
-  resolved "https://registry.yarnpkg.com/@deck.gl/mapbox/-/mapbox-8.7.4.tgz#f16d9a609c0317c9f102168e84fb0d64f5a4d173"
-  integrity sha512-ziJ7b0zY9f8uw93Fwe4CwOivE08SPznQDjqXLgU8oKA6DbUWZEvjtjbkneSuAVWwu51xgYbauEvV1xn612T+vQ==
+"@deck.gl/mapbox@^8.7.11":
+  version "8.7.11"
+  resolved "https://registry.yarnpkg.com/@deck.gl/mapbox/-/mapbox-8.7.11.tgz#5233509956b7523d9ad431ae33382871371b1239"
+  integrity sha512-oRxN5ZWKzmEwhKp/4N46qxyWVMjzrmdCeq0/O4RNeOfGDXypEE+E6N1qKYh2baT3R5oq1zcIRXwZeOvFKm1Nxw==
 
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"
@@ -2937,6 +2955,13 @@ jest@^27.2.0:
     import-local "^3.0.2"
     jest-cli "^27.5.1"
 
+js-deep-equals@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/js-deep-equals/-/js-deep-equals-2.1.1.tgz#8e352db9d0f9cb0a6fd84d3bdeb1dab091b7a3f6"
+  integrity sha512-l568Khc0UBoO/bA3BpFPUM2PKNcUMR0WW2Ytb639iZOPCd1tRabUJuYDGg8+3UR0Wy6yLUhSdDA79orFq0dV4A==
+  dependencies:
+    murmurhash "0.0.2"
+
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
@@ -3254,6 +3279,11 @@ murmurhash-js@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/murmurhash-js/-/murmurhash-js-1.0.0.tgz#b06278e21fc6c37fa5313732b0412bcb6ae15f51"
   integrity sha1-sGJ44h/Gw3+lMTcysEEry2rhX1E=
+
+murmurhash@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/murmurhash/-/murmurhash-0.0.2.tgz#6f07bd8a1105e709c26fc89420cb5930c24585fe"
+  integrity sha512-LKlwdZKWzvCQpMszb2HO5leJ7P9T4m5XuDKku8bM0uElrzqK9cn0+iozwQS8jO4SNjrp4w7olalgd8WgsIjhWA==
 
 natural-compare@^1.4.0:
   version "1.4.0"

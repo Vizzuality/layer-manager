@@ -57,6 +57,7 @@ class LayerManager {
    */
   update(id: LayerSpec['id'], newLayerSpec: Partial<LayerSpec>): void {
     const layerModel = this.getLayerModel(id);
+
     if (!layerModel || !layerModel.mapLayer) return;
 
     layerModel.update(newLayerSpec);
@@ -69,6 +70,7 @@ class LayerManager {
       render,
       params,
       sqlParams,
+      deck,
     } = newLayerSpec;
 
     if (typeof opacity !== 'undefined') {
@@ -97,6 +99,10 @@ class LayerManager {
 
     if (!isEmpty(sqlParams)) {
       this._plugin.setSQLParams(layerModel);
+    }
+
+    if (!isEmpty(deck)) {
+      this._plugin.setDeck(layerModel);
     }
   }
 

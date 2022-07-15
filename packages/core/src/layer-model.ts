@@ -1,4 +1,6 @@
-import isEqual from 'fast-deep-equal';
+import isEqual from 'fast-deep-equal/es6';
+// @ts-ignore
+import { compare } from 'js-deep-equals';
 
 import type { CancelTokenSource } from 'axios';
 import type { LayerSpec } from '../types';
@@ -118,6 +120,11 @@ class LayerModel {
       const current: LayerSpec[keyof LayerSpec] = layerSpec[key as keyof LayerSpec];
 
       if (!isEqual(prev, current)) {
+        changedAttributes[key] = current;
+      }
+
+      // Deep comparison for deck layers
+      if (key === 'deck' && !compare(prev, current)) {
         changedAttributes[key] = current;
       }
     });

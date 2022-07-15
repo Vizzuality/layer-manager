@@ -1,5 +1,6 @@
 import {
   useEffect, useState, useRef, useCallback, FC,
+  ReactNode,
 } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
@@ -9,6 +10,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import ReactMapGL, {
   FlyToInterpolator,
+  MapRef,
   TRANSITION_EVENTS,
   ViewportProps,
 } from 'react-map-gl';
@@ -20,7 +22,7 @@ import { easeCubic } from 'd3-ease';
 
 export interface MapProps extends InteractiveMapProps {
   /** A function that returns the map instance */
-  children?: React.ReactNode;
+  children?: (map: MapRef) => ReactNode;
 
   /** Custom css class for styling */
   className?: string;

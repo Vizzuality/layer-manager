@@ -2,17 +2,8 @@ import { CancelablePromise } from 'cancelable-promise';
 
 const DeckLayer = (layerModel) => {
   const {
-    deck = [], id, zIndex,
+    deck = [], id,
   } = layerModel;
-
-  const deckLayers = deck.map((d) => {
-    if (d && typeof d.setProps === 'function') {
-      d.setProps({
-        getPolygonOffset: () => [0, -zIndex],
-      });
-    }
-    return d;
-  });
 
   const layer = {
     id,
@@ -25,7 +16,7 @@ const DeckLayer = (layerModel) => {
           'background-color': 'transparent',
         },
       },
-      ...deckLayers,
+      ...deck,
     ],
   };
 

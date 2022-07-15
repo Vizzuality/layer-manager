@@ -1,6 +1,9 @@
 /* eslint-disable react/default-props-match-prop-types */
 import { PureComponent } from 'react';
-import isEqual from 'fast-deep-equal/react';
+import isEqual from 'fast-deep-equal/es6';
+// @ts-ignore
+import { compare } from 'js-deep-equals';
+
 import { isEmpty, replace } from '@vizzuality/layer-manager-utils';
 import LayerManager, { LayerSpec } from '@vizzuality/layer-manager';
 
@@ -18,6 +21,7 @@ class Layer extends PureComponent<LayerProps> {
     zIndex: undefined,
     source: {},
     render: {},
+    deck: [],
     onAfterAdd: () => null,
   };
 
@@ -34,6 +38,7 @@ class Layer extends PureComponent<LayerProps> {
       opacity: prevOpacity,
       visibility: prevVisibility,
       zIndex: prevZIndex,
+      deck: prevDeck,
     } = prevProps;
 
     const {
@@ -45,6 +50,7 @@ class Layer extends PureComponent<LayerProps> {
       opacity,
       visibility,
       zIndex,
+      deck,
     } = this.props;
 
     // Check that source has changed
@@ -107,6 +113,9 @@ class Layer extends PureComponent<LayerProps> {
       }),
       ...(!isEqual(renderParsed, prevRenderParsed) && {
         render: renderParsed,
+      }),
+      ...(!compare(deck, prevDeck) && {
+        deck,
       }),
     };
 

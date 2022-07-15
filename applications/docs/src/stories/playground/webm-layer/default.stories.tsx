@@ -1,5 +1,5 @@
 
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react';
 import { Story } from '@storybook/react/types-6-0';
 // Layer manager
 import { LayerManager, Layer, LayerProps } from '@vizzuality/layer-manager-react';
@@ -11,32 +11,26 @@ import { MapboxLayer } from '@deck.gl/mapbox';
 import { TileLayer } from '@deck.gl/geo-layers';
 import { BitmapLayer } from '@deck.gl/layers';
 
-import parseAPNG from 'apng-js';
-
 // Map
 import Map from '../../../components/map';
-import useInterval from '../../layers/deck/utils';
+import { VideoCollectionPlayer } from './video-player';
 
 const cartoProvider = new CartoProvider();
 
 export default {
-  title: 'Playground/APNG-Layer',
+  title: 'Playground/WEBM-Layer',
   argTypes: {
   },
 };
 
 const Template: Story<LayerProps> = (args: LayerProps) => {
+  const videoCollectionPlayer = useRef(null);
   const [frame, setFrame] = useState(0);
+
   const minZoom = 0;
   const maxZoom = 20;
   const [viewport, setViewport] = useState({});
   const [bounds] = useState(null);
-
-  useInterval(() => {
-    const f = (frame === 22 - 1) ? 0 :  frame + 1;
-
-    setFrame(f);
-  }, 100);
 
   const DECK_LAYERS = useMemo(() => {
     return [
@@ -44,38 +38,25 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
         {
           id: `deck-loss-raster-decode-animated`,
           type: TileLayer,
+          data: 'https://storage.googleapis.com/skydipper_materials/movie-tiles/MODIS/WebMs/{z}/{x}/{y}.webm',
           frame,
-          data: 'https://storage.googleapis.com/skydipper_materials/movie-tiles/MODIS/APNGs/{z}/{x}/{y}.png',
-          getTileData: (tile) => {
-            const { x, y, z, signal } = tile;
-            const url = `https://storage.googleapis.com/skydipper_materials/movie-tiles/MODIS/APNGs/${z}/${x}/${y}.png`;
-            const response = fetch(url, { signal });
+          getTileData: (tile: { x: any; y: any; z: any; }) => {
+            const { x, y, z } = tile;
+            const url = `https://storage.googleapis.com/skydipper_materials/movie-tiles/MODIS/WebMs/${z}/${x}/${y}.webm`;
 
-            if (signal.aborted) {
-              return null;
-            }
+            const video = document.createElement('video');
+            video.src = url;
+            video.crossOrigin = 'anonymous';
+            video.muted = true;
+            video.autoplay = true;
+            video.loop = true;
 
-            return response
-              .then((res) => res.arrayBuffer())
-              .then((buffer) => {
-                const apng = parseAPNG(buffer);
-                if (apng instanceof Error) {
-                  throw apng;
-                }
-
-                return apng.frames.map((frame) => {
-                  return {
-                    ...frame,
-                    bitmapData: createImageBitmap(frame.imageData),
-                  };
-                });
-              });
+            return video;
           },
           tileSize: 256,
           visible: true,
-          opacity: 1,
           refinementStrategy: 'no-overlap',
-          renderSubLayers: (sl) => {
+          renderSubLayers: (sl: { id: any; data: any; tile: any; visible: any; opacity: any; frame: any; }, ...rest) => {
             if (!sl) return null;
 
             const {
@@ -83,7 +64,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
               data,
               tile,
               visible,
-              opacity = 1,
+              opacity,
               frame: f
             } = sl;
 
@@ -96,25 +77,34 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
               },
             } = tile;
 
-            const FRAME = data[f];
+            const VideoBitmapLayer = new BitmapLayer({
+              id: subLayerId,
+              image: data,
+              bounds: [west, south, east, north],
+              textureParameters: {
+                [GL.TEXTURE_MIN_FILTER]: GL.LINEAR_MIPMAP_LINEAR,
+                [GL.TEXTURE_MAG_FILTER]: GL.LINEAR,
+                [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
+                [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE,
+              },
+              mipmaps: false,
+              zoom: z,
+              visible,
+              opacity,
+              updateTriggers: {
+                frame: f,
+              },
+            });
 
-            if (FRAME) {
-              return new BitmapLayer({
-                id: subLayerId,
-                image: FRAME.bitmapData,
-                bounds: [west, south, east, north],
-                textureParameters: {
-                  [GL.TEXTURE_MIN_FILTER]: GL.NEAREST,
-                  [GL.TEXTURE_MAG_FILTER]: GL.NEAREST,
-                  [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
-                  [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE,
-                },
-                zoom: z,
-                visible,
-                opacity,
-              });
-            }
-            return null;
+            videoCollectionPlayer.current.setCurrentTime(f);
+
+            return VideoBitmapLayer;
+          },
+          onTileLoad: (tile: any) => {
+            videoCollectionPlayer.current.addVideo(tile.data);
+          },
+          onTileUnload: (tile: any) => {
+            videoCollectionPlayer.current.removeVideo(tile.data);
           },
           minZoom: 0,
           maxZoom: 3,
@@ -123,8 +113,16 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
     ]
   }, [frame]);
 
-  const handleViewportChange = useCallback((vw) => {
+  const handleViewportChange = useCallback((vw: React.SetStateAction<{}>) => {
     setViewport(vw);
+  }, []);
+
+  useEffect(() => {
+    videoCollectionPlayer.current = new VideoCollectionPlayer();
+    videoCollectionPlayer.current.onTimeChanged = (frame) => {
+      const f = (frame === 22) ? 0 : frame + 1;
+      setFrame(f);
+    }
   }, []);
 
   return (
@@ -142,6 +140,10 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
         viewport={viewport}
         mapboxApiAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
         onMapViewportChange={handleViewportChange}
+        onClick={() => {
+          const f = Math.floor(Math.random() * 22);
+          videoCollectionPlayer.current.setCurrentTime(f);
+        }}
       >
         {(map) => (
           <>

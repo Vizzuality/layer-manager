@@ -1,5 +1,5 @@
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Story } from '@storybook/react/types-6-0';
 // Layer manager
 import { LayerManager, Layer, LayerProps } from '@vizzuality/layer-manager-react';
@@ -9,8 +9,8 @@ import CartoProvider from '@vizzuality/layer-manager-provider-carto';
 import GL from '@luma.gl/constants';
 import { TileLayer } from '@deck.gl/geo-layers';
 import { BitmapLayer, GeoJsonLayer, ScatterplotLayer } from '@deck.gl/layers';
-import { MaskExtension } from '@deck.gl/extensions';
 import { MapboxLayer } from '@deck.gl/mapbox';
+import { MaskExtension } from '@deck.gl/extensions';
 import {CSVLoader} from '@loaders.gl/csv';
 
 import circleToPolygon from 'circle-to-polygon';
@@ -56,8 +56,8 @@ const Template: Story<LayerProps> = (args: any) => {
   const DECK_LAYERS = useMemo(() => {
     return [
       new MapboxLayer({
-        id: 'mask',
         type: GeoJsonLayer,
+        id: 'mask',
         data: CIRCLE_POLYGON,
         operation: 'mask',
       }),
@@ -65,6 +65,7 @@ const Template: Story<LayerProps> = (args: any) => {
         id: 'deck-gain-layer',
         type: TileLayer,
         data: 'https://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png',
+        opacity: 1,
         tileSize: 256,
         visible: true,
 
@@ -100,6 +101,7 @@ const Template: Story<LayerProps> = (args: any) => {
               zoom: z,
               visible,
               opacity,
+              getPolygonOffset: () => [0, -1],
             });
           }
           return null;
@@ -109,28 +111,19 @@ const Template: Story<LayerProps> = (args: any) => {
       }),
       new MapboxLayer({
         id: 'selected-cities',
-        data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/cities15000.csv',
         type: ScatterplotLayer,
+        data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/cities15000.csv',
         getPosition: d => [d.longitude, d.latitude],
-        getRadius: d => Math.sqrt(d.population),
+        getPointRadius: d => Math.sqrt(d.population),
         getFillColor: [255, 0, 128],
         radiusMinPixels: 1,
         pickable: true,
         loaders: [CSVLoader],
         maskId: 'mask',
-        extensions: [new MaskExtension()]
+        extensions: [new MaskExtension()],
+        getPolygonOffset: () => [0, -2],
       }),
     ]
-  }, [])
-
-  useEffect(() => {
-    const [mask] = DECK_LAYERS;
-
-    if (mask) {
-      mask.setProps({
-        data: CIRCLE_POLYGON,
-      });
-    }
   }, [CIRCLE_POLYGON])
 
   const handleViewportChange = useCallback((vw) => {

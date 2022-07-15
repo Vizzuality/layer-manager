@@ -25,30 +25,36 @@ export default {
   },
 };
 
+type Timer = ReturnType<typeof setTimeout>
+
 const Template: Story<LayerProps> = (args: LayerProps) => {
   const [frame, setFrame] = useState(0);
+  const [delay, setDelay] = useState(null);
+
   const minZoom = 0;
   const maxZoom = 20;
   const [viewport, setViewport] = useState({});
-  const [bounds] = useState(null);
+  const [bounds] = useState({
+    bbox: [17.596292980940888, -14.697003230863928, 17.769759604455118, -14.603349846815476],
+  });
 
   useInterval(() => {
-    const f = (frame === 22 - 1) ? 0 :  frame + 1;
+    // 1988-2021
+    const f = (frame === 34 - 1) ? 0 :  frame + 1;
 
     setFrame(f);
-  }, 100);
+  }, delay);
 
   const DECK_LAYERS = useMemo(() => {
     return [
       new MapboxLayer(
         {
-          id: `deck-loss-raster-decode-animated`,
+          id: `landsat-animated`,
           type: TileLayer,
           frame,
-          data: 'https://storage.googleapis.com/skydipper_materials/movie-tiles/MODIS/APNGs/{z}/{x}/{y}.png',
           getTileData: (tile) => {
             const { x, y, z, signal } = tile;
-            const url = `https://storage.googleapis.com/skydipper_materials/movie-tiles/MODIS/APNGs/${z}/${x}/${y}.png`;
+            const url = `https://storage.googleapis.com/geo-ai/Redes/Tiles/Menongue/APNGs/Landsat/${z}/${x}/${y}.png`;
             const response = fetch(url, { signal });
 
             if (signal.aborted) {
@@ -116,8 +122,9 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
             }
             return null;
           },
-          minZoom: 0,
-          maxZoom: 3,
+          minZoom: 10,
+          maxZoom: 14,
+          extent: bounds.bbox,
         }
       )
     ]
@@ -135,6 +142,43 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
         height: '500px',
       }}
     >
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          background: '#FEFEFE',
+          color: '#000',
+          padding: '10px',
+          zIndex: 10,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+        }}
+      >
+        <button
+          type='button'
+          onClick={() => {
+            setDelay(delay === null ? 200 : null);
+          }}
+        >
+          {!delay && 'Play'}
+          {delay && 'Pause'}
+        </button>
+        <input
+          type="range"
+          min={1988}
+          max={2021}
+          value={1988 + frame}
+          onChange={(e) => {
+            setDelay(null);
+            setFrame(+e.target.value - 1988);
+          }}
+        />
+        <span>
+          {1988 + frame}
+        </span>
+      </div>
       <Map
         bounds={bounds}
         minZoom={minZoom}
@@ -142,6 +186,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
         viewport={viewport}
         mapboxApiAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
         onMapViewportChange={handleViewportChange}
+        mapStyle="mapbox://styles/layer-manager/ck53taxwt06mu1csgap96x9rz"
       >
         {(map) => (
           <>
@@ -164,9 +209,11 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
   );
 };
 
-export const Default = Template.bind({});
-Default.args = {
-  id: 'raster-decode-layer',
+
+
+export const Landsat = Template.bind({});
+Landsat.args = {
+  id: 'landsat-layer',
   type: 'deck',
   source: {
     parse: false,

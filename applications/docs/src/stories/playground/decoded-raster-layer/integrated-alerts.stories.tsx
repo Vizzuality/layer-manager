@@ -1,5 +1,5 @@
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Story } from '@storybook/react/types-6-0';
 // Layer manager
 import { LayerManager, Layer, LayerProps } from '@vizzuality/layer-manager-react';
@@ -7,9 +7,9 @@ import PluginMapboxGl from '@vizzuality/layer-manager-plugin-mapboxgl';
 import CartoProvider from '@vizzuality/layer-manager-provider-carto';
 
 import GL from '@luma.gl/constants';
+import { MapboxLayer } from '@deck.gl/mapbox';
 import { TileLayer } from '@deck.gl/geo-layers';
 import { DecodedLayer } from '@vizzuality/layer-manager-layers-deckgl';
-import { MapboxLayer } from '@deck.gl/mapbox';
 
 
 // Map
@@ -38,7 +38,7 @@ export default {
       type: { name: 'object', required: true },
       defaultValue: {
         startDayIndex: 0,
-        endDayIndex: 1150,
+        endDayIndex: 500,
       }
     },
     decodeFunction: {
@@ -131,13 +131,14 @@ const Template: Story<LayerProps> = (args: any) => {
           refinementStrategy: 'no-overlap',
           decodeFunction,
           decodeParams,
+          opacity: 1,
           renderSubLayers: (sl) => {
             const {
               id: subLayerId,
               data,
               tile,
               visible,
-              opacity,
+              opacity: _opacity,
               decodeFunction: dFunction,
               decodeParams: dParams
             } = sl;
@@ -162,13 +163,13 @@ const Template: Story<LayerProps> = (args: any) => {
                 },
                 zoom: z,
                 visible,
-                opacity,
+                opacity: _opacity,
                 decodeParams: dParams,
                 decodeFunction: dFunction,
                 updateTriggers: {
                   decodeParams: dParams,
                   decodeFunction: dFunction,
-                },
+                }
               });
             }
             return null;
@@ -178,22 +179,11 @@ const Template: Story<LayerProps> = (args: any) => {
         }
       )
     ]
-  }, []);
+  }, [decodeFunction, decodeParams]);
 
   const handleViewportChange = useCallback((vw) => {
     setViewport(vw);
   }, []);
-
-  useEffect(() => {
-    const [layer] = DECK_LAYERS;
-    if (layer && typeof layer.setProps === 'function') {
-      layer.setProps({
-        decodeParams,
-        decodeFunction
-      });
-    }
-  }, [decodeParams, decodeFunction])
-
 
   return (
     <div
