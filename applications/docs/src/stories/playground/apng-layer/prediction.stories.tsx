@@ -293,6 +293,18 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
               }}
             >
               <Layer
+                id="protected-areas"
+                type="raster"
+                source={{
+                  type: 'raster',
+                  tiles: [
+                    'https://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png',
+                  ],
+                  maxzoom: 12,
+                  minzoom: 3,
+                }}
+              />
+              <Layer
                 {...args}
                 deck={DECK_LAYERS}
               />
