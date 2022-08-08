@@ -25,8 +25,6 @@ export default {
   },
 };
 
-type Timer = ReturnType<typeof setTimeout>
-
 const Template: Story<LayerProps> = (args: LayerProps) => {
   const [frame, setFrame] = useState(0);
   const [delay, setDelay] = useState(null);

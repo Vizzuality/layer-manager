@@ -91,7 +91,21 @@ Default.args = {
         type: 'fill',
         'source-layer': 'country_boundaries',
         paint: {
-          'fill-color': '#FF0',
+          'fill-color': [
+            'match',
+            ['get', 'region'],
+            'Africa',
+            '#fbb03b',
+            'Americas',
+            '#223b53',
+            'Europe',
+            '#e55e5e',
+            'Asia',
+            '#3bb2d0',
+            'Oceania',
+            '#ffcc00',
+            /* other */ '#ccc'
+            ],
         }
       },
       {
@@ -99,8 +113,8 @@ Default.args = {
         type: 'line',
         'source-layer': 'country_boundaries',
         paint: {
-          'line-color': '#F00',
-          'line-width': 10,
+          'line-color': '#000',
+          'line-width': 1,
         }
       }
     ]

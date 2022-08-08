@@ -61,7 +61,6 @@ const Template: Story<LayerProps> = (args: any) => {
       >
         {(map) => (
           <>
-
             <LayerManager
               map={map}
               plugin={PluginMapboxGl}

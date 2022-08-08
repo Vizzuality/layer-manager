@@ -1,14 +1,14 @@
 import type { ViewState, MapProps, FitBoundsOptions } from 'react-map-gl';
 
 export type Bounds = {
-  bbox: [number, number, number, number];
+  bbox: number[];
   options?: FitBoundsOptions;
   viewportOptions?: Partial<ViewState>;
 };
 
 export interface CustomMapProps extends MapProps {
   /** A function that returns the map instance */
-  children?: React.ReactNode;
+  children?: (map: any) => React.ReactNode;
 
   /** Custom css class for styling */
   className?: string;
