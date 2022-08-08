@@ -59,7 +59,7 @@ const Template: Story<LayerProps> = (args: any) => {
         mapboxAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
         onViewStateChange={handleViewportChange}
       >
-        {(map) => console.log(map.getStyle()) || (
+        {(map) => (
           <>
 
             <LayerManager
