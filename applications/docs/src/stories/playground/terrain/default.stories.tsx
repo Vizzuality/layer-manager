@@ -10,7 +10,9 @@ import LAYERS from './layers';
 
 // Map
 import Map from '../../../components/map';
-import { Source } from 'react-map-gl';
+import { Source as RMGLSource, Layer as RMGLLayer } from 'react-map-gl';
+import type { SkyLayer } from 'react-map-gl';
+
 
 const cartoProvider = new CartoProvider();
 
@@ -23,6 +25,16 @@ export default {
       }
     },
   },
+};
+
+const skyLayer: SkyLayer = {
+  id: 'sky',
+  type: 'sky',
+  paint: {
+    'sky-type': 'atmosphere',
+    'sky-atmosphere-sun': [0.0, 0.0],
+    'sky-atmosphere-sun-intensity': 15
+  }
 };
 
 const Template: Story<LayerProps> = (args: any) => {
@@ -73,7 +85,10 @@ const Template: Story<LayerProps> = (args: any) => {
               ))}
             </LayerManager>
 
-            <Source
+
+            <RMGLLayer {...skyLayer} />
+
+            <RMGLSource
               id="mapbox-dem"
               type="raster-dem"
               url="mapbox://mapbox.mapbox-terrain-dem-v1"

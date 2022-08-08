@@ -4,13 +4,40 @@ import GL from '@luma.gl/constants';
 import { DecodedLayer } from '@vizzuality/layer-manager-layers-deckgl';
 
 export const DECK_LAYER = [
+  // {
+  //   id: 'terrain-layer-deck',
+  //   type: 'deck',
+  //   source: {
+  //     parse: false,
+  //   },
+  //   render: {
+  //     parse: false,
+  //   },
+  //   deck: [
+  //     new MapboxLayer({
+  //       id: 'loss',
+  //       type: TerrainLayer,
+  //       minZoom: 0,
+  //       maxZoom: 23,
+  //       strategy: 'no-overlap',
+  //       elevationDecoder: {
+  //         rScaler: 6553.6,
+  //         gScaler: 25.6,
+  //         bScaler: 0.1,
+  //         offset: -10000
+  //       },
+  //       elevationData: `https://api.mapbox.com/v4/mapbox.terrain-rgb/{z}/{x}/{y}.png?access_token=${process.env.STORYBOOK_MAPBOX_API_TOKEN}`,
+  //       texture: `https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.png?access_token=${process.env.STORYBOOK_MAPBOX_API_TOKEN}`,
+  //       wireframe: false,
+  //       color: [255,255,255],
+  //     }),
+  //   ],
+  // },
   {
     id: 'loss',
     type: 'deck',
     source: {
       parse: false,
-      tiles:
-        'https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png',
     },
     render: {
       parse: false,
@@ -24,31 +51,34 @@ export const DECK_LAYER = [
         visible: true,
         opacity: 1,
         refinementStrategy: 'no-overlap',
-        decodeFunction: `// values for creating power scale, domain (input), and range (output)
-        float domainMin = 0.;
-        float domainMax = 255.;
-        float rangeMin = 0.;
-        float rangeMax = 255.;
-        float exponent = zoom < 13. ? 0.3 + (zoom - 3.) / 20. : 1.;
-        float intensity = color.r * 255.;
-        // get the min, max, and current values on the power scale
-        float minPow = pow(domainMin, exponent - domainMin);
-        float maxPow = pow(domainMax, exponent);
-        float currentPow = pow(intensity, exponent);
-        // get intensity value mapped to range
-        float scaleIntensity = ((currentPow - minPow) / (maxPow - minPow) * (rangeMax - rangeMin)) + rangeMin;
-        // a value between 0 and 255
-        alpha = zoom < 13. ? scaleIntensity / 255. : color.g;
-        float year = 2000.0 + (color.b * 255.);
-        // map to years
-        if (year >= startYear && year <= endYear && year >= 2001.) {
-          color.r = 220. / 255.;
-          color.g = (72. - zoom + 102. - 3. * scaleIntensity / zoom) / 255.;
-          color.b = (33. - zoom + 153. - intensity / zoom) / 255.;
-        } else {
-          alpha = 0.;
-        }
-              `,
+        decodeFunction: `
+          // values for creating power scale, domain (input), and range (output)
+          float domainMin = 0.;
+          float domainMax = 255.;
+          float rangeMin = 0.;
+          float rangeMax = 255.;
+          float exponent = zoom < 13. ? 0.3 + (zoom - 3.) / 20. : 1.;
+          float intensity = color.r * 255.;
+          // get the min, max, and current values on the power scale
+          float minPow = pow(domainMin, exponent - domainMin);
+          float maxPow = pow(domainMax, exponent);
+          float currentPow = pow(intensity, exponent);
+          // get intensity value mapped to range
+          float scaleIntensity = ((currentPow - minPow) / (maxPow - minPow) * (rangeMax - rangeMin)) + rangeMin;
+          // a value between 0 and 255
+          alpha = zoom < 13. ? scaleIntensity / 255. : color.g;
+          float year = 2000.0 + (color.b * 255.);
+          // map to years
+          if (year >= startYear && year <= endYear && year >= 2001.) {
+            color.r = 220. / 255.;
+            color.g = (72. - zoom + 102. - 3. * scaleIntensity / zoom) / 255.;
+            color.b = (33. - zoom + 153. - intensity / zoom) / 255.;
+          } else {
+            alpha = 0.;
+          }
+        `,
+        minZoom: 3,
+        maxZoom: 12,
         decodeParams: {
           startYear: 2001,
           endYear: 2017,
@@ -93,8 +123,6 @@ export const DECK_LAYER = [
           }
           return null;
         },
-        minZoom: 3,
-        maxZoom: 12,
       }),
     ],
   },
