@@ -137,9 +137,10 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
         bounds={bounds}
         minZoom={minZoom}
         maxZoom={maxZoom}
-        viewport={viewport}
-        mapboxApiAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
-        onMapViewportChange={handleViewportChange}
+        viewState={viewport}
+        mapStyle="mapbox://styles/mapbox/light-v9"
+        mapboxAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
+        onViewStateChange={handleViewportChange}
         onClick={() => {
           const f = Math.floor(Math.random() * 22);
           videoCollectionPlayer.current.setCurrentTime(f);

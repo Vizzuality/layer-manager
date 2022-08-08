@@ -131,7 +131,7 @@ const Template: Story<LayerProps> = (args: any) => {
   }, []);
 
   const handleMouseMove = useCallback((e) => {
-    setCircleCenter(e.lngLat);
+    setCircleCenter(e.lngLat.toArray());
   }, []);
 
   return (
@@ -149,9 +149,10 @@ const Template: Story<LayerProps> = (args: any) => {
         bounds={bounds}
         minZoom={minZoom}
         maxZoom={maxZoom}
-        viewport={viewport}
-        mapboxApiAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
-        onMapViewportChange={handleViewportChange}
+        viewState={viewport}
+        mapStyle="mapbox://styles/mapbox/light-v9"
+        mapboxAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
+        onViewStateChange={handleViewportChange}
         onMouseMove={handleMouseMove}
       >
         {(map) => (

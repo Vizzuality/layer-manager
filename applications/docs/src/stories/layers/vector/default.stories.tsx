@@ -37,18 +37,20 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
       }}
     >
       <Map
+        id='map'
         bounds={bounds}
         minZoom={minZoom}
         maxZoom={maxZoom}
-        viewport={viewport}
         interactiveLayerIds={interactiveLayerIds}
         onClick={(e) => {
           if (e?.features) {
             console.log(e.features)
           }
         }}
-        mapboxApiAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
-        onMapViewportChange={handleViewportChange}
+        viewState={viewport}
+        mapStyle="mapbox://styles/mapbox/light-v9"
+        mapboxAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
+        onViewStateChange={handleViewportChange}
       >
         {(map) => (
           <LayerManager
