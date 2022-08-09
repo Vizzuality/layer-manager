@@ -216,7 +216,7 @@ class PluginMapboxGL {
     });
 
     // set for all decode layers that don't exist inside mapStyle()
-    const deckLayers = allLayers.filter((l) => !!l.type === 'deck');
+    const deckLayers = allLayers.filter((l) => l.type === 'deck');
 
     if (deckLayers && this.map) {
       deckLayers.forEach((layerModel) => {
