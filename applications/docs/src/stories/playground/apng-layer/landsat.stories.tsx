@@ -25,17 +25,18 @@ export default {
   },
 };
 
-type Timer = ReturnType<typeof setTimeout>
-
 const Template: Story<LayerProps> = (args: LayerProps) => {
   const [frame, setFrame] = useState(0);
   const [delay, setDelay] = useState(null);
 
   const minZoom = 0;
   const maxZoom = 20;
-  const [viewport, setViewport] = useState({});
+  const [viewport, setViewport] = useState();
   const [bounds] = useState({
     bbox: [17.596292980940888, -14.697003230863928, 17.769759604455118, -14.603349846815476],
+    options: {
+      duration: 0,
+    }
   });
 
   useInterval(() => {
@@ -179,14 +180,18 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
           {1988 + frame}
         </span>
       </div>
+
       <Map
         bounds={bounds}
         minZoom={minZoom}
         maxZoom={maxZoom}
-        viewport={viewport}
-        mapboxApiAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
-        onMapViewportChange={handleViewportChange}
+        viewState={viewport}
         mapStyle="mapbox://styles/layer-manager/ck53taxwt06mu1csgap96x9rz"
+        mapboxAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
+        initialViewState={{
+          bounds: [17.596292980940888, -14.697003230863928, 17.769759604455118, -14.603349846815476],
+        }}
+        onViewStateChange={handleViewportChange}
       >
         {(map) => (
           <>

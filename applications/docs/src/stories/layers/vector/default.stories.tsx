@@ -37,18 +37,20 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
       }}
     >
       <Map
+        id='map'
         bounds={bounds}
         minZoom={minZoom}
         maxZoom={maxZoom}
-        viewport={viewport}
         interactiveLayerIds={interactiveLayerIds}
         onClick={(e) => {
           if (e?.features) {
             console.log(e.features)
           }
         }}
-        mapboxApiAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
-        onMapViewportChange={handleViewportChange}
+        viewState={viewport}
+        mapStyle="mapbox://styles/mapbox/light-v9"
+        mapboxAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
+        onViewStateChange={handleViewportChange}
       >
         {(map) => (
           <LayerManager
@@ -89,7 +91,21 @@ Default.args = {
         type: 'fill',
         'source-layer': 'country_boundaries',
         paint: {
-          'fill-color': '#FF0',
+          'fill-color': [
+            'match',
+            ['get', 'region'],
+            'Africa',
+            '#fbb03b',
+            'Americas',
+            '#223b53',
+            'Europe',
+            '#e55e5e',
+            'Asia',
+            '#3bb2d0',
+            'Oceania',
+            '#ffcc00',
+            /* other */ '#ccc'
+            ],
         }
       },
       {
@@ -97,8 +113,8 @@ Default.args = {
         type: 'line',
         'source-layer': 'country_boundaries',
         paint: {
-          'line-color': '#F00',
-          'line-width': 10,
+          'line-color': '#000',
+          'line-width': 1,
         }
       }
     ]

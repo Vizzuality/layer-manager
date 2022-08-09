@@ -1,254 +1,171 @@
-import {
-  useEffect, useState, useRef, useCallback, FC,
-  ReactNode,
-} from 'react';
-import { useDebouncedCallback } from 'use-debounce';
+import { useEffect, useState, useRef, useCallback, FC } from 'react';
+
+import ReactMapGL, { ViewState, ViewStateChangeEvent, useMap } from 'react-map-gl';
 
 import cx from 'classnames';
 
 import isEmpty from 'lodash/isEmpty';
 
-import ReactMapGL, {
-  FlyToInterpolator,
-  MapRef,
-  TRANSITION_EVENTS,
-  ViewportProps,
-} from 'react-map-gl';
-import { InteractiveMapProps } from 'react-map-gl/src/components/interactive-map';
+import { useDebouncedCallback } from 'use-debounce';
 
-import { fitBounds } from '@math.gl/web-mercator';
+// * If you plan to use Mapbox (and not a fork):
+// * 1) remove maplibre-gl,
+// * 2) install Mapbox v1/v2 (v2 requires token)
+// * 3) if you installed v2: provide the token to the map through the `mapboxAccessToken` property
+// * 4) remove `mapLib` property
 
-import { easeCubic } from 'd3-ease';
+import { DEFAULT_VIEW_STATE } from './constants';
+import type { CustomMapProps } from './types';
 
-export interface MapProps extends InteractiveMapProps {
-  /** A function that returns the map instance */
-  children?: (map: MapRef) => ReactNode;
-
-  /** Custom css class for styling */
-  className?: string;
-
-  /** An object that defines the viewport
-   * @see https://uber.github.io/react-map-gl/#/Documentation/api-reference/interactive-map?section=initialization
-   */
-  viewport?: Partial<ViewportProps>;
-
-  /** An object that defines the bounds */
-  bounds?: {
-    bbox: number[];
-    options?: Record<string, unknown>;
-    viewportOptions?: Partial<ViewportProps>;
-  };
-
-  /** A function that exposes when the map is mounted.
-   * It receives and object with the `mapRef` and `mapContainerRef` reference. */
-  onMapReady?: ({ map, mapContainer }) => void;
-
-  /** A function that exposes when the map is loaded.
-   * It receives and object with the `mapRef` and `mapContainerRef` reference. */
-  onMapLoad?: ({ map, mapContainer }) => void;
-
-  /** A function that exposes the viewport */
-  onMapViewportChange?: (viewport: Partial<ViewportProps>) => void;
-}
-
-const DEFAULT_VIEWPORT = {
-  zoom: 2,
-  latitude: 0,
-  longitude: 0,
-};
-
-export const Map: FC<MapProps> = ({
-  mapboxApiAccessToken,
+export const CustomMap: FC<CustomMapProps> = ({
+  // * if no id is passed, react-map-gl will store the map reference in a 'default' key:
+  // * https://github.com/visgl/react-map-gl/blob/ecb27c8d02db7dd09d8104e8c2011bda6aed4b6f/src/components/use-map.tsx#L18
+  id = 'default',
   children,
   className,
-  viewport,
+  viewState = {},
+  initialViewState,
   bounds,
   onMapReady,
   onMapLoad,
-  onMapViewportChange,
+  onViewStateChange,
   dragPan,
   dragRotate,
   scrollZoom,
-  touchZoom,
-  touchRotate,
   doubleClickZoom,
-  width = '100%',
-  height = '100%',
-  getCursor,
   ...mapboxProps
-}: MapProps) => {
+}: CustomMapProps) => {
   /**
    * REFS
    */
-  const mapRef = useRef(null);
+  const { [id]: mapRef } = useMap();
   const mapContainerRef = useRef(null);
 
   /**
    * STATE
    */
-  const [mapViewport, setViewport] = useState({
-    ...DEFAULT_VIEWPORT,
-    ...viewport,
+  const [localViewState, setLocalViewState] = useState<Partial<ViewState>>(!initialViewState && {
+    ...DEFAULT_VIEW_STATE,
+    ...viewState,
   });
-  const [flying, setFlight] = useState(false);
+  const [isFlying, setFlying] = useState(false);
   const [ready, setReady] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
   /**
    * CALLBACKS
    */
-  const handleLoad = useCallback(() => {
-    setLoaded(true);
-    if (onMapLoad) onMapLoad({ map: mapRef.current, mapContainer: mapContainerRef.current });
-  }, [onMapLoad]);
-
-  const debouncedOnMapViewportChange = useDebouncedCallback((v) => {
-    onMapViewportChange(v);
+  const debouncedViewStateChange = useDebouncedCallback((_viewState: ViewState) => {
+    onViewStateChange(_viewState);
   }, 250);
 
-  const handleViewportChange = useCallback(
-    (v) => {
-      setViewport(v);
-      debouncedOnMapViewportChange(v);
-    },
-    [debouncedOnMapViewportChange],
-  );
-
-  const handleResize = useCallback(
-    (v) => {
-      const newViewport = {
-        ...mapViewport,
-        ...v,
-      };
-
-      setViewport(newViewport);
-      debouncedOnMapViewportChange(newViewport);
-    },
-    [mapViewport, debouncedOnMapViewportChange],
-  );
+  const handleLoad = useCallback(() => {
+    setLoaded(true);
+    if (onMapLoad) onMapLoad({ map: mapRef, mapContainer: mapContainerRef.current });
+  }, [onMapLoad, mapRef]);
 
   const handleFitBounds = useCallback(() => {
-    if (!ready) return null;
-    const { bbox, options = {}, viewportOptions = {} } = bounds;
-    const { transitionDuration = 0 } = viewportOptions;
+    if (!bounds) return null;
+    const { bbox, options } = bounds;
 
-    if (
-      mapContainerRef.current.offsetWidth <= 0
-      || mapContainerRef.current.offsetHeight <= 0
-    ) {
-      // eslint-disable-next-line no-console
-      console.error("mapContainerRef doesn't have dimensions");
-      return null;
-    }
+    // enabling fly mode avoids the map to be interrupted during the bounds transition
+    setFlying(true);
 
-    const { longitude, latitude, zoom } = fitBounds({
-      width: mapContainerRef.current.offsetWidth,
-      height: mapContainerRef.current.offsetHeight,
-      bounds: [
+    mapRef.fitBounds(
+      [
         [bbox[0], bbox[1]],
         [bbox[2], bbox[3]],
       ],
-      ...options,
-    });
+      options
+    );
+  }, [bounds, mapRef]);
 
-    const newViewport = {
-      longitude,
-      latitude,
-      zoom,
-      transitionDuration,
-      transitionInterruption: TRANSITION_EVENTS.UPDATE,
-      ...viewportOptions,
-    };
-
-    setFlight(true);
-    setViewport((prevViewport) => ({
-      ...prevViewport,
-      ...newViewport,
-    }));
-    debouncedOnMapViewportChange(newViewport);
-
-    return setTimeout(() => {
-      setFlight(false);
-    }, +transitionDuration);
-  }, [ready, bounds, debouncedOnMapViewportChange]);
-
-  const handleGetCursor = useCallback(({ isHovering, isDragging }) => {
-    if (isHovering) return 'pointer';
-    if (isDragging) return 'grabbing';
-    return 'grab';
-  }, []);
+  const handleMapMove = useCallback(
+    ({ viewState: _viewState }: ViewStateChangeEvent) => {
+      setLocalViewState(_viewState);
+      debouncedViewStateChange(_viewState);
+    },
+    [debouncedViewStateChange]
+  );
 
   /**
    * EFFECTS
    */
   useEffect(() => {
     setReady(true);
-    if (onMapReady) onMapReady({ map: mapRef.current, mapContainer: mapContainerRef.current });
-  }, [onMapReady]);
+    // ? returning the map reference now is less useful as the reference is now accessible everywhere via useMap hook
+    if (onMapReady) onMapReady({ map: mapRef, mapContainer: mapContainerRef.current });
+  }, [onMapReady, mapRef]);
 
   useEffect(() => {
-    if (!isEmpty(bounds) && !!bounds.bbox && bounds.bbox.every((b) => !!b)) {
+    if (loaded && !isEmpty(bounds) && !!bounds.bbox && bounds.bbox.every((b) => !!b)) {
       handleFitBounds();
     }
-  }, [bounds, handleFitBounds]);
+  }, [loaded, bounds, handleFitBounds]);
 
   useEffect(() => {
-    setViewport((prevViewportState) => ({
-      ...prevViewportState,
-      ...viewport,
+    setLocalViewState((prevViewState) => ({
+      ...prevViewState,
+      ...viewState,
     }));
-  }, [viewport]);
+  }, [viewState]);
+
+  useEffect(() => {
+    if (!bounds) return null;
+
+    const { options } = bounds;
+    const animationDuration = (options?.duration as number) || 0;
+    let timeoutId: number = null;
+
+    if (isFlying) {
+      timeoutId = window.setTimeout(() => {
+        setFlying(false);
+      }, animationDuration);
+    }
+
+    return () => {
+      if (timeoutId) {
+        window.clearInterval(timeoutId);
+      }
+    };
+  }, [bounds, isFlying]);
 
   return (
     <div
       ref={mapContainerRef}
-      className={cx({
-        'relative w-full h-full z-0': true,
-        [className]: !!className,
-      })}
       style={{
         position: 'relative',
         width: '100%',
         height: '100%',
         zIndex: 0,
       }}
+      className={cx({
+        'relative w-full h-full z-0': true,
+        [className]: !!className,
+      })}
     >
       <ReactMapGL
-        ref={(_map) => {
-          if (_map) {
-            mapRef.current = _map.getMap();
-          }
-        }}
-        mapboxApiAccessToken={mapboxApiAccessToken}
-        // CUSTOM PROPS FROM REACT MAPBOX API
-        {...mapboxProps}
-        // VIEWPORT
-        {...mapViewport}
-        width={width}
-        height={height}
-        // INTERACTIVITY
-        dragPan={!flying && dragPan}
-        dragRotate={!flying && dragRotate}
-        scrollZoom={!flying && scrollZoom}
-        touchZoom={!flying && touchZoom}
-        touchRotate={!flying && touchRotate}
-        doubleClickZoom={!flying && doubleClickZoom}
-        // DEFAULT FUNC IMPLEMENTATIONS
-        onViewportChange={handleViewportChange}
-        onResize={handleResize}
+        id={id}
+        mapStyle="mapbox://styles/mapbox/streets-v11"
         onLoad={handleLoad}
-        getCursor={getCursor || handleGetCursor}
-        transitionInterpolator={new FlyToInterpolator()}
-        transitionEasing={easeCubic}
+        dragPan={!isFlying && dragPan}
+        dragRotate={!isFlying && dragRotate}
+        scrollZoom={!isFlying && scrollZoom}
+        doubleClickZoom={!isFlying && doubleClickZoom}
+        {...(process.env.NODE_ENV === 'test' && { testMode: true })}
+        initialViewState={initialViewState || localViewState}
+        {...localViewState}
+        {...mapboxProps}
+        onMove={handleMapMove}
       >
-        {ready
-          && loaded
-          && !!mapRef.current
-          && typeof children === 'function'
-          && children(mapRef.current)}
+        {ready &&
+          loaded &&
+          !!mapRef &&
+          typeof children === 'function' &&
+          children(mapRef?.getMap())}
       </ReactMapGL>
     </div>
   );
 };
 
-export default Map;
+export default CustomMap;

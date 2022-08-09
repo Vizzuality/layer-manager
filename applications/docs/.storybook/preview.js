@@ -1,3 +1,4 @@
+import { MapProvider } from 'react-map-gl';
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
@@ -23,5 +24,13 @@ export const parameters = {
         ['Vector', 'Geojson', 'Raster']
       ],
     },
-  }
+  },
 }
+
+export const decorators = [
+  (MapStory) => (
+    <MapProvider>
+      <MapStory />
+    </MapProvider>
+  ),
+];
