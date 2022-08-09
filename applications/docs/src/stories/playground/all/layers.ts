@@ -3,36 +3,7 @@ import { MapboxLayer } from '@deck.gl/mapbox';
 import GL from '@luma.gl/constants';
 import { DecodedLayer } from '@vizzuality/layer-manager-layers-deckgl';
 
-export const DECK_LAYER = [
-  // {
-  //   id: 'terrain-layer-deck',
-  //   type: 'deck',
-  //   source: {
-  //     parse: false,
-  //   },
-  //   render: {
-  //     parse: false,
-  //   },
-  //   deck: [
-  //     new MapboxLayer({
-  //       id: 'loss',
-  //       type: TerrainLayer,
-  //       minZoom: 0,
-  //       maxZoom: 23,
-  //       strategy: 'no-overlap',
-  //       elevationDecoder: {
-  //         rScaler: 6553.6,
-  //         gScaler: 25.6,
-  //         bScaler: 0.1,
-  //         offset: -10000
-  //       },
-  //       elevationData: `https://api.mapbox.com/v4/mapbox.terrain-rgb/{z}/{x}/{y}.png?access_token=${process.env.STORYBOOK_MAPBOX_API_TOKEN}`,
-  //       texture: `https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}@2x.png?access_token=${process.env.STORYBOOK_MAPBOX_API_TOKEN}`,
-  //       wireframe: false,
-  //       color: [255,255,255],
-  //     }),
-  //   ],
-  // },
+export const LAYERS = [
   {
     id: 'loss',
     type: 'deck',
@@ -126,9 +97,6 @@ export const DECK_LAYER = [
       }),
     ],
   },
-];
-
-export const LAYERS = [
   // RASTER LAYER
   {
     id: 'gain',
@@ -254,8 +222,6 @@ export const LAYERS = [
       ],
     },
   },
-  // DECODED RASTER LAYER
-  ...DECK_LAYER,
 ];
 
 export default LAYERS;
