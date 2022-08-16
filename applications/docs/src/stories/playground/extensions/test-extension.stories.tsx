@@ -28,7 +28,7 @@ export default {
     tileUrl: {
       name: 'tileUrl',
       type: { name: 'Tile URL', required: true },
-      defaultValue: 'https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png',
+      defaultValue: 'https://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png',
       control: {
         type: 'text'
       },
@@ -53,17 +53,27 @@ export default {
   },
 };
 
-class LossExtension extends LayerExtension {
+class TestExtension extends LayerExtension {
   getShaders() {
     return {
       inject: {
+        'vs:#decl': `
+          varying vec4 vTexWorld;
+          varying vec3 vTexWorldCommon;
+        `,
+        'vs:#main-end': `
+          vTexWorld = project_position_to_clipspace(positions, positions64Low, vec3(0.0), geometry.position);
+          vTexWorldCommon = positions.xyz;
+        `,
         'fs:#decl': `
+          varying vec4 vTexWorld;
+          varying vec3 vTexWorldCommon;
           uniform float zoom;
           uniform float startYear;
           uniform float endYear;
         `,
 
-        'fs:DECKGL_FILTER_COLOR': `
+        'fs:#main-end': `
           ${this.props.decodeFunction}
         `
       }
@@ -148,7 +158,7 @@ const Template: Story<LayerProps> = (args: any) => {
                 opacity: _opacity,
                 decodeParams: dParams,
                 decodeFunction: dFunction,
-                extensions: [new LossExtension()],
+                extensions: [new TestExtension()],
                 updateTriggers: {
                   decodeParams: dParams,
                   decodeFunction: dFunction,
@@ -204,75 +214,25 @@ const Template: Story<LayerProps> = (args: any) => {
   );
 };
 
-export const DecodedExtension = Template.bind({});
-DecodedExtension.args = {
+export const TestVarying = Template.bind({});
+TestVarying.args = {
   id: 'deck-loss-raster-decode',
   type: 'deck',
-  decodeFunction: `// values for creating power scale, domain (input), and range (output)
-  float domainMin = 0.;
-  float domainMax = 255.;
-  float rangeMin = 0.;
-  float rangeMax = 255.;
-
-  float exponent = zoom < 13. ? 0.3 + (zoom - 3.) / 20. : 1.;
-  float intensity = color.r * 255.;
-
-  // get the min, max, and current values on the power scale
-  float minPow = pow(domainMin, exponent - domainMin);
-  float maxPow = pow(domainMax, exponent);
-  float currentPow = pow(intensity, exponent);
-
-  // get intensity value mapped to range
-  float scaleIntensity = ((currentPow - minPow) / (maxPow - minPow) * (rangeMax - rangeMin)) + rangeMin;
-  // a value between 0 and 255
-  color.a = zoom < 13. ? scaleIntensity / 255. : color.g;
-
-  float year = 2000.0 + (color.b * 255.);
-
-  // map to years
-  if (year >= startYear && year <= endYear && year >= 2001.) {
-    color.r = 220. / 255.;
-    color.g = (72. - zoom + 102. - 3. * scaleIntensity / zoom) / 255.;
-    color.b = (33. - zoom + 153. - intensity / zoom) / 255.;
-  } else {
-    discard;
-  }`
+  decodeFunction: `// decode function
+  vec3 color = mix(bitmapColor.rgb, vec3(1.0,0.0,0.0), vTexWorld.x);
+  // vec3 color = mix(bitmapColor.rgb, vec3(1.0,0.0,0.0), (abs(vTexWorldCommon.x / 180.)));
+  gl_FragColor = vec4(color, bitmapColor.a);
+  `
 };
 
-export const LossByYear = Template.bind({});
-LossByYear.args = {
-  id: 'deck-loss-by-year-raster-decode',
+export const TestStep = Template.bind({});
+TestStep.args = {
+  id: 'deck-loss-raster-decode',
   type: 'deck',
-  decodeFunction: `// values for creating power scale, domain (input), and range (output)
-  float domainMin = 0.;
-  float domainMax = 255.;
-  float rangeMin = 0.;
-  float rangeMax = 255.;
-
-  float exponent = zoom < 13. ? 0.3 + (zoom - 3.) / 20. : 1.;
-  float intensity = color.r * 255.;
-
-  // get the min, max, and current values on the power scale
-  float minPow = pow(domainMin, exponent - domainMin);
-  float maxPow = pow(domainMax, exponent);
-  float currentPow = pow(intensity, exponent);
-
-  // get intensity value mapped to range
-  float scaleIntensity = ((currentPow - minPow) / (maxPow - minPow) * (rangeMax - rangeMin)) + rangeMin;
-  // a value between 0 and 255
-  color.a = zoom < 13. ? scaleIntensity / 255. : color.g;
-
-  float year = 2000.0 + (color.b * 255.);
-  float totalYears = 2017. - 2001.;
-  float yearFraction = (year - 2001.) / totalYears;
-
-  // map to years
-  if (year >= startYear && year <= endYear && year >= 2001.) {
-    float b = (33. - zoom + 153. - intensity / zoom) / 255.;
-    color.r = 220. / 255.;
-    color.g = (72. - zoom + 102. - 3. * scaleIntensity / zoom) / 255.;
-    color.b = mix(b, 0., yearFraction);
-  } else {
-    discard;
-  }`
+  decodeFunction: `// decode function
+  float step = step(0., vTexWorldCommon.y);
+  vec3 color = mix(bitmapColor.rgb, vec3(1.0,0.0,0.0), step);
+  gl_FragColor = vec4(color, bitmapColor.a);
+  `
 };
+
