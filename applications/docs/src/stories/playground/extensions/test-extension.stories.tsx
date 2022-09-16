@@ -58,19 +58,36 @@ class TestExtension extends LayerExtension {
     return {
       inject: {
         'vs:#decl': `
-          varying vec4 vTexWorld;
-          varying vec3 vTexWorldCommon;
+          uniform float u_mouseLng;
+          uniform float u_mouseLat;
+          varying vec4 v_texWorld;
+          varying vec3 v_texWorldCommon;
+          varying vec4 v_mousePosition;
+          varying vec3 v_mousePositionCommon;
         `,
         'vs:#main-end': `
-          vTexWorld = project_position_to_clipspace(positions, positions64Low, vec3(0.0), geometry.position);
-          vTexWorldCommon = positions.xyz;
+          v_texWorld = project_position_to_clipspace(positions, positions64Low, vec3(0.0), geometry.position);
+          v_texWorldCommon = positions.xyz;
+          v_mousePosition = project_position_to_clipspace(vec3(u_mouseLng, u_mouseLat, 0.0), positions64Low, vec3(0.0));
+          v_mousePositionCommon = vec3(u_mouseLng, u_mouseLat, 0.0);
         `,
         'fs:#decl': `
-          varying vec4 vTexWorld;
-          varying vec3 vTexWorldCommon;
           uniform float zoom;
           uniform float startYear;
           uniform float endYear;
+          uniform float u_mouseLng;
+          uniform float u_mouseLat;
+          varying vec4 v_texWorld;
+          varying vec3 v_texWorldCommon;
+          varying vec4 v_mousePosition;
+
+          float circle(vec2 pt, vec2 center, float radius, float edge_thickness){
+            vec2 p = pt - center;
+            float len = length(p);
+            float result = 1.0-smoothstep(radius-edge_thickness, radius, len);
+
+            return result;
+          }
         `,
 
         'fs:#main-end': `
@@ -83,7 +100,9 @@ class TestExtension extends LayerExtension {
   updateState({ props, changeFlags }) {
     const {
       decodeParams = {},
-      zoom
+      zoom,
+      u_mouseLng,
+      u_mouseLat,
     } = props;
 
     if (changeFlags.extensionsChanged || changeFlags.somethingChanged.decodeFunction) {
@@ -94,8 +113,11 @@ class TestExtension extends LayerExtension {
     }
 
     for (const model of this.getModels()) {
+      console.log(u_mouseLat, u_mouseLng);
       model.setUniforms({
         zoom,
+        u_mouseLng,
+        u_mouseLat,
         ...decodeParams,
       });
     }
@@ -108,6 +130,10 @@ const Template: Story<LayerProps> = (args: any) => {
   const minZoom = 2;
   const maxZoom = 20;
   const [viewport, setViewport] = useState({});
+  const [mouseLngLat, setMouseLngLat] = useState({
+    lng: 0,
+    lat: 0
+  });
 
   const [bounds] = useState(null);
 
@@ -124,12 +150,16 @@ const Template: Story<LayerProps> = (args: any) => {
           refinementStrategy: 'no-overlap',
           decodeFunction,
           decodeParams,
+          u_mouseLng: mouseLngLat.lng,
+          u_mouseLat: mouseLngLat.lat,
           renderSubLayers: (sl) => {
             const {
               id: subLayerId,
               data,
               tile,
               visible,
+              u_mouseLng,
+              u_mouseLat,
               opacity: _opacity,
               decodeParams: dParams,
               decodeFunction: dFunction,
@@ -156,6 +186,8 @@ const Template: Story<LayerProps> = (args: any) => {
                 zoom: z,
                 visible,
                 opacity: _opacity,
+                u_mouseLng,
+                u_mouseLat,
                 decodeParams: dParams,
                 decodeFunction: dFunction,
                 extensions: [new TestExtension()],
@@ -172,11 +204,17 @@ const Template: Story<LayerProps> = (args: any) => {
         }
       )
     ]
-  }, [decodeFunction, decodeParams]);
+  }, [decodeFunction, decodeParams, mouseLngLat]);
 
   const handleViewportChange = useCallback((vw) => {
     setViewport(vw);
   }, []);
+
+  const handleMouseMove = useCallback((e) => {
+    if (e.lngLat) {
+      setMouseLngLat(e.lngLat);
+    }
+  } ,[]);
 
   return (
     <div
@@ -194,6 +232,7 @@ const Template: Story<LayerProps> = (args: any) => {
         mapStyle="mapbox://styles/mapbox/light-v9"
         mapboxAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
         onViewStateChange={handleViewportChange}
+        onMouseMove={handleMouseMove}
       >
         {(map) => (
           <LayerManager
@@ -219,8 +258,8 @@ TestVarying.args = {
   id: 'deck-loss-raster-decode',
   type: 'deck',
   decodeFunction: `// decode function
-  vec3 color = mix(bitmapColor.rgb, vec3(1.0,0.0,0.0), vTexWorld.x);
-  // vec3 color = mix(bitmapColor.rgb, vec3(1.0,0.0,0.0), (abs(vTexWorldCommon.x / 180.)));
+  vec3 color = mix(bitmapColor.rgb, vec3(1.0,0.0,0.0), v_texWorld.x);
+  // vec3 color = mix(bitmapColor.rgb, vec3(1.0,0.0,0.0), (abs(v_texWorldCommon.x / 180.)));
   gl_FragColor = vec4(color, bitmapColor.a);
   `
 };
@@ -230,9 +269,22 @@ TestStep.args = {
   id: 'deck-loss-raster-decode',
   type: 'deck',
   decodeFunction: `// decode function
-  float step = step(0., vTexWorldCommon.y);
+  float step = step(0., v_texWorldCommon.y);
   vec3 color = mix(bitmapColor.rgb, vec3(1.0,0.0,0.0), step);
   gl_FragColor = vec4(color, bitmapColor.a);
   `
 };
+
+export const TestCircleMovement = Template.bind({});
+TestCircleMovement.args = {
+  id: 'deck-loss-raster-decode',
+  type: 'deck',
+  decodeFunction: `// decode function
+  vec3 color = bitmapColor.rgb * circle(v_mousePosition.xy, v_mousePosition.xy, 0.5, 0.002);
+  gl_FragColor = vec4(color, bitmapColor.a);
+  // gl_FragColor = vec4(v_mousePosition.x, v_mousePosition.y, 0.0, bitmapColor.a);
+
+  `
+};
+
 

@@ -169,7 +169,7 @@ const Template: Story<LayerProps> = (args: any) => {
         minZoom={minZoom}
         maxZoom={maxZoom}
         viewState={viewport}
-        mapStyle="mapbox://styles/mapbox/light-v9"
+        mapStyle="mapbox://styles/layer-manager/cl7stzzqj004t14lfz0mhbkve"
         mapboxAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
         onViewStateChange={handleViewportChange}
       >
