@@ -234,8 +234,8 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
 
 
 
-export const Kigali = Template.bind({});
-Kigali.args = {
+export const Tsaratanana = Template.bind({});
+Tsaratanana.args = {
   id: 'kigali-layer',
   type: 'deck',
   source: {
