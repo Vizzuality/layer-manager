@@ -26,6 +26,10 @@ export default {
 };
 
 const Template: Story<LayerProps> = (args: LayerProps) => {
+  const [biodiversityIntactnessOpacity, setBiodiversityIntactnessOpacity] = useState(1);
+  const [humanFootprintOpacity, setHumanFootprintOpacity] = useState(1);
+
+
   const [frame, setFrame] = useState(0);
   const [delay, setDelay] = useState(null);
   const minZoom = 0;
@@ -40,7 +44,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
 
   useInterval(() => {
     // 2017-2020
-    const f = (frame === 3 - 1) ? 0 :  frame + 1;
+    const f = (frame === 4 - 1) ? 0 :  frame + 1;
 
     setFrame(f);
   }, delay);
@@ -150,6 +154,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
         height: '500px',
       }}
     >
+      {/* Timeline */}
       <div
         style={{
           position: 'absolute',
@@ -167,7 +172,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
         <button
           type='button'
           onClick={() => {
-            setDelay(delay === null ? 200 : null);
+            setDelay(delay === null ? 1000 : null);
           }}
         >
           {!delay && 'Play'}
@@ -186,6 +191,43 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
         <span>
           {2017 + frame}
         </span>
+      </div>
+
+            {/* Layers */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          background: '#FEFEFE',
+          color: '#000',
+          padding: '10px',
+          zIndex: 10,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+        }}
+      >
+        <div>
+          <label htmlFor='#loss-layer'>Biodiversity Intactness</label>
+          <input
+            type="checkbox"
+            checked={!!biodiversityIntactnessOpacity}
+            onChange={(e) => {
+              setBiodiversityIntactnessOpacity(e.target.checked ? 1 : 0);
+            }}
+          />
+        </div>
+        <div>
+          <label htmlFor='#loss-layer'>Human Footprint</label>
+          <input
+            type="checkbox"
+            checked={!!humanFootprintOpacity}
+            onChange={(e) => {
+              setHumanFootprintOpacity(e.target.checked ? 1 : 0);
+            }}
+          />
+        </div>
       </div>
 
 
@@ -219,6 +261,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
                     'https://storage.googleapis.com/geo-ai/Redes/Tiles/Kigali/BII/{z}/{x}/{y}.png'
                   ]
                 }}
+                opacity={biodiversityIntactnessOpacity}
               />
               <Layer
                 id= 'human-footprint'
@@ -229,6 +272,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
                     'https://storage.googleapis.com/geo-ai/Redes/Tiles/Kigali/HFC/{z}/{x}/{y}.png'
                   ]
                 }}
+                opacity={humanFootprintOpacity}
               />
               <Layer
                 {...args}
