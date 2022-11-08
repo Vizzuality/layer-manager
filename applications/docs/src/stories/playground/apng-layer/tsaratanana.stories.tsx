@@ -26,15 +26,17 @@ export default {
 };
 
 const Template: Story<LayerProps> = (args: LayerProps) => {
-  const [biodiversityIntactnessOpacity, setBiodiversityIntactnessOpacity] = useState(1);
+  const [biiOpacity, setBiiOpacity] = useState(1);
+  const [biiChangeOpacity, setHumanFootprintOpacity] = useState(1);
+
 
   const [frame, setFrame] = useState(0);
   const [delay, setDelay] = useState(null);
-  const minZoom = 0;
-  const maxZoom = 20;
+  const minZoom = 11;
+  const maxZoom = 14;
   const [viewport, setViewport] = useState({});
   const [bounds] = useState({
-    bbox: [48.7518310546875, -14.077973196671586, 49.04846191406249, -13.755392488822052],
+    bbox: [48.69140625000001,-14.093957177836236,49.04296875,-13.752724664396975],
     options: {
       duration: 0,
     }
@@ -137,8 +139,96 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
           extent: bounds.bbox,
         }
       ),
+      new MapboxLayer(
+        {
+          id: `BII-animated`,
+          type: TileLayer,
+          frame,
+          getPolygonOffset: () => {
+            return [0, -50];
+          },
+
+
+          getTileData: (tile) => {
+            const { x, y, z, signal } = tile;
+            const url = `https://storage.googleapis.com/geo-ai/Redes/Tiles/Tsaratanana/BII/APNGs/${z}/${x}/${y}.png`;
+            const response = fetch(url, { signal });
+
+            if (signal.aborted) {
+              return null;
+            }
+
+            return response
+              .then((res) => res.arrayBuffer())
+              .then((buffer) => {
+                const apng = parseAPNG(buffer);
+                if (apng instanceof Error) {
+                  throw apng;
+                }
+
+                return apng.frames.map((frame) => {
+                  return {
+                    ...frame,
+                    bitmapData: createImageBitmap(frame.imageData),
+                  };
+                });
+              });
+          },
+          tileSize: 256,
+          visible: true,
+          opacity: biiOpacity,
+          refinementStrategy: 'no-overlap',
+          renderSubLayers: (sl) => {
+            if (!sl) return null;
+
+            const {
+              id: subLayerId,
+              data,
+              tile,
+              visible,
+              opacity = 1,
+              frame: f
+            } = sl;
+
+            if (!tile || !data) return null;
+
+            const {
+              z,
+              bbox: {
+                west, south, east, north,
+              },
+            } = tile;
+
+            const FRAME = data[f];
+
+            if (FRAME) {
+              return new BitmapLayer({
+                id: subLayerId,
+                image: FRAME.bitmapData,
+                bounds: [west, south, east, north],
+                getPolygonOffset: () => {
+                  return [0, -50];
+                },
+                textureParameters: {
+                  [GL.TEXTURE_MIN_FILTER]: GL.NEAREST,
+                  [GL.TEXTURE_MAG_FILTER]: GL.NEAREST,
+                  [GL.TEXTURE_WRAP_S]: GL.CLAMP_TO_EDGE,
+                  [GL.TEXTURE_WRAP_T]: GL.CLAMP_TO_EDGE,
+                },
+                zoom: z,
+                visible,
+                opacity,
+              });
+            }
+            return null;
+          },
+          minZoom: 10,
+          maxZoom: 14,
+          extent: bounds.bbox,
+        }
+      ),
     ]
-  }, [frame]);
+  }, [frame, biiOpacity]);
 
   const handleViewportChange = useCallback((vw) => {
     setViewport(vw);
@@ -191,7 +281,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
         </span>
       </div>
 
-      {/* Layers */}
+            {/* Layers */}
       <div
         style={{
           position: 'absolute',
@@ -207,12 +297,22 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
         }}
       >
         <div>
-          <label htmlFor='#loss-layer'>Biodiversity Intactness</label>
+          <label htmlFor='#loss-layer'>BII - 2017-2020</label>
           <input
             type="checkbox"
-            checked={!!biodiversityIntactnessOpacity}
+            checked={!!biiOpacity}
             onChange={(e) => {
-              setBiodiversityIntactnessOpacity(e.target.checked ? 1 : 0);
+              setBiiOpacity(e.target.checked ? 1 : 0);
+            }}
+          />
+        </div>
+        <div>
+          <label htmlFor='#loss-layer'>BII Change - 2017-2020</label>
+          <input
+            type="checkbox"
+            checked={!!biiChangeOpacity}
+            onChange={(e) => {
+              setHumanFootprintOpacity(e.target.checked ? 1 : 0);
             }}
           />
         </div>
@@ -220,14 +320,13 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
 
 
       <Map
-        bounds={bounds}
         minZoom={minZoom}
         maxZoom={maxZoom}
         viewState={viewport}
         mapStyle="mapbox://styles/layer-manager/ck53taxwt06mu1csgap96x9rz"
         mapboxAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
         initialViewState={{
-          bounds: [48.7518310546875, -14.077973196671586, 49.04846191406249, -13.755392488822052],
+          bounds: [48.69140625000001,-14.093957177836236,49.04296875,-13.752724664396975],
         }}
         onViewStateChange={handleViewportChange}
       >
@@ -240,7 +339,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
                 [cartoProvider.name]: cartoProvider.handleData,
               }}
             >
-              <Layer
+              {/* <Layer
                 id= 'biodiversity-intactness'
                 type= 'raster'
                 source= {{
@@ -249,7 +348,18 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
                     'https://storage.googleapis.com/geo-ai/Redes/Tiles/Tsaratanana/BII/{z}/{x}/{y}.png'
                   ]
                 }}
-                opacity={biodiversityIntactnessOpacity}
+                opacity={biiOpacity}
+              /> */}
+              <Layer
+                id= 'bii-change'
+                type= 'raster'
+                source= {{
+                  type: 'raster',
+                  tiles: [
+                    'https://storage.googleapis.com/geo-ai/Redes/Tiles/Tsaratanana/BII/{z}/{x}/{y}.png'
+                  ]
+                }}
+                opacity={biiChangeOpacity}
               />
               <Layer
                 {...args}
