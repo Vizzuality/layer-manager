@@ -27,7 +27,7 @@ export default {
 
 const Template: Story<LayerProps> = (args: LayerProps) => {
   const [biiOpacity, setBiiOpacity] = useState(1);
-  const [biiChangeOpacity, setHumanFootprintOpacity] = useState(1);
+  const [biiChangeOpacity, setBiiChangeOpacity] = useState(0);
 
 
   const [frame, setFrame] = useState(0);
@@ -312,7 +312,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
             type="checkbox"
             checked={!!biiChangeOpacity}
             onChange={(e) => {
-              setHumanFootprintOpacity(e.target.checked ? 1 : 0);
+              setBiiChangeOpacity(e.target.checked ? 1 : 0);
             }}
           />
         </div>

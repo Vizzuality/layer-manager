@@ -27,7 +27,7 @@ export default {
 
 const Template: Story<LayerProps> = (args: LayerProps) => {
   const [biiOpacity, setBiiOpacity] = useState(1);
-  const [biiChangeOpacity, setHumanFootprintOpacity] = useState(1);
+  const [biiChangeOpacity, setHumanFootprintOpacity] = useState(0);
 
 
   const [frame, setFrame] = useState(0);
@@ -339,17 +339,45 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
                 [cartoProvider.name]: cartoProvider.handleData,
               }}
             >
-              {/* <Layer
-                id= 'biodiversity-intactness'
-                type= 'raster'
+              <Layer
+                id= 'test-vector'
+                type= 'vector'
+                params={ {
+                  color: '#00CC00'
+                }}
                 source= {{
-                  type: 'raster',
-                  tiles: [
-                    'https://storage.googleapis.com/geo-ai/Redes/Tiles/Tsaratanana/BII/{z}/{x}/{y}.png'
+                  type: 'vector',
+                  provider: {
+                    type: 'carto',
+                    account: 'wri-01',
+                    layers: [
+                      {
+                        options: {
+                          cartocss:
+                            '#wdpa_protected_areas {  polygon-opacity: 1.0; polygon-fill: #704489 }',
+                          cartocss_version: '2.3.0',
+                          sql: 'SELECT * FROM wdpa_protected_areas',
+                        },
+                        type: 'cartodb',
+                      },
+                    ],
+                  }
+                }}
+                render={{
+                  layers: [
+                    {
+                      type: 'line',
+                      'source-layer': 'layer0',
+                      paint: {
+                        'line-color': '#FFCC00',
+                        'line-opacity': 0.5,
+                        'line-width': 2,
+                      },
+                    },
                   ]
                 }}
-                opacity={biiOpacity}
-              /> */}
+              />
+
               <Layer
                 id= 'bii-change'
                 type= 'raster'
@@ -377,7 +405,7 @@ const Template: Story<LayerProps> = (args: LayerProps) => {
 
 export const Tsaratanana = Template.bind({});
 Tsaratanana.args = {
-  id: 'kigali-layer',
+  id: 'tsaratanana-layer',
   type: 'deck',
   source: {
     parse: false,
