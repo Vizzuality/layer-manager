@@ -8,9 +8,9 @@ import CartoProvider from '@vizzuality/layer-manager-provider-carto';
 
 import GL from '@luma.gl/constants';
 import { TileLayer } from '@deck.gl/geo-layers';
-import { DecodedLayer } from '@vizzuality/layer-manager-layers-deckgl';
+import { BitmapLayer } from '@deck.gl/layers';
 import { MapboxLayer } from '@deck.gl/mapbox';
-
+import { LayerExtension } from '@deck.gl/core';
 
 // Map
 import Map from '../../../components/map';
@@ -18,7 +18,7 @@ import Map from '../../../components/map';
 const cartoProvider = new CartoProvider();
 
 export default {
-  title: 'Playground/Decoded-Raster-Layer',
+  title: 'Playground/Extensions',
   argTypes: {
     deck: {
       table: {
@@ -28,7 +28,7 @@ export default {
     tileUrl: {
       name: 'tileUrl',
       type: { name: 'Tile URL', required: true },
-      defaultValue: 'https://storage.googleapis.com/wri-public/Hansen_16/tiles/hansen_world/v1/tc30/{z}/{x}/{y}.png',
+      defaultValue: 'https://earthengine.google.org/static/hansen_2013/gain_alpha/{z}/{x}/{y}.png',
       control: {
         type: 'text'
       },
@@ -44,35 +44,7 @@ export default {
     decodeFunction: {
       name: 'decodeFunction',
       type: { name: 'string', required: true },
-      defaultValue: `// values for creating power scale, domain (input), and range (output)
-float domainMin = 0.;
-float domainMax = 255.;
-float rangeMin = 0.;
-float rangeMax = 255.;
-
-float exponent = zoom < 13. ? 0.3 + (zoom - 3.) / 20. : 1.;
-float intensity = color.r * 255.;
-
-// get the min, max, and current values on the power scale
-float minPow = pow(domainMin, exponent - domainMin);
-float maxPow = pow(domainMax, exponent);
-float currentPow = pow(intensity, exponent);
-
-// get intensity value mapped to range
-float scaleIntensity = ((currentPow - minPow) / (maxPow - minPow) * (rangeMax - rangeMin)) + rangeMin;
-// a value between 0 and 255
-alpha = zoom < 13. ? scaleIntensity / 255. : color.g;
-
-float year = 2000.0 + (color.b * 255.);
-// map to years
-if (year >= startYear && year <= endYear && year >= 2001.) {
-  color.r = 220. / 255.;
-  color.g = (72. - zoom + 102. - 3. * scaleIntensity / zoom) / 255.;
-  color.b = (33. - zoom + 153. - intensity / zoom) / 255.;
-} else {
-  alpha = 0.;
-}
-      `,
+      defaultValue: ``,
       description: 'The decode function you will apply to each tile pixel',
       control: {
         type: 'text'
@@ -81,12 +53,87 @@ if (year >= startYear && year <= endYear && year >= 2001.) {
   },
 };
 
+class TestExtension extends LayerExtension {
+  getShaders() {
+    return {
+      inject: {
+        'vs:#decl': `
+          uniform float u_mouseLng;
+          uniform float u_mouseLat;
+          varying vec4 v_texWorld;
+          varying vec3 v_texWorldCommon;
+          varying vec4 v_mousePosition;
+          varying vec3 v_mousePositionCommon;
+        `,
+        'vs:#main-end': `
+          v_texWorld = project_position_to_clipspace(positions, positions64Low, vec3(0.0), geometry.position);
+          v_texWorldCommon = positions.xyz;
+          v_mousePosition = project_position_to_clipspace(vec3(u_mouseLng, u_mouseLat, 0.0), positions64Low, vec3(0.0));
+          v_mousePositionCommon = vec3(u_mouseLng, u_mouseLat, 0.0);
+        `,
+        'fs:#decl': `
+          uniform float zoom;
+          uniform float startYear;
+          uniform float endYear;
+          uniform float u_mouseLng;
+          uniform float u_mouseLat;
+          varying vec4 v_texWorld;
+          varying vec3 v_texWorldCommon;
+          varying vec4 v_mousePosition;
+
+          float circle(vec2 pt, vec2 center, float radius, float edge_thickness){
+            vec2 p = pt - center;
+            float len = length(p);
+            float result = 1.0-smoothstep(radius-edge_thickness, radius, len);
+
+            return result;
+          }
+        `,
+
+        'fs:#main-end': `
+          ${this.props.decodeFunction}
+        `
+      }
+    };
+  }
+
+  updateState({ props, changeFlags }) {
+    const {
+      decodeParams = {},
+      zoom,
+      u_mouseLng,
+      u_mouseLat,
+    } = props;
+
+    if (changeFlags.extensionsChanged || changeFlags.somethingChanged.decodeFunction) {
+      const { gl } = this.context;
+      this.state.model?.delete();
+      this.state.model = this._getModel(gl);
+      this.getAttributeManager().invalidateAll();
+    }
+
+    for (const model of this.getModels()) {
+      console.log(u_mouseLat, u_mouseLng);
+      model.setUniforms({
+        zoom,
+        u_mouseLng,
+        u_mouseLat,
+        ...decodeParams,
+      });
+    }
+  }
+}
+
 const Template: Story<LayerProps> = (args: any) => {
   const { id, tileUrl, decodeFunction, decodeParams } = args;
 
   const minZoom = 2;
   const maxZoom = 20;
   const [viewport, setViewport] = useState({});
+  const [mouseLngLat, setMouseLngLat] = useState({
+    lng: 0,
+    lat: 0
+  });
 
   const [bounds] = useState(null);
 
@@ -103,12 +150,16 @@ const Template: Story<LayerProps> = (args: any) => {
           refinementStrategy: 'no-overlap',
           decodeFunction,
           decodeParams,
+          u_mouseLng: mouseLngLat.lng,
+          u_mouseLat: mouseLngLat.lat,
           renderSubLayers: (sl) => {
             const {
               id: subLayerId,
               data,
               tile,
               visible,
+              u_mouseLng,
+              u_mouseLat,
               opacity: _opacity,
               decodeParams: dParams,
               decodeFunction: dFunction,
@@ -122,7 +173,7 @@ const Template: Story<LayerProps> = (args: any) => {
             } = tile;
 
             if (data) {
-              return new DecodedLayer({
+              return new BitmapLayer({
                 id: subLayerId,
                 image: data,
                 bounds: [west, south, east, north],
@@ -135,8 +186,11 @@ const Template: Story<LayerProps> = (args: any) => {
                 zoom: z,
                 visible,
                 opacity: _opacity,
+                u_mouseLng,
+                u_mouseLat,
                 decodeParams: dParams,
                 decodeFunction: dFunction,
+                extensions: [new TestExtension()],
                 updateTriggers: {
                   decodeParams: dParams,
                   decodeFunction: dFunction,
@@ -150,11 +204,17 @@ const Template: Story<LayerProps> = (args: any) => {
         }
       )
     ]
-  }, [decodeFunction, decodeParams]);
+  }, [decodeFunction, decodeParams, mouseLngLat]);
 
   const handleViewportChange = useCallback((vw) => {
     setViewport(vw);
   }, []);
+
+  const handleMouseMove = useCallback((e) => {
+    if (e.lngLat) {
+      setMouseLngLat(e.lngLat);
+    }
+  } ,[]);
 
   return (
     <div
@@ -169,9 +229,10 @@ const Template: Story<LayerProps> = (args: any) => {
         minZoom={minZoom}
         maxZoom={maxZoom}
         viewState={viewport}
-        mapStyle="mapbox://styles/layer-manager/cl7stzzqj004t14lfz0mhbkve"
+        mapStyle="mapbox://styles/mapbox/light-v9"
         mapboxAccessToken={process.env.STORYBOOK_MAPBOX_API_TOKEN}
         onViewStateChange={handleViewportChange}
+        onMouseMove={handleMouseMove}
       >
         {(map) => (
           <LayerManager
@@ -192,8 +253,38 @@ const Template: Story<LayerProps> = (args: any) => {
   );
 };
 
-export const Default = Template.bind({});
-Default.args = {
+export const TestVarying = Template.bind({});
+TestVarying.args = {
   id: 'deck-loss-raster-decode',
-  type: 'deck'
+  type: 'deck',
+  decodeFunction: `// decode function
+  vec3 color = mix(bitmapColor.rgb, vec3(1.0,0.0,0.0), v_texWorld.x);
+  // vec3 color = mix(bitmapColor.rgb, vec3(1.0,0.0,0.0), (abs(v_texWorldCommon.x / 180.)));
+  gl_FragColor = vec4(color, bitmapColor.a);
+  `
 };
+
+export const TestStep = Template.bind({});
+TestStep.args = {
+  id: 'deck-loss-raster-decode',
+  type: 'deck',
+  decodeFunction: `// decode function
+  float step = step(0., v_texWorldCommon.y);
+  vec3 color = mix(bitmapColor.rgb, vec3(1.0,0.0,0.0), step);
+  gl_FragColor = vec4(color, bitmapColor.a);
+  `
+};
+
+export const TestCircleMovement = Template.bind({});
+TestCircleMovement.args = {
+  id: 'deck-loss-raster-decode',
+  type: 'deck',
+  decodeFunction: `// decode function
+  vec3 color = bitmapColor.rgb * circle(v_mousePosition.xy, v_mousePosition.xy, 0.5, 0.002);
+  gl_FragColor = vec4(color, bitmapColor.a);
+  // gl_FragColor = vec4(v_mousePosition.x, v_mousePosition.y, 0.0, bitmapColor.a);
+
+  `
+};
+
+

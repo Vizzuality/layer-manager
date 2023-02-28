@@ -82,36 +82,22 @@ Default.args = {
   type: 'vector',
   source: {
     type: 'vector',
-    url: 'mapbox://mapbox.country-boundaries-v1',
+    tiles: ['https://vectortileservices3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Santa_Monica_Mountains_Parcels_VTL/VectorTileServer/tile/{z}/{y}/{x}.pbf'],
   },
   render: {
     layers: [
       {
         interactive: true,
         type: 'fill',
-        'source-layer': 'country_boundaries',
+        'source-layer': 'Santa_Monica_Mountains_Parcels',
         paint: {
-          'fill-color': [
-            'match',
-            ['get', 'region'],
-            'Africa',
-            '#fbb03b',
-            'Americas',
-            '#223b53',
-            'Europe',
-            '#e55e5e',
-            'Asia',
-            '#3bb2d0',
-            'Oceania',
-            '#ffcc00',
-            /* other */ '#ccc'
-            ],
+          'fill-color': '#ccc'
         }
       },
       {
         interactive: true,
         type: 'line',
-        'source-layer': 'country_boundaries',
+        'source-layer': 'Santa_Monica_Mountains_Parcels',
         paint: {
           'line-color': '#000',
           'line-width': 1,
