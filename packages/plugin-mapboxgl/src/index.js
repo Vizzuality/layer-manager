@@ -14,7 +14,9 @@ class PluginMapboxGL {
     this.map.on('style.load', () => {
       const layers = this.getLayers();
 
-      layers.forEach((layer) => this.add(layer));
+      layers.forEach((layer) => {
+        this.add(layer);
+      });
     });
   }
 
@@ -35,7 +37,9 @@ class PluginMapboxGL {
    * @param {Object} layerModel
    */
   add(layerModel) {
-    const { images, mapLayer } = layerModel;
+    const {
+      images, mapLayer, opacity, visibility,
+    } = layerModel;
     const allLayers = this.getLayers();
 
     if (Array.isArray(images)) {
@@ -75,6 +79,9 @@ class PluginMapboxGL {
           this.setZIndex();
         });
       });
+
+      this.setOpacity(layerModel, opacity);
+      this.setVisibility(layerModel, visibility);
     }
   }
 
