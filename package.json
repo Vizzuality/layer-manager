@@ -1,52 +1,21 @@
 {
-  "name": "@vizzuality/layer-manager-monorepo",
-  "version": "4.0.0",
-  "description": "Vizzuality's Layer Manager monorepo",
-  "author": "Vizzuality <hello@vizzuality.com>",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Vizzuality/layer-manager.git"
-  },
-  "license": "MIT",
   "private": true,
   "scripts": {
-    "bootstrap": "lerna bootstrap && npx husky install",
-    "lint": "lerna run lint",
-    "build": "lerna run build",
-    "test": "lerna run test"
-  },
-  "workspaces": [
-    "packages/*"
-  ],
-  "dependencies": {
-    "@vizzuality/layer-manager": "*",
-    "@vizzuality/layer-manager-layers-deckgl": "*",
-    "@vizzuality/layer-manager-plugin-mapboxgl": "*",
-    "@vizzuality/layer-manager-provider-carto": "*",
-    "@vizzuality/layer-manager-react": "*",
-    "@vizzuality/layer-manager-utils": "*"
+    "build": "turbo run build",
+    "dev": "turbo run dev --no-cache --continue",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "turbo run build --filter=docs^... && changeset publish"
   },
   "devDependencies": {
-    "@types/axios": "^0.14.0",
-    "@types/jest": "^27.0.1",
-    "@types/mapbox-gl": "^2.1.2",
-    "@types/node": "^15.0.1",
-    "@types/react": "^17.0.6",
-    "@typescript-eslint/eslint-plugin": "^4.22.0",
-    "@typescript-eslint/parser": "^4.22.0",
-    "babel-eslint": "^10.0.0",
-    "eslint": "^7.25.0",
-    "eslint-config-airbnb-typescript": "^12.3.1",
-    "eslint-config-react-app": "^6.0.0",
-    "eslint-import-resolver-typescript": "^2.4.0",
-    "eslint-plugin-flowtype": "^5.2.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-react": "^7.23.2",
-    "eslint-plugin-react-hooks": "^4",
-    "husky": "^6.0.0",
-    "jest": "^27.2.0",
-    "ts-jest": "^27.0.5",
-    "typescript": "^4.2.4"
-  }
+    "@changesets/cli": "^2.22.0",
+    "eslint": "^7.32.0",
+    "eslint-config-vizzuality": "workspace:*",
+    "prettier": "^2.5.1",
+    "turbo": "latest"
+  },
+  "packageManager": "pnpm@7.15.0"
 }

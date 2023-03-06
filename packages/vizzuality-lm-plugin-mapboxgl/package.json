@@ -1,0 +1,41 @@
+{
+  "name": "@vizzuality/lm-plugin-mapboxgl",
+  "version": "2.0.2",
+  "author": "Vizzuality <hello@vizzuality.com>",
+  "keywords": [
+    "layer-manager",
+    "plugins",
+    "mapbox-gl"
+  ],
+  "license": "MIT",
+  "private": false,
+  "main": "dist/index.js",
+  "types": "types.d.ts",
+  "files": [
+    "dist",
+    "types.d.ts",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vizzuality/layer-manager.git",
+    "directory": "packages/vizzuality-lm-plugin-mapboxgl"
+  },
+  "scripts": {
+    "build": "tsup src/index.js --format esm,cjs --dts",
+    "dev": "tsup src/index.js --format esm,cjs --watch --dts",
+    "lint": "eslint \"src/**/*.js*\"",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
+  },
+  "dependencies": {
+    "@vizzuality/lm-utils": "workspace:*",
+    "cancelable-promise": "^3.2.3",
+    "react": "^17.0.2"
+  },
+  "devDependencies": {
+    "@vizzuality/tsconfig": "workspace:*",
+    "tsup": "^5.10.1"
+  }
+}
