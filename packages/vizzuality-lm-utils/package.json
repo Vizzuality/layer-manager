@@ -1,0 +1,38 @@
+{
+  "name": "@vizzuality/lm-utils",
+  "version": "0.0.0",
+  "author": "Vizzuality <hello@vizzuality.com>",
+  "main": "dist/index.js",
+  "types": "types.d.ts",
+  "keywords": [
+    "layer-manager"
+  ],
+  "license": "MIT",
+  "private": false,
+  "files": [
+    "dist",
+    "types.d.ts",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vizzuality/layer-manager.git",
+    "directory": "packages/vizzuality-lm-utils"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "dev": "tsup src/index.ts --format esm,cjs --watch --dts",
+    "lint": "eslint \"src/**/*.ts*\"",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
+  },
+  "dependencies": {
+    "axios": "^0.21.4",
+    "cancelable-promise": "^3.2.3"
+  },
+  "devDependencies": {
+    "@vizzuality/tsconfig": "workspace:*",
+    "tsup": "^5.10.1"
+  }
+}

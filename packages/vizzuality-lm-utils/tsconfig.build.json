@@ -1,0 +1,11 @@
+{
+  "extends": "@vizzuality/tsconfig/base.json",
+  "compilerOptions": {
+    "declaration": false,
+    "declarationMap": false,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "resolveJsonModule": true
+  },
+  "include": ["src"]
+}

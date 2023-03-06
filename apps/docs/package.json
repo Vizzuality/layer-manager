@@ -1,0 +1,31 @@
+{
+  "name": "@vizzuality/docs",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "start": "next start ",
+    "dev": "next dev -p 3002",
+    "lint": "next lint",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf .next"
+  },
+  "dependencies": {
+    "@vizzuality/lm-plugin-mapboxgl": "workspace:*",
+    "@vizzuality/lm-react": "workspace:*",
+    "classnames": "^2.3.2",
+    "mapbox-gl": "^2.2.0",
+    "next": "latest",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-map-gl": "^7.0.21",
+    "use-debounce": "^9.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.12",
+    "@types/react": "^18.0.22",
+    "@types/react-dom": "^18.0.7",
+    "@vizzuality/tsconfig": "workspace:*",
+    "eslint-config-vizzuality": "workspace:*",
+    "typescript": "^4.5.4"
+  }
+}

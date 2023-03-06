@@ -1,0 +1,40 @@
+{
+  "name": "@vizzuality/lm-provider-carto",
+  "version": "2.0.2",
+  "author": "Vizzuality <hello@vizzuality.com>",
+  "keywords": [
+    "layer-manager",
+    "providers",
+    "carto"
+  ],
+  "license": "MIT",
+  "private": false,
+  "main": "dist/carto-provider.js",
+  "types": "types.d.ts",
+  "files": [
+    "dist",
+    "types.d.ts",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vizzuality/layer-manager.git",
+    "directory": "packages/vizzuality-lm-provider-carto"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "dev": "tsup src/index.ts --format esm,cjs --watch --dts",
+    "lint": "eslint \"src/**/*.ts*\"",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
+  },
+  "dependencies": {
+    "@vizzuality/lm": "workspace:*",
+    "@vizzuality/lm-utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@vizzuality/tsconfig": "workspace:*",
+    "tsup": "^5.10.1"
+  }
+}
