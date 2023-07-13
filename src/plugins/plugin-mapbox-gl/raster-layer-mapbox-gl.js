@@ -28,7 +28,15 @@ const getTileData = ({ x, y, z }, url) => {
 };
 
 const RasterLayer = (layerModel, providers) => {
-  const { source = {}, render = {}, decodeParams, id, opacity, decodeFunction } = layerModel;
+  const {
+    source = {},
+    render = {},
+    decodeParams,
+    id,
+    opacity,
+    decodeFunction,
+    zIndex
+  } = layerModel;
 
   const DEFAULT_RASTER_OPTIONS = {
     id: `${id}-raster`,
@@ -81,7 +89,8 @@ const RasterLayer = (layerModel, providers) => {
                     zoom,
                     decodeParams: decodeParamsSub,
                     decodeFunction: decodeFunctionSub,
-                    opacity
+                    opacity,
+                    getPolygonOffset: () => [0, -100000000 + zIndex * 1000]
                   });
                 }
                 return null;
