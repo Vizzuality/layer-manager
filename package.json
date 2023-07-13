@@ -1,6 +1,6 @@
 {
   "name": "layer-manager",
-  "version": "3.0.8",
+  "version": "3.1.0-wri-gfw",
   "description": "A library to get a layer depending on provider and layer spec",
   "repository": {
     "type": "git",
